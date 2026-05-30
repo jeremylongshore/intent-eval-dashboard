@@ -2,20 +2,21 @@ name: Deploy
 
 # Push to main → CI → Tailscale OIDC → SSH to intentsolutions VPS →
 # /usr/local/sbin/deploy-intent-eval-dashboard (force-command on the deploy key)
-# does git fetch + rsync of site/ static HTML → smoke-test passes.
+# does git fetch + git reset --hard origin/main → smoke-test passes.
 #
-# v0.1.0 site format: single-file HTML per page (no build step). Deploy is
-# pure rsync of site/*.html + site/style.css to /srv/intent-eval-dashboard/.
-# Astro adopted at Phase 2 when interactive surfaces arrive (puxu.6/puxu.7).
+# v0.1.0 site format: single-file HTML per page (no build step). Caddy
+# serves directly from /srv/intent-eval-dashboard/site/. The deploy
+# script just updates the checkout in place.
 #
-# v0.1.0 scaffolding: this workflow is a PLACEHOLDER. Real pre-deploy gate +
-# deploy logic activates when Phase 1 Epic 1.3 (puxu.3) ships the site/
-# HTML tree. Until then, this workflow just checks the repo's hard-refusal
-# guardrails (partner-name-guard.yml fires independently on doc paths).
+# Astro adopted at Phase 2 when interactive surfaces arrive (puxu.6/puxu.7);
+# pre-deploy gate will then add `pnpm install + pnpm build` steps.
 
 on:
   push:
     branches: [main]
+    paths:
+      - 'site/**'
+      - '.github/workflows/deploy.yml'
   workflow_dispatch: {}
 
 permissions:
@@ -27,61 +28,82 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  placeholder:
-    name: pre-deploy placeholder (v0.1.0 scaffolding)
+  test:
+    name: pre-deploy gate
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: v0.1.0 scaffolding marker
+      - name: HTML sanity checks
         run: |
-          echo "v0.1.0 scaffolding — no site/ HTML yet; pre-deploy gate activates with Epic 1.3 (puxu.3)."
-          test -f README.md
-          test -f CLAUDE.md
-          test -f LICENSE
-          test -f package.json
-          test -d site
-          test -d cmd/labs-tui
-          echo "✓ Scaffolding layout intact."
+          set -euo pipefail
+          FAILED=0
+          for f in $(find site -name "*.html"); do
+            if ! grep -q "<!DOCTYPE html>" "$f"; then
+              echo "::error file=$f::missing DOCTYPE"
+              FAILED=1
+            fi
+            if ! grep -q "</html>" "$f"; then
+              echo "::error file=$f::missing closing </html> tag"
+              FAILED=1
+            fi
+            if ! grep -q '<link rel="stylesheet" href="/style.css">' "$f"; then
+              echo "::error file=$f::missing stylesheet link"
+              FAILED=1
+            fi
+          done
+          [ "$FAILED" -eq 0 ] && echo "✓ all HTML files pass DOCTYPE + closing tag + stylesheet checks"
+          exit $FAILED
 
-  # Full pre-deploy + VPS deploy enabled when Epic 1.3 lands site/ HTML:
-  #
-  # pre-deploy-gate:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - name: Validate static HTML
-  #       run: |
-  #         # Smoke checks on the committed HTML files
-  #         test -f site/index.html
-  #         test -f site/healthz
-  #         test -f site/style.css
-  #         test -d site/eval-sets
-  #         # HTML5 validator (htmlhint or vnu)
-  #         npx htmlhint 'site/**/*.html'
-  #     - name: C3 aggregate-PASS% lint
-  #       run: |
-  #         # Refuse any "<X>/<N> pass" or "<X>% pass" across mixed predicates
-  #         ! grep -rE "[0-9]+/[0-9]+ pass|[0-9]+% pass" site/ || (echo "C3 violation"; exit 1)
-  #     - name: Predicate-URI-at-labs scan
-  #       run: |
-  #         # Refuse any predicate URI declared under labs.* (must be evals.*)
-  #         ! grep -rE "labs\.intentsolutions\.io/[a-z-]+/v[0-9]+" site/ || (echo "CISO binding violation"; exit 1)
-  #
-  # deploy:
-  #   needs: pre-deploy-gate
-  #   uses: jeremylongshore/.github/.github/workflows/vps-deploy.yml@main
-  #   with:
-  #     variant: static
-  #     srv-path: /srv/intent-eval-dashboard
-  #     health-check-url: https://labs.intentsolutions.io/healthz
-  #     vps-tailnet-ip: 100.88.144.55
-  #     vps-public-ip: 167.86.106.29
-  #     vps-host: intentsolutions
-  #     vps-user: intentsolutions
-  #     smoke-validation: '.ok == true'
-  #   secrets:
-  #     TS_OIDC_CLIENT_ID: ${{ secrets.TS_OIDC_CLIENT_ID }}
-  #     TS_AUDIENCE: ${{ secrets.TS_AUDIENCE }}
-  #     VPS_DEPLOY_KEY: ${{ secrets.VPS_DEPLOY_KEY }}
-  #     VPS_HOST_KEY: ${{ secrets.VPS_HOST_KEY }}
+      - name: C3 aggregate-PASS% lint
+        # DR-035 § 4 C3 binding (CTO + CMO + VP DevRel independent refusals):
+        # NO top-line aggregate PASS% across heterogeneous predicate semantics.
+        # Refuses any rendered output containing "<X>/<N> pass" or "<X>% pass".
+        run: |
+          set -euo pipefail
+          if grep -rEn "[0-9]+/[0-9]+ pass|[0-9]+% pass" site/ ; then
+            echo "::error::C3 violation — aggregate PASS% detected in rendered output"
+            exit 1
+          fi
+          echo "✓ C3 aggregate-PASS% lint: no violations"
+
+      - name: Predicate-URI-at-labs scan
+        # DR-010 + DR-035 CISO binding: predicate URIs MUST live at
+        # evals.intentsolutions.io exclusively. Refuses any URL of shape
+        # labs.intentsolutions.io/<predicate>/v<N> in site content.
+        run: |
+          set -euo pipefail
+          if grep -rEn "labs\.intentsolutions\.io/[a-z-]+/v[0-9]+" site/ ; then
+            echo "::error::CISO binding violation — predicate URI declared under labs.* (must be evals.*)"
+            exit 1
+          fi
+          echo "✓ Predicate-URI-at-labs scan: no violations"
+
+      - name: Verify required smoke files present
+        run: |
+          set -euo pipefail
+          test -f site/index.html
+          test -f site/healthz
+          test -f site/style.css
+          test -f site/eval-sets/index.html
+          test -f site/methodology/index.html
+          echo "✓ all required smoke files present"
+
+  deploy:
+    needs: test
+    uses: jeremylongshore/.github/.github/workflows/vps-deploy.yml@709a07fbebb1d51806e171204e63f5332abcb0da
+    with:
+      variant: static
+      srv-path: /srv/intent-eval-dashboard
+      health-check-url: https://labs.intentsolutions.io/healthz
+      vps-tailnet-ip: 100.88.144.55
+      vps-public-ip: 167.86.106.29
+      vps-host: intentsolutions
+      vps-user: intentsolutions
+      # /healthz returns plain "ok" (not JSON) — empty filter means 2xx alone = pass
+      smoke-validation: ''
+    secrets:
+      TS_OIDC_CLIENT_ID: ${{ secrets.TS_OIDC_CLIENT_ID }}
+      TS_AUDIENCE: ${{ secrets.TS_AUDIENCE }}
+      VPS_DEPLOY_KEY: ${{ secrets.VPS_DEPLOY_KEY }}
+      VPS_HOST_KEY: ${{ secrets.VPS_HOST_KEY }}
