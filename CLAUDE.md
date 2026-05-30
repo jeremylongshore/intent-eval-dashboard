@@ -39,10 +39,11 @@ Full catalog: DR-035 § 8.
 
 ## Tech stack (v0.1.0)
 
-- **Site generator:** Astro (TypeScript-native, MD/MDX content collections, static-first, interactive islands when needed)
-- **Package manager:** pnpm
-- **Node:** 20+ LTS
-- **Deploy:** GitHub Actions → Tailscale OIDC → force-command SSH → `pnpm build` → rsync → Caddy reload (NOT restart)
+- **Site format:** Single-file HTML per page, Claude-generated self-contained HTML with one shared `/style.css`. Zero build step; deploy is rsync of `.html` files. Plays to Claude's documented single-file HTML strength. Outsiders can `curl` + `view-source` and get the entire page inspectable (Gregg + CISO "no JS framework hidden complexity" framing). Acting-head decision 2026-05-30.
+- **Astro adopted at Phase 2** when interactive surfaces arrive (results browser puxu.6 + freshness strip puxu.7)
+- **Package manager:** pnpm (for `@intentsolutions/audit-harness` dev dep only at v0.1.0; no Astro deps yet)
+- **Node:** 20+ LTS (for harness; not required to serve HTML)
+- **Deploy:** GitHub Actions → Tailscale OIDC → force-command SSH → rsync of static HTML → Caddy reload (NOT restart). NO build step at v0.1.0
 - **VPS:** Contabo `intentsolutions` (167.86.106.29), Caddy block `labs.intentsolutions.io`
 - **DNS:** Porkbun A + CAA (LE-only) + DNSSEC (zone-level inherited)
 - **TUI (v0.2.0+ reservation):** Go, `cmd/labs-tui/` — NOT implemented at v0.1.0; directory + module path reserved per A3 ratified deferral

@@ -11,8 +11,8 @@ The dashboard is in initial scaffolding. The 7-layer taxonomy is not yet fully p
 | Layer | Tool | Status |
 |---|---|---|
 | L1 — Git hooks | `audit-harness verify` pre-commit | Pending — install after first push |
-| L2 — Static (lint/typecheck) | Astro lint + tsc (Astro project) | Pending — Phase 1 Epic 1.3 |
-| L3 — Unit | Vitest | Pending — Phase 1 Epic 1.3 |
+| L2 — Static (lint/typecheck) | HTML validator + linkchecker on static HTML at v0.1.0; Astro lint + tsc at Phase 2 | Pending — Phase 1 Epic 1.3 |
+| L3 — Unit | N/A for single-file HTML; Vitest when Astro adopted at Phase 2 | Pending — Phase 2 |
 | L4 — Integration | Vitest + test harness | Pending — Phase 2 |
 | L5 — System | Playwright (site build smoke) | Pending — Phase 2 |
 | L6 — E2E / acceptance | Gherkin scenarios | Pending — Phase 2 (per `intent-eval-lab` methodology pattern) |

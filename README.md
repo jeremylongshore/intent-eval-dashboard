@@ -27,6 +27,8 @@ Ratified by ISEDC Session 8 — see [DR-035](https://github.com/jeremylongshore/
 - **Public anonymous root** — methodology docs, freshness strip (stub at v0.1.0), end-to-end signed example
 - **Operator-internal view** — separate tailnet-only hostname, Tailscale identity, all reports regardless of public visibility tags
 
+**Site format:** single-file HTML per page at v0.1.0 (zero build step; pure rsync deploy). Astro adopted at Phase 2 when interactive surfaces arrive. Acting-head decision 2026-05-30 — see plan file for reasoning.
+
 ## What ships in Phase 2
 
 Schema evolution to `@intentsolutions/core@0.2.0` (adds `pre_registration_hash`, `retraction/v1`, `dashboard-render/v1`) · 6-worker ingest supervision tree · results browser · sign-your-own-homework (sequenced) · retraction protocol with Caddy kill-switch · ops-lite alerting · Phase A.0 symmetric rendering.
