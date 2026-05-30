@@ -1,0 +1,44 @@
+{
+  "$schema": "./eval-sets.schema.json",
+  "_comment": "Manifest of eval-sets published on labs.intentsolutions.io. Hand-edited for static fields (id, title, description, predicate_uri, predecessor, status). Volatile fields (version, last_changed_at) are refreshed by scripts/regenerate.py on the daily cron from upstream source.",
+  "eval_sets": [
+    {
+      "id": "j-rig-binary-eval-7-layer",
+      "title": "j-rig binary-criteria skill evaluation, 7 layers",
+      "short_description": "Score every Claude skill yes/no across seven layers — package integrity, trigger quality, functional quality, regression protection, baseline value, model variance, rollout safety. Never gradients. The eval-set that gives this platform its name.",
+      "status": "active",
+      "predicate_uri": "evals.intentsolutions.io/skill-binary-eval/v1",
+      "predicate_uri_reserved": true,
+      "predecessor_id": null,
+      "upstream": {
+        "owner": "jeremylongshore",
+        "repo": "j-rig-skill-binary-eval",
+        "branch": "main"
+      },
+      "adversarial_audit_status": "queued",
+      "page_path": "/eval-sets/j-rig-binary-eval-7-layer/"
+    }
+  ],
+  "queued_for_v0_2_0": [
+    {
+      "id": "audit-harness-deterministic-gate-set",
+      "title": "audit-harness deterministic gate-set",
+      "short_description": "escape-scan, CRAP score, architecture rules, bias count, Gherkin lint. The infrastructure layer underneath every IEP repo.",
+      "upstream": {
+        "owner": "jeremylongshore",
+        "repo": "intent-audit-harness",
+        "branch": "main"
+      }
+    },
+    {
+      "id": "skill-refiner-phase-a0-baseline",
+      "title": "Skill Refiner Phase A.0 baseline eval-set",
+      "short_description": "The null-hypothesis spec that gates Skill Refiner Phase A. Pre-registered ahead of the run per DR-028.",
+      "upstream": {
+        "owner": "jeremylongshore",
+        "repo": "intent-eval-lab",
+        "branch": "main"
+      }
+    }
+  ]
+}

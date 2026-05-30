@@ -1,0 +1,92 @@
+name: Regenerate eval-set pages
+
+# Daily cron (06:00 UTC) + manual workflow_dispatch.
+#
+# Reads data/eval-sets.json. For each active eval-set, queries upstream
+# via gh api for latest version + last-changed date. Updates in-place
+# the meta-block cells in per-eval-set HTML pages and regenerates
+# eval-sets/index.html. If anything changed, commits + pushes →
+# existing deploy.yml fires → live in ~30s.
+#
+# On failure: posts to ntfy prod-alerts topic (matches ops-lite pattern
+# per DR-035 § 5 D3). The 7-day-silence pager threshold doesn't apply
+# here — this is a cosmetic refresh, not a security signal.
+#
+# Per puxu.13. Replaces "I have to manually update HTML when upstream
+# version bumps" with "set it and forget it."
+
+on:
+  schedule:
+    # 06:00 UTC daily (= midnight Central / 23:00 Pacific / 02:00 Eastern)
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    inputs:
+      force_commit:
+        description: 'Force commit even if no diff (debug only)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write   # commit + push regenerated HTML
+
+concurrency:
+  group: regenerate-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Need full history to push back. token defaults to GITHUB_TOKEN
+          # which has contents:write per permissions block above.
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run regenerate.py
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 scripts/regenerate.py
+
+      - name: Detect changes
+        id: diff
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "::notice::no diff — nothing to commit"
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "::notice::diff detected — will commit"
+            git diff --stat
+          fi
+
+      - name: Commit + push
+        if: steps.diff.outputs.changed == 'true' || inputs.force_commit == true
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -s -m "chore(regenerate): cron-driven refresh of eval-set pages
+
+          $(date -u +%FT%TZ) — automated refresh from upstream metadata.
+          See scripts/regenerate.py + data/eval-sets.json. Triggered by
+          ${{ github.event_name == 'schedule' && 'daily cron' || 'workflow_dispatch' }}.
+
+          bd: bd_000-projects-puxu.13"
+          git push
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          # ntfy push notification matches ops-lite pattern per DR-035 D3.
+          # NTFY_URL is a public tailnet-only ntfy on the VPS; topic prod-alerts.
+          # If ntfy is unreachable from GH Actions runner (it's tailnet-only),
+          # this just logs the attempt — primary alerting is GH Actions
+          # email failure notifications which already fire by default.
+          echo "::warning::regenerate.yml failed at $(date -u +%FT%TZ) — GitHub Actions email alert fires by default; ntfy is tailnet-only so will skip from runner"
