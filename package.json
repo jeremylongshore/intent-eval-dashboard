@@ -1,0 +1,29 @@
+{
+  "name": "intent-eval-dashboard",
+  "version": "0.1.0-pre",
+  "private": true,
+  "description": "Public reports dashboard for the Intent Eval Platform. Renders eval-set methodology + signed Evidence Bundles at labs.intentsolutions.io.",
+  "homepage": "https://labs.intentsolutions.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jeremylongshore/intent-eval-dashboard.git"
+  },
+  "license": "Apache-2.0",
+  "author": "Jeremy Longshore <jeremy@intentsolutions.io>",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "harness:verify": "audit-harness verify",
+    "harness:init": "audit-harness init",
+    "check": "pnpm exec audit-harness verify"
+  },
+  "dependencies": {
+    "@intentsolutions/core": "^0.1.0"
+  },
+  "devDependencies": {
+    "@intentsolutions/audit-harness": "^1.1.4"
+  }
+}

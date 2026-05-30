@@ -1,0 +1,59 @@
+name: Partner-name guard
+
+# Enforces DR-004 S1Q2 binding (reaffirmed at DR-010 § 10 and DR-035 § 9):
+# zero partner-name hits in any public-facing artifact.
+#
+# Authority: intent-eval-lab/000-docs/004-AT-DECR-isedc-council-record-2026-05-10.md S1Q2
+# Authority: intent-eval-lab/000-docs/010-AT-DECR-isedc-council-session-4-widened-scope-2026-05-13.md § 10
+# Authority: intent-eval-lab/000-docs/035-AT-DECR-isedc-council-session-8-labs-dashboard-2026-05-29.md § 9
+#
+# The grep pattern is sourced from the PRIVATE umbrella CLAUDE.md so the
+# pattern itself never leaks via this public workflow file. The inline
+# list below MUST stay in sync with the PRIVATE umbrella CLAUDE.md grep
+# pattern; mismatch is an audit-trail concern, not an enforcement gap (the
+# umbrella is the source of truth for the human-driven scrub).
+
+on:
+  pull_request:
+    paths:
+      - '000-docs/**'
+      - 'site/**'
+      - 'README.md'
+      - 'CLAUDE.md'
+      - 'CONTRIBUTING.md'
+      - 'SECURITY.md'
+      - 'CHANGELOG.md'
+  push:
+    branches: [main]
+    paths:
+      - '000-docs/**'
+      - 'site/**'
+      - 'README.md'
+      - 'CLAUDE.md'
+      - 'CONTRIBUTING.md'
+      - 'SECURITY.md'
+      - 'CHANGELOG.md'
+
+jobs:
+  partner-name-grep:
+    name: Partner-name vendor-generic grep
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run partner-name grep
+        # Pattern intentionally pinned here as backstop — must stay in sync
+        # with the canonical pattern in PRIVATE ~/000-projects/CLAUDE.md.
+        # The umbrella is the source of truth.
+        run: |
+          set -euo pipefail
+          HITS=$(grep -rEni "Kobiton|Polygon|Nixtla|Lit Protocol|Mudit Gupta|Mudit" \
+            000-docs/ site/ README.md CLAUDE.md CONTRIBUTING.md SECURITY.md CHANGELOG.md 2>/dev/null | \
+            grep -vE "^[^:]+:[0-9]+: *#" || true)
+          if [ -n "$HITS" ]; then
+            echo "::error::Partner-name vendor-generic discipline violated. DR-004 S1Q2 binding."
+            echo "$HITS"
+            exit 1
+          fi
+          echo "✓ Partner-name guard: 0 hits"

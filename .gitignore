@@ -1,0 +1,58 @@
+# --- Node / pnpm ---
+node_modules/
+.pnpm-store/
+.pnpm-debug.log*
+pnpm-lock.yaml.*
+
+# --- Build artifacts ---
+dist/
+.astro/
+site/dist/
+site/.astro/
+.cache/
+build/
+
+# --- Go (cmd/labs-tui/ reserved for v0.2.0+) ---
+cmd/labs-tui/bin/
+cmd/labs-tui/*.test
+
+# --- Logs ---
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+*.swp
+*.swo
+
+# --- Env / secrets (SOPS pattern) ---
+.env
+.env.local
+.env.*.local
+*.env
+!secrets.example.yaml
+!*.env.sops
+secrets.prod.sops.yaml.dec
+.sops-decrypted/
+
+# --- Audit-harness cache ---
+.audit-harness-cache/
+.coverage
+coverage/
+
+# --- Editor ---
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json.example
+.idea/
+*.iml
+.history/
+
+# --- OS ---
+Thumbs.db
+ehthumbs.db
+*~
+
+# --- Local-only scratch (never commit) ---
+/tmp-*
+/scratch/

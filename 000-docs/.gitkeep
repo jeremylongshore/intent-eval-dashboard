@@ -1,0 +1,14 @@
+# 000-docs/
+
+This directory follows the Intent Solutions Document Filing Standard v4.3:
+`NNN-CC-ABCD-<title>-<date>.md`
+
+Examples:
+- `001-DR-RFC-<title>-<date>.md` — Design RFC
+- `002-AT-DECR-<title>-<date>.md` — Architectural Decision Record
+- `003-AT-ARCH-<title>-<date>.md` — Architecture document
+- `004-AA-AACR-<title>-<date>.md` — After-Action Compliance Report
+
+Empty at v0.1.0 scaffolding. Populated as decisions land.
+
+Source of truth: `~/000-projects/intent-eval-platform/intent-eval-lab/000-docs/` for cross-cutting platform decisions (DR-035 etc.). This repo's `000-docs/` is reserved for dashboard-specific Decision Records.
