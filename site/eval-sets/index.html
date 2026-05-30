@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Eval Sets — Intent Eval Platform</title>
+    <meta name="description" content="Versioned, lineage-tracked specifications of what the Intent Eval Platform measures. The eval-set is the spec.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://labs.intentsolutions.io/eval-sets/">
+    <link rel="stylesheet" href="/style.css">
+
+    <meta property="og:title" content="Eval Sets — Intent Eval Platform">
+    <meta property="og:description" content="Versioned specifications of what we measure. The eval-set is the spec.">
+    <meta property="og:url" content="https://labs.intentsolutions.io/eval-sets/">
+    <meta property="og:type" content="website">
+
+    <meta name="iep-source-repo" content="github.com/jeremylongshore/intent-eval-dashboard">
+    <meta name="iep-dashboard-version" content="0.1.0">
+</head>
+<body>
+    <header class="site-header">
+        <div class="site-header__inner">
+            <a href="/" class="site-header__wordmark">IEP&nbsp;Labs</a>
+            <nav class="site-nav" aria-label="Primary">
+                <a href="/eval-sets/" aria-current="page">Eval Sets</a>
+                <a href="/methodology/">Methodology</a>
+                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <h1>Eval Sets</h1>
+
+        <p class="lead">
+            Versioned, lineage-tracked specifications of what the Intent Eval Platform measures. The eval-set is the spec — every signed Evidence Bundle is an attestation about conformance to one of these.
+        </p>
+
+        <p>
+            Each eval-set is a complete document: its definition, its version history, its lineage to any predecessor, a pointer to an adversarial audit (when one exists), and the full list of tests it includes. Lineage is content-addressed so a hash mismatch breaks renderings of older runs against newer eval-sets.
+        </p>
+
+        <h2>How to read this page</h2>
+
+        <p>
+            An eval-set tagged <span class="badge badge--active">active</span> is the currently authoritative version. A <span class="badge badge--draft">draft</span> tag means the methodology is open for review and the predicate URI it would attest against is reserved but not yet declared. A <span class="badge badge--deprecated">deprecated</span> tag means a successor eval-set has replaced it; renderings of old runs against deprecated eval-sets are preserved for the audit trail but marked.
+        </p>
+
+        <h2>Current eval-sets</h2>
+
+        <ul class="eval-list">
+            <li class="eval-list__item">
+                <h3 class="eval-list__title">
+                    <a href="/eval-sets/j-rig-binary-eval-7-layer/">
+                        j-rig binary-criteria skill evaluation, 7 layers
+                    </a>
+                    <span class="badge badge--active" style="margin-left: 0.5rem;">active</span>
+                </h3>
+                <p class="eval-list__meta">
+                    version <code>1.0.0</code> · last changed <code>2026-05-21</code> · source <code>j-rig-skill-binary-eval@main</code>
+                </p>
+                <p class="eval-list__desc">
+                    Score every Claude skill yes/no across seven layers — package integrity, trigger quality, functional quality, regression protection, baseline value, model variance, rollout safety. Never gradients. The eval-set that gives this platform its name.
+                </p>
+            </li>
+        </ul>
+
+        <h2>Coming next</h2>
+
+        <p>
+            Two eval-sets are queued for v0.2.0 publication once their authoring lands in <code>intent-eval-lab</code>:
+        </p>
+
+        <ul>
+            <li><strong>audit-harness deterministic gate-set</strong> — escape-scan, CRAP score, architecture rules, bias count, Gherkin lint. The infrastructure layer underneath every IEP repo.</li>
+            <li><strong>Skill Refiner Phase A.0 baseline eval-set</strong> — the null-hypothesis spec that gates Skill Refiner Phase A. Pre-registered ahead of the run per <a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/028-AT-DECR-isedc-council-session-7-skill-refiner-plan-ratification-2026-05-27.md">DR-028</a>.</li>
+        </ul>
+
+        <p>
+            Neither will be published here until its specification is complete, its lineage is recorded, and an adversarial audit has been documented. We refuse to publish demo or skeleton eval-sets that would become the canonical example of a predicate URI before the methodology is sound.
+        </p>
+
+        <h2>How to contribute</h2>
+
+        <p>
+            Eval-sets are authored upstream in the repo they measure. Open an issue or pull request against:
+        </p>
+
+        <ul>
+            <li><a href="https://github.com/jeremylongshore/j-rig-skill-binary-eval">jeremylongshore/j-rig-skill-binary-eval</a> — for skill evaluation eval-sets</li>
+            <li><a href="https://github.com/jeremylongshore/intent-audit-harness">jeremylongshore/intent-audit-harness</a> — for deterministic gate-set eval-sets</li>
+            <li><a href="https://github.com/jeremylongshore/intent-eval-lab">jeremylongshore/intent-eval-lab</a> — for methodology-only eval-sets that don't tie to a specific harness</li>
+        </ul>
+
+        <p>
+            When a new eval-set is ratified, it lands here.
+        </p>
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-footer__inner">
+            <div>
+                <strong>labs.intentsolutions.io</strong> · dashboard <code>v0.1.0</code><br>
+                Intent Solutions — <a href="https://intentsolutions.io">intentsolutions.io</a>
+            </div>
+            <div>
+                <a href="/methodology/">Methodology</a> ·
+                <a href="/eval-sets/">Eval Sets</a> ·
+                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

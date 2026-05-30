@@ -1,0 +1,326 @@
+/*
+ * labs.intentsolutions.io — shared design tokens + base layout
+ *
+ * Design intent: methodology-authority aesthetic. Restrained color palette,
+ * proper typographic hierarchy, no JS, no animations, fully accessible.
+ * Inspired by academic publication conventions + technical documentation.
+ *
+ * Color palette is deliberately limited:
+ *   - cream background (#fdfdfb)
+ *   - dark gray body text (#1a1a1a)
+ *   - one accent (deep blue #2c5282)
+ *   - muted gray for metadata (#6b7280)
+ *   - light gray borders (#e5e7eb)
+ *
+ * No third-party font CDNs — uses system font stack for performance + privacy.
+ */
+
+/* --- Reset --- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body, h1, h2, h3, h4, h5, h6, p, ul, ol, dl, dd, blockquote, figure, pre {
+    margin: 0;
+}
+ul, ol { padding-left: 1.25rem; }
+img { max-width: 100%; height: auto; display: block; }
+a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a:hover { text-decoration-thickness: 2px; }
+
+/* --- Base typography --- */
+html {
+    font-size: 17px;
+    line-height: 1.55;
+}
+
+body {
+    font-family: Charter, "Bitstream Charter", "Sitka Text", Cambria, ui-serif, Georgia, serif;
+    color: #1a1a1a;
+    background: #fdfdfb;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    line-height: 1.25;
+    color: #0f172a;
+}
+
+h1 { font-size: 2rem; margin-top: 0; }
+h2 { font-size: 1.5rem; margin-top: 2.5rem; }
+h3 { font-size: 1.2rem; margin-top: 2rem; }
+h4 { font-size: 1.05rem; margin-top: 1.5rem; }
+
+p { margin-top: 1rem; }
+p:first-child { margin-top: 0; }
+
+code, pre, kbd, samp {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.92em;
+}
+
+code {
+    background: #f3f4f6;
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+    border: 1px solid #e5e7eb;
+}
+
+pre {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 1rem;
+    overflow-x: auto;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+pre code {
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+blockquote {
+    border-left: 3px solid #2c5282;
+    padding: 0.5rem 0 0.5rem 1rem;
+    margin-top: 1rem;
+    color: #4b5563;
+    font-style: italic;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    margin: 2.5rem 0;
+}
+
+/* --- Layout containers --- */
+.site-header {
+    border-bottom: 1px solid #e5e7eb;
+    background: #fdfdfb;
+}
+
+.site-header__inner {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.site-header__wordmark {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #0f172a;
+    text-decoration: none;
+    letter-spacing: -0.01em;
+}
+
+.site-header__wordmark:hover { text-decoration: none; }
+
+.site-nav {
+    display: flex;
+    gap: 1.25rem;
+    font-size: 0.9rem;
+}
+
+.site-nav a {
+    color: #4b5563;
+    text-decoration: none;
+}
+
+.site-nav a:hover {
+    color: #2c5282;
+    text-decoration: underline;
+}
+
+main {
+    flex: 1;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+    width: 100%;
+}
+
+.site-footer {
+    border-top: 1px solid #e5e7eb;
+    background: #f9fafb;
+    margin-top: auto;
+}
+
+.site-footer__inner {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    font-size: 0.85rem;
+    color: #6b7280;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+.site-footer a { color: #6b7280; }
+
+/* --- Page lead --- */
+.lead {
+    font-size: 1.1rem;
+    color: #374151;
+    margin-top: 1rem;
+    line-height: 1.6;
+}
+
+/* --- Meta block (page metadata) --- */
+.meta-block {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 1rem 1.25rem;
+    margin-top: 2rem;
+    font-size: 0.9rem;
+}
+
+.meta-block dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.4rem 1rem;
+    margin: 0;
+}
+
+.meta-block dt {
+    color: #6b7280;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-size: 0.85rem;
+}
+
+.meta-block dd {
+    margin: 0;
+    color: #1a1a1a;
+}
+
+/* --- Status badges --- */
+.badge {
+    display: inline-block;
+    padding: 0.15rem 0.55rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-weight: 500;
+    border: 1px solid transparent;
+    vertical-align: 1px;
+}
+
+.badge--active { background: #dbeafe; color: #1e3a8a; border-color: #93c5fd; }
+.badge--draft { background: #fef3c7; color: #78350f; border-color: #fcd34d; }
+.badge--deprecated { background: #f3f4f6; color: #4b5563; border-color: #d1d5db; }
+.badge--no-data { background: #fee2e2; color: #7f1d1d; border-color: #fca5a5; }
+
+/* --- Eval-set list (index card layout) --- */
+.eval-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 2rem;
+}
+
+.eval-list__item {
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    background: #fdfdfb;
+}
+
+.eval-list__title {
+    margin: 0;
+    font-size: 1.15rem;
+}
+
+.eval-list__title a {
+    text-decoration: none;
+    color: #0f172a;
+}
+
+.eval-list__title a:hover {
+    color: #2c5282;
+    text-decoration: underline;
+}
+
+.eval-list__meta {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: #6b7280;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+}
+
+.eval-list__desc {
+    margin-top: 0.75rem;
+    color: #374151;
+    font-size: 0.95rem;
+}
+
+/* --- Tables --- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+    font-size: 0.92rem;
+}
+
+th, td {
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+th {
+    background: #f9fafb;
+    font-weight: 600;
+    color: #0f172a;
+    border-top: 1px solid #e5e7eb;
+}
+
+table code {
+    font-size: 0.85em;
+}
+
+/* --- Freshness strip stub (Phase 2 placeholder) --- */
+.freshness-stub {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-left: 3px solid #6b7280;
+    padding: 1rem 1.25rem;
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: #4b5563;
+}
+
+.freshness-stub__title {
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 0.25rem;
+}
+
+/* --- Responsive --- */
+@media (max-width: 600px) {
+    html { font-size: 16px; }
+    h1 { font-size: 1.7rem; }
+    h2 { font-size: 1.35rem; }
+    .meta-block dl { grid-template-columns: 1fr; gap: 0.15rem; }
+    .meta-block dt { font-size: 0.8rem; }
+    .meta-block dd { margin-bottom: 0.5rem; }
+}
+
+/* --- Print --- */
+@media print {
+    .site-header, .site-footer, .site-nav { display: none; }
+    body { background: white; }
+    main { max-width: none; padding: 0; }
+}

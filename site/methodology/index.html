@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Methodology — Intent Eval Platform</title>
+    <meta name="description" content="How the Intent Eval Platform works — the Evidence Bundle, predicate URIs, the eval-set browser sequencing, and how this dashboard surfaces it all.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://labs.intentsolutions.io/methodology/">
+    <link rel="stylesheet" href="/style.css">
+
+    <meta property="og:title" content="Methodology — Intent Eval Platform">
+    <meta property="og:description" content="How the Intent Eval Platform works — Evidence Bundles, predicate URIs, eval-set browser sequencing, dashboard architecture.">
+    <meta property="og:url" content="https://labs.intentsolutions.io/methodology/">
+    <meta property="og:type" content="article">
+
+    <meta name="iep-source-repo" content="github.com/jeremylongshore/intent-eval-dashboard">
+    <meta name="iep-dashboard-version" content="0.1.0">
+</head>
+<body>
+    <header class="site-header">
+        <div class="site-header__inner">
+            <a href="/" class="site-header__wordmark">IEP&nbsp;Labs</a>
+            <nav class="site-nav" aria-label="Primary">
+                <a href="/eval-sets/">Eval Sets</a>
+                <a href="/methodology/" aria-current="page">Methodology</a>
+                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <h1>Methodology</h1>
+
+        <p class="lead">
+            How the Intent Eval Platform works, what an Evidence Bundle is, why the eval-set browser ships ahead of the results browser, and what this dashboard refuses to do.
+        </p>
+
+        <h2>The unification thesis</h2>
+
+        <p>
+            Every validator in the platform — deterministic gate, behavioral eval, schema check, security scanner — emits its findings as rows inside a common artifact called an Evidence Bundle. The bundle is content-addressed, DSSE-signed, and anchored in the <a href="https://docs.sigstore.dev/logging/overview/">Rekor</a> transparency log. The schema is authored once, in the canonical contracts kernel (<a href="https://github.com/jeremylongshore/intent-eval-core">intent-eval-core</a>), and consumed by every downstream renderer.
+        </p>
+
+        <p>
+            That single binding — <em>every validator emits a bundle</em> — is the architectural pivot the platform's ratification council voted into place in <a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/010-AT-DECR-isedc-council-session-4-widened-scope-2026-05-13.md">DR-010</a>. Without it, the eval space fragments into incompatible JSON shapes. With it, downstream consumers — including this dashboard — read one shape and trust its provenance via sigstore + Rekor.
+        </p>
+
+        <h2>The six repos</h2>
+
+        <p>
+            The platform composes via the Evidence Bundle, not via package consolidation. Six repos play distinct roles:
+        </p>
+
+        <table>
+            <thead>
+                <tr><th>Repo</th><th>Role</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><a href="https://github.com/jeremylongshore/intent-eval-core">intent-eval-core</a></td>
+                    <td>Canonical contracts kernel. TypeScript types, JSON Schemas, Zod validators, state machines for the canonical entities. Published as <code>@intentsolutions/core</code>. No execution, no judges, no runtime — just the contracts.</td>
+                </tr>
+                <tr>
+                    <td><a href="https://github.com/jeremylongshore/intent-eval-lab">intent-eval-lab</a></td>
+                    <td>Methodology + specs + the constitution. Blueprints A/B/C, the canonical glossary, every ratified Decision Record. This dashboard's architecture is defined in <code>intent-eval-lab/000-docs/035-AT-DECR-...</code>.</td>
+                </tr>
+                <tr>
+                    <td><a href="https://github.com/jeremylongshore/intent-audit-harness">intent-audit-harness</a></td>
+                    <td>Deterministic gates (escape-scan, CRAP score, architecture rules, bias count, Gherkin lint) plus the emit-evidence layer that wraps gate output in Evidence Bundles.</td>
+                </tr>
+                <tr>
+                    <td><a href="https://github.com/jeremylongshore/j-rig-skill-binary-eval">j-rig-skill-binary-eval</a></td>
+                    <td>Behavioral evaluation harness — the <a href="/eval-sets/j-rig-binary-eval-7-layer/">7-layer binary-criteria skill eval-set</a> lives here.</td>
+                </tr>
+                <tr>
+                    <td><a href="https://github.com/jeremylongshore/intent-rollout-gate">intent-rollout-gate</a></td>
+                    <td>A thin GitHub Action that consumes Evidence Bundles and decides ship / no-ship per repo policy.</td>
+                </tr>
+                <tr>
+                    <td><a href="https://github.com/jeremylongshore/intent-eval-dashboard">intent-eval-dashboard</a></td>
+                    <td>This dashboard. The most visible kernel consumer in the system, deliberately separate from the constitution repo so the spec author and the renderer share no release cycle.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Where predicate URIs live</h2>
+
+        <p>
+            Every signed predicate row inside an Evidence Bundle declares a <code>predicate_uri</code> that names the contract it satisfies. Those URIs are normative immutable identifiers. They live exclusively at <code>evals.intentsolutions.io</code> — never on this dashboard's domain. This is a CISO-bound separation reaffirmed in <a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/035-AT-DECR-isedc-council-session-8-labs-dashboard-2026-05-29.md">DR-035</a>.
+        </p>
+
+        <p>
+            <code>labs.intentsolutions.io</code> renders <em>about</em> predicate URIs but never declares one. A predicate-URI-typo in any content rendered here is not a new URI claim — it's a documentation bug.
+        </p>
+
+        <h2>Why the eval-set ships before the results</h2>
+
+        <p>
+            The eval-set is the spec. If a public eval dashboard renders results rows ahead of publishing the spec those rows attest against, the dashboard is publishing attestations of conformance to a spec that doesn't exist. The first page a hostile reader clicks should be the spec — the eval-set definition, its version history, its lineage, its adversarial audit pointer — not a number.
+        </p>
+
+        <p>
+            This sequencing is a Karpathy canonical position adopted into the platform's plan. It changes the engineering order of operations: the <a href="/eval-sets/">eval-set browser</a> ships first; the results browser, the per-repo freshness strip, and the ingest supervision tree are Phase 2 work.
+        </p>
+
+        <h2>What this dashboard refuses to do</h2>
+
+        <p>
+            The seven adversarial seats of the ratification council each carry refusal authority on specific surfaces. Their refusals are preserved verbatim in <a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/035-AT-DECR-isedc-council-session-8-labs-dashboard-2026-05-29.md">DR-035 § 8</a>. The most consequential for a visitor reading this page:
+        </p>
+
+        <ul>
+            <li><strong>No aggregate PASS%</strong> across heterogeneous predicates. The CI lint refuses it; the type system refuses it; three separate seats refuse to ratify any rendering that produces it.</li>
+            <li><strong>No basicauth on the public origin</strong> for operator views. If there is information internal to the operator, it lives on a tailnet-only hostname.</li>
+            <li><strong>No predicate URIs declared here</strong>. URIs at <code>evals.intentsolutions.io</code> only.</li>
+            <li><strong>No render-from-manifest without re-verification</strong>. Pinned OIDC subject and <code>workflow_ref</code> per source repo, Rekor inclusion proof, schema validation row-by-row before any HTML is generated.</li>
+            <li><strong>No GCP-hosted object storage</strong>. Content-addressed Evidence Bundle storage lives on the Intent Solutions VPS at v0.1.0; migration to Backblaze B2 is queued at the 12-month / 100 GB trigger.</li>
+            <li><strong>No asymmetric rendering of null-hypothesis results</strong>. Both arms of a comparison render with identical layout, font weight, and chart axes. A null result is rendered identically to a positive result. Information design refuses to bury inconvenient outcomes.</li>
+        </ul>
+
+        <h2>What sequences in Phase 2</h2>
+
+        <p>
+            The roadmap, in dependency order:
+        </p>
+
+        <ol>
+            <li><strong>Schema evolution</strong> in <code>intent-eval-core</code> to v0.2.0 — adds <code>pre_registration_hash</code>, the <code>retraction/v1</code> predicate type, and the <code>dashboard-render/v1</code> predicate type. The latter is sequenced behind the arrival of a second independent verifier.</li>
+            <li><strong>Ingest supervision tree</strong> — six per-repo workers, each verifying signature, Rekor inclusion, and schema before content-addressing the bundle into local storage.</li>
+            <li><strong>Results browser</strong> — renders <code>gate-result/v1</code> rows with the per-row visibility-tier gating and the four-timestamp staleness surface.</li>
+            <li><strong>Freshness strip + landing-page mandatory chart</strong> — the per-repo decision-mix strip at the top of the landing page.</li>
+            <li><strong>Operator-internal view</strong> — separate tailnet-only hostname, Tailscale identity, all reports regardless of public visibility tags.</li>
+            <li><strong>Retraction protocol</strong> — content-addressed denylist, Caddy-level kill-switch, signed <code>retraction/v1</code> attestations, 4-hour SLO.</li>
+            <li><strong>Ops-lite alerting</strong> — push notifications, public status route, 7-day-silence pager threshold.</li>
+            <li><strong>Phase A.0 pre-registration rendering</strong> — symmetric arms, HTML structural diff CI test, blog-only fallback if symmetry cannot be guaranteed on the timeline.</li>
+        </ol>
+
+        <h2>Reading further</h2>
+
+        <ul>
+            <li><a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/035-AT-DECR-isedc-council-session-8-labs-dashboard-2026-05-29.md">DR-035 — This dashboard's full architectural decision record</a></li>
+            <li><a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/010-AT-DECR-isedc-council-session-4-widened-scope-2026-05-13.md">DR-010 — The unification thesis</a></li>
+            <li><a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/011-AT-ARCH-ecosystem-master-blueprint.md">Blueprint A — Ecosystem master blueprint, 12 binding principles, anti-goals</a></li>
+            <li><a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/012-AT-ARCH-platform-runtime-blueprint.md">Blueprint B — Runtime architecture + canonical entities + Evidence Bundle § 7</a></li>
+            <li><a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/014-DR-GLOS-canonical-glossary.md">Canonical Glossary</a></li>
+        </ul>
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-footer__inner">
+            <div>
+                <strong>labs.intentsolutions.io</strong> · dashboard <code>v0.1.0</code><br>
+                Intent Solutions — <a href="https://intentsolutions.io">intentsolutions.io</a>
+            </div>
+            <div>
+                <a href="/methodology/">Methodology</a> ·
+                <a href="/eval-sets/">Eval Sets</a> ·
+                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

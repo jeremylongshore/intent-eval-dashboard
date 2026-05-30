@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>j-rig binary-criteria skill evaluation, 7 layers — Eval Set — IEP Labs</title>
+    <meta name="description" content="Score every Claude skill yes/no across seven layers. The eval-set that gives the Intent Eval Platform its name.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://labs.intentsolutions.io/eval-sets/j-rig-binary-eval-7-layer/">
+    <link rel="stylesheet" href="/style.css">
+
+    <meta property="og:title" content="j-rig binary-criteria skill evaluation, 7 layers">
+    <meta property="og:description" content="Score every Claude skill yes/no across seven layers — package integrity, trigger quality, functional quality, regression protection, baseline value, model variance, rollout safety.">
+    <meta property="og:url" content="https://labs.intentsolutions.io/eval-sets/j-rig-binary-eval-7-layer/">
+    <meta property="og:type" content="article">
+
+    <meta name="iep-source-repo" content="github.com/jeremylongshore/intent-eval-dashboard">
+    <meta name="iep-dashboard-version" content="0.1.0">
+    <meta name="iep-eval-set-id" content="j-rig-binary-eval-7-layer">
+    <meta name="iep-eval-set-version" content="1.0.0">
+    <meta name="iep-eval-set-status" content="active">
+    <meta name="iep-eval-set-upstream-source" content="github.com/jeremylongshore/j-rig-skill-binary-eval">
+</head>
+<body>
+    <header class="site-header">
+        <div class="site-header__inner">
+            <a href="/" class="site-header__wordmark">IEP&nbsp;Labs</a>
+            <nav class="site-nav" aria-label="Primary">
+                <a href="/eval-sets/">Eval Sets</a>
+                <a href="/methodology/">Methodology</a>
+                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <p style="font-size: 0.85rem; color: #6b7280; margin: 0;">
+            <a href="/eval-sets/" style="color: #6b7280;">← Eval sets</a>
+        </p>
+
+        <h1>j-rig binary-criteria skill evaluation, 7 layers
+            <span class="badge badge--active" style="font-size: 0.65em; vertical-align: middle;">active</span>
+        </h1>
+
+        <p class="lead">
+            Score every Claude skill yes/no across seven layers — package integrity, trigger quality, functional quality, regression protection, baseline value, model variance, rollout safety. Never gradients. The eval-set that gives the Intent Eval Platform its name.
+        </p>
+
+        <div class="meta-block">
+            <dl>
+                <dt>id</dt><dd><code>j-rig-binary-eval-7-layer</code></dd>
+                <dt>version</dt><dd><code>1.0.0</code></dd>
+                <dt>status</dt><dd>active</dd>
+                <dt>predicate URI</dt><dd><code>evals.intentsolutions.io/skill-binary-eval/v1</code> <span style="color: #6b7280; font-size: 0.85em;">(reserved; declared at Phase 2)</span></dd>
+                <dt>predecessor</dt><dd>none — initial baseline</dd>
+                <dt>upstream source</dt><dd><a href="https://github.com/jeremylongshore/j-rig-skill-binary-eval">jeremylongshore/j-rig-skill-binary-eval</a></dd>
+                <dt>last changed</dt><dd>2026-05-21</dd>
+                <dt>adversarial audit</dt><dd>queued — placeholder for puxu.3 follow-up</dd>
+            </dl>
+        </div>
+
+        <h2>The thesis: binary, not gradient</h2>
+
+        <p>
+            Skill evaluation produces a vector of yes/no findings, never a number. The reason is straightforward: a numerical "skill score" composites incommensurable failure modes (a broken trigger, a missed regression case, a model-variance flake) into a single dimension where the consumer cannot tell what failed. A binary vector per layer preserves the failure-mode taxonomy.
+        </p>
+
+        <p>
+            This is the same reason this dashboard refuses to publish an aggregate <code>PASS%</code> across heterogeneous predicates. <code>NOT_APPLICABLE</code> is not <code>PASS</code>. <code>ADVISORY</code> is not <code>PASS</code>. Composition across predicate semantics is metric laundering.
+        </p>
+
+        <h2>The seven layers</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Layer</th>
+                    <th>What it checks</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>L1 — Package integrity</strong></td>
+                    <td>Does the skill load? Is the manifest valid? Are referenced files present?</td>
+                </tr>
+                <tr>
+                    <td><strong>L2 — Trigger quality</strong></td>
+                    <td>Does the skill activate when it should and stay silent when it shouldn't? Tested with positive + negative trigger cases.</td>
+                </tr>
+                <tr>
+                    <td><strong>L3 — Functional quality</strong></td>
+                    <td>When activated, does the skill produce the expected output shape? Are exact-match assertions satisfied?</td>
+                </tr>
+                <tr>
+                    <td><strong>L4 — Regression protection</strong></td>
+                    <td>Do prior-good behaviors still hold? Pinned reference outputs verified against current run.</td>
+                </tr>
+                <tr>
+                    <td><strong>L5 — Baseline value</strong></td>
+                    <td>Does the skill outperform the naive-prompt baseline? If the model can do the task as well without the skill, the skill's value is unproven.</td>
+                </tr>
+                <tr>
+                    <td><strong>L6 — Model variance</strong></td>
+                    <td>Multi-seed stability — does the skill produce consistent output across model temperature / sampling variation within the declared bound?</td>
+                </tr>
+                <tr>
+                    <td><strong>L7 — Rollout safety</strong></td>
+                    <td>Cost-bounded, refusal-rate-bounded, and safety-property-preserving under the declared deployment envelope.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>What an evaluation produces</h2>
+
+        <p>
+            A single skill run produces seven binary findings — one per layer — packaged inside an Evidence Bundle. Each finding is a separate predicate-attestation row, signed via sigstore, anchored in the Rekor transparency log. There is no aggregate "skill score." A consumer reading the bundle sees the seven yes/no findings and decides for themselves which combinations matter for their use.
+        </p>
+
+        <p>
+            Example reading: a skill that passes L1–L4 but fails L5 (no baseline lift) is a skill that <em>works</em> but isn't <em>useful</em>. A skill that passes L5 but fails L7 (cost or refusal envelope breach) is useful in principle but unshippable. The platform refuses to collapse those into one number.
+        </p>
+
+        <h2>Version history</h2>
+
+        <table>
+            <thead>
+                <tr><th>Version</th><th>Date</th><th>Change</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>1.0.0</code></td>
+                    <td>2026-05-21</td>
+                    <td>Initial release. Seven layers locked. License relicensed Apache 2.0 from MIT (see <a href="https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/73">PR #73</a>).</td>
+                </tr>
+                <tr>
+                    <td><code>0.x</code></td>
+                    <td>2026-03 → 2026-05</td>
+                    <td>Pre-1.0 iterations of the layer taxonomy. See upstream commit history.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Adversarial audit</h2>
+
+        <p>
+            <em>Queued.</em> An adversarial audit of this eval-set against a curated corpus of skills with known failure modes is scheduled as part of the puxu.3 follow-up cluster. When complete, the audit report will be linked here and the eval-set status badge will reflect the audit outcome.
+        </p>
+
+        <p>
+            Until the audit lands, the eval-set is <span class="badge badge--active">active</span> for engineering use but flagged with this note. The associated predicate URI <code>evals.intentsolutions.io/skill-binary-eval/v1</code> remains reserved but not yet declared, per the methodology in <a href="/methodology/">methodology</a>.
+        </p>
+
+        <h2>Source and references</h2>
+
+        <ul>
+            <li><a href="https://github.com/jeremylongshore/j-rig-skill-binary-eval">jeremylongshore/j-rig-skill-binary-eval</a> — upstream source repo (TypeScript pnpm monorepo)</li>
+            <li><a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/012-AT-ARCH-platform-runtime-blueprint.md">Blueprint B</a> — runtime architecture + 13-entity canonical domain model + the <code>gate-result/v1</code> predicate contract</li>
+            <li><a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/010-AT-DECR-isedc-council-session-4-widened-scope-2026-05-13.md">DR-010</a> — the binding unification thesis (every validator emits an Evidence Bundle)</li>
+        </ul>
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-footer__inner">
+            <div>
+                <strong>labs.intentsolutions.io</strong> · dashboard <code>v0.1.0</code><br>
+                Intent Solutions — <a href="https://intentsolutions.io">intentsolutions.io</a>
+            </div>
+            <div>
+                <a href="/methodology/">Methodology</a> ·
+                <a href="/eval-sets/">Eval Sets</a> ·
+                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Intent Eval Platform — labs.intentsolutions.io</title>
+    <meta name="description" content="Public reports surface for the Intent Eval Platform. Methodology-first: eval-set browser shipping ahead of any results browser.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://labs.intentsolutions.io/">
+    <link rel="stylesheet" href="/style.css">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Intent Eval Platform — labs.intentsolutions.io">
+    <meta property="og:description" content="Methodology-first public surface for the Intent Eval Platform. Eval-set browser shipping ahead of any results browser.">
+    <meta property="og:url" content="https://labs.intentsolutions.io/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="IEP Labs">
+
+    <!-- Dashboard provenance — for B3 sign-your-own-homework at Phase 2 -->
+    <meta name="iep-source-repo" content="github.com/jeremylongshore/intent-eval-dashboard">
+    <meta name="iep-dashboard-version" content="0.1.0">
+</head>
+<body>
+    <header class="site-header">
+        <div class="site-header__inner">
+            <a href="/" class="site-header__wordmark">IEP&nbsp;Labs</a>
+            <nav class="site-nav" aria-label="Primary">
+                <a href="/eval-sets/">Eval Sets</a>
+                <a href="/methodology/">Methodology</a>
+                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <h1>The Intent Eval Platform, in the open</h1>
+
+        <p class="lead">
+            This is the public methodology surface for the Intent Eval Platform — a six-repo ecosystem for measuring AI plugins, agents, MCP servers, and skill-discovery systems against signed evidence.
+            We publish the <em>specs of what we measure</em> here, not aggregate scores.
+        </p>
+
+        <p>
+            The eval-set is the spec. Browse it, criticise it, fork the methodology. When you see a number, it will trace back through a content-addressed Evidence Bundle, signed via sigstore and anchored in the Rekor transparency log, to one of the eval-sets listed below. We refuse to publish an aggregate "PASS%" across heterogeneous predicates — that is metric laundering.
+        </p>
+
+        <h2>What's here at v0.1.0</h2>
+
+        <ul>
+            <li><a href="/eval-sets/">Eval-set browser</a> — versioned, lineage-tracked specifications of what we measure. The brand asset of this site.</li>
+            <li><a href="/methodology/">Methodology</a> — how the Evidence Bundle predicate spec works, where the schema authority lives, and why we sequence the eval-set ahead of the results.</li>
+        </ul>
+
+        <p>
+            The results browser, the per-repo freshness strip, the ingest pipeline, and the signed dashboard-render attestation are <strong>Phase 2 work</strong>. We will not render <code>gate-result/v1</code> rows on this surface until that infrastructure is in place. See <a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/035-AT-DECR-isedc-council-session-8-labs-dashboard-2026-05-29.md">DR-035</a> for the full architectural decision record.
+        </p>
+
+        <div class="freshness-stub">
+            <p class="freshness-stub__title">Per-repo freshness strip — Phase 2</p>
+            <p>This space will carry a top-of-page strip showing, per source repo, the mix of pass / fail / advisory / error / no-data rows ingested in the last 24 hours. <code>no-data</code> is rendered as a visually-loud color equal in weight to <code>fail</code>. We do not silently fill missing data.</p>
+        </div>
+
+        <h2>What this site refuses to do</h2>
+
+        <p>
+            From the seven adversarial seats of the ratification council, all preserved verbatim in the <a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/035-AT-DECR-isedc-council-session-8-labs-dashboard-2026-05-29.md">decision record</a>:
+        </p>
+
+        <table>
+            <thead>
+                <tr><th>Refusal</th><th>Rationale</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>No predicate URIs declared here</td>
+                    <td>Predicate URIs live at <code>evals.intentsolutions.io</code> exclusively. This site renders <em>about</em> them; it does not <em>declare</em> them.</td>
+                </tr>
+                <tr>
+                    <td>No aggregate PASS% across mixed predicate semantics</td>
+                    <td><code>NOT_APPLICABLE</code> is not <code>PASS</code>. <code>ADVISORY</code> is not <code>PASS</code>. Compositing them into a single percentage is metric laundering.</td>
+                </tr>
+                <tr>
+                    <td>No basicauth on the public origin for operator views</td>
+                    <td>The operator-internal view lives on a tailnet-only hostname. Anonymity-first on this origin.</td>
+                </tr>
+                <tr>
+                    <td>No rendering from upstream manifests without re-verification</td>
+                    <td>Pinned OIDC subject and <code>workflow_ref</code> claim per source repo, with Rekor inclusion proof checked row-by-row at ingest.</td>
+                </tr>
+                <tr>
+                    <td>No asymmetric rendering of Phase A.0 null-hypothesis results</td>
+                    <td>Both arms render with identical layout, font weight, and chart axes. A null result is rendered identically to a positive result. If we cannot guarantee that symmetry, we publish in a blog post instead.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Source &amp; references</h2>
+
+        <ul>
+            <li><a href="https://github.com/jeremylongshore/intent-eval-dashboard">Source code for this site</a></li>
+            <li><a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/035-AT-DECR-isedc-council-session-8-labs-dashboard-2026-05-29.md">DR-035 — Architectural decision record for this dashboard</a></li>
+            <li><a href="https://github.com/jeremylongshore/intent-eval-core">intent-eval-core — Canonical contracts kernel</a></li>
+            <li><a href="https://github.com/jeremylongshore/intent-eval-lab">intent-eval-lab — Methodology + Decision Records</a></li>
+        </ul>
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-footer__inner">
+            <div>
+                <strong>labs.intentsolutions.io</strong> · dashboard <code>v0.1.0</code><br>
+                Intent Solutions — <a href="https://intentsolutions.io">intentsolutions.io</a>
+            </div>
+            <div>
+                <a href="/methodology/">Methodology</a> ·
+                <a href="/eval-sets/">Eval Sets</a> ·
+                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
