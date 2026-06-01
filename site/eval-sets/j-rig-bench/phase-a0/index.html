@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Phase A.0 — what we did, how, and the proof — IEP Labs</title>
+    <meta name="description" content="A plain-English walkthrough of the Skill Refiner Phase A.0 experiment: the question, the method, the result, and a tamper-proof public signature anyone can verify.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://labs.intentsolutions.io/eval-sets/j-rig-bench/phase-a0/">
+    <link rel="stylesheet" href="/style.css">
+
+    <meta property="og:title" content="Phase A.0 — what we did, how, and the proof">
+    <meta property="og:description" content="The experiment, in plain English, with a tamper-proof public signature anyone can verify.">
+    <meta property="og:url" content="https://labs.intentsolutions.io/eval-sets/j-rig-bench/phase-a0/">
+    <meta property="og:type" content="article">
+
+    <meta name="iep-source-repo" content="github.com/jeremylongshore/intent-eval-dashboard">
+    <meta name="iep-dashboard-version" content="0.1.0">
+</head>
+<body>
+    <header class="site-header">
+        <div class="site-header__inner">
+            <a href="/" class="site-header__wordmark">IEP&nbsp;Labs</a>
+            <nav class="site-nav" aria-label="Primary">
+                <a href="/eval-sets/">Eval Sets</a>
+                <a href="/methodology/">Methodology</a>
+                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <p style="font-size: 0.85rem; color: #6b7280; margin: 0;">
+            <a href="/eval-sets/j-rig-bench/" style="color: #6b7280;">← Evidence Bench scorecard</a>
+        </p>
+
+        <h1>Phase A.0 — what we did, how we did it, and the proof</h1>
+
+        <p class="lead">
+            This is the human-readable trail behind one signed row on the
+            <a href="/eval-sets/j-rig-bench/">Evidence Bench scorecard</a>. Read it top to
+            bottom and you will understand exactly what was tested, how, what happened, and
+            how to confirm — without trusting us — that the result is genuine.
+        </p>
+
+        <h2>1. The question we asked</h2>
+
+        <p>
+            We are building a tool called the <strong>Skill Refiner</strong> — it takes a
+            Claude "skill" file and automatically improves it through a propose-edit /
+            score / accept-only-if-better loop. Before spending months building that machinery,
+            we asked the honest, uncomfortable question:
+        </p>
+
+        <blockquote>
+            Does the Refiner loop actually do anything a model can't already do if you just
+            <em>ask it nicely</em> with some examples?
+        </blockquote>
+
+        <p>
+            If "just ask the model" works almost as well, the Refiner isn't worth building —
+            and we committed, in writing and ahead of time, to <strong>publish that result
+            either way</strong>, win or lose. That pre-commitment is what keeps this honest:
+            we couldn't quietly bury a disappointing answer.
+        </p>
+
+        <h2>2. How we tested it</h2>
+
+        <p>A head-to-head, on the same 60 skill files, scored by the same judge:</p>
+
+        <table>
+            <thead><tr><th></th><th>Arm A — "just ask"</th><th>Arm B — the Refiner</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><strong>What it does</strong></td>
+                    <td>One shot: hand the model the skill + K worked examples, take whatever it returns.</td>
+                    <td>The full loop: propose edits, score them, keep an edit only if every quality dimension improves, retry up to 3×.</td>
+                </tr>
+                <tr>
+                    <td><strong>Model</strong></td>
+                    <td colspan="2" style="text-align:center;">Same model for both — Llama-3.1 (70B) via NVIDIA's free tier. Temperature 0 (repeatable).</td>
+                </tr>
+                <tr>
+                    <td><strong>Scored by</strong></td>
+                    <td colspan="2" style="text-align:center;">The same independent marketplace-tier validator, run on every before/after pair.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>
+            Two design choices make this credible. <strong>The decision rule was written down
+            before the run</strong> ("if 'just ask' gets within 70% of the Refiner's projected
+            gain, kill the Refiner") — so we couldn't move the goalposts after seeing the
+            numbers. And <strong>it cost $0.00</strong> on a free model, which means the result
+            can't be dismissed as "you just threw a bigger, pricier model at it."
+        </p>
+
+        <h2>3. What happened</h2>
+
+        <p>The Refiner won, clearly and measurably:</p>
+
+        <div class="meta-block">
+            <dl>
+                <dt>Arm A — just ask</dt><dd>made skills <strong>worse</strong> on average (−6.1 points)</dd>
+                <dt>Arm B — Refiner</dt><dd>made skills <strong>better</strong> on average (+0.58 points)</dd>
+                <dt>head-to-head gap</dt><dd><strong>+6.68 points</strong> in the Refiner's favor, per skill</dd>
+                <dt>is it real or luck?</dt><dd>p &lt; 0.000001 — about a one-in-a-million chance this is a fluke</dd>
+                <dt>how big an effect?</dt><dd>Cohen's d = 1.49 — a "large" effect by the standard yardstick</dd>
+                <dt>specimens</dt><dd>60 skill files, each tested both ways</dd>
+                <dt>cost</dt><dd>$0.00</dd>
+                <dt>verdict</dt><dd><strong>PROCEED</strong> — build the Refiner; the loop earns its keep</dd>
+            </dl>
+        </div>
+
+        <p>
+            <strong>The honest footnote.</strong> The Refiner won decisively, but it only reached
+            about 39% of the gain we'd <em>hoped</em> for going in. So the verdict is "the idea
+            works and is worth building" — not "the idea is finished." We say that plainly rather
+            than rounding up, because a result you can't trust isn't worth signing.
+        </p>
+
+        <h2>4. The proof — verify it without trusting us</h2>
+
+        <p>
+            Anyone can claim a result. What makes this different: the result files are sealed
+            into a <strong>tamper-proof public record</strong>. We took the exact result files,
+            fingerprinted them, and signed that fingerprint into the
+            <a href="https://www.sigstore.dev/">sigstore</a> public transparency log —
+            the same public-good system behind npm and Google's supply-chain security. No
+            account, no secret key; the signer is our automated lab pipeline, not a person who
+            could fake it.
+        </p>
+
+        <p>That gives you a permanent receipt proving these exact results existed, unaltered, at a known time:</p>
+
+        <div class="meta-block" style="border-left: 3px solid #2c5282;">
+            <dl>
+                <dt>the public receipt</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=1689291334">Rekor log index <code>1689291334</code></a> — the tamper-proof entry, readable by anyone, forever</dd>
+                <dt>signed at</dt><dd>2026-06-01 04:45 UTC</dd>
+                <dt>the signed bundle</dt><dd><a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/evidence/phase-a-0-baseline/evidence-bundle.sigstore.json"><code>evidence-bundle.sigstore.json</code></a> — signature + certificate + proof, in one file</dd>
+                <dt>verify it yourself</dt><dd>step-by-step <a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/evidence/phase-a-0-baseline/README.md">verification guide</a> (one <code>cosign</code> command, no account)</dd>
+            </dl>
+        </div>
+
+        <p>
+            <strong>What the signature proves:</strong> these are the real, unaltered result
+            files, signed by our lab pipeline at that time. <strong>What it does not claim:</strong>
+            it does not assert the science is beyond critique — a signature attests
+            <em>authenticity</em>, not <em>correctness</em>. The science stands on the
+            pre-registered method below, open for anyone to challenge.
+        </p>
+
+        <h2>5. See everything — down to the raw logs</h2>
+
+        <p>Every layer is public. Click down as deep as you want:</p>
+
+        <ul>
+            <li><strong>The plain result</strong> — <a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/research/phase-a-0-baseline/RESULTS.md">RESULTS.md</a>: the full write-up with every number.</li>
+            <li><strong>The method, pre-registered</strong> — <a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/research/phase-a-0-baseline/DESIGN.md">DESIGN.md</a>: exactly what we'd test and how to judge it, written <em>before</em> the run.</li>
+            <li><strong>The decision record</strong> — <a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/036-AT-DECR-phase-a0-result-proceed-2026-05-31.md">DR-036</a>: the formal PROCEED decision and its caveats.</li>
+            <li><strong>The machine-readable stats</strong> — <a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/research/phase-a-0-baseline/results/aggregated/statistics.json">statistics.json</a> + <a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/research/phase-a-0-baseline/results/aggregated/decision.json">decision.json</a>: the exact numbers the signature is wrapped around.</li>
+            <li><strong>The execution log</strong> — the <a href="https://github.com/jeremylongshore/intent-eval-lab/actions/workflows/sign-evidence-bundle.yml">signing workflow runs</a>: the actual machine run that produced the signature, step by step.</li>
+        </ul>
+
+        <h2>6. Why this matters — the one-line version</h2>
+
+        <blockquote>
+            We tested whether our Refiner beats just-ask-the-model, it won by a mile on a free
+            model at zero cost, and we sealed the proof into a public log so nobody has to take
+            our word for it.
+        </blockquote>
+
+        <p>
+            That last part is the whole game. Plenty of tools publish a number. Almost none let
+            you cryptographically confirm the number wasn't quietly edited after the fact. That
+            confirmable-receipt is what "audit-first" actually means — and it's the layer a
+            scoreboard of unsigned numbers can't offer.
+        </p>
+
+        <p style="margin-top: 2rem;">
+            <a href="/eval-sets/j-rig-bench/">← Back to the Evidence Bench scorecard</a>
+        </p>
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-footer__inner">
+            <div>
+                <strong>labs.intentsolutions.io</strong> · dashboard <code>v0.1.0</code><br>
+                Intent Solutions — <a href="https://intentsolutions.io">intentsolutions.io</a>
+            </div>
+            <div>
+                <a href="/methodology/">Methodology</a> ·
+                <a href="/eval-sets/">Eval Sets</a> ·
+                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
