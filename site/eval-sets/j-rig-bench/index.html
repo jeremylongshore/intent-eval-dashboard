@@ -71,7 +71,7 @@
                 <dt>status</dt><dd><span class="badge badge--draft">draft</span> — first row landed; signature layer pending</dd>
                 <dt>predicate URI</dt><dd><code>evals.intentsolutions.io/skill-binary-eval/v1</code> <span style="color: #6b7280; font-size: 0.85em;">(reserved; declared at Phase 2 — never declared under labs.*)</span></dd>
                 <dt>upstream source</dt><dd><a href="https://github.com/jeremylongshore/j-rig-skill-binary-eval">jeremylongshore/j-rig-skill-binary-eval</a></dd>
-                <dt>attestation</dt><dd><strong>SIGNED</strong> — Rekor log index <a href="https://search.sigstore.dev/?logIndex=1689291334"><code>1689291334</code></a> (public production transparency log) — see <a href="#provenance">provenance</a></dd>
+                <dt>attestation</dt><dd><strong>SIGNED</strong> — Rekor log index <a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=1689291334"><code>1689291334</code></a> (public production transparency log) — see <a href="#provenance">provenance</a></dd>
             </dl>
         </div>
 
@@ -101,7 +101,7 @@
                     <td><strong>Skill Refiner — Phase A.0 baseline</strong></td>
                     <td>Does an eval-guided Refiner mechanism produce real lift over a naive best-of-K prompt baseline? Pre-registered null-hypothesis test.</td>
                     <td><a href="#phase-a0">PROCEED</a> — refiner lift significant, naive below descope bar</td>
-                    <td><a href="https://search.sigstore.dev/?logIndex=1689291334"><span class="badge badge--active">signed</span></a></td>
+                    <td><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=1689291334"><span class="badge badge--active">signed</span></a></td>
                 </tr>
                 <tr>
                     <td>gbrain-stack</td>
@@ -215,13 +215,22 @@
             The whole point of Evidence Bench is that a row carries a signature, not just a
             number. The Phase A.0 Evidence Bundle is <strong>signed</strong> against the
             <strong>public production sigstore transparency log</strong> and anchored at
-            <a href="https://search.sigstore.dev/?logIndex=1689291334">Rekor log index
+            <a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=1689291334">Rekor log index
             <code>1689291334</code></a>. Signing was <em>keyless</em> — no long-lived private key
             exists; the signer is the reproducible GitHub Actions workflow identity
             <code>github.com/jeremylongshore/intent-eval-lab/.github/workflows/sign-evidence-bundle.yml</code>,
             not a person's machine. This is the same public-good infrastructure (Fulcio + Rekor)
             behind npm provenance and SLSA.
         </p>
+
+        <div class="meta-block">
+            <dl>
+                <dt>Rekor log index</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=1689291334"><code>1689291334</code></a> (raw transparency-log entry, JSON)</dd>
+                <dt>entry UUID</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries/108e9186e8c5677abe77a419ede36f1c54ff8199a57beee0ba8b70ba1a8251503e2ef11918e7d3b9"><code>108e9186…51503e2ef1…</code></a> (canonical permanent link)</dd>
+                <dt>signed bundle</dt><dd><a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/evidence/phase-a-0-baseline/evidence-bundle.sigstore.json"><code>evidence-bundle.sigstore.json</code></a> (Fulcio cert + signature + inclusion proof)</dd>
+                <dt>integrated</dt><dd>2026-06-01 04:45 UTC</dd>
+            </dl>
+        </div>
 
         <p>You do not have to trust us. Verify it yourself with
             <a href="https://docs.sigstore.dev/cosign/installation/">cosign</a> (no account, no
