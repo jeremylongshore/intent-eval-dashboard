@@ -19,6 +19,23 @@
       "page_path": "/eval-sets/j-rig-binary-eval-7-layer/"
     }
   ],
+  "scorecards": [
+    {
+      "id": "j-rig-bench",
+      "title": "Evidence Bench — j-rig-bench scorecard",
+      "short_description": "Signed, reproducible AI eval results. Each row is built to ship as a sigstore-signed, Rekor-anchored Evidence Bundle — reproducibility via signature, not just transparency. First row: Skill Refiner Phase A.0 (PROCEED). Complements gbrain-evals on an orthogonal dimension; does not restate it.",
+      "status": "draft",
+      "attestation_status": "pending",
+      "predicate_uri": "evals.intentsolutions.io/skill-binary-eval/v1",
+      "predicate_uri_reserved": true,
+      "upstream": {
+        "owner": "jeremylongshore",
+        "repo": "j-rig-skill-binary-eval",
+        "branch": "main"
+      },
+      "page_path": "/eval-sets/j-rig-bench/"
+    }
+  ],
   "queued_for_v0_2_0": [
     {
       "id": "audit-harness-deterministic-gate-set",

@@ -164,6 +164,45 @@ def render_listing(manifest: dict, live_state: dict[str, dict]) -> str:
         )
     eval_list_block = "\n".join(rows)
 
+    # Scorecards — signed RESULTS, distinct from eval-sets (which are SPECS).
+    # The eval-set is the spec; a scorecard is a derivative rendering of runs
+    # against it. We keep the two visually + structurally separate so a reader
+    # never mistakes a result for the specification (Karpathy/Software-2.0
+    # "the eval set is the spec" — results are downstream of it).
+    scorecard_rows = []
+    for sc in manifest.get("scorecards", []):
+        state = live_state.get(sc["id"], {})
+        version = state.get("version", "")
+        last_changed = state.get("last_changed_at", "")
+        meta_bits = []
+        if version:
+            meta_bits.append(f'version <code data-auto="version">{version}</code>')
+        if last_changed:
+            meta_bits.append(
+                f'last changed <code data-auto="last_changed_at">{last_changed}</code>'
+            )
+        attestation = sc.get("attestation_status", "")
+        if attestation:
+            meta_bits.append(f"attestation <code>{attestation}</code>")
+        meta_line = " · ".join(meta_bits)
+        scorecard_rows.append(
+            f"""            <li class="eval-list__item">
+                <h3 class="eval-list__title">
+                    <a href="{sc["page_path"]}">
+                        {sc["title"]}
+                    </a>
+                    <span class="badge badge--{sc["status"]}" style="margin-left: 0.5rem;">{sc["status"]}</span>
+                </h3>
+                <p class="eval-list__meta">
+                    {meta_line}
+                </p>
+                <p class="eval-list__desc">
+                    {sc["short_description"]}
+                </p>
+            </li>"""
+        )
+    scorecards_block = "\n".join(scorecard_rows)
+
     queued_items = []
     for q in manifest.get("queued_for_v0_2_0", []):
         upstream = q["upstream"]
@@ -175,6 +214,7 @@ def render_listing(manifest: dict, live_state: dict[str, dict]) -> str:
 
     return LISTING_TEMPLATE.format(
         eval_list=eval_list_block,
+        scorecards_list=scorecards_block,
         queued_list=queued_block,
         cron_last_run_utc=datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
     )
@@ -233,6 +273,20 @@ LISTING_TEMPLATE = """<!DOCTYPE html>
 
         <ul class="eval-list">
 {eval_list}
+        </ul>
+
+        <h2>Scorecards</h2>
+
+        <p>
+            A scorecard is a <em>result</em>, not a spec. Each row is a measurement of one
+            system against an eval-set, built to ship as a signed, Rekor-anchored Evidence
+            Bundle. The eval-set above defines <em>what</em> is measured; a scorecard records
+            <em>what happened</em> when something was measured against it. We keep them separate
+            so a result is never mistaken for the specification it was measured against.
+        </p>
+
+        <ul class="eval-list">
+{scorecards_list}
         </ul>
 
         <h2>Coming next</h2>
@@ -323,6 +377,34 @@ def main() -> int:
             print(f"    page:     UPDATED")
         else:
             print(f"    page:     unchanged")
+
+    # Scorecards: fetch upstream state so version/last-changed cells populate,
+    # and refresh the per-scorecard page's data-auto cells in place. Scorecards
+    # are results (signed runs), distinct from eval-sets (specs).
+    for scorecard in manifest.get("scorecards", []):
+        sc_id = scorecard["id"]
+        upstream = scorecard.get("upstream")
+        print(f"  [scorecard:{sc_id}]")
+        if not upstream:
+            continue
+        try:
+            state = fetch_upstream_state(upstream)
+            live_state[sc_id] = state
+            print(f"    upstream: {upstream['owner']}/{upstream['repo']}@{upstream.get('branch', 'main')}")
+            print(f"    version:  {state['version']}")
+        except Exception as exc:
+            errors.append(f"{sc_id}: upstream fetch failed: {exc}")
+            print(f"    ERROR: {exc}", file=sys.stderr)
+            continue
+        if "page_path" in scorecard:
+            changed, err = update_eval_set_page(scorecard, state)
+            if err:
+                errors.append(f"{sc_id}: page update failed: {err}")
+                print(f"    ERROR: {err}", file=sys.stderr)
+            elif changed:
+                print(f"    page:     UPDATED")
+            else:
+                print(f"    page:     unchanged")
 
     # Regenerate the listing index.
     listing_html = render_listing(manifest, live_state)
