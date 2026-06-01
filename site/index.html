@@ -44,10 +44,26 @@
             The eval-set is the spec. Browse it, criticise it, fork the methodology. When you see a number, it will trace back through a content-addressed Evidence Bundle, signed via sigstore and anchored in the Rekor transparency log, to one of the eval-sets listed below. We refuse to publish an aggregate "PASS%" across heterogeneous predicates — that is metric laundering.
         </p>
 
+        <div class="meta-block" style="border-left: 3px solid #2c5282;">
+            <p class="freshness-stub__title" style="margin-bottom: 0.5rem;">First signed result is live</p>
+            <p style="margin: 0;">
+                The <a href="/eval-sets/j-rig-bench/"><strong>Evidence Bench scorecard</strong></a> carries
+                its first signed row: the Skill Refiner Phase A.0 baseline (PROCEED), with its
+                Evidence Bundle signed keyless against the <strong>public production sigstore
+                transparency log</strong>. Verify it yourself —
+                <a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=1689291334">Rekor log index <code>1689291334</code></a>
+                — or run the <code>cosign verify-blob</code> command published on the scorecard.
+                This is reproducibility via <em>signature</em>, not just transparency: the layer
+                a memory-eval leaderboard like
+                <a href="https://github.com/garrytan/gbrain-evals">gbrain-evals</a> does not have.
+            </p>
+        </div>
+
         <h2>What's here at v0.1.0</h2>
 
         <ul>
             <li><a href="/eval-sets/">Eval-set browser</a> — versioned, lineage-tracked specifications of what we measure. The brand asset of this site.</li>
+            <li><a href="/eval-sets/j-rig-bench/">Evidence Bench scorecard</a> — the first signed result row (Phase A.0), anchored in the public Rekor log. A scorecard is a <em>result</em>; an eval-set is the <em>spec</em>.</li>
             <li><a href="/methodology/">Methodology</a> — how the Evidence Bundle predicate spec works, where the schema authority lives, and why we sequence the eval-set ahead of the results.</li>
         </ul>
 
