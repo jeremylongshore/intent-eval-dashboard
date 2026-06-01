@@ -71,7 +71,7 @@
                 <dt>status</dt><dd><span class="badge badge--draft">draft</span> — first row landed; signature layer pending</dd>
                 <dt>predicate URI</dt><dd><code>evals.intentsolutions.io/skill-binary-eval/v1</code> <span style="color: #6b7280; font-size: 0.85em;">(reserved; declared at Phase 2 — never declared under labs.*)</span></dd>
                 <dt>upstream source</dt><dd><a href="https://github.com/jeremylongshore/j-rig-skill-binary-eval">jeremylongshore/j-rig-skill-binary-eval</a></dd>
-                <dt>attestation</dt><dd><strong>PENDING</strong> — see <a href="#provenance">provenance status</a> below</dd>
+                <dt>attestation</dt><dd><strong>SIGNED</strong> — Rekor log index <a href="https://search.sigstore.dev/?logIndex=1689291334"><code>1689291334</code></a> (public production transparency log) — see <a href="#provenance">provenance</a></dd>
             </dl>
         </div>
 
@@ -101,7 +101,7 @@
                     <td><strong>Skill Refiner — Phase A.0 baseline</strong></td>
                     <td>Does an eval-guided Refiner mechanism produce real lift over a naive best-of-K prompt baseline? Pre-registered null-hypothesis test.</td>
                     <td><a href="#phase-a0">PROCEED</a> — refiner lift significant, naive below descope bar</td>
-                    <td><span class="badge badge--draft">pending</span></td>
+                    <td><a href="https://search.sigstore.dev/?logIndex=1689291334"><span class="badge badge--active">signed</span></a></td>
                 </tr>
                 <tr>
                     <td>gbrain-stack</td>
@@ -209,23 +209,52 @@
             <a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/036-AT-DECR-phase-a0-result-proceed-2026-05-31.md">DR-036</a>.
         </p>
 
-        <h2 id="provenance">Provenance status — why this board says "pending"</h2>
+        <h2 id="provenance">Provenance — signed, and verifiable by you</h2>
 
         <p>
             The whole point of Evidence Bench is that a row carries a signature, not just a
-            number. As of this writing, the Phase A.0 analysis has been computed and recorded but
-            <strong>not yet signed</strong>: no sigstore bundle and no Rekor log entry exist for
-            it. Rather than render a fake attestation badge, this board states the truth —
-            <code>pending</code> — and treats producing the real signed bundle as its own tracked
-            unit of work. When that lands, this row flips to <code>signed</code> and the
-            attestation column links to a verifiable Rekor index.
+            number. The Phase A.0 Evidence Bundle is <strong>signed</strong> against the
+            <strong>public production sigstore transparency log</strong> and anchored at
+            <a href="https://search.sigstore.dev/?logIndex=1689291334">Rekor log index
+            <code>1689291334</code></a>. Signing was <em>keyless</em> — no long-lived private key
+            exists; the signer is the reproducible GitHub Actions workflow identity
+            <code>github.com/jeremylongshore/intent-eval-lab/.github/workflows/sign-evidence-bundle.yml</code>,
+            not a person's machine. This is the same public-good infrastructure (Fulcio + Rekor)
+            behind npm provenance and SLSA.
+        </p>
+
+        <p>You do not have to trust us. Verify it yourself with
+            <a href="https://docs.sigstore.dev/cosign/installation/">cosign</a> (no account, no
+            keys) against the
+            <a href="https://github.com/jeremylongshore/intent-eval-lab/tree/main/evidence/phase-a-0-baseline">committed bundle</a>:
+        </p>
+
+        <pre><code>cosign verify-blob \
+  --new-bundle-format \
+  --bundle evidence-bundle.sigstore.json \
+  --certificate-identity 'https://github.com/jeremylongshore/intent-eval-lab/.github/workflows/sign-evidence-bundle.yml@refs/heads/main' \
+  --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
+  evidence-bundle.json</code></pre>
+
+        <p>
+            <strong>What the signature attests — and what it does not.</strong> It proves the
+            four Phase A.0 result artifacts (by SHA-256 digest) are authentic and unaltered, and
+            that this workflow identity signed them at the logged time. It does
+            <em>not</em> declare a predicate URI — <code>predicate_uri_set</code> is empty by
+            design. The <code>skill-binary-eval/v1</code> predicate stays <strong>reserved</strong>:
+            production-Rekor <em>predicate declaration</em> is gated on a normative SPEC.md plus
+            DNSSEC and CAA clearing for <code>evals.intentsolutions.io</code>, none of which have.
+            And it does <em>not</em> claim the statistics are "correct" — a signature attests
+            authenticity, not the truth of the science. The science stands on the pre-registered
+            analysis, not on the signature.
         </p>
 
         <p>
-            This is the discipline that separates an evidence board from a marketing board: the
-            board is not allowed to claim provenance it does not have. A <code>pending</code> row
-            is honest; a row that displayed an unverifiable "✓ signed" would be exactly the
-            metric-laundering this platform refuses.
+            That distinction is the discipline that separates an evidence board from a marketing
+            board: we sign exactly what we can honestly attest — integrity, identity, time — and
+            we refuse to dress a signature up as a claim it cannot support. (For the record: this
+            row read <code>pending</code> until the signature was real. We do not render
+            attestation we do not have.)
         </p>
 
         <h2>Source and references</h2>
