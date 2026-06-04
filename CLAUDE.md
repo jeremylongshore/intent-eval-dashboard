@@ -98,7 +98,7 @@ The public results browser renders `gate-result/v1` rows from the VERIFIED inges
 | Generator | `src/results/generate.ts` + `scripts/generate-results.ts` | `pnpm run generate:results`. Current state = all repos no-data (emit-evidence incomplete upstream). |
 | **C3 gate** | `src/results/c3-scan.ts` + `scripts/lint-no-aggregate-pass.ts` | `pnpm run lint:c3`. Cross-predicate-aware scanner: any `X/N pass` / `X% pass` spanning ≥2 predicate URIs → exit 1. Single-predicate counts allowed. Wired into `ingest-ci.yml` + `deploy.yml` as a REQUIRED gate (run directly, never piped through `tee` — exit code is load-bearing). Synthetic fixtures at `src/results/__fixtures__/c3-{clean,violation}.html`. |
 
-**C3 is the hard integrity binding** (CTO + CMO + VP DevRel triple-refusal). Never weaken the scanner or the gate to make a test pass. The tailnet-internal operator view (puxu.9) is a SEPARATE surface that reuses the same view-model but skips `filterPubliclyVisible` — do not build it here.
+**C3 is the hard integrity binding** (CTO + CMO + VP DevRel triple-refusal). Never weaken the scanner or the gate to make a test pass. The tailnet-internal operator view (puxu.9) is a SEPARATE surface that reuses the same view-model but skips `filterPubliclyVisible` — it is BUILT (see § "Operator-internal view" below) and emits to `site-internal/`, never `site/`.
 
 ## Freshness + decision-mix strip + `/status` (puxu.7 — built)
 
@@ -111,7 +111,22 @@ The top-of-landing strip (one row per source repo × 24 hourly buckets, colored 
 | HTML render | `src/freshness/render-strip.ts` | Strip fragment (injected into landing) + the `/status` page. `no-data` reuses the loud `bucket--no-data` class (== `fail`). Color-blind-safe glyphs + `sr-only` text. No predicate-URI dimension at all → structurally C3-clean. |
 | Generator | `src/freshness/generate.ts` + `scripts/generate-status.ts` | `pnpm run generate:status`. Injects the strip into `site/index.html` between `<!-- FRESHNESS-STRIP:START/END -->` markers (idempotent; THROWS if markers absent — never silently appends), writes `site/status/index.html`. Current state = all 6 repos no-data, U=0/6 (honest current truth). |
 
-The synthetic **25h-silent worker test** (`src/freshness/bucket-model.test.ts` + `generate.test.ts`) proves the binding: a worker whose last verified row was 25h ago shows `no-data` across the whole window with the prior pass NOT back-filled into any in-window bucket. `pnpm run check` runs `generate:status` then `lint:c3` over the whole `site` so the strip + status output are C3-gated. The tailnet-internal operator status view (puxu.9) is a SEPARATE surface — do not build it here.
+The synthetic **25h-silent worker test** (`src/freshness/bucket-model.test.ts` + `generate.test.ts`) proves the binding: a worker whose last verified row was 25h ago shows `no-data` across the whole window with the prior pass NOT back-filled into any in-window bucket. `pnpm run check` runs `generate:status` then `lint:c3` over the whole `site` so the strip + status output are C3-gated. The internal index reuses this USE-method view (see § "Operator-internal view" below).
+
+## Operator-internal view (`site-internal/`, puxu.9 — built)
+
+The **inverse of the public results browser.** The public `/results/` generator applies `filterPubliclyVisible`, so Tier-2-no-consent / Tier-3 / Tier-1-under-embargo rows are ABSENT. The operator-internal generator renders **every** verified row regardless of tier, for operators on the tailnet, and annotates each row with WHY it is / isn't public — reusing the SAME `row-model.ts` view-model + `render-html.ts` helpers + `freshness` USE-method view, so the operator view is a faithful superset, not a divergent fork.
+
+| Piece | Location | Role |
+|---|---|---|
+| Internal HTML render | `src/results/render-internal.ts` | Reuses public `esc`/`decisionBadge`/`asOfBanner`/`perPredicateBreakdown`/`noDataPanel` + `SITE_FOOTER`; adds a leading **Visibility** column (`visibilityBadge` computes the tier + public/internal-only reason via the SAME `decidePublicVisibility` rule). `noindex, nofollow`, no public canonical, `iep-surface=tailnet-only`. Embeds the USE-method cards (`renderUseCards`, extracted from `render-strip.ts`) on the index. |
+| Internal generator | `src/results/generate-internal.ts` | `buildInternalResultsView` = `buildResultsView` with **NO** `filterPubliclyVisible`. `generateInternalFiles` emits `internal/results/{index,<repo>,<repo>/<bundle>}/index.html`. `buildInternalUse` derives an honest USE view (fresh = has rows AND not stale). |
+| CLI entrypoint | `scripts/generate-internal.ts` | `pnpm run generate:internal` → writes `site-internal/`. **Refuses** to write into the public `site/` origin (exits non-zero). |
+| C3 gate (internal) | `scripts/lint-no-aggregate-pass.ts site-internal` | `pnpm run lint:c3:internal`. Same scanner; the internal output stays per-predicate-counts-only — no cross-predicate aggregate PASS%, even internally. |
+
+**Strict separation (load-bearing):** internal output goes to `site-internal/` — NEVER `site/`. The public Caddy block serves `site/` only; the public `deploy.yml` triggers on `paths: ['site/**']` and its smoke/C3/predicate scans all target `site` — so `site-internal/` is never wired into the public origin. The generated HTML IS committed (so the VPS `git reset --hard` checkout has it for the future tailnet block); only `site-internal/dist|.astro` are gitignored, mirroring `site/`. **The inverse-of-public test** (`generate-internal.test.ts`) proves it: a mixed-tier fixture (Tier-2-no-consent + embargoed Tier-1 + Tier-3 + public) → the public generator omits the three non-public bundles; the internal generator includes all four (keys + deep-link pages present).
+
+**Deploy is a human-gated follow-up — NOT in this repo's automation.** The tailnet-only hostname, the Tailscale-identity-gated Caddy block serving `site-internal/`, and DNS/port wiring are a manual VPS ops step. Per VP DevRel binding (DR-035 § 8): **no basicauth on the operator hostname — Tailscale identity is the gate.** Matches existing tailnet-only infra (Netdata `intentsolutions:19999`, ntfy `intentsolutions:8080`). Until that step is done there is no route to `site-internal/`. Do NOT touch the VPS/Caddy/Tailscale to wire it without explicit human go-ahead.
 
 ## Tactical guidance
 

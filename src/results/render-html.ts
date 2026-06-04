@@ -76,7 +76,7 @@ const PAGE_HEAD = (title: string, description: string, canonical: string): strin
     <meta name="iep-dashboard-version" content="0.1.0">
 </head>`;
 
-const SITE_HEADER = `    <header class="site-header">
+export const SITE_HEADER = `    <header class="site-header">
         <div class="site-header__inner">
             <a href="/" class="site-header__wordmark">IEP&nbsp;Labs</a>
             <nav class="site-nav" aria-label="Primary">
@@ -88,7 +88,7 @@ const SITE_HEADER = `    <header class="site-header">
         </div>
     </header>`;
 
-const SITE_FOOTER = `    <footer class="site-footer">
+export const SITE_FOOTER = `    <footer class="site-footer">
         <div class="site-footer__inner">
             <div>
                 <strong>labs.intentsolutions.io</strong> · dashboard <code>v0.1.0</code> · best-effort, single-operator<br>
@@ -107,12 +107,12 @@ const SITE_FOOTER = `    <footer class="site-footer">
 `;
 
 /** Decision → badge CSS modifier. `no-data` shares the loud fail-equal style. */
-function decisionBadge(decision: string): string {
+export function decisionBadge(decision: string): string {
   return `<span class="badge badge--result-${esc(decision)}">${esc(decision)}</span>`;
 }
 
 /** The global "as-of" banner (min ingested_at). */
-function asOfBanner(view: ResultsView): string {
+export function asOfBanner(view: ResultsView): string {
   if (view.asOf === undefined) {
     return `        <div class="meta-block as-of as-of--none">
             <p style="margin:0;"><strong>As of:</strong> no source has a verified snapshot yet. Every repo below is in a <code>no-data</code> state.</p>
@@ -167,7 +167,7 @@ ${rows}
  * the rendered text is an explicit per-decision breakdown — never `X/N pass` or
  * `X% pass`.
  */
-function perPredicateBreakdown(rows: readonly ResultsRow[]): string {
+export function perPredicateBreakdown(rows: readonly ResultsRow[]): string {
   // Group by predicate URI. Each group is rendered independently.
   const byPredicate = new Map<string, Map<string, number>>();
   for (const row of rows) {
@@ -218,7 +218,7 @@ function rowTr(row: ResultsRow): string {
 }
 
 /** The loud no-data panel — equal visual weight with fail (CMO C4). */
-function noDataPanel(repo: string): string {
+export function noDataPanel(repo: string): string {
   return `        <div class="no-data-panel">
             <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results for <code>${esc(repo)}</code></p>
             <p>This source has not yet published a verified, signed Evidence Bundle to this dashboard. <strong>No data is not a pass.</strong> It is rendered with the same prominence as a failure so an empty source can never be mistaken for a clean one.</p>

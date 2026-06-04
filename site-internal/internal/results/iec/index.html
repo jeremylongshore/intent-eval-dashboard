@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Operator-internal results: iec — Intent Eval Platform</title>
+    <meta name="description" content="Operator-internal results for iec — all tiers, tailnet-only.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="/style.css">
+
+    <meta name="iep-view" content="operator-internal">
+    <meta name="iep-surface" content="tailnet-only">
+    <meta name="iep-source-repo" content="github.com/jeremylongshore/intent-eval-dashboard">
+    <meta name="iep-dashboard-version" content="0.1.0">
+</head>
+<body>
+    <header class="site-header site-header--internal">
+        <div class="site-header__inner">
+            <a href="/internal/results/" class="site-header__wordmark">IEP&nbsp;Labs · <span class="badge badge--internal">OPERATOR</span></a>
+            <nav class="site-nav" aria-label="Primary">
+                <a href="/internal/results/">Internal results</a>
+                <a href="/results/">Public results</a>
+                <a href="/status/">Status</a>
+                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <p><a href="/internal/results/">← All internal results</a></p>
+        <h1>Operator-internal: <code>iec</code></h1>
+        <div class="operator-banner">
+            <p style="margin:0;"><strong>Operator-internal view (tailnet-only).</strong> This surface renders <em>every</em> verified gate-result row regardless of visibility tier — including Tier-2 rows without consent, Tier-3 case-by-case rows, and Tier-1 rows still under embargo. It is the <em>inverse</em> of the <a href="/results/">public results browser</a>, which omits all of those. This output lives at <code>site-internal/</code> and is served only behind Tailscale identity on the tailnet — it must never be wired into the public origin.</p>
+        </div>
+        <div class="meta-block as-of as-of--none">
+            <p style="margin:0;"><strong>As of:</strong> no source has a verified snapshot yet. Every repo below is in a <code>no-data</code> state.</p>
+        </div>
+        <div class="no-data-panel">
+            <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results for <code>iec</code></p>
+            <p>This source has not yet published a verified, signed Evidence Bundle to this dashboard. <strong>No data is not a pass.</strong> It is rendered with the same prominence as a failure so an empty source can never be mistaken for a clean one.</p>
+        </div>
+    </main>
+    <footer class="site-footer">
+        <div class="site-footer__inner">
+            <div>
+                <strong>labs.intentsolutions.io</strong> · dashboard <code>v0.1.0</code> · best-effort, single-operator<br>
+                Intent Solutions — <a href="https://intentsolutions.io">intentsolutions.io</a>
+            </div>
+            <div>
+                <a href="/methodology/">Methodology</a> ·
+                <a href="/eval-sets/">Eval Sets</a> ·
+                <a href="/results/">Results</a> ·
+                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

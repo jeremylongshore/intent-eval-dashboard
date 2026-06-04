@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Operator-internal results — Intent Eval Platform (tailnet-only)</title>
+    <meta name="description" content="Operator-internal results view: every verified gate-result row regardless of visibility tier. Tailnet-only, never served from the public origin.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="/style.css">
+
+    <meta name="iep-view" content="operator-internal">
+    <meta name="iep-surface" content="tailnet-only">
+    <meta name="iep-source-repo" content="github.com/jeremylongshore/intent-eval-dashboard">
+    <meta name="iep-dashboard-version" content="0.1.0">
+</head>
+<body>
+    <header class="site-header site-header--internal">
+        <div class="site-header__inner">
+            <a href="/internal/results/" class="site-header__wordmark">IEP&nbsp;Labs · <span class="badge badge--internal">OPERATOR</span></a>
+            <nav class="site-nav" aria-label="Primary">
+                <a href="/internal/results/">Internal results</a>
+                <a href="/results/">Public results</a>
+                <a href="/status/">Status</a>
+                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <h1>Operator-internal results</h1>
+        <div class="operator-banner">
+            <p style="margin:0;"><strong>Operator-internal view (tailnet-only).</strong> This surface renders <em>every</em> verified gate-result row regardless of visibility tier — including Tier-2 rows without consent, Tier-3 case-by-case rows, and Tier-1 rows still under embargo. It is the <em>inverse</em> of the <a href="/results/">public results browser</a>, which omits all of those. This output lives at <code>site-internal/</code> and is served only behind Tailscale identity on the tailnet — it must never be wired into the public origin.</p>
+        </div>
+        <p class="lead">
+            Every row below traces back through a content-addressed Evidence Bundle — signed via sigstore, anchored in the Rekor transparency log, re-verified at ingest — to a <code>gate-result/v1</code> attestation. Unlike the <a href="/results/">public browser</a>, this view applies <strong>no visibility filter</strong>: each row is annotated with its tier and whether it is also public.
+        </p>
+        <p>
+            Decision counts are still shown <em>per predicate URI only</em> — we never composite a pass-rate across heterogeneous predicates, even internally. <code>no-data</code> is not a pass.
+        </p>
+        <div class="meta-block as-of as-of--none">
+            <p style="margin:0;"><strong>As of:</strong> no source has a verified snapshot yet. Every repo below is in a <code>no-data</code> state.</p>
+        </div>
+        <h2>Ingest pipeline status (USE method)</h2>
+        <p>System health of the 6-worker ingest pipeline itself — the same USE-method view the public <a href="/status/">/status</a> page carries.</p>
+        <div class="use-cards">
+        <section class="use-card">
+            <h3>Utilization</h3>
+            <p class="use-card__metric"><strong>0</strong> / 6 workers produced a fresh verified snapshot this pass <span class="use-card__pct">(0%)</span></p>
+            <p class="use-card__what">U — fraction of the 6-worker ingest pool doing useful new work this pass. A worker serving only a prior-good snapshot is <em>not</em> utilized.</p>
+
+        </section>
+        <section class="use-card">
+            <h3>Saturation</h3>
+            <p class="use-card__metric"><strong>0</strong> restarts in window <span class="use-card__pct">(0% of budget 18)</span></p>
+            <p class="use-card__what">S — restart / back-off pressure on the supervision tree. Restarts are the queue-depth analogue: work backing up against the OTP restart budget. An escalation is maximal saturation.</p>
+
+        </section>
+        <section class="use-card">
+            <h3>Errors</h3>
+            <p class="use-card__metric"><strong>0</strong> worker crashes (verification / abnormal exit) this pass</p>
+            <p class="use-card__what">E — workers that failed OIDC / Rekor / DSSE / schema verification or otherwise exited abnormally. Structured reasons preserved.</p>
+<p class="use-card__detail">No verification or crash failures this pass.</p>
+        </section>
+        </div>
+        <h2>Per-repo results (all tiers)</h2>
+        <section class="repo-results">
+            <h3><a href="/internal/results/iec/"><code>iec</code></a></h3>
+        <div class="no-data-panel">
+            <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results for <code>iec</code></p>
+            <p>This source has not yet published a verified, signed Evidence Bundle to this dashboard. <strong>No data is not a pass.</strong> It is rendered with the same prominence as a failure so an empty source can never be mistaken for a clean one.</p>
+        </div>
+        </section>
+        <section class="repo-results">
+            <h3><a href="/internal/results/iel/"><code>iel</code></a></h3>
+        <div class="no-data-panel">
+            <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results for <code>iel</code></p>
+            <p>This source has not yet published a verified, signed Evidence Bundle to this dashboard. <strong>No data is not a pass.</strong> It is rendered with the same prominence as a failure so an empty source can never be mistaken for a clean one.</p>
+        </div>
+        </section>
+        <section class="repo-results">
+            <h3><a href="/internal/results/iah/"><code>iah</code></a></h3>
+        <div class="no-data-panel">
+            <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results for <code>iah</code></p>
+            <p>This source has not yet published a verified, signed Evidence Bundle to this dashboard. <strong>No data is not a pass.</strong> It is rendered with the same prominence as a failure so an empty source can never be mistaken for a clean one.</p>
+        </div>
+        </section>
+        <section class="repo-results">
+            <h3><a href="/internal/results/iaj/"><code>iaj</code></a></h3>
+        <div class="no-data-panel">
+            <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results for <code>iaj</code></p>
+            <p>This source has not yet published a verified, signed Evidence Bundle to this dashboard. <strong>No data is not a pass.</strong> It is rendered with the same prominence as a failure so an empty source can never be mistaken for a clean one.</p>
+        </div>
+        </section>
+        <section class="repo-results">
+            <h3><a href="/internal/results/iar/"><code>iar</code></a></h3>
+        <div class="no-data-panel">
+            <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results for <code>iar</code></p>
+            <p>This source has not yet published a verified, signed Evidence Bundle to this dashboard. <strong>No data is not a pass.</strong> It is rendered with the same prominence as a failure so an empty source can never be mistaken for a clean one.</p>
+        </div>
+        </section>
+        <section class="repo-results">
+            <h3><a href="/internal/results/ccp/"><code>ccp</code></a></h3>
+        <div class="no-data-panel">
+            <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results for <code>ccp</code></p>
+            <p>This source has not yet published a verified, signed Evidence Bundle to this dashboard. <strong>No data is not a pass.</strong> It is rendered with the same prominence as a failure so an empty source can never be mistaken for a clean one.</p>
+        </div>
+        </section>
+    </main>
+    <footer class="site-footer">
+        <div class="site-footer__inner">
+            <div>
+                <strong>labs.intentsolutions.io</strong> · dashboard <code>v0.1.0</code> · best-effort, single-operator<br>
+                Intent Solutions — <a href="https://intentsolutions.io">intentsolutions.io</a>
+            </div>
+            <div>
+                <a href="/methodology/">Methodology</a> ·
+                <a href="/eval-sets/">Eval Sets</a> ·
+                <a href="/results/">Results</a> ·
+                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
