@@ -183,7 +183,7 @@ const STATUS_HEADER = `    <header class="site-header">
 const STATUS_FOOTER = `    <footer class="site-footer">
         <div class="site-footer__inner">
             <div>
-                <strong>labs.intentsolutions.io</strong> · dashboard <code>v0.1.0</code> · best-effort, single-operator<br>
+                <strong>labs.intentsolutions.io</strong> · dashboard <code>v0.1.0</code> · <a href="/status/" class="footer__commitment">best-effort, single-operator, see /status for liveness</a><br>
                 Intent Solutions — <a href="https://intentsolutions.io">intentsolutions.io</a>
             </div>
             <div>

@@ -143,6 +143,26 @@ The **INTEGRITY capability to take down a published attestation honestly.** Sigs
 
 **Three hard bindings, enforced in code + test:** (1) **closed-set `reason_class`** — `denylist.test.ts` proves `because-i-said-so` is rejected, the enum is sourced from the kernel so it can't drift; (2) **predicate URI at `evals.*` never `labs.*`** — `statement.test.ts` asserts `new URL(uri).host === 'evals.intentsolutions.io'`; (3) **no Hugo / no rebuild** — flat-file generators, retraction takes effect via rsync + caddy reload. The synthetic end-to-end test (`generate.test.ts`) proves add-entry → regenerate → snippet has the 410 + tombstone exists on disk (the real "<4h deep URL 410" is the human-gated VPS step). **Deploy is NOT in this repo's automation** — rsync of `deploy/retractions.snippet` to `/etc/caddy/`, `caddy validate`, `systemctl reload caddy` are the documented manual VPS step; do NOT touch the VPS.
 
+## Ops-lite alerting (`src/alerting/`, puxu.11 — built)
+
+The **minimal alerting layer.** Deliberately tiny: the only thing worth waking a single operator for is a source going DARK. Reuses the SAME ingest-snapshot/liveness data the freshness USE + bucket models consume (puxu.7) — the alert evaluator does not reinvent liveness.
+
+| Piece | Location | Role |
+|---|---|---|
+| Alert evaluator | `src/alerting/evaluate.ts` | Pure function. Given per-source `lastSuccessfulIngestIso` + an INJECTED `now`, emits a critical alert for every source silent > 7 days. `SEVEN_DAYS_MS` is the ONLY threshold. Never reads the clock (`now` is a parameter). Fail-closed: unparseable last-ingest → `Infinity` silence (pages); future-dated (skew) → clamps to 0 (no page); unparseable `now` → epoch-0 anchor (never pages a real-dated source off a garbage clock). |
+| ntfy formatter + transport seam | `src/alerting/ntfy.ts` | `formatCriticalMessage` builds the ntfy payload: priority `5`, topic `prod-alerts`, names each silent source + days-silent, links to the PUBLIC `/status`. THROWS on an empty critical list (never page on nothing). Push behind the injectable `NtfyTransport`; default `NoopNtfyTransport` logs what it WOULD push and returns `delivered: false` — NEVER fakes a send, NEVER hardcodes the VPS address (base URL via `IEP_NTFY_BASE_URL`, documented `http://ntfy.invalid` placeholder). |
+| Pass orchestrator | `src/alerting/run.ts` | `runAlertPass(liveness, now, transport)` = evaluate → (only if any silent>7d) format + push. Can never page on an empty list by construction. |
+| No-uptime grep-guard | `src/alerting/no-uptime-scan.ts` + `scripts/check-uptime-claims.ts` | `pnpm run lint:uptime`. Self-contained detector (mirrors `c3-scan.ts`) that fails if any uptime-SLA claim (`99.9% uptime`, uptime/availability guarantee, `uptime SLA`, `N nines`) appears in `site/`. Neutral "liveness"/"status" prose + the exact best-effort commitment are NOT flagged. Wired into `deploy.yml` as a REQUIRED gate + a self-check (the synthetic `__fixtures__/uptime-violation.html` MUST fail the scanner). |
+| Liveness-check CLI | `scripts/check-liveness-alerts.ts` | `pnpm run check:liveness`. What a VPS cron would run: load current liveness → `runAlertPass` → push via the (default no-op) transport. Current honest state = all 6 sources never-seen → would page, but the no-op transport delivers nothing and says so. |
+
+**Four hard bindings (CFO + CISO refusals, DR-035 § 8), enforced in code + test:**
+1. **7-day-silence is the ONLY paging trigger** (CISO). `evaluate.test.ts` proves the boundary (exactly 7d → no page; 7d+1ms → page; 6d → no page) AND the only-trigger property (a source erroring its head off with a fresh ingest does NOT page). No latency/error-rate/threshold pagers exist.
+2. **ntfy only, NO PagerDuty** (CFO). The only push protocol is ntfy (`prod-alerts`), behind the `NtfyTransport` seam. No PagerDuty/Opsgenie/Slack/SMS client anywhere.
+3. **No misleading uptime claims** (CFO). The `lint:uptime` grep-guard fails on any uptime-SLA claim in `site/`. The public commitment is exactly **"best-effort, single-operator, see /status for liveness"** — baked into the shared `SITE_FOOTER` (`render-html.ts`) + the `/status` footer (`render-strip.ts`) + the hand-maintained `site/index.html` footer.
+4. **`/status` stays public, no-auth.** The ntfy body links to `https://labs.intentsolutions.io/status/`; the page itself remains anonymous (DR-035 C4).
+
+**Human-gated VPS seam (NOT in this repo's automation):** the REAL ntfy push (HTTP POST to the tailnet ntfy `http://intentsolutions:8080`) and the cron that runs `check:liveness` live on the VPS, where a real `NtfyTransport` is injected via `IEP_NTFY_BASE_URL`. Do NOT touch the VPS / ntfy server / cron / Caddy to wire it without explicit human go-ahead — same posture as the publisher rsync seam and the retraction Caddy reload.
+
 ## Tactical guidance
 
 - **Partner-name discipline (DR-004 S1Q2):** enforced via CI grep gate. The grep pattern lives in PRIVATE `~/000-projects/CLAUDE.md`; never inline in any file in this repo.
