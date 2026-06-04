@@ -45,19 +45,15 @@ jobs:
 
       # TEMPORARY: sibling checkout of the kernel until @intentsolutions/core@0.2.0
       # publishes to npm. The pnpm file: override resolves to ../intent-eval-core.
+      # actions/checkout forbids paths outside the workspace, so we check the
+      # kernel into a workspace subdir and symlink ../intent-eval-core to it
+      # (the workspace parent IS writable on the runner).
       - name: Checkout intent-eval-core (kernel sibling)
         uses: actions/checkout@v4
         with:
           repository: jeremylongshore/intent-eval-core
-          path: ../intent-eval-core
+          path: _kernel/intent-eval-core
           ref: main
-
-      - name: Build kernel sibling (provides dist/ for the file: override)
-        working-directory: ../intent-eval-core
-        run: |
-          corepack enable
-          pnpm install --frozen-lockfile
-          pnpm run build
 
       - uses: pnpm/action-setup@v4
         with:
@@ -67,6 +63,13 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
+
+      - name: Build kernel sibling + link as ../intent-eval-core
+        run: |
+          ln -s "$GITHUB_WORKSPACE/_kernel/intent-eval-core" "$GITHUB_WORKSPACE/../intent-eval-core"
+          cd "$GITHUB_WORKSPACE/_kernel/intent-eval-core"
+          pnpm install --frozen-lockfile
+          pnpm run build
 
       - name: Install
         run: pnpm install --no-frozen-lockfile
