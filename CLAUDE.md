@@ -128,6 +128,21 @@ The **inverse of the public results browser.** The public `/results/` generator 
 
 **Deploy is a human-gated follow-up — NOT in this repo's automation.** The tailnet-only hostname, the Tailscale-identity-gated Caddy block serving `site-internal/`, and DNS/port wiring are a manual VPS ops step. Per VP DevRel binding (DR-035 § 8): **no basicauth on the operator hostname — Tailscale identity is the gate.** Matches existing tailnet-only infra (Netdata `intentsolutions:19999`, ntfy `intentsolutions:8080`). Until that step is done there is no route to `site-internal/`. Do NOT touch the VPS/Caddy/Tailscale to wire it without explicit human go-ahead.
 
+## Retraction protocol (`src/retraction/`, puxu.10 — built)
+
+The **INTEGRITY capability to take down a published attestation honestly.** Sigstore/Rekor entries are append-only and **cannot be un-logged** — so we do not pretend a retracted result never existed. We record an append-only signed `retraction/v1` record, return **410 Gone** at the deep URL (not 404 — that would lie), and serve a tombstone disclosing the `reason_class`. **No site rebuild** in this path (`git commit + rsync + caddy reload`).
+
+| Piece | Location | Role |
+|---|---|---|
+| Denylist + validator | `src/retraction/denylist.ts` + `retractions.json` | `retractions.json` format. Validator REJECTS open-text `reason_class` (enum sourced FROM the kernel), subject-less entries, unsafe `deep_url_path`, unknown fields (strict). Empty `[]` is a valid no-op state. |
+| Signed Statement | `src/retraction/statement.ts` | Builds + **kernel-validates** the `retraction/v1` in-toto Statement against `@intentsolutions/core`'s `RetractionV1Schema`. Predicate URI = kernel `RETRACTION_V1_URI` (`evals.intentsolutions.io/retraction/v1`, NEVER `labs.*`). Signing behind `RetractionSigner` seam (sigstore keyless CI); default `unsignedSigner` returns canonical payload `signed: false` — never a faked signature. |
+| Caddy 410 generator | `src/retraction/snippet.ts` → `deploy/retractions.snippet` | One `handle` block per deep URL → `file_server { status 410 }` serving the tombstone body. `{$IEP_SITE_ROOT}` env-parameterized. Empty denylist → no-op snippet. |
+| Tombstone generator | `src/retraction/tombstone.ts` → `site/retracted/<slug>/index.html` | Append-only-honesty disclosure page; reuses public HTML chrome; `noindex`; structurally C3-clean (no predicate counts). |
+| Orchestrator + CLI | `src/retraction/generate.ts` + `scripts/generate-retractions.ts` | `pnpm run generate:retractions`. Loads + validates `retractions.json` (FAILS CLOSED on any invalid entry — never partial), regenerates snippet + tombstones. |
+| 4h SLO runbook | `000-docs/001-RR-RUNB-retraction-protocol-4h-slo-runbook-2026-06-04.md` | Operator flow: request → add entry → regenerate → commit → rsync + `caddy validate` + `systemctl reload caddy` (NEVER restart) → 410 in < 4h, no rebuild. |
+
+**Three hard bindings, enforced in code + test:** (1) **closed-set `reason_class`** — `denylist.test.ts` proves `because-i-said-so` is rejected, the enum is sourced from the kernel so it can't drift; (2) **predicate URI at `evals.*` never `labs.*`** — `statement.test.ts` asserts `new URL(uri).host === 'evals.intentsolutions.io'`; (3) **no Hugo / no rebuild** — flat-file generators, retraction takes effect via rsync + caddy reload. The synthetic end-to-end test (`generate.test.ts`) proves add-entry → regenerate → snippet has the 410 + tombstone exists on disk (the real "<4h deep URL 410" is the human-gated VPS step). **Deploy is NOT in this repo's automation** — rsync of `deploy/retractions.snippet` to `/etc/caddy/`, `caddy validate`, `systemctl reload caddy` are the documented manual VPS step; do NOT touch the VPS.
+
 ## Tactical guidance
 
 - **Partner-name discipline (DR-004 S1Q2):** enforced via CI grep gate. The grep pattern lives in PRIVATE `~/000-projects/CLAUDE.md`; never inline in any file in this repo.
