@@ -10,13 +10,13 @@ The dashboard is in initial scaffolding. The 7-layer taxonomy is not yet fully p
 
 | Layer | Tool | Status |
 |---|---|---|
-| L1 — Git hooks | `audit-harness verify` pre-commit | Pending — install after first push |
-| L2 — Static (lint/typecheck) | HTML validator + linkchecker on static HTML at v0.1.0; Astro lint + tsc at Phase 2 | Pending — Phase 1 Epic 1.3 |
-| L3 — Unit | N/A for single-file HTML; Vitest when Astro adopted at Phase 2 | Pending — Phase 2 |
-| L4 — Integration | Vitest + test harness | Pending — Phase 2 |
-| L5 — System | Playwright (site build smoke) | Pending — Phase 2 |
-| L6 — E2E / acceptance | Gherkin scenarios | Pending — Phase 2 (per `intent-eval-lab` methodology pattern) |
-| L7 — Acceptance gates | Required CI checks | Configured in Phase 1 Epic 1.1 deploy workflow |
+| L1 — Git hooks | `audit-harness verify` pre-commit | `.harness-hash` pinned; wire pre-commit hook after first push |
+| L2 — Static (lint/typecheck) | ESLint (typed) + `tsc --noEmit` on `src/`/`ingest/`; HTML validator on static HTML | ONLINE for the TS ingest pipeline (Phase 2 Epic 2.2) |
+| L3 — Unit | Vitest — supervision semantics + each verification step (real pass + real fail) | ONLINE (Phase 2 Epic 2.2) |
+| L4 — Integration | Vitest — full deploy-pass (worker → supervisor → renderer → publisher) | ONLINE (Phase 2 Epic 2.2) |
+| L5 — System | Playwright (site build smoke) | Pending — Astro adoption |
+| L6 — E2E / acceptance | Synthetic compromised-CI attack scenarios (Vitest) + Gherkin later | Attack scenarios ONLINE (Phase 2 Epic 2.2); Gherkin pending |
+| L7 — Acceptance gates | Required CI checks (`ingest-ci.yml` full gate + coverage + harness verify) | ONLINE for ingest (Phase 2 Epic 2.2); deploy gate per Epic 1.1 |
 
 ## Required CI gates (defined per DR-035 § 9)
 

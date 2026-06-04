@@ -1,3 +1,0 @@
-packages:
-  - 'site'
-  # cmd/labs-tui/ is Go; not a pnpm workspace member

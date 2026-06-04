@@ -1,0 +1,76 @@
+{
+  "$comment": [
+    "Per-repo OIDC allowlist for ingest step 2 (DR-035 B1).",
+    "Every ingest worker verifies the source CI run's OIDC claims against this",
+    "pinned set BEFORE any bundle is verified or rendered. A mismatch on issuer,",
+    "subject, OR workflow_ref crashes the worker (fail-closed).",
+    "",
+    "issuer  — the GitHub Actions OIDC issuer (fixed for all GH-hosted runners).",
+    "subjects — allowed `sub` claim values. GitHub OIDC `sub` for a tag release is",
+    "           `repo:OWNER/REPO:ref:refs/tags/vX.Y.Z`. The trailing-glob entries",
+    "           (`...:ref:refs/tags/*`) match the release-tag family; the worker",
+    "           treats a single trailing `*` as a prefix match.",
+    "workflowRefs — allowed reusable-workflow refs. GitHub sets the",
+    "               `job_workflow_ref` / `workflow_ref` claim to",
+    "               `OWNER/REPO/.github/workflows/FILE@REF`.",
+    "",
+    "OPERATOR-CONFIRMABLE: where the exact release-workflow filename or ref could",
+    "not be derived from the repo at authoring time, the canonical",
+    "`release.yml@refs/heads/main` form is used as a placeholder and flagged",
+    "`operatorConfirmed: false`. Confirm against each repo's actual",
+    ".github/workflows/ before first production ingest, then flip to true.",
+    "ICOS is intentionally ABSENT — struck from the supervision tree per the",
+    "cross-tier policy (DR-035). 6 repos exactly: iec, iel, iah, iaj, iar, ccp."
+  ],
+  "issuer": "https://token.actions.githubusercontent.com",
+  "repos": {
+    "iec": {
+      "githubRepo": "jeremylongshore/intent-eval-core",
+      "subjects": ["repo:jeremylongshore/intent-eval-core:ref:refs/tags/*"],
+      "workflowRefs": [
+        "jeremylongshore/intent-eval-core/.github/workflows/release.yml@refs/tags/*"
+      ],
+      "operatorConfirmed": true
+    },
+    "iel": {
+      "githubRepo": "jeremylongshore/intent-eval-lab",
+      "subjects": ["repo:jeremylongshore/intent-eval-lab:ref:refs/tags/*"],
+      "workflowRefs": [
+        "jeremylongshore/intent-eval-lab/.github/workflows/release.yml@refs/heads/main"
+      ],
+      "operatorConfirmed": false
+    },
+    "iah": {
+      "githubRepo": "jeremylongshore/intent-audit-harness",
+      "subjects": ["repo:jeremylongshore/intent-audit-harness:ref:refs/tags/*"],
+      "workflowRefs": [
+        "jeremylongshore/intent-audit-harness/.github/workflows/release.yml@refs/tags/*"
+      ],
+      "operatorConfirmed": false
+    },
+    "iaj": {
+      "githubRepo": "jeremylongshore/j-rig-skill-binary-eval",
+      "subjects": ["repo:jeremylongshore/j-rig-skill-binary-eval:ref:refs/tags/*"],
+      "workflowRefs": [
+        "jeremylongshore/j-rig-skill-binary-eval/.github/workflows/release.yml@refs/tags/*"
+      ],
+      "operatorConfirmed": false
+    },
+    "iar": {
+      "githubRepo": "jeremylongshore/intent-rollout-gate",
+      "subjects": ["repo:jeremylongshore/intent-rollout-gate:ref:refs/tags/*"],
+      "workflowRefs": [
+        "jeremylongshore/intent-rollout-gate/.github/workflows/release.yml@refs/heads/main"
+      ],
+      "operatorConfirmed": false
+    },
+    "ccp": {
+      "githubRepo": "jeremylongshore/claude-code-plugins",
+      "subjects": ["repo:jeremylongshore/claude-code-plugins:ref:refs/tags/*"],
+      "workflowRefs": [
+        "jeremylongshore/claude-code-plugins/.github/workflows/release.yml@refs/heads/main"
+      ],
+      "operatorConfirmed": false
+    }
+  }
+}

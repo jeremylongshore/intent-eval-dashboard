@@ -2,6 +2,7 @@
   "name": "intent-eval-dashboard",
   "version": "0.1.0-pre",
   "private": true,
+  "type": "module",
   "description": "Public reports dashboard for the Intent Eval Platform. Renders eval-set methodology + signed Evidence Bundles at labs.intentsolutions.io.",
   "homepage": "https://labs.intentsolutions.io",
   "repository": {
@@ -16,14 +17,43 @@
   },
   "packageManager": "pnpm@9.15.0",
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "harness:verify": "audit-harness verify",
     "harness:init": "audit-harness init",
-    "check": "pnpm exec audit-harness verify"
+    "check": "pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build"
+  },
+  "pnpm": {
+    "//": "@intentsolutions/core@0.2.0 (Epic 2.1 schema evolution) is not yet PUBLISHED to npm — only 0.1.1 is. Epic 2.2 DEPENDS ON 0.2.0 per the bead. Until 0.2.0 publishes, resolve the kernel from the local sibling checkout. When 0.2.0 lands on npm, delete this override and the dependency range resolves normally from the registry.",
+    "overrides": {
+      "@intentsolutions/core": "file:../intent-eval-core"
+    }
   },
   "dependencies": {
-    "@intentsolutions/core": "^0.1.0"
+    "@intentsolutions/core": "^0.2.0",
+    "@sigstore/bundle": "^4.0.0",
+    "@sigstore/verify": "^4.0.0",
+    "sigstore": "^5.0.0"
   },
   "devDependencies": {
-    "@intentsolutions/audit-harness": "^1.1.4"
+    "@eslint/js": "^9.17.0",
+    "@intentsolutions/audit-harness": "^0.1.0",
+    "@types/node": "^22.10.0",
+    "@typescript-eslint/eslint-plugin": "^8.19.0",
+    "@typescript-eslint/parser": "^8.19.0",
+    "@vitest/coverage-v8": "^2.1.8",
+    "eslint": "^9.17.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.19.0",
+    "vitest": "^2.1.8"
   }
 }
