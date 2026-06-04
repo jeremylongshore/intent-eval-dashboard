@@ -30,7 +30,7 @@ export {
 } from './use-model.js';
 
 // --- HTML rendering ---
-export { renderFreshnessStrip, renderStatusPage } from './render-strip.js';
+export { renderFreshnessStrip, renderStatusPage, renderUseCards } from './render-strip.js';
 
 // --- generator (data → site) ---
 export {

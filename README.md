@@ -31,6 +31,45 @@ Ratified by ISEDC Session 8 — see [DR-035](https://github.com/jeremylongshore/
 
 **Site format:** single-file HTML per page at v0.1.0 (zero build step; pure rsync deploy). Astro adopted at Phase 2 when interactive surfaces arrive. Acting-head decision 2026-05-30 — see plan file for reasoning.
 
+## Operator-internal view (tailnet-only) — `site-internal/`
+
+The public results browser at `/results/` renders **only publicly-visible rows** — it applies the visibility-tier filter, so Tier-2-no-consent, Tier-3, and Tier-1-under-embargo rows are absent. The **operator-internal view is the inverse**: it renders **every** verified row regardless of visibility tier, for operators on the tailnet, and annotates each row with its tier so an operator can see *why* a row is or isn't public.
+
+| Concern | Public browser | Operator-internal view |
+|---|---|---|
+| Generator | `src/results/generate.ts` + `scripts/generate-results.ts` | `src/results/generate-internal.ts` + `scripts/generate-internal.ts` |
+| Visibility filter | applies `filterPubliclyVisible` | **skips it** — all tiers render |
+| Per-row tier annotation | n/a | `tier N — public` / `… — internal-only` badge per row |
+| View-model / 4-timestamp surface | `row-model.ts` | **same** `row-model.ts` |
+| HTML helpers | `render-html.ts` | reuses `render-html.ts` + adds a Visibility column (`render-internal.ts`) |
+| USE-method view | `/status` | embedded on the internal index (reuses `freshness/render-strip.ts`) |
+| Output directory | `site/` | **`site-internal/`** (never `site/`) |
+| C3 no-aggregate-PASS% gate | enforced | **also enforced** (per-predicate counts only) |
+
+Generate it with:
+
+```bash
+pnpm run generate:internal      # writes site-internal/internal/results/*
+pnpm run lint:c3:internal       # C3 gate over the internal output
+```
+
+(Both are wired into `pnpm run check`.)
+
+### Strict `site/` vs `site-internal/` separation — the load-bearing binding
+
+`site-internal/` is **tailnet-only and must never be served from the public origin.** The separation is enforced structurally:
+
+- The public Caddy block serves `/srv/intent-eval-dashboard/site/` only.
+- The public `deploy.yml` triggers on `paths: ['site/**']` (a change to `site-internal/**` does **not** redeploy the public site), and its smoke-file checks, C3 scan, and predicate-URI scan all target `site` only.
+- `generate-internal.ts` **refuses** to write into `site/` (exits non-zero if the target basename is `site`).
+- The internal pages are `noindex, nofollow` with no public `canonical`, and self-identify via `<meta name="iep-surface" content="tailnet-only">`.
+
+`site-internal/`'s generated HTML *is* committed (so the VPS `git reset --hard` checkout has it on disk for the future tailnet block); only build artifacts under it are gitignored, mirroring `site/`.
+
+### Deploy is a documented human-gated follow-up (NOT in this change)
+
+The tailnet-only **hostname** (e.g. `labs-internal.<tailnet>`), the **Tailscale-identity-gated Caddy block** that serves `site-internal/`, and the DNS/port wiring are a **human-gated VPS ops step** — they are intentionally **not** implemented here. This change builds the generator + its output only. Per the puxu.9 bead and the VP DevRel binding (DR-035 § 8): **no basicauth on this hostname — Tailscale identity is the gate.** It matches the existing tailnet-only infra pattern (Netdata at `intentsolutions:19999`, ntfy at `intentsolutions:8080`). Until that ops step is done, there is **no route** to this output.
+
 ## What ships in Phase 2
 
 Schema evolution to `@intentsolutions/core@0.2.0` (adds `pre_registration_hash`, `retraction/v1`, `dashboard-render/v1`) · 6-worker ingest supervision tree · results browser · sign-your-own-homework (sequenced) · retraction protocol with Caddy kill-switch · ops-lite alerting · Phase A.0 symmetric rendering.

@@ -9,6 +9,11 @@ dist/
 .astro/
 site/dist/
 site/.astro/
+# site-internal/ is the TAILNET-ONLY operator output (puxu.9). Its generated
+# HTML IS committed (so the VPS checkout has it for the future tailnet-only
+# Caddy block) — only build artifacts under it are ignored, mirroring site/.
+site-internal/dist/
+site-internal/.astro/
 .cache/
 build/
 

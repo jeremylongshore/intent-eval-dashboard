@@ -36,18 +36,34 @@ export {
   type GateRowSource,
 } from './bundle-resolver.js';
 
-// --- HTML rendering ---
+// --- HTML rendering (public) ---
 export {
+  asOfBanner,
   bundleUrl,
+  decisionBadge,
   esc,
+  noDataPanel,
+  perPredicateBreakdown,
   renderBundlePage,
   renderRepoPage,
   renderResultsIndex,
   repoUrl,
+  SITE_FOOTER,
+  SITE_HEADER,
   slug,
 } from './render-html.js';
 
-// --- generator (data → site) ---
+// --- HTML rendering (operator-internal, tailnet-only — puxu.9) ---
+export {
+  internalBundleUrl,
+  internalRepoUrl,
+  renderInternalBundlePage,
+  renderInternalIndex,
+  renderInternalRepoPage,
+  visibilityBadge,
+} from './render-internal.js';
+
+// --- generator (public, data → site/) ---
 export {
   applyPublicVisibility,
   buildPublicResultsView,
@@ -56,6 +72,17 @@ export {
   writeResultsSite,
   type GeneratedFile,
 } from './generate.js';
+
+// --- generator (operator-internal, data → site-internal/ — puxu.9) ---
+export {
+  buildInternalResultsView,
+  buildInternalUse,
+  deriveLiveness,
+  generateInternalFiles,
+  pathFromInternalUrl,
+  writeInternalSite,
+  type InternalGeneratedFile,
+} from './generate-internal.js';
 
 // --- C3 scanner ---
 export {

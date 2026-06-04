@@ -258,6 +258,20 @@ ${detail}
 }
 
 /**
+ * Render the three USE cards (Utilization / Saturation / Errors) as a single
+ * `.use-cards` block. Extracted so BOTH the public `/status/` page and the
+ * tailnet-internal operator index (puxu.9) embed the identical USE-method view
+ * without duplicating the card markup. Pure; no document chrome.
+ */
+export function renderUseCards(use: IngestUseView): string {
+  return `        <div class="use-cards">
+${utilizationCard(use)}
+${saturationCard(use)}
+${errorsCard(use)}
+        </div>`;
+}
+
+/**
  * Render the full `/status/` page: USE cards for the ingest pipeline + the
  * freshness strip. `strip` is the same view the landing page embeds.
  */
@@ -281,11 +295,7 @@ ${STATUS_HEADER}
         </p>
         <p>This is a rendered status view, not a pager. Alerting lives elsewhere; here we just show the current pipeline state honestly.</p>
 ${silent}
-        <div class="use-cards">
-${utilizationCard(use)}
-${saturationCard(use)}
-${errorsCard(use)}
-        </div>
+${renderUseCards(use)}
         <h2>What the sources are reporting</h2>
         <p>The same per-repo decision-mix strip the home page carries — system health (above) and result mix (below) side by side.</p>
 ${renderFreshnessStrip(strip)}
