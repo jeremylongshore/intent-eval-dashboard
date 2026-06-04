@@ -1,0 +1,21 @@
+# retractions.snippet — GENERATED from retractions.json. DO NOT EDIT BY HAND.
+#
+# Regenerate: pnpm run generate:retractions
+# Source:     src/retraction/denylist.ts (validated) -> src/retraction/snippet.ts
+#
+# Deploy (human-gated VPS step — NOT performed by this repo's automation):
+#   1. git commit the regenerated snippet + tombstones
+#   2. rsync this file to /etc/caddy/retractions.snippet on the VPS
+#   3. caddy validate   (NEVER skip)
+#   4. systemctl reload caddy   (reload — NEVER restart; 24 prod containers)
+#
+# The labs site block must set the site root env once and import this file:
+#   {$IEP_SITE_ROOT} = /srv/intent-eval-dashboard/site
+#   import retractions.snippet
+#
+# Each block returns 410 Gone and serves the tombstone body. 410 (not 404) is
+# the honest status: the resource existed and was intentionally withdrawn. The
+# original attestation remains in the Rekor transparency log; the tombstone
+# discloses the reason_class. (retraction-protocol binding, DR-035.)
+
+# (no retractions — this snippet is a no-op)
