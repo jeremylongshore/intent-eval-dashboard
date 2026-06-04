@@ -378,6 +378,154 @@ table code {
     margin-bottom: 0.25rem;
 }
 
+/* --- Visually-hidden helper (legible to screen readers; color-blind aid) --- */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/*
+ * --- Per-repo freshness + decision-mix strip (puxu.7 / Epic 2.4) ---
+ *
+ * One row per source repo; one cell per hour over the last 24h. The cell COLOR
+ * is the hour's decision-mix kind. The load-bearing binding (DR-035 C4 / CMO):
+ * `no-data` carries EQUAL visual weight with `fail` — both are loud red. An
+ * empty hour is NEVER blank, neutral, or back-filled.
+ */
+.freshness-strip-grid {
+    margin-top: 1.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 1.25rem;
+    background: #fdfdfb;
+}
+.freshness-strip-grid h2 { margin-top: 0; }
+.strip__lead { font-size: 0.9rem; color: #374151; margin-bottom: 1rem; }
+.strip__scroll { overflow-x: auto; }
+
+.freshness-strip-grid__table {
+    border-collapse: separate;
+    border-spacing: 2px;
+    width: auto;
+    margin-top: 0;
+}
+.freshness-strip-grid__table th {
+    background: transparent;
+    border: 0;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #6b7280;
+    padding: 0.2rem 0.4rem;
+    white-space: nowrap;
+}
+.freshness-strip-grid__table thead th[colspan] { text-align: center; }
+.strip__repo {
+    text-align: left;
+    white-space: nowrap;
+    padding-right: 0.75rem !important;
+}
+.strip__repo code { font-size: 0.85rem; }
+
+/* A single hour cell. Square-ish, color-coded, glyph for color-blind safety. */
+.bucket {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    text-align: center;
+    vertical-align: middle;
+}
+.bucket__glyph {
+    font-size: 0.6rem;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    line-height: 18px;
+    display: block;
+}
+/* Cell colors mirror the result-badge palette EXACTLY. */
+.bucket--pass     { background: #dcfce7; border-color: #86efac; color: #14532d; }
+.bucket--advisory { background: #fef3c7; border-color: #fcd34d; color: #78350f; }
+.bucket--error    { background: #e2e8f0; border-color: #94a3b8; color: #1e293b; }
+/*
+ * fail AND no-data share the SAME loud red. A no-data hour must NOT look like a
+ * pass or a neutral blank — it is as prominent as a failure (DR-035 C4 / CMO).
+ */
+.bucket--fail,
+.bucket--no-data {
+    background: #fee2e2;
+    border-color: #f87171;
+    color: #7f1d1d;
+    font-weight: 700;
+}
+
+/* Legend swatches reuse the cell styling at inline size. */
+.strip__legend {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    padding: 0;
+    margin: 1rem 0 0;
+    font-size: 0.82rem;
+    color: #4b5563;
+}
+.strip__legend li { display: flex; align-items: center; gap: 0.4rem; }
+.bucket--legend {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+}
+.bucket--legend .bucket__glyph { line-height: 14px; }
+
+.strip__note { font-size: 0.85rem; margin-top: 1rem; }
+.strip__note--silent {
+    background: #fef2f2;
+    border-left: 3px solid #dc2626;
+    color: #7f1d1d;
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+}
+.strip__statuslink { margin-top: 1rem; font-size: 0.9rem; }
+
+/* --- /status USE-method cards (Utilization / Saturation / Errors) --- */
+.use-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+.use-card {
+    border: 1px solid #e5e7eb;
+    border-left: 4px solid #2c5282;
+    border-radius: 4px;
+    padding: 1rem 1.25rem;
+    background: #fdfdfb;
+}
+.use-card h3 { margin-top: 0; margin-bottom: 0.5rem; font-size: 1.05rem; }
+.use-card__metric { font-size: 1rem; margin: 0 0 0.5rem; }
+.use-card__metric strong { font-size: 1.3rem; }
+.use-card__pct { color: #6b7280; font-size: 0.85rem; }
+.use-card__what { font-size: 0.82rem; color: #6b7280; margin: 0.5rem 0 0; }
+.use-card__detail { font-size: 0.85rem; margin: 0.6rem 0 0; }
+.use-card__crashes { font-size: 0.85rem; margin: 0.6rem 0 0; padding-left: 1.2rem; }
+/* An alarm card (crash count > 0, or supervisor escalation) goes loud red. */
+.use-card--alarm {
+    border-color: #f87171;
+    border-left-color: #dc2626;
+    background: #fef2f2;
+}
+.use-card--alarm h3 { color: #7f1d1d; }
+.use-card__detail--alarm { color: #7f1d1d; font-weight: 600; }
+
 /* --- Responsive --- */
 @media (max-width: 600px) {
     html { font-size: 16px; }

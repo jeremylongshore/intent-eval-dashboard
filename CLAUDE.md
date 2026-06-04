@@ -100,6 +100,19 @@ The public results browser renders `gate-result/v1` rows from the VERIFIED inges
 
 **C3 is the hard integrity binding** (CTO + CMO + VP DevRel triple-refusal). Never weaken the scanner or the gate to make a test pass. The tailnet-internal operator view (puxu.9) is a SEPARATE surface that reuses the same view-model but skips `filterPubliclyVisible` — do not build it here.
 
+## Freshness + decision-mix strip + `/status` (puxu.7 — built)
+
+The top-of-landing strip (one row per source repo × 24 hourly buckets, colored by decision mix) and the `/status` USE-method view of the ingest pipeline. Mandatory per DR-035 C4 (Gregg "if absent, the dashboard is useless"). The load-bearing binding: **absence is shown loudly, never silently filled** — an hour with no verified data is `no-data`, colored as loudly as `fail`, and is NEVER carried forward, inferred, blanked, or treated as a pass.
+
+| Piece | Location | Role |
+|---|---|---|
+| Bucket model | `src/freshness/bucket-model.ts` | Pure 24-bucket decision-mix. A bucket's `kind` is `no-data` IFF its row count is 0 — there is NO carry-forward code path. Severity coloring fail > error > advisory > pass (a fail never masked by a pass). Fail-closed on an unparseable clock (everything → no-data). |
+| USE model | `src/freshness/use-model.ts` | USE-method observability of the 6-worker ingest pipeline itself. U = fresh workers / 6 (stale ≠ utilized); S = restart pressure vs OTP budget (escalation = max saturation); E = crash/verification-failure count with structured reasons. Plus fully-silent-repos from the 24h strip. |
+| HTML render | `src/freshness/render-strip.ts` | Strip fragment (injected into landing) + the `/status` page. `no-data` reuses the loud `bucket--no-data` class (== `fail`). Color-blind-safe glyphs + `sr-only` text. No predicate-URI dimension at all → structurally C3-clean. |
+| Generator | `src/freshness/generate.ts` + `scripts/generate-status.ts` | `pnpm run generate:status`. Injects the strip into `site/index.html` between `<!-- FRESHNESS-STRIP:START/END -->` markers (idempotent; THROWS if markers absent — never silently appends), writes `site/status/index.html`. Current state = all 6 repos no-data, U=0/6 (honest current truth). |
+
+The synthetic **25h-silent worker test** (`src/freshness/bucket-model.test.ts` + `generate.test.ts`) proves the binding: a worker whose last verified row was 25h ago shows `no-data` across the whole window with the prior pass NOT back-filled into any in-window bucket. `pnpm run check` runs `generate:status` then `lint:c3` over the whole `site` so the strip + status output are C3-gated. The tailnet-internal operator status view (puxu.9) is a SEPARATE surface — do not build it here.
+
 ## Tactical guidance
 
 - **Partner-name discipline (DR-004 S1Q2):** enforced via CI grep gate. The grep pattern lives in PRIVATE `~/000-projects/CLAUDE.md`; never inline in any file in this repo.
