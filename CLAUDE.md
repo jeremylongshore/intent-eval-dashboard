@@ -86,6 +86,20 @@ On failure → ingest worker crashes with structured reason; supervisor marks `l
 
 `tests/TESTING.md` is the per-repo testing-policy doc. CI references in-repo harness commands — never `~/.claude/` paths.
 
+## Results browser (`/results/`, puxu.6 — built)
+
+The public results browser renders `gate-result/v1` rows from the VERIFIED ingest snapshots. It consumes `src/ingest/renderer.ts`'s `RenderInput` (the verify-before-render seam) — never raw manifests — resolves content-addressed bundles to gate-result rows, applies the public visibility-tier gate, and emits self-contained HTML under `site/results/` (same static pattern as `scripts/regenerate.py`; served directly by Caddy, no Hugo project in this repo).
+
+| Piece | Location | Role |
+|---|---|---|
+| Visibility-tier gate | `src/results/visibility.ts` | Pure public-render rule (DR-035 C2). Tier-2-no-consent / Tier-3 / Tier-1-under-embargo → ABSENT from public output. Fail-closed default = Tier 2. |
+| View-model + resolver seam | `src/results/row-model.ts` + `bundle-resolver.ts` | `RenderInput` → `ResultsRow`s with the 4-timestamp surface (evaluated_at + bundle created_at + Rekor anchor + ingested_at). Production resolver re-validates each bundle against the kernel EvidenceBundle schema. |
+| HTML render | `src/results/render-html.ts` | Index + per-repo + per-bundle deep-link pages. no-data == fail visual weight (CMO C4). stale_since badge. as-of = min(ingested_at). Per-predicate counts ONLY. |
+| Generator | `src/results/generate.ts` + `scripts/generate-results.ts` | `pnpm run generate:results`. Current state = all repos no-data (emit-evidence incomplete upstream). |
+| **C3 gate** | `src/results/c3-scan.ts` + `scripts/lint-no-aggregate-pass.ts` | `pnpm run lint:c3`. Cross-predicate-aware scanner: any `X/N pass` / `X% pass` spanning ≥2 predicate URIs → exit 1. Single-predicate counts allowed. Wired into `ingest-ci.yml` + `deploy.yml` as a REQUIRED gate (run directly, never piped through `tee` — exit code is load-bearing). Synthetic fixtures at `src/results/__fixtures__/c3-{clean,violation}.html`. |
+
+**C3 is the hard integrity binding** (CTO + CMO + VP DevRel triple-refusal). Never weaken the scanner or the gate to make a test pass. The tailnet-internal operator view (puxu.9) is a SEPARATE surface that reuses the same view-model but skips `filterPubliclyVisible` — do not build it here.
+
 ## Tactical guidance
 
 - **Partner-name discipline (DR-004 S1Q2):** enforced via CI grep gate. The grep pattern lives in PRIVATE `~/000-projects/CLAUDE.md`; never inline in any file in this repo.

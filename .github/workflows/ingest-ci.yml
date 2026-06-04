@@ -14,6 +14,8 @@ on:
     paths:
       - 'src/**'
       - 'ingest/**'
+      - 'scripts/**'
+      - 'site/**'
       - 'package.json'
       - 'pnpm-lock.yaml'
       - 'tsconfig*.json'
@@ -25,6 +27,8 @@ on:
     paths:
       - 'src/**'
       - 'ingest/**'
+      - 'scripts/**'
+      - 'site/**'
       - 'package.json'
       - 'pnpm-lock.yaml'
       - 'tsconfig*.json'
@@ -74,7 +78,7 @@ jobs:
       - name: Install
         run: pnpm install --no-frozen-lockfile
 
-      - name: Full gate (lint + typecheck + test + build)
+      - name: Full gate (lint + typecheck + test + build + generate + C3)
         run: pnpm run check
 
       - name: Coverage
@@ -82,3 +86,28 @@ jobs:
 
       - name: Harness verify (hash-pinned policy)
         run: pnpm run harness:verify
+
+      # C3 HARD INTEGRITY GATE (DR-035 § 4 C3 — CTO + CMO + VP DevRel triple
+      # refusal). Re-scan the COMMITTED site/results/ output independently of the
+      # generator so a hand-edited / out-of-band HTML edit that introduced a
+      # cross-predicate aggregate PASS% is still caught. This is a REAL scanner
+      # (scripts/lint-no-aggregate-pass.ts → src/results/c3-scan.ts), not a doc.
+      #
+      # NOTE: run the script DIRECTLY — do NOT pipe through `tee` without
+      # `set -o pipefail`, or the non-zero exit code is masked (the bug from
+      # intent-eval-core's boundary-check.yml). The script's exit code IS the
+      # step's exit code.
+      - name: C3 aggregate-PASS% gate (committed results output)
+        run: node --experimental-strip-types scripts/lint-no-aggregate-pass.ts site/results
+
+      # Prove the C3 scanner actually fails on a laundered metric (so a future
+      # edit that neuters the scanner is itself caught). Inverts the exit code of
+      # a scan against the known-violation fixture: the scan MUST exit non-zero.
+      - name: C3 scanner self-check (synthetic violation MUST fail)
+        run: |
+          set -euo pipefail
+          if node --experimental-strip-types scripts/lint-no-aggregate-pass.ts src/results/__fixtures__/c3-violation.html; then
+            echo "::error::C3 scanner did NOT flag the known cross-predicate aggregate-PASS% fixture — the scanner is broken or neutered."
+            exit 1
+          fi
+          echo "✓ C3 scanner correctly fails on the synthetic violation fixture."

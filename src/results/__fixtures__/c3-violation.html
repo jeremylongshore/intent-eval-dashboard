@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><title>C3 violation fixture</title><link rel="stylesheet" href="/style.css"></head>
+<body>
+<main>
+  <h1>Results (LAUNDERED — must fail the C3 gate)</h1>
+  <!--
+    This fixture composites a pass-rate ACROSS two distinct predicate URIs in the
+    SAME scope. This is the banned "metric laundering": gate-result/v1 and
+    validation-result/v1 have heterogeneous semantics, so a single PASS% over
+    both is forbidden. The C3 scanner MUST flag this and the CI gate MUST exit
+    non-zero.
+  -->
+  <section>
+    <p>
+      Across <code>https://evals.intentsolutions.io/gate-result/v1</code> and
+      <code>https://evals.intentsolutions.io/validation-result/v1</code>:
+      <strong>7/10 pass</strong> overall.
+    </p>
+  </section>
+  <p>And a percent form too, spanning the same two predicates: 70% pass.</p>
+</main>
+</body>
+</html>
