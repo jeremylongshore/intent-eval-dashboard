@@ -84,6 +84,26 @@ jobs:
           fi
           echo "✓ C3 scanner correctly fails on the synthetic violation fixture."
 
+      # NO-UPTIME-SLA-CLAIM GATE (DR-035 § 8 — CFO refusal): this is a
+      # best-effort, single-operator dashboard. It must NEVER advertise an uptime
+      # SLA. "99.9% uptime", uptime/availability guarantees, "N nines" — all
+      # forbidden in the public output. The public commitment is exactly
+      # "best-effort, single-operator, see /status for liveness".
+      #
+      # Same execution discipline as the C3 gate: self-contained scanner
+      # (src/alerting/no-uptime-scan.ts), run DIRECTLY (no `tee` masking), the
+      # script's exit code IS the step's exit code.
+      - name: No-uptime-SLA-claim gate (whole site)
+        run: node --experimental-strip-types scripts/check-uptime-claims.ts site
+      - name: Uptime-claim scanner self-check (synthetic violation MUST fail)
+        run: |
+          set -euo pipefail
+          if node --experimental-strip-types scripts/check-uptime-claims.ts src/alerting/__fixtures__/uptime-violation.html; then
+            echo "::error::uptime-claim scanner did NOT flag the known uptime-SLA fixture — scanner broken/neutered."
+            exit 1
+          fi
+          echo "✓ uptime-claim scanner correctly fails on the synthetic violation fixture."
+
       - name: Predicate-URI-at-labs scan
         # DR-010 + DR-035 CISO binding: predicate URIs MUST live at
         # evals.intentsolutions.io exclusively. Refuses any URL of shape
