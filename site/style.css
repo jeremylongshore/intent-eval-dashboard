@@ -221,7 +221,77 @@ main {
 .badge--active { background: #dbeafe; color: #1e3a8a; border-color: #93c5fd; }
 .badge--draft { background: #fef3c7; color: #78350f; border-color: #fcd34d; }
 .badge--deprecated { background: #f3f4f6; color: #4b5563; border-color: #d1d5db; }
-.badge--no-data { background: #fee2e2; color: #7f1d1d; border-color: #fca5a5; }
+
+/* --- Results decision badges (CMO C4: no-data == fail in visual weight) --- */
+/* pass — calm green; it is the only "everything is fine" state. */
+.badge--result-pass { background: #dcfce7; color: #14532d; border-color: #86efac; }
+/* advisory — amber; explicitly NOT a pass. */
+.badge--result-advisory { background: #fef3c7; color: #78350f; border-color: #fcd34d; }
+/* error — slate; a gate could not decide. */
+.badge--result-error { background: #e2e8f0; color: #1e293b; border-color: #94a3b8; }
+/*
+ * fail AND no-data share the SAME loud red treatment by design. A source with
+ * no verified data must NOT look like a pass or a neutral blank — it is as
+ * prominent as a failure (CMO C4 addendum).
+ */
+.badge--result-fail,
+.badge--no-data {
+    background: #fee2e2;
+    color: #7f1d1d;
+    border-color: #f87171;
+    font-weight: 700;
+}
+/* stale_since badge (Gregg + Armstrong) — visible amber-on-source flag. */
+.badge--stale {
+    background: #fff7ed;
+    color: #9a3412;
+    border-color: #fdba74;
+    font-weight: 600;
+}
+/* a source that DID ingest rows this pass — quiet confirmation. */
+.badge--fresh { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
+
+/* --- No-data panel: equal visual weight with a failure --- */
+.no-data-panel {
+    background: #fef2f2;
+    border: 1px solid #f87171;
+    border-left: 4px solid #dc2626;
+    border-radius: 4px;
+    padding: 1rem 1.25rem;
+    margin-top: 1.5rem;
+    font-size: 0.92rem;
+    color: #7f1d1d;
+}
+.no-data-panel__title {
+    font-weight: 700;
+    color: #7f1d1d;
+    margin-bottom: 0.4rem;
+}
+
+/* --- Per-repo freshness strip + results tables --- */
+.freshness-strip th, .freshness-strip td { font-size: 0.88rem; }
+.results-table { font-size: 0.82rem; }
+.results-table th, .results-table td { padding: 0.45rem 0.55rem; vertical-align: top; }
+.results-table time { white-space: nowrap; }
+
+.repo-results {
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 1.25rem;
+    margin-top: 1.5rem;
+    background: #fdfdfb;
+}
+.repo-results h3 { margin-top: 0; }
+
+.as-of {
+    border-left: 3px solid #2c5282;
+    font-size: 0.9rem;
+}
+.as-of--none { border-left-color: #dc2626; background: #fef2f2; color: #7f1d1d; }
+
+.predicate-note { font-size: 0.85rem; color: #6b7280; margin-top: 0.75rem; }
+.predicate-breakdown { font-size: 0.88rem; margin-top: 0.5rem; }
+.predicate-breakdown code { font-size: 0.85em; }
 
 /* --- Eval-set list (index card layout) --- */
 .eval-list {

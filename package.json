@@ -28,7 +28,9 @@
     "format:check": "prettier --check .",
     "harness:verify": "audit-harness verify",
     "harness:init": "audit-harness init",
-    "check": "pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build"
+    "generate:results": "node --experimental-strip-types scripts/generate-results.ts site",
+    "lint:c3": "node --experimental-strip-types scripts/lint-no-aggregate-pass.ts site/results",
+    "check": "pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build && pnpm run generate:results && pnpm run lint:c3"
   },
   "pnpm": {
     "//": "@intentsolutions/core@0.2.0 (Epic 2.1 schema evolution) is not yet PUBLISHED to npm — only 0.1.1 is. Epic 2.2 DEPENDS ON 0.2.0 per the bead. Until 0.2.0 publishes, resolve the kernel from the local sibling checkout. When 0.2.0 lands on npm, delete this override and the dependency range resolves normally from the registry.",

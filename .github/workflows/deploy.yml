@@ -55,17 +55,34 @@ jobs:
           [ "$FAILED" -eq 0 ] && echo "✓ all HTML files pass DOCTYPE + closing tag + stylesheet checks"
           exit $FAILED
 
-      - name: C3 aggregate-PASS% lint
-        # DR-035 § 4 C3 binding (CTO + CMO + VP DevRel independent refusals):
-        # NO top-line aggregate PASS% across heterogeneous predicate semantics.
-        # Refuses any rendered output containing "<X>/<N> pass" or "<X>% pass".
+      # C3 HARD INTEGRITY GATE (DR-035 § 4 C3 — CTO + CMO + VP DevRel triple
+      # refusal): NO aggregate PASS% spanning MULTIPLE predicate URIs in the
+      # rendered output. A count scoped to a single predicate URI is permitted.
+      # This is the REAL cross-predicate-aware scanner (scripts/lint-no-aggregate
+      # -pass.ts → src/results/c3-scan.ts), NOT the prior naive grep which could
+      # false-positive on a legitimate single-predicate count.
+      #
+      # The scanner is self-contained (zero imports) so it runs under Node's
+      # built-in --experimental-strip-types with NO install, NO build, NO kernel
+      # checkout — keeping this static-deploy job cheap.
+      #
+      # Run the script DIRECTLY — NEVER pipe through `tee` without `set -o
+      # pipefail`, or the non-zero exit is masked (the intent-eval-core
+      # boundary-check.yml bug). The script's exit code IS the step's exit code.
+      - name: Set up Node (for the C3 scanner)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: C3 aggregate-PASS% gate (whole site)
+        run: node --experimental-strip-types scripts/lint-no-aggregate-pass.ts site
+      - name: C3 scanner self-check (synthetic violation MUST fail)
         run: |
           set -euo pipefail
-          if grep -rEn "[0-9]+/[0-9]+ pass|[0-9]+% pass" site/ ; then
-            echo "::error::C3 violation — aggregate PASS% detected in rendered output"
+          if node --experimental-strip-types scripts/lint-no-aggregate-pass.ts src/results/__fixtures__/c3-violation.html; then
+            echo "::error::C3 scanner did NOT flag the known cross-predicate aggregate-PASS% fixture — scanner broken/neutered."
             exit 1
           fi
-          echo "✓ C3 aggregate-PASS% lint: no violations"
+          echo "✓ C3 scanner correctly fails on the synthetic violation fixture."
 
       - name: Predicate-URI-at-labs scan
         # DR-010 + DR-035 CISO binding: predicate URIs MUST live at

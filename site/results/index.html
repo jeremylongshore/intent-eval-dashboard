@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Results — Intent Eval Platform</title>
+    <meta name="description" content="Verified gate-result rows from the Intent Eval Platform repos, rendered from signed, Rekor-anchored Evidence Bundles. No aggregate pass-rates across predicates.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://labs.intentsolutions.io/results/">
+    <link rel="stylesheet" href="/style.css">
+
+    <meta property="og:title" content="Results — Intent Eval Platform">
+    <meta property="og:description" content="Verified gate-result rows from the Intent Eval Platform repos, rendered from signed, Rekor-anchored Evidence Bundles. No aggregate pass-rates across predicates.">
+    <meta property="og:url" content="https://labs.intentsolutions.io/results/">
+    <meta property="og:type" content="website">
+
+    <meta name="iep-source-repo" content="github.com/jeremylongshore/intent-eval-dashboard">
+    <meta name="iep-dashboard-version" content="0.1.0">
+</head>
+<body>
+    <header class="site-header">
+        <div class="site-header__inner">
+            <a href="/" class="site-header__wordmark">IEP&nbsp;Labs</a>
+            <nav class="site-nav" aria-label="Primary">
+                <a href="/eval-sets/">Eval Sets</a>
+                <a href="/results/">Results</a>
+                <a href="/methodology/">Methodology</a>
+                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <h1>Results</h1>
+        <p class="lead">
+            Each row below traces back through a content-addressed Evidence Bundle — signed via sigstore, anchored in the Rekor transparency log, re-verified at ingest — to a <code>gate-result/v1</code> attestation. We render the spec of what we measure on the <a href="/eval-sets/">eval-sets</a> page; here we render <em>what happened</em>.
+        </p>
+        <p>
+            We do not publish an aggregate "PASS%" across heterogeneous predicates. <code>no-data</code> is not a pass; <code>advisory</code> is not a pass. Counts are only ever shown within a single predicate URI.
+        </p>
+        <div class="meta-block as-of as-of--none">
+            <p style="margin:0;"><strong>As of:</strong> no source has a verified snapshot yet. Every repo below is in a <code>no-data</code> state.</p>
+        </div>
+        <h2>Per-repo freshness</h2>
+        <table class="freshness-strip">
+            <thead>
+                <tr><th>Source</th><th>Status</th><th>Last ingested</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><a href="/results/iec/"><code>iec</code></a></td>
+                    <td><span class="badge badge--no-data">no-data</span></td>
+                    <td><code>—</code></td>
+                </tr>
+                <tr>
+                    <td><a href="/results/iel/"><code>iel</code></a></td>
+                    <td><span class="badge badge--no-data">no-data</span></td>
+                    <td><code>—</code></td>
+                </tr>
+                <tr>
+                    <td><a href="/results/iah/"><code>iah</code></a></td>
+                    <td><span class="badge badge--no-data">no-data</span></td>
+                    <td><code>—</code></td>
+                </tr>
+                <tr>
+                    <td><a href="/results/iaj/"><code>iaj</code></a></td>
+                    <td><span class="badge badge--no-data">no-data</span></td>
+                    <td><code>—</code></td>
+                </tr>
+                <tr>
+                    <td><a href="/results/iar/"><code>iar</code></a></td>
+                    <td><span class="badge badge--no-data">no-data</span></td>
+                    <td><code>—</code></td>
+                </tr>
+                <tr>
+                    <td><a href="/results/ccp/"><code>ccp</code></a></td>
+                    <td><span class="badge badge--no-data">no-data</span></td>
+                    <td><code>—</code></td>
+                </tr>
+            </tbody>
+        </table>
+        <h2>Per-repo results</h2>
+        <section class="repo-results">
+            <h3><a href="/results/iec/"><code>iec</code></a></h3>
+        <div class="no-data-panel">
+            <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results for <code>iec</code></p>
+            <p>This source has not yet published a verified, signed Evidence Bundle to this dashboard. <strong>No data is not a pass.</strong> It is rendered with the same prominence as a failure so an empty source can never be mistaken for a clean one.</p>
+        </div>
+        </section>
+        <section class="repo-results">
+            <h3><a href="/results/iel/"><code>iel</code></a></h3>
+        <div class="no-data-panel">
+            <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results for <code>iel</code></p>
+            <p>This source has not yet published a verified, signed Evidence Bundle to this dashboard. <strong>No data is not a pass.</strong> It is rendered with the same prominence as a failure so an empty source can never be mistaken for a clean one.</p>
+        </div>
+        </section>
+        <section class="repo-results">
+            <h3><a href="/results/iah/"><code>iah</code></a></h3>
+        <div class="no-data-panel">
+            <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results for <code>iah</code></p>
+            <p>This source has not yet published a verified, signed Evidence Bundle to this dashboard. <strong>No data is not a pass.</strong> It is rendered with the same prominence as a failure so an empty source can never be mistaken for a clean one.</p>
+        </div>
+        </section>
+        <section class="repo-results">
+            <h3><a href="/results/iaj/"><code>iaj</code></a></h3>
+        <div class="no-data-panel">
+            <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results for <code>iaj</code></p>
+            <p>This source has not yet published a verified, signed Evidence Bundle to this dashboard. <strong>No data is not a pass.</strong> It is rendered with the same prominence as a failure so an empty source can never be mistaken for a clean one.</p>
+        </div>
+        </section>
+        <section class="repo-results">
+            <h3><a href="/results/iar/"><code>iar</code></a></h3>
+        <div class="no-data-panel">
+            <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results for <code>iar</code></p>
+            <p>This source has not yet published a verified, signed Evidence Bundle to this dashboard. <strong>No data is not a pass.</strong> It is rendered with the same prominence as a failure so an empty source can never be mistaken for a clean one.</p>
+        </div>
+        </section>
+        <section class="repo-results">
+            <h3><a href="/results/ccp/"><code>ccp</code></a></h3>
+        <div class="no-data-panel">
+            <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results for <code>ccp</code></p>
+            <p>This source has not yet published a verified, signed Evidence Bundle to this dashboard. <strong>No data is not a pass.</strong> It is rendered with the same prominence as a failure so an empty source can never be mistaken for a clean one.</p>
+        </div>
+        </section>
+    </main>
+    <footer class="site-footer">
+        <div class="site-footer__inner">
+            <div>
+                <strong>labs.intentsolutions.io</strong> · dashboard <code>v0.1.0</code> · best-effort, single-operator<br>
+                Intent Solutions — <a href="https://intentsolutions.io">intentsolutions.io</a>
+            </div>
+            <div>
+                <a href="/methodology/">Methodology</a> ·
+                <a href="/eval-sets/">Eval Sets</a> ·
+                <a href="/results/">Results</a> ·
+                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
