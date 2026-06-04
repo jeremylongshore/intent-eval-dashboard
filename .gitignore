@@ -56,6 +56,3 @@ ehthumbs.db
 # --- Local-only scratch (never commit) ---
 /tmp-*
 /scratch/
-
-# --- CI kernel-sibling checkout (ingest-ci.yml; temporary until core@0.2.0 on npm) ---
-/_kernel/
