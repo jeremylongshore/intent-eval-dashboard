@@ -3,11 +3,8 @@ name: Ingest CI
 # Lint + typecheck + test + build for the TypeScript ingest + supervision
 # pipeline (src/, ingest/). Runs the full `pnpm run check` gate.
 #
-# NOTE: until `@intentsolutions/core@0.2.0` is PUBLISHED to npm, this repo
-# resolves the kernel from a sibling checkout via a pnpm `file:` override (see
-# package.json "pnpm.overrides"). So CI checks out intent-eval-core alongside
-# this repo so the override resolves. Once 0.2.0 is on npm, delete the sibling
-# checkout step + the override and CI installs the kernel from the registry.
+# The kernel @intentsolutions/core@^0.2.0 installs from the npm registry
+# (published with sigstore provenance via intent-eval-core's release.yml).
 
 on:
   pull_request:
@@ -47,18 +44,6 @@ jobs:
       - name: Checkout dashboard
         uses: actions/checkout@v4
 
-      # TEMPORARY: sibling checkout of the kernel until @intentsolutions/core@0.2.0
-      # publishes to npm. The pnpm file: override resolves to ../intent-eval-core.
-      # actions/checkout forbids paths outside the workspace, so we check the
-      # kernel into a workspace subdir and symlink ../intent-eval-core to it
-      # (the workspace parent IS writable on the runner).
-      - name: Checkout intent-eval-core (kernel sibling)
-        uses: actions/checkout@v4
-        with:
-          repository: jeremylongshore/intent-eval-core
-          path: _kernel/intent-eval-core
-          ref: main
-
       - uses: pnpm/action-setup@v4
         with:
           version: 9.15.0
@@ -68,15 +53,8 @@ jobs:
           node-version: 22
           cache: pnpm
 
-      - name: Build kernel sibling + link as ../intent-eval-core
-        run: |
-          ln -s "$GITHUB_WORKSPACE/_kernel/intent-eval-core" "$GITHUB_WORKSPACE/../intent-eval-core"
-          cd "$GITHUB_WORKSPACE/_kernel/intent-eval-core"
-          pnpm install --frozen-lockfile
-          pnpm run build
-
       - name: Install
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Full gate (lint + typecheck + test + build + generate + C3)
         run: pnpm run check

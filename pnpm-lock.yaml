@@ -4,16 +4,13 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  '@intentsolutions/core': file:../intent-eval-core
-
 importers:
 
   .:
     dependencies:
       '@intentsolutions/core':
-        specifier: file:../intent-eval-core
-        version: file:../intent-eval-core
+        specifier: ^0.2.0
+        version: 0.2.0
       '@sigstore/bundle':
         specifier: ^4.0.0
         version: 4.0.0
@@ -292,8 +289,8 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  '@intentsolutions/core@file:../intent-eval-core':
-    resolution: {directory: ../intent-eval-core, type: directory}
+  '@intentsolutions/core@0.2.0':
+    resolution: {integrity: sha512-4JxU+WatVvYyt5q+O3sChvnGBHXoOWCebpPs6YcKbJPQKmyyXHL5C0GsHPycUN7xjOc4ewMV7Gfo/m0hFAqmSA==}
     engines: {node: '>=20.0.0', pnpm: '>=9.0.0'}
 
   '@isaacs/cliui@8.0.2':
@@ -1507,7 +1504,7 @@ snapshots:
 
   '@intentsolutions/audit-harness@0.1.0': {}
 
-  '@intentsolutions/core@file:../intent-eval-core':
+  '@intentsolutions/core@0.2.0':
     dependencies:
       zod: 4.4.3
 
