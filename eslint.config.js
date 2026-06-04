@@ -13,6 +13,9 @@ export default tseslint.config(
       'cmd/**',
       'scripts/**',
       'data/**',
+      // CI checks out the kernel sibling here (ingest-ci.yml) until core@0.2.0
+      // publishes to npm; never lint the vendored kernel's own sources.
+      '_kernel/**',
       '*.config.js',
       '*.config.ts',
       '*.cjs',
