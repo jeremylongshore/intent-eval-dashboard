@@ -1,0 +1,81 @@
+name: Ingest CI
+
+# Lint + typecheck + test + build for the TypeScript ingest + supervision
+# pipeline (src/, ingest/). Runs the full `pnpm run check` gate.
+#
+# NOTE: until `@intentsolutions/core@0.2.0` is PUBLISHED to npm, this repo
+# resolves the kernel from a sibling checkout via a pnpm `file:` override (see
+# package.json "pnpm.overrides"). So CI checks out intent-eval-core alongside
+# this repo so the override resolves. Once 0.2.0 is on npm, delete the sibling
+# checkout step + the override and CI installs the kernel from the registry.
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'ingest/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'tsconfig*.json'
+      - 'vitest.config.ts'
+      - 'eslint.config.js'
+      - '.github/workflows/ingest-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'ingest/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'tsconfig*.json'
+      - 'vitest.config.ts'
+      - 'eslint.config.js'
+      - '.github/workflows/ingest-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: lint + typecheck + test + build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout dashboard
+        uses: actions/checkout@v4
+
+      # TEMPORARY: sibling checkout of the kernel until @intentsolutions/core@0.2.0
+      # publishes to npm. The pnpm file: override resolves to ../intent-eval-core.
+      - name: Checkout intent-eval-core (kernel sibling)
+        uses: actions/checkout@v4
+        with:
+          repository: jeremylongshore/intent-eval-core
+          path: ../intent-eval-core
+          ref: main
+
+      - name: Build kernel sibling (provides dist/ for the file: override)
+        working-directory: ../intent-eval-core
+        run: |
+          corepack enable
+          pnpm install --frozen-lockfile
+          pnpm run build
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Full gate (lint + typecheck + test + build)
+        run: pnpm run check
+
+      - name: Coverage
+        run: pnpm run test:coverage
+
+      - name: Harness verify (hash-pinned policy)
+        run: pnpm run harness:verify

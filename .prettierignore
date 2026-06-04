@@ -1,0 +1,7 @@
+dist/
+node_modules/
+coverage/
+site/
+pnpm-lock.yaml
+*.md
+LICENSE
