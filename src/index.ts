@@ -19,3 +19,4 @@
 export * from './supervision/index.js';
 export * from './ingest/index.js';
 export * from './results/index.js';
+export * from './freshness/index.js';

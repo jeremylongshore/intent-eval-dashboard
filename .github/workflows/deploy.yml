@@ -104,6 +104,7 @@ jobs:
           test -f site/style.css
           test -f site/eval-sets/index.html
           test -f site/methodology/index.html
+          test -f site/status/index.html
           echo "✓ all required smoke files present"
 
   deploy:
