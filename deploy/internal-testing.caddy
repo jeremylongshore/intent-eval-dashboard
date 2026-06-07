@@ -1,0 +1,94 @@
+# internal-testing.caddy — Caddy block for the GATED internal testing dashboard.
+#
+# Hand-authored (NOT generated). Serves site-internal/internal/testing/ behind
+# HTTP basic auth at internal.intentsolutions.io.
+#
+# GOVERNANCE: this surface uses basicauth on a public origin, which DR-035 § 8
+# hard-refused for the "operator full internal view." It is permitted here as a
+# NEW named gated surface under an acting-head override recorded in
+# intent-eval-lab/000-docs/040-AT-DECR-internal-testing-dashboard-basicauth-override-2026-06-07.md,
+# subject to CISO's 5 lift-overs (see inline). The pre-existing tailnet-only
+# operator-RESULTS view is unchanged and is NOT served from this block.
+#
+# Deploy (human-gated VPS step — NOT performed by this repo's automation).
+# Every numbered step is REQUIRED — none is optional:
+#   1. git commit (the generated site-internal/internal/testing/ HTML is committed)
+#   2. rsync site-internal/internal/testing/ -> /srv/intent-eval-dashboard/site-internal/internal/testing/
+#   3. EXPORT THE SITE ROOT BEFORE caddy validate. If $IEP_INTERNAL_ROOT is unset,
+#      `root` below expands to `/internal/testing` (a non-existent path) and Caddy
+#      starts CLEANLY while serving 404 for every request — a silent outage. Set it
+#      in the Caddy systemd unit's Environment= (or a global /etc/caddy env import):
+#        IEP_INTERNAL_ROOT=/srv/intent-eval-dashboard/site-internal
+#   4. set the basicauth credential on the VPS (NEVER commit it):
+#        pass internal-dashboard/basicauth-user   -> the username
+#        pass internal-dashboard/basicauth-bcrypt -> `caddy hash-password` bcrypt hash
+#      then substitute into this block (or an env-templated include).
+#   5. RATE-LIMIT THE GATE before exposing it (CISO lift-over 4). Either build Caddy
+#      with the caddy-ratelimit module and uncomment the rate_limit block below, OR
+#      install the fail2ban jail at deploy/fail2ban/ (filter + jail in this repo)
+#      pointing at /var/log/caddy/internal-testing.access.log. Do NOT expose a
+#      basicauth surface with no brute-force throttle.
+#   6. caddy validate          (NEVER skip)
+#   7. systemctl reload caddy  (reload — NEVER restart; 24 prod containers)
+#   8. DNS: Porkbun A record internal.intentsolutions.io -> 167.86.106.29
+#           + CAA letsencrypt-only (inherits zone DNSSEC). Automate via
+#           ~/000-projects/braves/.env.sops Porkbun creds — do NOT prompt.
+
+internal.intentsolutions.io {
+	# ── Lift-over 1: TLS (Let's Encrypt only; CAA-pinned at the zone). ──
+	# Caddy provisions LE automatically; the CAA record forbids other CAs.
+
+	root * {$IEP_INTERNAL_ROOT}/internal/testing
+
+	# ── Lift-over 5: audit-log — every gated request to a dedicated log so
+	# access to internal results is attributable (retain per ops policy). ──
+	log {
+		output file /var/log/caddy/internal-testing.access.log {
+			roll_size 50MiB
+			roll_keep 10
+		}
+		format json
+	}
+
+	# ── Lift-over 4: rate-limit — blunt the brute-force surface basicauth adds.
+	# Requires the caddy-ratelimit module in the VPS Caddy build; if absent,
+	# enforce at the edge (fail2ban on the access log above) until it is added. ──
+	# rate_limit {
+	#	zone internal_testing {
+	#		key    {remote_host}
+	#		events 60
+	#		window 1m
+	#	}
+	# }
+
+	# ── The gate: HTTP basic auth. ──
+	# The bcrypt hash below is a NON-FUNCTIONAL placeholder. The real hash is set
+	# on the VPS from `pass internal-dashboard/basicauth-bcrypt` and is NEVER
+	# committed. Generate with: caddy hash-password --plaintext '<password>'
+	# ── Lift-over 2: rotation — rotate the credential on the schedule in the
+	# 040-AT-DECR addendum; re-run `caddy hash-password` + reload. ──
+	basic_auth {
+		# operator REPLACE_WITH_BCRYPT_HASH_FROM_pass_internal-dashboard_basicauth-bcrypt
+		operator $2a$14$PLACEHOLDER.PLACEHOLDER.PLACEHOLDER.PLACEHOLDER.PLACEHOLDERxx
+	}
+
+	# Hardening headers — noindex echoed at the edge (pages are already noindex),
+	# plus the usual transport/permission hardening.
+	header {
+		X-Robots-Tag "noindex, nofollow"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "no-referrer"
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		-Server
+	}
+
+	file_server {
+		index index.html
+	}
+
+	# ── Lift-over 3 (weekly leakage-detection grep) is an OFF-HOST cron, not a
+	# Caddy directive: a weekly job greps public sources (this repo, gists, the
+	# public site) for the known basicauth credential value and alerts on a hit.
+	# Tracked in the 040-AT-DECR addendum + bead nr75.6.
+}

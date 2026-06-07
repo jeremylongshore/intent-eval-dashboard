@@ -1,0 +1,24 @@
+# fail2ban jail for the gated internal testing dashboard (CISO lift-over 4).
+#
+# Install on the VPS as /etc/fail2ban/jail.d/caddy-internal-testing.local
+# Pairs with deploy/fail2ban/internal-testing-filter.conf
+# (installed as /etc/fail2ban/filter.d/caddy-internal-testing.conf).
+#
+# Then: systemctl reload fail2ban  &&  fail2ban-client status caddy-internal-testing
+#
+# This is the committed rate-limit mitigation the basicauth surface REQUIRES
+# before exposure (DR-035 successor addendum 040-AT-DECR, lift-over 4). It is the
+# fallback when the Caddy binary lacks the caddy-ratelimit module; if that module
+# is present, the rate_limit block in internal-testing.caddy is preferred and this
+# jail is belt-and-suspenders.
+
+[caddy-internal-testing]
+enabled  = true
+port     = http,https
+filter   = caddy-internal-testing
+logpath  = /var/log/caddy/internal-testing.access.log
+# 8 failed basic-auth attempts within 5 minutes → 1 hour ban. bcrypt cost 14 caps
+# online guessing at ~1-2/sec; this throttles a sustained brute-force hard.
+maxretry = 8
+findtime = 5m
+bantime  = 1h
