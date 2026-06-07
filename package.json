@@ -31,12 +31,13 @@
     "generate:results": "node --experimental-strip-types scripts/generate-results.ts site",
     "generate:status": "node --experimental-strip-types scripts/generate-status.ts site",
     "generate:internal": "node --experimental-strip-types scripts/generate-internal.ts site-internal",
+    "generate:internal-testing": "node --experimental-strip-types scripts/generate-internal-testing.ts site-internal",
     "generate:retractions": "node --experimental-strip-types scripts/generate-retractions.ts src/retraction/retractions.json site",
     "lint:c3": "node --experimental-strip-types scripts/lint-no-aggregate-pass.ts site",
     "lint:c3:internal": "node --experimental-strip-types scripts/lint-no-aggregate-pass.ts site-internal",
     "lint:uptime": "node --experimental-strip-types scripts/check-uptime-claims.ts site",
     "check:liveness": "node --experimental-strip-types scripts/check-liveness-alerts.ts",
-    "check": "pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build && pnpm run generate:results && pnpm run generate:status && pnpm run generate:internal && pnpm run generate:retractions && pnpm run lint:c3 && pnpm run lint:c3:internal && pnpm run lint:uptime"
+    "check": "pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build && pnpm run generate:results && pnpm run generate:status && pnpm run generate:internal && pnpm run generate:internal-testing && pnpm run generate:retractions && pnpm run lint:c3 && pnpm run lint:c3:internal && pnpm run lint:uptime"
   },
   "dependencies": {
     "@intentsolutions/core": "^0.2.0",

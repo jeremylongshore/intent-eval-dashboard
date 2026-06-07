@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Internal testing dashboard — Intent Eval Platform</title>
+    <meta name="description" content="Gated internal testing dashboard: per-repo coverage, mutation, CRAP, architecture, and escape-scan gates from signed gate-result/v1 attestations, each one taught.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="/style.css">
+
+    <meta name="iep-view" content="internal-testing">
+    <meta name="iep-surface" content="basicauth-gated">
+    <meta name="iep-source-repo" content="github.com/jeremylongshore/intent-eval-dashboard">
+    <meta name="iep-dashboard-version" content="0.1.0">
+</head>
+<body>
+    <header class="site-header site-header--internal">
+        <div class="site-header__inner">
+            <a href="/internal/testing/" class="site-header__wordmark">IEP&nbsp;Labs · <span class="badge badge--internal">TESTING</span></a>
+            <nav class="site-nav" aria-label="Primary">
+                <a href="/internal/testing/">Testing dashboard</a>
+                <a href="/results/">Public results</a>
+                <a href="/status/">Status</a>
+                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <h1>Internal testing dashboard</h1>
+        <div class="operator-banner">
+            <p style="margin:0;"><strong>Internal testing dashboard (gated).</strong> This surface renders our own testing results — coverage, mutation, CRAP, architecture, and escape-scan gates — for every platform repo, each one <em>taught</em>: what the gate is, how we run it, what good looks like, our number, the verdict, and exactly what to fix. Every row traces back to a signed, Rekor-anchored <code>gate-result/v1</code> attestation re-verified at ingest. It is served behind a password at <code>internal.intentsolutions.io</code>; it is never indexed and never part of the public site.</p>
+        </div>
+        <section class="how-to-read">
+            <p>This is the <strong>internal testing dashboard</strong> — a guided tour of how well-tested the Intent Eval Platform repos are, and what to fix next. It is not a spreadsheet. Every gate below is explained: what it measures, how we run it, and what a healthy number looks like, next to our actual result and a plain-English verdict.</p>
+            <h2>What you are looking at</h2>
+            <p>Each repo has its own page. On it, every testing <strong>gate</strong> appears as a block with five parts:</p>
+            <ul>
+                <li><strong>The explainer</strong> — what this gate is, how we run it, and what good looks like. Written once, reused everywhere.</li>
+                <li><strong>The data</strong> — our actual result for this gate, with four timestamps (when it was evaluated, when the evidence bundle was created, its Rekor transparency-log anchor, and when this dashboard ingested it).</li>
+                <li><strong>The verdict</strong> — a one-line reading: <code>good</code>, <code>watch</code>, <code>fail</code>, or <code>error</code>.</li>
+                <li><strong>What we measured</strong> — the dimensions the gate evaluated, and any it skipped. A skipped dimension is never counted as a passed one.</li>
+                <li><strong>What to fix</strong> — the gate&#39;s own list of reasons, verbatim. This is the actionable part: it tells you exactly what is failing and why.</li>
+            </ul>
+            <h2>How to read the verdicts</h2>
+            <ul>
+                <li><strong><code>good</code></strong> — the gate passed: it meets the policy bar.</li>
+                <li><strong><code>watch</code></strong> — an advisory. Not blocking, but worth attention before it becomes a failure.</li>
+                <li><strong><code>fail</code></strong> — below the policy bar. The <strong>what to fix</strong> list is the work to do.</li>
+                <li><strong><code>error</code></strong> — the gate could not evaluate. This is <strong>not</strong> a pass — it means we do not know, and it is shown as loudly as a failure.</li>
+            </ul>
+            <h2>Two honesty rules baked in</h2>
+            <ul>
+                <li><strong><code>no-data</code> is not a pass.</strong> A repo that has not published a verified result is shown loudly, with the same visual weight as a failure — never as a clean blank.</li>
+                <li><strong>No laundered pass-rates.</strong> We never composite an aggregate &quot;percent passing&quot; across different kinds of gate. Each gate is read on its own terms.</li>
+            </ul>
+            <p>Every result here is signed, anchored in the public Rekor transparency log, and re-verified the moment this dashboard ingests it. If a result cannot be verified, it does not appear — it is not silently treated as a pass.</p>
+        </section>
+        <div class="meta-block as-of as-of--none">
+            <p style="margin:0;"><strong>As of:</strong> no source has a verified snapshot yet. Every repo below is in a <code>no-data</code> state.</p>
+        </div>
+        <h2>Per-repo testing results</h2>
+        <table class="freshness-strip">
+            <thead>
+                <tr><th>Repo</th><th>Status</th><th>Worst verdict</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><a href="/internal/testing/iec/"><code>iec</code></a></td>
+                    <td><span class="badge badge--no-data">no-data</span></td>
+                    <td><code>—</code></td>
+                </tr>
+                <tr>
+                    <td><a href="/internal/testing/iel/"><code>iel</code></a></td>
+                    <td><span class="badge badge--no-data">no-data</span></td>
+                    <td><code>—</code></td>
+                </tr>
+                <tr>
+                    <td><a href="/internal/testing/iah/"><code>iah</code></a></td>
+                    <td><span class="badge badge--no-data">no-data</span></td>
+                    <td><code>—</code></td>
+                </tr>
+                <tr>
+                    <td><a href="/internal/testing/iaj/"><code>iaj</code></a></td>
+                    <td><span class="badge badge--no-data">no-data</span></td>
+                    <td><code>—</code></td>
+                </tr>
+                <tr>
+                    <td><a href="/internal/testing/iar/"><code>iar</code></a></td>
+                    <td><span class="badge badge--no-data">no-data</span></td>
+                    <td><code>—</code></td>
+                </tr>
+                <tr>
+                    <td><a href="/internal/testing/ccp/"><code>ccp</code></a></td>
+                    <td><span class="badge badge--no-data">no-data</span></td>
+                    <td><code>—</code></td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+    <footer class="site-footer">
+        <div class="site-footer__inner">
+            <div>
+                <strong>labs.intentsolutions.io</strong> · dashboard <code>v0.1.0</code> · <a href="/status/" class="footer__commitment">best-effort, single-operator, see /status for liveness</a><br>
+                Intent Solutions — <a href="https://intentsolutions.io">intentsolutions.io</a>
+            </div>
+            <div>
+                <a href="/methodology/">Methodology</a> ·
+                <a href="/eval-sets/">Eval Sets</a> ·
+                <a href="/results/">Results</a> ·
+                <a href="/status/">Status</a> ·
+                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
