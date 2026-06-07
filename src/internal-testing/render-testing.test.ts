@@ -125,6 +125,26 @@ describe('renderTestingRepoPage — edge states', () => {
     const html = renderTestingRepoPage(viewOf([repo]), repo, explainerSet([])); // empty set
     expect(html).toContain('No explainer authored yet');
   });
+
+  it('renders an inert, escaped Rekor link for a non-integer index (type-hole defence)', () => {
+    // A malformed resolver could slip a non-number through; it must not break out
+    // of the href attribute or the <code> text.
+    const repo: TestingRepo = {
+      repo: 'iec',
+      noData: false,
+      rows: [
+        testingRow({
+          gateName: 'coverage',
+          rekorLogIndices: ['"onload="alert(1)' as unknown as number, -5],
+        }),
+      ],
+    };
+    const html = renderTestingRepoPage(viewOf([repo]), repo, EXPLAINERS);
+    expect(html).toContain('href="#"'); // bad value → inert link, not a real URL
+    expect(html).not.toContain('logIndex="onload'); // never reaches the URL
+    expect(html).not.toContain('onload="alert'); // never escapes the attribute
+    expect(html).toContain('&quot;onload='); // shown as escaped text only
+  });
 });
 
 describe('renderTestingIndex', () => {

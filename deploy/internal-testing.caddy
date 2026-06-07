@@ -10,16 +10,27 @@
 # subject to CISO's 5 lift-overs (see inline). The pre-existing tailnet-only
 # operator-RESULTS view is unchanged and is NOT served from this block.
 #
-# Deploy (human-gated VPS step — NOT performed by this repo's automation):
+# Deploy (human-gated VPS step — NOT performed by this repo's automation).
+# Every numbered step is REQUIRED — none is optional:
 #   1. git commit (the generated site-internal/internal/testing/ HTML is committed)
 #   2. rsync site-internal/internal/testing/ -> /srv/intent-eval-dashboard/site-internal/internal/testing/
-#   3. set the basicauth credential on the VPS (NEVER commit it):
+#   3. EXPORT THE SITE ROOT BEFORE caddy validate. If $IEP_INTERNAL_ROOT is unset,
+#      `root` below expands to `/internal/testing` (a non-existent path) and Caddy
+#      starts CLEANLY while serving 404 for every request — a silent outage. Set it
+#      in the Caddy systemd unit's Environment= (or a global /etc/caddy env import):
+#        IEP_INTERNAL_ROOT=/srv/intent-eval-dashboard/site-internal
+#   4. set the basicauth credential on the VPS (NEVER commit it):
 #        pass internal-dashboard/basicauth-user   -> the username
 #        pass internal-dashboard/basicauth-bcrypt -> `caddy hash-password` bcrypt hash
 #      then substitute into this block (or an env-templated include).
-#   4. caddy validate          (NEVER skip)
-#   5. systemctl reload caddy  (reload — NEVER restart; 24 prod containers)
-#   6. DNS: Porkbun A record internal.intentsolutions.io -> 167.86.106.29
+#   5. RATE-LIMIT THE GATE before exposing it (CISO lift-over 4). Either build Caddy
+#      with the caddy-ratelimit module and uncomment the rate_limit block below, OR
+#      install the fail2ban jail at deploy/fail2ban/ (filter + jail in this repo)
+#      pointing at /var/log/caddy/internal-testing.access.log. Do NOT expose a
+#      basicauth surface with no brute-force throttle.
+#   6. caddy validate          (NEVER skip)
+#   7. systemctl reload caddy  (reload — NEVER restart; 24 prod containers)
+#   8. DNS: Porkbun A record internal.intentsolutions.io -> 167.86.106.29
 #           + CAA letsencrypt-only (inherits zone DNSSEC). Automate via
 #           ~/000-projects/braves/.env.sops Porkbun creds — do NOT prompt.
 

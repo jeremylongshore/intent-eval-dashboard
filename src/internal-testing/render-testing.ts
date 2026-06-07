@@ -143,13 +143,26 @@ ${items}
                 </div>`;
 }
 
-/** The Rekor anchor cell (links each log index to the public transparency log). */
+/**
+ * The Rekor anchor cell (links each log index to the public transparency log).
+ *
+ * Defence in depth: although `i` is typed `number`, the production resolver is
+ * deferred and a JSON-deserialised value could slip a non-integer through the
+ * type hole. We only build the URL from a validated non-negative integer (else
+ * the link is inert `#`), and the visible text is always escaped — so a bad
+ * value can never break out of the `href` attribute or the `<code>` text.
+ */
 function rekorAnchors(indices: readonly number[]): string {
   if (indices.length === 0) return '<code>—</code>';
   return indices
-    .map(
-      (i) => `<a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=${i}"><code>${i}</code></a>`,
-    )
+    .map((i) => {
+      const safe = Number.isInteger(i) && i >= 0 ? String(i) : '';
+      const href =
+        safe.length > 0
+          ? `https://rekor.sigstore.dev/api/v1/log/entries?logIndex=${safe}`
+          : '#';
+      return `<a href="${esc(href)}"><code>${esc(String(i))}</code></a>`;
+    })
     .join(', ');
 }
 

@@ -27,12 +27,33 @@
 
 import { esc } from '../results/render-html.js';
 
+/**
+ * NUL-delimited placeholder for a protected code span. NUL (U+0000) cannot occur
+ * in authored Markdown, so the placeholder can never collide with real prose
+ * (a space-delimited token like ` C0 ` could match text such as "see C0 for…").
+ * Built at runtime so no literal control char lives in the source.
+ */
+const NUL = String.fromCharCode(0);
+const codeToken = (n: number): string => `${NUL}C${n}${NUL}`;
+const codeTokenRe = new RegExp(`${NUL}C(\\d+)${NUL}`, 'g');
+
 /** Apply the supported INLINE tokens to an already-HTML-escaped string. */
 function inline(escaped: string): string {
-  // `code` first (so a literal ** inside backticks is not bolded), then **bold**.
-  return escaped
-    .replace(/`([^`]+)`/g, (_m, code: string) => `<code>${code}</code>`)
-    .replace(/\*\*([^*]+)\*\*/g, (_m, bold: string) => `<strong>${bold}</strong>`);
+  // Extract code spans to opaque placeholders FIRST, so the bold pass can never
+  // see `**` that lives inside a code span — including `**` adjacent to a
+  // backtick boundary (`` `**x**` `` must stay literal, not become a <strong>
+  // nested inside the <code>). Code content is then restored verbatim.
+  const codeSpans: string[] = [];
+  const guarded = escaped.replace(/`([^`]+)`/g, (_m, code: string) => {
+    const token = codeToken(codeSpans.length);
+    codeSpans.push(`<code>${code}</code>`);
+    return token;
+  });
+  const bolded = guarded.replace(
+    /\*\*([^*]+)\*\*/g,
+    (_m, bold: string) => `<strong>${bold}</strong>`,
+  );
+  return bolded.replace(codeTokenRe, (_m, i: string) => codeSpans[Number(i)]!);
 }
 
 /** Render the minimal Markdown subset to indented HTML block strings. */

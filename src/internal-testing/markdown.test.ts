@@ -71,4 +71,25 @@ describe('renderMarkdown — inline + safety', () => {
     expect(html).toContain('<code>a ** b</code>');
     expect(html).not.toContain('<strong>');
   });
+
+  it('keeps ** literal at a code-span boundary (no <strong> nested in <code>)', () => {
+    // The boundary case the space-delimited token got wrong: `**x**` inside ticks.
+    const html = renderMarkdown('`**code**`');
+    expect(html).toContain('<code>**code**</code>');
+    expect(html).not.toContain('<strong>');
+    expect(html).not.toContain('<code><strong>');
+  });
+
+  it('still bolds OUTSIDE code spans on the same line', () => {
+    const html = renderMarkdown('`kept` and **bolded**');
+    expect(html).toContain('<code>kept</code>');
+    expect(html).toContain('<strong>bolded</strong>');
+  });
+
+  it('does not corrupt prose that resembles the internal placeholder', () => {
+    // A naive ` C0 ` placeholder would have matched real text like "see C0 ".
+    const html = renderMarkdown('see C0 for the spec and `x` after');
+    expect(html).toContain('see C0 for the spec and <code>x</code> after');
+    expect(html).not.toContain('undefined');
+  });
 });
