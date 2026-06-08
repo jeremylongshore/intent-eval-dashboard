@@ -92,6 +92,22 @@ export {
   REPORT_MANIFEST_ASSET,
 } from './manifest-urls.js';
 
+// --- gate-row store (verified gate-result bodies, keyed by bundle content key) ---
+export {
+  FsGateRowStore,
+  MemoryGateRowStore,
+  type GateRowStore,
+  type StoredGateRows,
+} from './gate-row-store.js';
+
+// --- live ingest pass (verified worker → snapshots + gate-rows → RenderInput) ---
+export {
+  CachingManifestFetcher,
+  runLivePass,
+  type LivePassDeps,
+  type LivePassResult,
+} from './live-pass.js';
+
 // --- worker (the 8-step contract) ---
 export { runIngestWorker, type IngestWorkerDeps } from './worker.js';
 

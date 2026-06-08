@@ -17,6 +17,11 @@ site-internal/.astro/
 .cache/
 build/
 
+# --- Live ingest content/snapshot/gate-row stores (local + VPS; like /var/lib) ---
+# Verified bundles are content-addressed here by the ingest pass; the rendered
+# HTML in site/ + site-internal/ is the committed artifact, not the raw store.
+.ingest-store/
+
 # --- Go (cmd/labs-tui/ reserved for v0.2.0+) ---
 cmd/labs-tui/bin/
 cmd/labs-tui/*.test
