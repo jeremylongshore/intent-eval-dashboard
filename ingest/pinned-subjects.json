@@ -54,7 +54,7 @@
       "workflowRefs": [
         "jeremylongshore/j-rig-skill-binary-eval/.github/workflows/release.yml@refs/tags/*"
       ],
-      "operatorConfirmed": false
+      "operatorConfirmed": true
     },
     "iar": {
       "githubRepo": "jeremylongshore/intent-rollout-gate",
