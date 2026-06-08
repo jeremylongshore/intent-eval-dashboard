@@ -46,7 +46,7 @@
       "workflowRefs": [
         "jeremylongshore/intent-audit-harness/.github/workflows/release.yml@refs/tags/*"
       ],
-      "operatorConfirmed": false
+      "operatorConfirmed": true
     },
     "iaj": {
       "githubRepo": "jeremylongshore/j-rig-skill-binary-eval",
