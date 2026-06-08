@@ -85,6 +85,13 @@ export {
 // --- fetcher ---
 export { HttpManifestFetcher, type ManifestUrlResolver } from './fetcher-http.js';
 
+// --- manifest URL resolver (step-1 wiring: repo → Release asset URL) ---
+export {
+  makeManifestUrlResolver,
+  manifestUrlForGithubRepo,
+  REPORT_MANIFEST_ASSET,
+} from './manifest-urls.js';
+
 // --- worker (the 8-step contract) ---
 export { runIngestWorker, type IngestWorkerDeps } from './worker.js';
 
