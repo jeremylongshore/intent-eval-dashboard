@@ -37,8 +37,8 @@
         <p>
             We do not publish an aggregate "PASS%" across heterogeneous predicates. <code>no-data</code> is not a pass; <code>advisory</code> is not a pass. Counts are only ever shown within a single predicate URI.
         </p>
-        <div class="meta-block as-of">
-            <p style="margin:0;"><strong>As of:</strong> <time datetime="2026-06-08T02:47:43.464Z">2026-06-08T02:47:43.464Z</time> — the oldest ingest across all sources in this view (<code>min(ingested_at)</code>). Sources verified more recently may be fresher.</p>
+        <div class="meta-block as-of as-of--none">
+            <p style="margin:0;"><strong>As of:</strong> no source has a verified snapshot yet. Every repo below is in a <code>no-data</code> state.</p>
         </div>
         <h2>Per-repo freshness</h2>
         <table class="freshness-strip">
@@ -48,183 +48,74 @@
             <tbody>
                 <tr>
                     <td><a href="/results/iec/"><code>iec</code></a></td>
-                    <td><span class="badge badge--fresh">2 rows</span></td>
-                    <td><code>2026-06-08T02:47:43.464Z</code></td>
+                    <td><span class="badge badge--no-data">no-data</span> <span class="badge badge--stale" title="serving prior-good snapshot">stale since 2026-06-08T07:56:44.947Z</span></td>
+                    <td><code>—</code></td>
                 </tr>
                 <tr>
                     <td><a href="/results/iel/"><code>iel</code></a></td>
-                    <td><span class="badge badge--fresh">1 row</span></td>
-                    <td><code>2026-06-08T02:47:43.691Z</code></td>
+                    <td><span class="badge badge--no-data">no-data</span> <span class="badge badge--stale" title="serving prior-good snapshot">stale since 2026-06-08T07:56:44.947Z</span></td>
+                    <td><code>—</code></td>
                 </tr>
                 <tr>
                     <td><a href="/results/iah/"><code>iah</code></a></td>
-                    <td><span class="badge badge--fresh">1 row</span></td>
-                    <td><code>2026-06-08T02:47:43.922Z</code></td>
+                    <td><span class="badge badge--no-data">no-data</span> <span class="badge badge--stale" title="serving prior-good snapshot">stale since 2026-06-08T07:56:44.947Z</span></td>
+                    <td><code>—</code></td>
                 </tr>
                 <tr>
                     <td><a href="/results/iaj/"><code>iaj</code></a></td>
-                    <td><span class="badge badge--fresh">1 row</span></td>
-                    <td><code>2026-06-08T02:47:44.148Z</code></td>
+                    <td><span class="badge badge--no-data">no-data</span> <span class="badge badge--stale" title="serving prior-good snapshot">stale since 2026-06-08T07:56:44.947Z</span></td>
+                    <td><code>—</code></td>
                 </tr>
                 <tr>
                     <td><a href="/results/iar/"><code>iar</code></a></td>
-                    <td><span class="badge badge--no-data">no-data</span> <span class="badge badge--stale" title="serving prior-good snapshot">stale since 2026-06-08T02:47:44.483Z</span></td>
+                    <td><span class="badge badge--no-data">no-data</span> <span class="badge badge--stale" title="serving prior-good snapshot">stale since 2026-06-08T07:56:44.947Z</span></td>
                     <td><code>—</code></td>
                 </tr>
                 <tr>
                     <td><a href="/results/ccp/"><code>ccp</code></a></td>
-                    <td><span class="badge badge--no-data">no-data</span> <span class="badge badge--stale" title="serving prior-good snapshot">stale since 2026-06-08T02:47:44.483Z</span></td>
+                    <td><span class="badge badge--no-data">no-data</span> <span class="badge badge--stale" title="serving prior-good snapshot">stale since 2026-06-08T07:56:44.947Z</span></td>
                     <td><code>—</code></td>
                 </tr>
             </tbody>
         </table>
         <h2>Per-repo results</h2>
         <section class="repo-results">
-            <h3><a href="/results/iec/"><code>iec</code></a></h3>
-        <p class="predicate-note">Decision counts are shown <em>per predicate URI</em> only. We never composite a pass-rate across heterogeneous predicates — that is metric laundering.</p>
-        <ul class="predicate-breakdown">
-            <li><code>https://evals.intentsolutions.io/gate-result/v1</code> — pass: 2</li>
-        </ul>
-        <table class="results-table">
-            <thead>
-                <tr>
-                    <th>Gate</th>
-                    <th>Decision</th>
-                    <th>Predicate URI</th>
-                    <th>Evaluated at</th>
-                    <th>Bundle created at</th>
-                    <th>Rekor anchor</th>
-                    <th>Ingested at</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><a href="/results/iec/sha256-788c543ae04ab4812b26385a645b2cc6346d259ad81ea6f2e815c2f4dcaf1d0f/"><code>architecture</code></a></td>
-                    <td><span class="badge badge--result-pass">pass</span></td>
-                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-06-08T00:39:54.390Z">2026-06-08T00:39:54.390Z</time></td>
-                    <td><time datetime="2026-06-08T00:39:54.390Z">2026-06-08T00:39:54.390Z</time></td>
-                    <td><code>—</code></td>
-                    <td><time datetime="2026-06-08T02:47:43.464Z">2026-06-08T02:47:43.464Z</time></td>
-                </tr>
-                <tr>
-                    <td><a href="/results/iec/sha256-8a95a52aabc8644a58d20921f4471b9a278e0eae4b90f3d4d24185f62c8450a5/"><code>coverage</code></a></td>
-                    <td><span class="badge badge--result-pass">pass</span></td>
-                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-06-08T00:39:54.390Z">2026-06-08T00:39:54.390Z</time></td>
-                    <td><time datetime="2026-06-08T00:39:54.390Z">2026-06-08T00:39:54.390Z</time></td>
-                    <td><code>—</code></td>
-                    <td><time datetime="2026-06-08T02:47:43.464Z">2026-06-08T02:47:43.464Z</time></td>
-                </tr>
-            </tbody>
-        </table>
-        <p><a href="/results/iec/">All results for iec →</a></p>
+            <h3><a href="/results/iec/"><code>iec</code></a> <span class="badge badge--stale">stale since 2026-06-08T07:56:44.947Z</span></h3>
+        <div class="no-data-panel">
+            <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results for <code>iec</code></p>
+            <p>This source has not yet published a verified, signed Evidence Bundle to this dashboard. <strong>No data is not a pass.</strong> It is rendered with the same prominence as a failure so an empty source can never be mistaken for a clean one.</p>
+        </div>
         </section>
         <section class="repo-results">
-            <h3><a href="/results/iel/"><code>iel</code></a></h3>
-        <p class="predicate-note">Decision counts are shown <em>per predicate URI</em> only. We never composite a pass-rate across heterogeneous predicates — that is metric laundering.</p>
-        <ul class="predicate-breakdown">
-            <li><code>https://evals.intentsolutions.io/gate-result/v1</code> — pass: 1</li>
-        </ul>
-        <table class="results-table">
-            <thead>
-                <tr>
-                    <th>Gate</th>
-                    <th>Decision</th>
-                    <th>Predicate URI</th>
-                    <th>Evaluated at</th>
-                    <th>Bundle created at</th>
-                    <th>Rekor anchor</th>
-                    <th>Ingested at</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><a href="/results/iel/sha256-d84a82bc75e5cbaf8f0c7acb41abb755c28043dd70f41e1d77948c3e1a00bac8/"><code>harness-hash</code></a></td>
-                    <td><span class="badge badge--result-pass">pass</span></td>
-                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-06-08T02:44:28.493Z">2026-06-08T02:44:28.493Z</time></td>
-                    <td><time datetime="2026-06-08T02:44:28.493Z">2026-06-08T02:44:28.493Z</time></td>
-                    <td><code>—</code></td>
-                    <td><time datetime="2026-06-08T02:47:43.691Z">2026-06-08T02:47:43.691Z</time></td>
-                </tr>
-            </tbody>
-        </table>
-        <p><a href="/results/iel/">All results for iel →</a></p>
+            <h3><a href="/results/iel/"><code>iel</code></a> <span class="badge badge--stale">stale since 2026-06-08T07:56:44.947Z</span></h3>
+        <div class="no-data-panel">
+            <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results for <code>iel</code></p>
+            <p>This source has not yet published a verified, signed Evidence Bundle to this dashboard. <strong>No data is not a pass.</strong> It is rendered with the same prominence as a failure so an empty source can never be mistaken for a clean one.</p>
+        </div>
         </section>
         <section class="repo-results">
-            <h3><a href="/results/iah/"><code>iah</code></a></h3>
-        <p class="predicate-note">Decision counts are shown <em>per predicate URI</em> only. We never composite a pass-rate across heterogeneous predicates — that is metric laundering.</p>
-        <ul class="predicate-breakdown">
-            <li><code>https://evals.intentsolutions.io/gate-result/v1</code> — pass: 1</li>
-        </ul>
-        <table class="results-table">
-            <thead>
-                <tr>
-                    <th>Gate</th>
-                    <th>Decision</th>
-                    <th>Predicate URI</th>
-                    <th>Evaluated at</th>
-                    <th>Bundle created at</th>
-                    <th>Rekor anchor</th>
-                    <th>Ingested at</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><a href="/results/iah/sha256-d056a54a1bff7f5dd065c8ef4e70a56613aeadbbe5e0a4f38b5ebb988010a5ae/"><code>harness-hash</code></a></td>
-                    <td><span class="badge badge--result-pass">pass</span></td>
-                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-06-08T02:27:50.725Z">2026-06-08T02:27:50.725Z</time></td>
-                    <td><time datetime="2026-06-08T02:27:50.725Z">2026-06-08T02:27:50.725Z</time></td>
-                    <td><code>—</code></td>
-                    <td><time datetime="2026-06-08T02:47:43.922Z">2026-06-08T02:47:43.922Z</time></td>
-                </tr>
-            </tbody>
-        </table>
-        <p><a href="/results/iah/">All results for iah →</a></p>
+            <h3><a href="/results/iah/"><code>iah</code></a> <span class="badge badge--stale">stale since 2026-06-08T07:56:44.947Z</span></h3>
+        <div class="no-data-panel">
+            <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results for <code>iah</code></p>
+            <p>This source has not yet published a verified, signed Evidence Bundle to this dashboard. <strong>No data is not a pass.</strong> It is rendered with the same prominence as a failure so an empty source can never be mistaken for a clean one.</p>
+        </div>
         </section>
         <section class="repo-results">
-            <h3><a href="/results/iaj/"><code>iaj</code></a></h3>
-        <p class="predicate-note">Decision counts are shown <em>per predicate URI</em> only. We never composite a pass-rate across heterogeneous predicates — that is metric laundering.</p>
-        <ul class="predicate-breakdown">
-            <li><code>https://evals.intentsolutions.io/gate-result/v1</code> — advisory: 1</li>
-        </ul>
-        <table class="results-table">
-            <thead>
-                <tr>
-                    <th>Gate</th>
-                    <th>Decision</th>
-                    <th>Predicate URI</th>
-                    <th>Evaluated at</th>
-                    <th>Bundle created at</th>
-                    <th>Rekor anchor</th>
-                    <th>Ingested at</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><a href="/results/iaj/sha256-9f4cbfcbe888b0ab1aeb66fd8c339056e11d5e3e89233ef219e6ca2b9631ca45/"><code>coverage</code></a></td>
-                    <td><span class="badge badge--result-advisory">advisory</span></td>
-                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-06-08T02:03:27.539Z">2026-06-08T02:03:27.539Z</time></td>
-                    <td><time datetime="2026-06-08T02:03:27.539Z">2026-06-08T02:03:27.539Z</time></td>
-                    <td><code>—</code></td>
-                    <td><time datetime="2026-06-08T02:47:44.148Z">2026-06-08T02:47:44.148Z</time></td>
-                </tr>
-            </tbody>
-        </table>
-        <p><a href="/results/iaj/">All results for iaj →</a></p>
+            <h3><a href="/results/iaj/"><code>iaj</code></a> <span class="badge badge--stale">stale since 2026-06-08T07:56:44.947Z</span></h3>
+        <div class="no-data-panel">
+            <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results for <code>iaj</code></p>
+            <p>This source has not yet published a verified, signed Evidence Bundle to this dashboard. <strong>No data is not a pass.</strong> It is rendered with the same prominence as a failure so an empty source can never be mistaken for a clean one.</p>
+        </div>
         </section>
         <section class="repo-results">
-            <h3><a href="/results/iar/"><code>iar</code></a> <span class="badge badge--stale">stale since 2026-06-08T02:47:44.483Z</span></h3>
+            <h3><a href="/results/iar/"><code>iar</code></a> <span class="badge badge--stale">stale since 2026-06-08T07:56:44.947Z</span></h3>
         <div class="no-data-panel">
             <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results for <code>iar</code></p>
             <p>This source has not yet published a verified, signed Evidence Bundle to this dashboard. <strong>No data is not a pass.</strong> It is rendered with the same prominence as a failure so an empty source can never be mistaken for a clean one.</p>
         </div>
         </section>
         <section class="repo-results">
-            <h3><a href="/results/ccp/"><code>ccp</code></a> <span class="badge badge--stale">stale since 2026-06-08T02:47:44.483Z</span></h3>
+            <h3><a href="/results/ccp/"><code>ccp</code></a> <span class="badge badge--stale">stale since 2026-06-08T07:56:44.947Z</span></h3>
         <div class="no-data-panel">
             <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results for <code>ccp</code></p>
             <p>This source has not yet published a verified, signed Evidence Bundle to this dashboard. <strong>No data is not a pass.</strong> It is rendered with the same prominence as a failure so an empty source can never be mistaken for a clean one.</p>

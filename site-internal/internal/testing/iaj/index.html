@@ -27,52 +27,17 @@
     </header>
     <main>
         <p><a href="/internal/testing/">← All repos</a></p>
-        <h1>Testing: <code>iaj</code></h1>
+        <h1>Testing: <code>iaj</code> <span class="badge badge--stale">stale since 2026-06-08T07:56:44.947Z</span></h1>
         <div class="operator-banner">
             <p style="margin:0;"><strong>Internal testing dashboard (gated).</strong> This surface renders our own testing results — coverage, mutation, CRAP, architecture, and escape-scan gates — for every platform repo, each one <em>taught</em>: what the gate is, how we run it, what good looks like, our number, the verdict, and exactly what to fix. Every row traces back to a signed, Rekor-anchored <code>gate-result/v1</code> attestation re-verified at ingest. It is served behind a password at <code>internal.intentsolutions.io</code>; it is never indexed and never part of the public site.</p>
         </div>
-        <div class="meta-block as-of">
-            <p style="margin:0;"><strong>As of:</strong> <time datetime="2026-06-08T02:47:43.464Z">2026-06-08T02:47:43.464Z</time> — the oldest ingest across all sources in this view (<code>min(ingested_at)</code>).</p>
+        <div class="meta-block as-of as-of--none">
+            <p style="margin:0;"><strong>As of:</strong> no source has a verified snapshot yet. Every repo below is in a <code>no-data</code> state.</p>
         </div>
-        <section class="gate-block">
-            <h2><code>coverage</code></h2>
-            <div class="gate-explainer">
-            <h2>What it is</h2>
-            <p>Test <strong>coverage</strong> measures how much of the code is actually exercised by the test suite — the lines, branches, and functions a test run touches at least once. It is a floor, not a ceiling: high coverage does not prove the tests are good, but <strong>low coverage proves there is code no test has ever run.</strong> Untested code is where regressions hide.</p>
-            <h2>How we run it</h2>
-            <p>Coverage is produced by the test runner during the normal test pass (for the TypeScript repos, <code>vitest run --coverage</code> via the V8 provider). The result is compared against the repo&#39;s declared floor in <code>tests/TESTING.md</code> — for the dashboard repo that floor is <strong>95% lines / 95% functions / 90% branches / 95% statements</strong>. The gate is a required CI check: a pull request that drops coverage below the floor fails, and the fix is to add tests, never to lower the floor.</p>
-            <h2>What good looks like</h2>
-            <ul>
-                <li><strong>At or above the declared floor</strong> on every dimension — <code>good</code>.</li>
-                <li><strong>Below the floor</strong> — <code>fail</code>. The fix is the list of files or symbols dragging it down; add tests for them.</li>
-                <li>A high number with whole <strong>dimensions skipped</strong> is not a clean pass — check the &quot;what we measured&quot; block. A dimension we did not measure is not one we passed.</li>
-            </ul>
-            </div>
-            <div class="gate-row gate-row--watch">
-                <p class="gate-row__verdict"><span class="verdict verdict--watch"><span aria-hidden="true">!</span> watch</span> <span class="badge badge--result-advisory">advisory</span> <span class="gate-row__headline">Advisory (info) — not blocking, but worth attention.</span></p>
-                <dl class="gate-row__meta">
-                    <dt>gate version</dt><dd><code>1.0.0</code></dd>
-                    <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-06-08T02:03:27.539Z">2026-06-08T02:03:27.539Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-06-08T02:03:27.539Z">2026-06-08T02:03:27.539Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><code>—</code></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-06-08T02:47:44.148Z">2026-06-08T02:47:44.148Z</time></dd>
-                </dl>
-                <div class="measured">
-                    <p><strong>What we measured:</strong> <code>lines</code>, <code>branches</code>, <code>functions</code>, <code>statements</code></p>
-                </div>
-                <div class="what-to-fix">
-                    <p><strong>What to fix:</strong></p>
-                    <ul>
-                        <li>lines 84.21%</li>
-                        <li>branches 76.96%</li>
-                        <li>functions 80.31%</li>
-                        <li>statements 84.21%</li>
-                        <li>no coverage floor declared in vitest.config.ts (measured coverage reported as advisory)</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
+        <div class="no-data-panel">
+            <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results for <code>iaj</code></p>
+            <p>This source has not yet published a verified, signed Evidence Bundle to this dashboard. <strong>No data is not a pass.</strong> It is rendered with the same prominence as a failure so an empty source can never be mistaken for a clean one.</p>
+        </div>
     </main>
     <footer class="site-footer">
         <div class="site-footer__inner">
