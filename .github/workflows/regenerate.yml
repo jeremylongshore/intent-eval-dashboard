@@ -41,6 +41,8 @@ on:
 
 permissions:
   contents: write   # commit + push regenerated HTML
+  actions: write    # gh workflow run deploy.yml (the GITHUB_TOKEN push below does
+                    # NOT auto-fire deploy.yml — see the "Trigger deploy" step)
 
 concurrency:
   group: regenerate-${{ github.repository }}
@@ -117,6 +119,20 @@ jobs:
 
           bd: bd_000-projects-puxu.13 + bd_000-projects-nr75.10"
           git push
+
+      # A push made with the default GITHUB_TOKEN does NOT trigger other
+      # workflows (GitHub's recursion guard), so the commit above would NOT
+      # auto-fire deploy.yml and labs would never refresh from the cron. The
+      # documented exception is workflow_dispatch / repository_dispatch: a
+      # GITHUB_TOKEN MAY start a run via those. So we explicitly dispatch
+      # deploy.yml on main — by which point `git push` has already landed the
+      # new commit on origin/main, so deploy's `git reset --hard origin/main`
+      # picks it up. This is what makes the cron actually self-update labs.
+      - name: Trigger deploy (GITHUB_TOKEN push does not auto-fire deploy.yml)
+        if: steps.diff.outputs.changed == 'true' || inputs.force_commit == true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run deploy.yml --ref main
 
       - name: Notify on failure
         if: failure()
