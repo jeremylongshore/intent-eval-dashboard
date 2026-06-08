@@ -36,9 +36,9 @@
       "githubRepo": "jeremylongshore/intent-eval-lab",
       "subjects": ["repo:jeremylongshore/intent-eval-lab:ref:refs/tags/*"],
       "workflowRefs": [
-        "jeremylongshore/intent-eval-lab/.github/workflows/release.yml@refs/heads/main"
+        "jeremylongshore/intent-eval-lab/.github/workflows/release.yml@refs/tags/*"
       ],
-      "operatorConfirmed": false
+      "operatorConfirmed": true
     },
     "iah": {
       "githubRepo": "jeremylongshore/intent-audit-harness",
