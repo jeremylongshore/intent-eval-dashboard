@@ -87,10 +87,40 @@ jobs:
 
       # Live verify-before-render: fetch each repo's signed report-manifest from
       # its GitHub Release, re-verify (OIDC + Rekor + DSSE + kernel schema), and
-      # render site/ + site-internal/ from the VERIFIED snapshots. Fail-closes to
-      # no-data per repo; exits non-zero only on machinery failure (= the smoke).
+      # render site/ + site-internal/ from the VERIFIED snapshots. Per-repo
+      # fail-close to no-data; exits non-zero only on machinery failure.
+      #
+      # TRANSIENT-BLACKOUT GUARD (added after the 2026-06-08 incident, run
+      # 27123737379): the manifests are fetched over unauthenticated HTTPS from
+      # GitHub Releases, which can momentarily rate-limit / blip on a shared
+      # Actions-runner IP — verifying 0 repos and rendering an all-no-data site.
+      # Because .ingest-store is ephemeral per run (no persisted last-known-good),
+      # committing that would REGRESS the live labs rows to no-data. So: if 0
+      # repos verify, retry once after a backoff; if STILL 0, treat it as a
+      # transient blackout and SKIP commit/deploy (the prior good deploy stays
+      # live). Any real result (>=1 verified) proceeds normally.
       - name: Live ingest → render (nr75.10)
-        run: node --experimental-strip-types scripts/ingest-render.ts --root .ingest-store
+        id: ingest
+        run: |
+          run_ingest() {
+            node --experimental-strip-types scripts/ingest-render.ts --root .ingest-store 2>&1 | tee /tmp/ingest.log
+          }
+          run_ingest || true
+          verified=$(grep -c ': VERIFIED' /tmp/ingest.log || true)
+          if [ "${verified:-0}" -eq 0 ]; then
+            echo "::warning::ingest verified 0 repos — likely a transient manifest-fetch blackout; retrying once after 45s backoff"
+            sleep 45
+            rm -rf .ingest-store
+            run_ingest || true
+            verified=$(grep -c ': VERIFIED' /tmp/ingest.log || true)
+          fi
+          echo "verified=${verified:-0}" >> "$GITHUB_OUTPUT"
+          if [ "${verified:-0}" -eq 0 ]; then
+            echo "blackout=true" >> "$GITHUB_OUTPUT"
+            echo "::warning::ingest still verified 0 repos after retry — transient blackout. SKIPPING commit/deploy so the prior good labs deploy stays live (no regression to all-no-data)."
+          else
+            echo "::notice::ingest verified ${verified} repo(s) — proceeding."
+          fi
 
       - name: Detect changes
         id: diff
@@ -105,7 +135,7 @@ jobs:
           fi
 
       - name: Commit + push
-        if: steps.diff.outputs.changed == 'true' || inputs.force_commit == true
+        if: (steps.diff.outputs.changed == 'true' || inputs.force_commit == true) && steps.ingest.outputs.blackout != 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -129,7 +159,7 @@ jobs:
       # new commit on origin/main, so deploy's `git reset --hard origin/main`
       # picks it up. This is what makes the cron actually self-update labs.
       - name: Trigger deploy (GITHUB_TOKEN push does not auto-fire deploy.yml)
-        if: steps.diff.outputs.changed == 'true' || inputs.force_commit == true
+        if: (steps.diff.outputs.changed == 'true' || inputs.force_commit == true) && steps.ingest.outputs.blackout != 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh workflow run deploy.yml --ref main
