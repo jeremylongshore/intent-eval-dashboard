@@ -1,19 +1,32 @@
-name: Regenerate eval-set pages
+name: Regenerate site (eval-sets + live ingest-render)
 
 # Daily cron (06:00 UTC) + manual workflow_dispatch.
 #
-# Reads data/eval-sets.json. For each active eval-set, queries upstream
-# via gh api for latest version + last-changed date. Updates in-place
-# the meta-block cells in per-eval-set HTML pages and regenerates
-# eval-sets/index.html. If anything changed, commits + pushes →
-# existing deploy.yml fires → live in ~30s.
+# Two refresh passes, both writing into site/ (+ site-internal/), then one
+# diff -> commit -> push that fires the existing deploy.yml (paths: site/**):
+#
+#   1. regenerate.py — reads data/eval-sets.json, queries upstream via gh api
+#      for latest version + last-changed date, updates the meta-block cells in
+#      per-eval-set HTML pages and regenerates eval-sets/index.html.
+#
+#   2. scripts/ingest-render.ts (Track #5, bead nr75.10) — the FULL live
+#      verify-before-render loop: fetch each repo's signed report-manifest from
+#      its GitHub Release, re-verify (OIDC + Rekor + DSSE + kernel schema),
+#      content-address + snapshot, then render the public results browser +
+#      freshness/status strip + gated internal testing dashboard. A repo that
+#      fails verification fail-closes to no-data (NEVER a synthetic pass); the
+#      script exits non-zero ONLY on machinery failure (build/import/crash), so
+#      a transient upstream blip refreshes to honest no-data rather than paging
+#      (the 7-day-silence binding owns paging, not this cron). .ingest-store/ is
+#      ephemeral per run (gitignored) — re-fetched + re-verified every time; the
+#      rendered HTML under site/ + site-internal/ is the committed artifact, so
+#      daily commit churn is expected (freshness is the point).
 #
 # On failure: posts to ntfy prod-alerts topic (matches ops-lite pattern
 # per DR-035 § 5 D3). The 7-day-silence pager threshold doesn't apply
-# here — this is a cosmetic refresh, not a security signal.
+# here — this is a content refresh, not a security signal.
 #
-# Per puxu.13. Replaces "I have to manually update HTML when upstream
-# version bumps" with "set it and forget it."
+# Per puxu.13 (eval-set refresh) + nr75.10 (live ingest-render).
 
 on:
   schedule:
@@ -43,16 +56,39 @@ jobs:
           # which has contents:write per permissions block above.
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      # ── Node toolchain for the live ingest-render pass (Track #5) ──
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build (ingest-render imports the compiled dist/)
+        run: pnpm run build
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Run regenerate.py
+      - name: Run regenerate.py (eval-set meta refresh)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python3 scripts/regenerate.py
+
+      # Live verify-before-render: fetch each repo's signed report-manifest from
+      # its GitHub Release, re-verify (OIDC + Rekor + DSSE + kernel schema), and
+      # render site/ + site-internal/ from the VERIFIED snapshots. Fail-closes to
+      # no-data per repo; exits non-zero only on machinery failure (= the smoke).
+      - name: Live ingest → render (nr75.10)
+        run: node --experimental-strip-types scripts/ingest-render.ts --root .ingest-store
 
       - name: Detect changes
         id: diff
@@ -72,13 +108,14 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -s -m "chore(regenerate): cron-driven refresh of eval-set pages
+          git commit -s -m "chore(regenerate): site refresh (eval-sets + live ingest-render)
 
-          $(date -u +%FT%TZ) — automated refresh from upstream metadata.
-          See scripts/regenerate.py + data/eval-sets.json. Triggered by
-          ${{ github.event_name == 'schedule' && 'daily cron' || 'workflow_dispatch' }}.
+          $(date -u +%FT%TZ) — automated refresh. eval-set meta from upstream
+          (scripts/regenerate.py + data/eval-sets.json) + live verify-before-render
+          ingest of every repo's signed report-manifest (scripts/ingest-render.ts).
+          Triggered by ${{ github.event_name == 'schedule' && 'daily cron' || 'workflow_dispatch' }}.
 
-          bd: bd_000-projects-puxu.13"
+          bd: bd_000-projects-puxu.13 + bd_000-projects-nr75.10"
           git push
 
       - name: Notify on failure
