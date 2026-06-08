@@ -55,3 +55,6 @@ export {
   writeTestingSite,
   type TestingGeneratedFile,
 } from './generate-testing.js';
+
+// --- production resolver (live ingest: content store + gate-row store → rows) ---
+export { StoreTestingResolver } from './store-testing-resolver.js';
