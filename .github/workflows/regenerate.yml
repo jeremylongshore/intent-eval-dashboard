@@ -14,13 +14,25 @@ name: Regenerate site (eval-sets + live ingest-render)
 #      its GitHub Release, re-verify (OIDC + Rekor + DSSE + kernel schema),
 #      content-address + snapshot, then render the public results browser +
 #      freshness/status strip + gated internal testing dashboard. A repo that
-#      fails verification fail-closes to no-data (NEVER a synthetic pass); the
-#      script exits non-zero ONLY on machinery failure (build/import/crash), so
-#      a transient upstream blip refreshes to honest no-data rather than paging
-#      (the 7-day-silence binding owns paging, not this cron). .ingest-store/ is
-#      ephemeral per run (gitignored) — re-fetched + re-verified every time; the
-#      rendered HTML under site/ + site-internal/ is the committed artifact, so
-#      daily commit churn is expected (freshness is the point).
+#      fails verification this run falls back to its prior VERIFIED snapshot with
+#      a stale badge (NEVER a synthetic pass); a repo that has NEVER verified
+#      renders honest no-data. The script exits non-zero ONLY on machinery
+#      failure (build/import/crash) (the 7-day-silence binding owns paging, not
+#      this cron). The rendered HTML under site/ + site-internal/ is the
+#      committed artifact, so daily commit churn is expected (freshness is the
+#      point).
+#
+# LAST-KNOWN-GOOD PERSISTENCE (bead nr75.17, after the 2026-06-08 incident):
+# .ingest-store/ holds the per-repo VERIFIED snapshots + content-addressed
+# bundles + gate-result bodies. It is gitignored, so committing it would NOT
+# persist it across runs (and a committed-store write via GITHUB_TOKEN would not
+# fire deploy.yml anyway — see the "Trigger deploy" note). Instead we persist it
+# via actions/cache, keyed per-repo+run with a restore-keys fallback so each run
+# restores the most recent prior store. The renderer already serves a failed
+# repo's prior-good snapshot (src/ingest/renderer.ts buildRenderInput stamps
+# staleSince) — persisting the store is what makes a PARTIAL fetch failure (e.g.
+# 2 of 4 verify) keep the unfetched rows live-but-stale instead of regressing
+# them to no-data. Proof: src/ingest/partial-fetch-lkg.test.ts.
 #
 # On failure: posts to ntfy prod-alerts topic (matches ops-lite pattern
 # per DR-035 § 5 D3). The 7-day-silence pager threshold doesn't apply
@@ -85,20 +97,45 @@ jobs:
         run: |
           python3 scripts/regenerate.py
 
+      # Restore the persisted last-known-good ingest store (bead nr75.17). The
+      # cache holds .ingest-store/ — every repo's prior VERIFIED snapshot +
+      # content-addressed bundles + gate-result bodies. The keyed entry is unique
+      # per run (so each run writes a fresh entry — actions/cache entries are
+      # immutable), and restore-keys falls back to the newest prior entry. If the
+      # cache is cold (first run / eviction), the store starts empty and repos
+      # that fail to fetch render honest no-data until their first verify — the
+      # correct floor, never a synthetic pass.
+      - name: Restore last-known-good ingest store (nr75.17)
+        uses: actions/cache/restore@v4
+        with:
+          path: .ingest-store
+          key: ingest-store-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            ingest-store-
+
       # Live verify-before-render: fetch each repo's signed report-manifest from
       # its GitHub Release, re-verify (OIDC + Rekor + DSSE + kernel schema), and
-      # render site/ + site-internal/ from the VERIFIED snapshots. Per-repo
-      # fail-close to no-data; exits non-zero only on machinery failure.
+      # render site/ + site-internal/ from the VERIFIED snapshots. A repo that
+      # fails this run falls back to its restored prior-good snapshot (stale
+      # badge); a never-verified repo renders no-data. Exits non-zero only on
+      # machinery failure.
       #
       # TRANSIENT-BLACKOUT GUARD (added after the 2026-06-08 incident, run
       # 27123737379): the manifests are fetched over unauthenticated HTTPS from
       # GitHub Releases, which can momentarily rate-limit / blip on a shared
-      # Actions-runner IP — verifying 0 repos and rendering an all-no-data site.
-      # Because .ingest-store is ephemeral per run (no persisted last-known-good),
-      # committing that would REGRESS the live labs rows to no-data. So: if 0
-      # repos verify, retry once after a backoff; if STILL 0, treat it as a
-      # transient blackout and SKIP commit/deploy (the prior good deploy stays
-      # live). Any real result (>=1 verified) proceeds normally.
+      # Actions-runner IP — verifying 0 repos. With the persisted store (nr75.17)
+      # a PARTIAL miss no longer regresses unfetched rows: the renderer serves
+      # their prior-good snapshots. The remaining concern is a TOTAL blackout (0
+      # verified) on a COLD cache, where there is no prior-good to fall back to
+      # and committing would render all-no-data. So: if 0 repos verify, retry
+      # once after a backoff; if STILL 0, treat it as a transient blackout and
+      # SKIP commit/deploy (the prior good deploy stays live). Any real result
+      # (>=1 verified) proceeds normally. NOTE: the retry does NOT wipe
+      # .ingest-store — that would destroy the restored last-known-good
+      # snapshots, regressing a partial-success render. The stores are
+      # content-addressed + idempotent (a snapshot is written ONLY on a full
+      # verify), so re-running over the same store is safe and preserves
+      # prior-good for any repo that fails again.
       - name: Live ingest → render (nr75.10)
         id: ingest
         run: |
@@ -108,9 +145,8 @@ jobs:
           run_ingest || true
           verified=$(grep -c ': VERIFIED' /tmp/ingest.log || true)
           if [ "${verified:-0}" -eq 0 ]; then
-            echo "::warning::ingest verified 0 repos — likely a transient manifest-fetch blackout; retrying once after 45s backoff"
+            echo "::warning::ingest verified 0 repos — likely a transient manifest-fetch blackout; retrying once after 45s backoff (last-known-good store preserved)"
             sleep 45
-            rm -rf .ingest-store
             run_ingest || true
             verified=$(grep -c ': VERIFIED' /tmp/ingest.log || true)
           fi
@@ -121,6 +157,19 @@ jobs:
           else
             echo "::notice::ingest verified ${verified} repo(s) — proceeding."
           fi
+
+      # Persist the updated last-known-good store for the next run (bead nr75.17).
+      # Save ALWAYS (even on a 0-verified blackout) so any prior-good snapshots
+      # that survived this run carry forward. The keyed entry is unique per run
+      # so the immutable-cache write never collides; the next run's restore-keys
+      # prefix picks up this newest entry. Skipped only when no store exists
+      # (cold cache + total fetch failure → nothing to persist).
+      - name: Save last-known-good ingest store (nr75.17)
+        if: always() && hashFiles('.ingest-store/**') != ''
+        uses: actions/cache/save@v4
+        with:
+          path: .ingest-store
+          key: ingest-store-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Detect changes
         id: diff
