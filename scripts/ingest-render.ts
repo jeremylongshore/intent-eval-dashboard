@@ -90,7 +90,18 @@ async function main(argv) {
   const rows = testingView.repos.flatMap((r) =>
     r.rows.map((row) => ({ repo: row.repo, evaluatedAt: row.evaluatedAt, decision: row.decision })),
   );
-  const liveness = outcomes.map((o) => ({ repo: o.repo, fresh: o.fresh }));
+  // Carry staleSince + failure through so computeIngestUse can report real S
+  // (stale repos) + E (crashes) during a partial-failure cron — not 0/0. The
+  // outcome objects carry `repo`/`fresh`/`failure`; the stale timestamp lives on
+  // the render input (`input.repos[].staleSince`, stamped by buildRenderInput
+  // when a worker crashed and we kept its prior-good snapshot), so we join it in.
+  const staleSinceByRepo = new Map(input.repos.map((r) => [r.repo, r.staleSince]));
+  const liveness = outcomes.map((o) => ({
+    repo: o.repo,
+    fresh: o.fresh,
+    staleSince: staleSinceByRepo.get(o.repo),
+    failure: o.failure,
+  }));
   await generateStatus(
     {
       repos: INGEST_REPOS,
