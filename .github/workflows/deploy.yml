@@ -104,6 +104,28 @@ jobs:
           fi
           echo "✓ uptime-claim scanner correctly fails on the synthetic violation fixture."
 
+      # PHASE A.0 ARM-SYMMETRY GATE (DR-035 § 5 D2 + DR-028 — CTO + VP DevRel
+      # independent refusals; CLAUDE.md "Hard refusal triggers": "No asymmetric
+      # Phase A.0 dashboard render — symmetric arms or blog-only fallback"):
+      # the two Phase A.0 arms (Arm A "just ask" + Arm B "the Refiner") MUST
+      # render with IDENTICAL structural treatment — neither arm may carry a
+      # layout accent, an extra emphasis, or a different tag skeleton the other
+      # lacks. This is the CTO-bound HTML structural-diff CI test (puxu.12).
+      #
+      # Same execution discipline as the C3/uptime gates: self-contained scanner
+      # (src/results/arm-symmetry-scan.ts), run DIRECTLY (no `tee` masking), the
+      # script's exit code IS the step's exit code.
+      - name: Phase A.0 arm-symmetry gate (A.0 arm pages)
+        run: node --experimental-strip-types scripts/lint-arm-symmetry.ts site/eval-sets/j-rig-bench
+      - name: Arm-symmetry scanner self-check (synthetic asymmetric fixture MUST fail)
+        run: |
+          set -euo pipefail
+          if node --experimental-strip-types scripts/lint-arm-symmetry.ts src/results/__fixtures__/arm-symmetry-violation.html; then
+            echo "::error::arm-symmetry scanner did NOT flag the known asymmetric-arm fixture — scanner broken/neutered."
+            exit 1
+          fi
+          echo "✓ arm-symmetry scanner correctly fails on the synthetic asymmetric fixture."
+
       - name: Predicate-URI-at-labs scan
         # DR-010 + DR-035 CISO binding: predicate URIs MUST live at
         # evals.intentsolutions.io exclusively. Refuses any URL of shape

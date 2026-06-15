@@ -99,12 +99,12 @@
         </div>
 
         <table>
-            <thead><tr><th></th><th>Arm A — "just ask"</th><th>Arm B — the Refiner</th></tr></thead>
+            <thead><tr><th></th><th><!-- ARM-A:START id=table-head --><span>Arm A — "just ask"</span><!-- ARM-A:END id=table-head --></th><th><!-- ARM-B:START id=table-head --><span>Arm B — the Refiner</span><!-- ARM-B:END id=table-head --></th></tr></thead>
             <tbody>
                 <tr>
                     <td><strong>What it does</strong></td>
-                    <td>One shot: hand the model the skill + K worked examples, take whatever it returns.</td>
-                    <td>The full loop: propose edits, score them, keep an edit only if every quality dimension improves, retry up to 3×.</td>
+                    <td><!-- ARM-A:START id=table-what-it-does -->One shot: hand the model the skill + K worked examples, take whatever it returns.<!-- ARM-A:END id=table-what-it-does --></td>
+                    <td><!-- ARM-B:START id=table-what-it-does -->The full loop: propose edits, score them, keep an edit only if every quality dimension improves, retry up to 3×.<!-- ARM-B:END id=table-what-it-does --></td>
                 </tr>
                 <tr>
                     <td><strong>Model</strong></td>
@@ -184,6 +184,7 @@ Return ONLY the updated frontmatter block.
 
         <p><strong>Step 4 — we re-scored the AI's version</strong> with the same rubric:</p>
 
+        <!-- ARM-A:START id=walkthrough -->
         <div class="meta-block">
             <dl>
                 <dt>started at</dt><dd><code>86 / 100</code></dd>
@@ -191,6 +192,7 @@ Return ONLY the updated frontmatter block.
                 <dt>result</dt><dd><strong>−14 points — the header edit made it WORSE</strong> (the body never changed, so the whole drop is the AI's header edit)</dd>
             </dl>
         </div>
+        <!-- ARM-A:END id=walkthrough -->
 
         <p>
             That is the whole problem in one example: <strong>just asking the AI to "improve the
@@ -202,13 +204,15 @@ Return ONLY the updated frontmatter block.
             53/100). Same AI, same kind of edit — but this time the edit is <em>scored before
             it's kept</em>:</p>
 
-        <div class="meta-block" style="border-left: 3px solid #2c5282;">
+        <!-- ARM-B:START id=walkthrough -->
+        <div class="meta-block">
             <dl>
                 <dt>started at</dt><dd><code>53 / 100</code></dd>
                 <dt>Refiner's scored edit</dt><dd><code>62 / 100</code> (+9)</dd>
                 <dt>the check's decision</dt><dd><strong>ACCEPTED</strong> — the edit improved the score, so keep it</dd>
             </dl>
         </div>
+        <!-- ARM-B:END id=walkthrough -->
 
         <p>
             The Refiner's superpower isn't the AI — it's the <strong>check around the AI</strong>:
@@ -224,8 +228,8 @@ Return ONLY the updated frontmatter block.
 
         <div class="meta-block">
             <dl>
-                <dt>Arm A — just ask</dt><dd>header edits made scores <strong>worse</strong> on average (−6.1 points)</dd>
-                <dt>Arm B — Refiner</dt><dd>header edits made scores <strong>better</strong> on average (+0.58 points)</dd>
+                <dt>Arm A — just ask</dt><dd><!-- ARM-A:START id=result -->header edits made scores <strong>worse</strong> on average (−6.1 points)<!-- ARM-A:END id=result --></dd>
+                <dt>Arm B — Refiner</dt><dd><!-- ARM-B:START id=result -->header edits made scores <strong>better</strong> on average (+0.58 points)<!-- ARM-B:END id=result --></dd>
                 <dt>head-to-head gap</dt><dd><strong>+6.68 points</strong> in the Refiner's favor, per skill</dd>
                 <dt>is it real or luck?</dt><dd>p &lt; 0.000001 — about a one-in-a-million chance this is a fluke</dd>
                 <dt>how big an effect?</dt><dd>Cohen's d = 1.49 — a "large" effect by the standard yardstick</dd>

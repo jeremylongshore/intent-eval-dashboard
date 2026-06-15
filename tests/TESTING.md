@@ -26,7 +26,7 @@ The dashboard is in initial scaffolding. The 7-layer taxonomy is not yet fully p
 | Harness hash verify | Every PR | IS Testing SOP |
 | C3 aggregate-PASS% lint | Every PR after Epic 2.3 ships | DR-035 § 4 C3 (CTO+CMO+VP DevRel refusal) |
 | Predicate-URI-at-labs scan | Every PR | DR-035 § 4 + CISO refusal — no predicate URI declared under `labs.*` |
-| HTML structural diff (A.0 symmetric render) | Every PR touching A.0 rendering | DR-035 § 5 D2 (CTO refusal) |
+| HTML structural diff (A.0 symmetric render) | Every PR touching A.0 rendering — BUILT (puxu.12): `scripts/lint-arm-symmetry.ts` → `src/results/arm-symmetry-scan.ts`, wired into `deploy.yml` as a required gate + self-check, synthetic fixtures at `src/results/__fixtures__/arm-symmetry-{clean,violation}.html` | DR-035 § 5 D2 + DR-028 (CTO + VP DevRel refusal) |
 
 ## Coverage policy
 
