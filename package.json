@@ -36,8 +36,9 @@
     "lint:c3": "node --experimental-strip-types scripts/lint-no-aggregate-pass.ts site",
     "lint:c3:internal": "node --experimental-strip-types scripts/lint-no-aggregate-pass.ts site-internal",
     "lint:uptime": "node --experimental-strip-types scripts/check-uptime-claims.ts site",
+    "lint:arm-symmetry": "node --experimental-strip-types scripts/lint-arm-symmetry.ts site/eval-sets/j-rig-bench",
     "check:liveness": "node --experimental-strip-types scripts/check-liveness-alerts.ts",
-    "check": "pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build && pnpm run generate:results && pnpm run generate:status && pnpm run generate:internal && pnpm run generate:internal-testing && pnpm run generate:retractions && pnpm run lint:c3 && pnpm run lint:c3:internal && pnpm run lint:uptime"
+    "check": "pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build && pnpm run generate:results && pnpm run generate:status && pnpm run generate:internal && pnpm run generate:internal-testing && pnpm run generate:retractions && pnpm run lint:c3 && pnpm run lint:c3:internal && pnpm run lint:uptime && pnpm run lint:arm-symmetry"
   },
   "dependencies": {
     "@intentsolutions/core": "^0.2.0",
