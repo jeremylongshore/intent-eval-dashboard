@@ -55,6 +55,19 @@ async function main(argv) {
   const nowIso = new Date().toISOString();
 
   const pinned = parsePinnedSubjects(JSON.parse(readFileSync(resolve(process.cwd(), 'ingest/pinned-subjects.json'), 'utf8')));
+
+  // Loud-on-startup: any pinned subject still `operatorConfirmed: false` has an
+  // unverified OIDC workflowRef (placeholder ref, not yet checked against the
+  // repo's actual .github/workflows/). Surface it every pass so an unconfirmed
+  // pin can never silently sit in the production allowlist (DR-035 B1).
+  for (const [repo, entry] of Object.entries(pinned.repos)) {
+    if (!entry.operatorConfirmed) {
+      console.warn(
+        `⚠ pinned subject for "${repo}" (${entry.githubRepo}) is operatorConfirmed:false — its OIDC workflowRef is an UNVERIFIED placeholder; confirm against the repo's .github/workflows/ and flip to true`,
+      );
+    }
+  }
+
   const contentStore = new FsContentStore(root);
   const snapshotStore = new FsSnapshotStore(root);
   const gateRowStore = new FsGateRowStore(root);
@@ -90,7 +103,18 @@ async function main(argv) {
   const rows = testingView.repos.flatMap((r) =>
     r.rows.map((row) => ({ repo: row.repo, evaluatedAt: row.evaluatedAt, decision: row.decision })),
   );
-  const liveness = outcomes.map((o) => ({ repo: o.repo, fresh: o.fresh }));
+  // Carry staleSince + failure through so computeIngestUse can report real S
+  // (stale repos) + E (crashes) during a partial-failure cron — not 0/0. The
+  // outcome objects carry `repo`/`fresh`/`failure`; the stale timestamp lives on
+  // the render input (`input.repos[].staleSince`, stamped by buildRenderInput
+  // when a worker crashed and we kept its prior-good snapshot), so we join it in.
+  const staleSinceByRepo = new Map(input.repos.map((r) => [r.repo, r.staleSince]));
+  const liveness = outcomes.map((o) => ({
+    repo: o.repo,
+    fresh: o.fresh,
+    staleSince: staleSinceByRepo.get(o.repo),
+    failure: o.failure,
+  }));
   await generateStatus(
     {
       repos: INGEST_REPOS,
