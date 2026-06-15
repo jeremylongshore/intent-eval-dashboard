@@ -55,6 +55,19 @@ async function main(argv) {
   const nowIso = new Date().toISOString();
 
   const pinned = parsePinnedSubjects(JSON.parse(readFileSync(resolve(process.cwd(), 'ingest/pinned-subjects.json'), 'utf8')));
+
+  // Loud-on-startup: any pinned subject still `operatorConfirmed: false` has an
+  // unverified OIDC workflowRef (placeholder ref, not yet checked against the
+  // repo's actual .github/workflows/). Surface it every pass so an unconfirmed
+  // pin can never silently sit in the production allowlist (DR-035 B1).
+  for (const [repo, entry] of Object.entries(pinned.repos)) {
+    if (!entry.operatorConfirmed) {
+      console.warn(
+        `⚠ pinned subject for "${repo}" (${entry.githubRepo}) is operatorConfirmed:false — its OIDC workflowRef is an UNVERIFIED placeholder; confirm against the repo's .github/workflows/ and flip to true`,
+      );
+    }
+  }
+
   const contentStore = new FsContentStore(root);
   const snapshotStore = new FsSnapshotStore(root);
   const gateRowStore = new FsGateRowStore(root);
