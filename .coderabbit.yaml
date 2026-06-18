@@ -1,0 +1,61 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+#
+# CodeRabbit — Intent Eval Platform. The workhorse code reviewer, replacing Gemini
+# Code Assist (consumer Gemini review ceases 2026-07-17). CodeQL still owns security
+# scanning (security-extended) — non-overlapping. The IEP review priorities live in
+# path_instructions below: the failure classes the corrective ISEDC (DR-085) and the
+# qualified-reviewer glance proved deterministic CI structurally cannot catch.
+# NOTE: requires the CodeRabbit GitHub App installed on the account/org. _generated/
+# is intentionally NOT filtered out — three-way schema drift hides there.
+language: en-US
+reviews:
+  profile: assertive
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - main
+  path_filters:
+    - "!**/dist/**"
+    - "!**/node_modules/**"
+    - "!**/coverage/**"
+    - "!**/*.snap"
+    - "!pnpm-lock.yaml"
+    - "!**/*.lock"
+  path_instructions:
+    - path: "**/{schemas,src,python}/**"
+      instructions: >-
+        Intent Eval Platform kernel review. These artifacts ship in signed
+        @intentsolutions/core entries that reach a transparency log — a wrong shape is
+        a one-way door whose cheap-fix window closes at the next git tag. Flag, by
+        priority: (1) three-way drift between a JSON Schema, its hand-written Zod
+        validator, and its Pydantic model — required/optional/nullable posture must
+        match EXACTLY in BOTH directions (optional-not-nullable AND required-but-nullable;
+        datamodel-code-generator renders a required-nullable field as `T | None = None`,
+        which wrongly makes the key omittable in Python while AJV/Zod require it). Verify
+        against the schema `required` array, not the generated default. (2) Cross-artifact
+        semantic drift — same-named fields with divergent type or meaning across two
+        schemas (sha256:-prefixed vs bare hex between a reference and its referent;
+        pre-edit vs post-edit), UNLESS it is a documented layer convention (entities use
+        bare sha256, in-toto predicates use sha256:-prefixed). (3) A cross-field invariant
+        stated in prose/$comment/Decision-Record but NOT enforced at all three layers
+        (JSON-Schema if/then + Zod superRefine + Pydantic model_validator) — an unenforced
+        invariant on a signed row is a falsified attestation waiting to be notarized.
+        (4) Lineage that claims tamper-evidence but rests on a reassignable UUID instead
+        of a content-hash chain. (5) A docblock claiming enforcement the code does not
+        implement. (6) A non-additive change to a published shape (removed/retyped field,
+        loosened constraint, widened closed enum) — those need a /v2 + Class-1 ISEDC.
+        Never edit _generated/* to fix Python parity — use a models.py wrapper subclass.
+    - path: "**/*.{sh,yml,yaml}"
+      instructions: >-
+        Flag detection/CI scripts that silently no-op — e.g. a regex with a leading
+        slash that never matches root-relative `git diff --name-only` paths, or an
+        advisory gate that can never fire. Flag unsafe bash array expansion under
+        `set -u` (use `${ARR[@]+"${ARR[@]}"}`, not `"${ARR[@]:-}"`).
+chat:
+  auto_reply: true
