@@ -26,11 +26,7 @@
 
 import { EvidenceBundleSchema } from '@intentsolutions/core/validators/v1/evidence-bundle';
 import { type ContentStore } from '../ingest/interfaces.js';
-import {
-  type BundleResolver,
-  type GateDecisionView,
-  type ResolvedBundleRow,
-} from './row-model.js';
+import { type BundleResolver, type GateDecisionView, type ResolvedBundleRow } from './row-model.js';
 import { type RowVisibility } from './visibility.js';
 
 /**

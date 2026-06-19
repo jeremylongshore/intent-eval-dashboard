@@ -33,7 +33,12 @@
 
 import { esc, decisionBadge, noDataPanel, SITE_FOOTER } from '../results/render-html.js';
 import { type ExplainerSet, explainerFor, INDEX_EXPLAINER_KEY } from './explainers.js';
-import { type CoverageDecl, type TestingRepo, type TestingRow, type TestingView } from './testing-row.js';
+import {
+  type CoverageDecl,
+  type TestingRepo,
+  type TestingRow,
+  type TestingView,
+} from './testing-row.js';
 import { deriveVerdict, type Verdict, type VerdictKind, VERDICT_WEIGHT } from './verdict.js';
 
 /** URL prefix for the gated testing dashboard. */
@@ -134,7 +139,9 @@ function whatToFixBlock(verdict: Verdict): string {
   if (verdict.whatToFix.length === 0) {
     return `                <p class="what-to-fix what-to-fix--none">Nothing to fix — this gate is passing.</p>`;
   }
-  const items = verdict.whatToFix.map((r) => `                        <li>${esc(r)}</li>`).join('\n');
+  const items = verdict.whatToFix
+    .map((r) => `                        <li>${esc(r)}</li>`)
+    .join('\n');
   return `                <div class="what-to-fix">
                     <p><strong>What to fix:</strong></p>
                     <ul>
@@ -158,9 +165,7 @@ function rekorAnchors(indices: readonly number[]): string {
     .map((i) => {
       const safe = Number.isInteger(i) && i >= 0 ? String(i) : '';
       const href =
-        safe.length > 0
-          ? `https://rekor.sigstore.dev/api/v1/log/entries?logIndex=${safe}`
-          : '#';
+        safe.length > 0 ? `https://rekor.sigstore.dev/api/v1/log/entries?logIndex=${safe}` : '#';
       return `<a href="${esc(href)}"><code>${esc(String(i))}</code></a>`;
     })
     .join(', ');

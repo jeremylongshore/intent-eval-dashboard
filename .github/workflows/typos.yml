@@ -1,0 +1,39 @@
+name: Typos (spell-check)
+
+# Deterministic L1 source-spelling lane for the dashboard: runs crate-ci/typos
+# over the tree on every push + PR. Config lives in .typos.toml (repo root) which
+# holds the IEP domain-term ignore-list (iec/iel/iah/iar/iaj, ISEDC seat acronyms
+# incl. CMO, sops/sigstore/rekor/zod, unparseable, …) so platform vocabulary is
+# never flagged as a misspelling. The machine-regenerated site/ + site-internal/
+# trees are excluded in .typos.toml (the generator owns that output).
+#
+# REQUIRED, not advisory: a real typo fails the gate. The .typos.toml ignore-list
+# is the escape hatch for legitimate domain vocabulary — extend it rather than
+# suppressing the lane. A green required check is signal; a red advisory one is noise.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: typos-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  typos:
+    name: typos
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run typos
+        # Config is auto-discovered from .typos.toml at the repo root.
+        # Pinned to a release tag (not @master) so the rule set is reproducible.
+        uses: crate-ci/typos@v1.47.2

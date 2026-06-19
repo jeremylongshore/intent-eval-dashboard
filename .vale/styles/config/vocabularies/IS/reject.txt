@@ -1,0 +1,11 @@
+(?i)synergize
+(?i)leverage(?: the| our)?
+(?i)stakeholder buy-in
+(?i)best-in-class
+(?i)cutting-edge
+(?i)world-class
+(?i)seamless(?:ly)?
+(?i)delight(?:ed|ing|s)?
+(?i)effortless(?:ly)?
+(?i)game-changer?
+(?i)next-level

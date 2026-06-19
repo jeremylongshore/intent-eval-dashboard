@@ -90,6 +90,7 @@ pnpm run generate:retractions
 ```
 
 This:
+
 - validates the whole denylist (FAILS CLOSED on any invalid entry — out-of-set
   `reason_class`, subject-less entry, bad JSON, unknown field — and regenerates
   nothing), then

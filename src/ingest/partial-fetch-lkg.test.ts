@@ -28,11 +28,7 @@ import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { runLivePass, type LivePassDeps } from './live-pass.js';
-import {
-  FsContentStore,
-  FsSnapshotStore,
-  systemIngestClock,
-} from './storage-fs.js';
+import { FsContentStore, FsSnapshotStore, systemIngestClock } from './storage-fs.js';
 import { FsGateRowStore } from './gate-row-store.js';
 import { type ManifestFetcher, type SigstoreVerifier } from './interfaces.js';
 import { type PinnedSubjects } from './oidc-allowlist.js';
@@ -59,9 +55,7 @@ const PINNED: PinnedSubjects = {
     iec: {
       githubRepo: 'jeremylongshore/intent-eval-core',
       subjects: ['repo:jeremylongshore/intent-eval-core:ref:refs/tags/*'],
-      workflowRefs: [
-        'jeremylongshore/intent-eval-core/.github/workflows/release.yml@refs/tags/*',
-      ],
+      workflowRefs: ['jeremylongshore/intent-eval-core/.github/workflows/release.yml@refs/tags/*'],
       operatorConfirmed: true,
     },
   },
@@ -149,10 +143,7 @@ describe('partial fetch failure preserves prior-good rows (nr75.17)', () => {
 
     // And the verified rows still RESOLVE from the persisted content + gate-row
     // stores — the failed repo renders REAL data (stale), never no-data.
-    const resolver = new StoreTestingResolver(
-      new FsContentStore(root),
-      new FsGateRowStore(root),
-    );
+    const resolver = new StoreTestingResolver(new FsContentStore(root), new FsGateRowStore(root));
     const view = await buildTestingView(pass2.input, resolver);
     const iecRepo = view.repos.find((r) => r.repo === 'iec');
     expect(iecRepo?.noData).toBe(false);

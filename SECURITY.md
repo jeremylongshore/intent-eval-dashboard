@@ -5,6 +5,7 @@
 Report security issues privately via [GitHub Private Security Advisory](https://github.com/jeremylongshore/intent-eval-dashboard/security/advisories/new) or email `jeremy@intentsolutions.io` with subject prefix `[SECURITY intent-eval-dashboard]`.
 
 Please include:
+
 - A description of the issue
 - Steps to reproduce
 - Affected versions / commits
@@ -19,12 +20,14 @@ We aim to acknowledge within 72 hours.
 ## Scope
 
 In scope for this repository:
+
 - Source code and CI workflows in this repo
 - The deployed surface at `labs.intentsolutions.io`
 - The published `dashboard-render/v1` predicate URI (when sequenced; lives at `evals.intentsolutions.io/dashboard-render/v1`, NEVER at `labs.*`)
 - The retraction protocol + `retraction/v1` predicate
 
 Out of scope (report to the relevant repo):
+
 - `@intentsolutions/core` schema/validator bugs → `intent-eval-core`
 - Audit-harness gate bugs → `intent-audit-harness`
 - Skill-eval issues → `j-rig-skill-binary-eval`

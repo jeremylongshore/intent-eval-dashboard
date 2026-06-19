@@ -21,11 +21,7 @@
 import { generateKeyPairSync, sign as cryptoSign, createHash, randomBytes } from 'node:crypto';
 import { canonicalJsonBytes } from '../content-address.js';
 import { dssePae, merkleLeafHashHex } from '../verifier-offline.js';
-import {
-  type ManifestRow,
-  type ManifestSigningClaims,
-  type ReportManifest,
-} from '../manifest.js';
+import { type ManifestRow, type ManifestSigningClaims, type ReportManifest } from '../manifest.js';
 import { type OfflineBundle } from '../verifier-offline.js';
 
 const ISSUER = 'https://token.actions.githubusercontent.com';
@@ -73,7 +69,9 @@ function buildMerkleProof(
   const NODE_PREFIX = Buffer.from([0x01]);
   function nodeHash(leftHex: string, rightHex: string): string {
     return createHash('sha256')
-      .update(Buffer.concat([NODE_PREFIX, Buffer.from(leftHex, 'hex'), Buffer.from(rightHex, 'hex')]))
+      .update(
+        Buffer.concat([NODE_PREFIX, Buffer.from(leftHex, 'hex'), Buffer.from(rightHex, 'hex')]),
+      )
       .digest('hex');
   }
   const treeSize = leafHashesHex.length;
@@ -85,7 +83,7 @@ function buildMerkleProof(
     const next: string[] = [];
     for (let i = 0; i < level.length; i += 2) {
       const left = level[i]!;
-      const right = i + 1 < level.length ? (level[i + 1]!) : undefined;
+      const right = i + 1 < level.length ? level[i + 1]! : undefined;
       if (right === undefined) {
         // odd node carries up unchanged (RFC 6962)
         next.push(left);
@@ -183,11 +181,7 @@ export function mintRow(
 }
 
 /** Build a complete valid manifest for a repo with `rowCount` minted rows. */
-export function mintManifest(
-  repo: string,
-  githubRepo: string,
-  rowCount = 1,
-): ReportManifest {
+export function mintManifest(repo: string, githubRepo: string, rowCount = 1): ReportManifest {
   const rows = Array.from({ length: rowCount }, () => mintRow(repo, githubRepo).row);
   return {
     repo,

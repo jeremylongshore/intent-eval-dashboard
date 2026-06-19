@@ -17,11 +17,7 @@
 
 import { verify as sigstoreVerify } from 'sigstore';
 import { type SerializedBundle } from '@sigstore/bundle';
-import {
-  type SigstoreVerifier,
-  type VerifyRowInput,
-  VerifyFailure,
-} from './interfaces.js';
+import { type SigstoreVerifier, type VerifyRowInput, VerifyFailure } from './interfaces.js';
 
 /**
  * Map the pinned GitHub OIDC subject to the certificate identity URI sigstore
@@ -63,10 +59,14 @@ export class SigstoreRowVerifier implements SigstoreVerifier {
         /TLOG|INCLUSION|REKOR|TRANSPARENCY/i.test(code) ||
         /inclusion|transparency log|tlog/i.test(message)
           ? 'rekor_inclusion'
-          : /IDENTITY|CERTIFICATE_ERROR|POLICY/i.test(code) || /identity|subject|issuer/i.test(message)
+          : /IDENTITY|CERTIFICATE_ERROR|POLICY/i.test(code) ||
+              /identity|subject|issuer/i.test(message)
             ? 'identity_mismatch'
             : 'dsse_signature';
-      throw new VerifyFailure(kind, `sigstore verification failed (${code || 'unknown'}): ${message}`);
+      throw new VerifyFailure(
+        kind,
+        `sigstore verification failed (${code || 'unknown'}): ${message}`,
+      );
     }
   }
 }

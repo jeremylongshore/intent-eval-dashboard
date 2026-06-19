@@ -24,11 +24,7 @@
  */
 
 import { createHash, verify as cryptoVerify } from 'node:crypto';
-import {
-  type SigstoreVerifier,
-  type VerifyRowInput,
-  VerifyFailure,
-} from './interfaces.js';
+import { type SigstoreVerifier, type VerifyRowInput, VerifyFailure } from './interfaces.js';
 
 /** A DSSE envelope (RFC: in-toto/attestation DSSE). */
 export interface DsseEnvelope {

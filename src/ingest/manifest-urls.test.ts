@@ -26,7 +26,9 @@ const PINNED: PinnedSubjects = {
     iel: {
       githubRepo: 'jeremylongshore/intent-eval-lab',
       subjects: ['repo:jeremylongshore/intent-eval-lab:ref:refs/tags/*'],
-      workflowRefs: ['jeremylongshore/intent-eval-lab/.github/workflows/release.yml@refs/heads/main'],
+      workflowRefs: [
+        'jeremylongshore/intent-eval-lab/.github/workflows/release.yml@refs/heads/main',
+      ],
       operatorConfirmed: false,
     },
   },

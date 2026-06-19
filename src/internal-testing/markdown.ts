@@ -72,9 +72,7 @@ export function renderMarkdown(md: string): string {
   };
   const flushList = (): void => {
     if (listItems.length > 0) {
-      const items = listItems
-        .map((it) => `                <li>${inline(esc(it))}</li>`)
-        .join('\n');
+      const items = listItems.map((it) => `                <li>${inline(esc(it))}</li>`).join('\n');
       out.push(`            <ul>\n${items}\n            </ul>`);
       listItems = [];
     }

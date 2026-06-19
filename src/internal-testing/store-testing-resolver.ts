@@ -58,9 +58,9 @@ export class StoreTestingResolver implements TestingBundleResolver {
     const predicateUri = bundle.predicate_uri_set[0] ?? GATE_RESULT_V1_URI;
     const rows: ResolvedTestingRow[] = stored.bodies.map((b) => {
       const body = b as Record<string, unknown>;
-      const cov = (typeof body['coverage'] === 'object' && body['coverage'] !== null
-        ? body['coverage']
-        : {}) as Record<string, unknown>;
+      const cov = (
+        typeof body['coverage'] === 'object' && body['coverage'] !== null ? body['coverage'] : {}
+      ) as Record<string, unknown>;
       const failureMode = body['failure_mode'];
       const advisorySeverity = body['advisory_severity'];
       return {
@@ -78,7 +78,9 @@ export class StoreTestingResolver implements TestingBundleResolver {
         bundleCreatedAt: bundle.created_at,
         rekorLogIndices: bundle.rekor_log_indices,
         ...(typeof failureMode === 'string' ? { failureMode } : {}),
-        ...(advisorySeverity === 'info' || advisorySeverity === 'warn' || advisorySeverity === 'error'
+        ...(advisorySeverity === 'info' ||
+        advisorySeverity === 'warn' ||
+        advisorySeverity === 'error'
           ? { advisorySeverity }
           : {}),
       };

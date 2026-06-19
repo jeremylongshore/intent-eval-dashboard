@@ -56,7 +56,11 @@ export function bundleUrl(repo: string, bundleKey: string): string {
   return `/results/${slug(repo)}/${slug(bundleKey)}/`;
 }
 
-const PAGE_HEAD = (title: string, description: string, canonical: string): string => `<!DOCTYPE html>
+const PAGE_HEAD = (
+  title: string,
+  description: string,
+  canonical: string,
+): string => `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -139,9 +143,7 @@ function freshnessStrip(view: ResultsView): string {
         ? `<span class="badge badge--no-data">no-data</span>`
         : `<span class="badge badge--fresh">${r.rows.length} row${r.rows.length === 1 ? '' : 's'}</span>`;
       const ingested =
-        r.ingestedAt !== undefined
-          ? `<code>${esc(r.ingestedAt)}</code>`
-          : `<code>—</code>`;
+        r.ingestedAt !== undefined ? `<code>${esc(r.ingestedAt)}</code>` : `<code>—</code>`;
       return `                <tr>
                     <td><a href="${esc(repoUrl(r.repo))}"><code>${esc(r.repo)}</code></a></td>
                     <td>${status}${stale}</td>
@@ -321,9 +323,7 @@ export function renderBundlePage(
   const title = `Bundle ${bundleKey} — Intent Eval Platform`;
   const description = `Verified gate-result rows for content-addressed bundle ${bundleKey}.`;
   const body =
-    rows.length === 0
-      ? noDataPanel(repo)
-      : perPredicateBreakdown(rows) + '\n' + resultsTable(rows);
+    rows.length === 0 ? noDataPanel(repo) : perPredicateBreakdown(rows) + '\n' + resultsTable(rows);
   return `${PAGE_HEAD(title, description, bundleUrl(repo, bundleKey))}
 <body>
 ${SITE_HEADER}

@@ -1,0 +1,59 @@
+name: Doc Quality
+
+on:
+  pull_request:
+    paths:
+      - '**/*.md'
+      - '.markdownlint-cli2.jsonc'
+      - '.vale.ini'
+      - '.vale/**'
+      - 'lychee.toml'
+      - '.github/workflows/doc-quality.yml'
+  push:
+    branches: [main]
+    paths:
+      - '**/*.md'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: doc-quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  markdownlint:
+    name: markdownlint-cli2
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DavidAnson/markdownlint-cli2-action@v17
+        with:
+          globs: |
+            **/*.md
+            !node_modules
+            !dist
+
+  vale:
+    name: Vale (prose lint, advisory)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: errata-ai/vale-action@reviewdog
+        with:
+          version: 3.9.1
+          files: '["000-docs/", "README.md", "CLAUDE.md", "content/"]'
+          fail_on_error: false
+          reporter: github-pr-check
+
+  link-check:
+    name: lychee
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: lycheeverse/lychee-action@v2
+        with:
+          args: --offline --config lychee.toml "**/*.md"
+          fail: true

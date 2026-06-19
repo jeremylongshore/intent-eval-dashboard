@@ -111,7 +111,8 @@ describe('step 2 — OIDC allowlist', () => {
       ...manifest,
       signing: {
         ...manifest.signing,
-        workflowRef: 'jeremylongshore/intent-eval-core/.github/workflows/evil.yml@refs/heads/attacker',
+        workflowRef:
+          'jeremylongshore/intent-eval-core/.github/workflows/evil.yml@refs/heads/attacker',
       },
     };
     const reason = await expectCrash(runIngestWorker('iec', depsFor(tampered)));

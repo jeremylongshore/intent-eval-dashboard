@@ -20,7 +20,11 @@ import { type TestingRepo, type TestingView } from './testing-row.js';
 import { explainerSet, testingRow } from './__fixtures__/testing-fixtures.js';
 
 const EXPLAINERS = explainerSet([
-  { key: 'coverage', title: 'Coverage', html: '            <h2>What it is</h2>\n            <p>Lines run.</p>' },
+  {
+    key: 'coverage',
+    title: 'Coverage',
+    html: '            <h2>What it is</h2>\n            <p>Lines run.</p>',
+  },
   { key: 'gate-result', title: 'Gate result', html: '            <p>Generic explainer.</p>' },
   { key: '_index', title: 'How to read', html: '            <p>Read it like a tour.</p>' },
 ]);
@@ -42,7 +46,12 @@ function richRepo(): TestingRepo {
         rekorLogIndices: [],
         rowIndex: 1,
       }),
-      testingRow({ gateName: 'bespoke-gate', decision: 'advisory', advisorySeverity: 'info', gateReasons: ['heads up'] }),
+      testingRow({
+        gateName: 'bespoke-gate',
+        decision: 'advisory',
+        advisorySeverity: 'info',
+        gateReasons: ['heads up'],
+      }),
     ],
   };
 }
@@ -52,7 +61,11 @@ function viewOf(repos: readonly TestingRepo[], asOf?: string): TestingView {
 }
 
 describe('renderTestingRepoPage — guided tour shape', () => {
-  const html = renderTestingRepoPage(viewOf([richRepo()], '2026-05-30T12:00:05.000Z'), richRepo(), EXPLAINERS);
+  const html = renderTestingRepoPage(
+    viewOf([richRepo()], '2026-05-30T12:00:05.000Z'),
+    richRepo(),
+    EXPLAINERS,
+  );
 
   it('is a self-contained, NON-indexed, gated page', () => {
     expect(html).toContain('<!DOCTYPE html>');
@@ -121,7 +134,11 @@ describe('renderTestingRepoPage — edge states', () => {
   });
 
   it('shows "no explainer authored" when even the generic is absent', () => {
-    const repo: TestingRepo = { repo: 'iec', noData: false, rows: [testingRow({ gateName: 'mystery' })] };
+    const repo: TestingRepo = {
+      repo: 'iec',
+      noData: false,
+      rows: [testingRow({ gateName: 'mystery' })],
+    };
     const html = renderTestingRepoPage(viewOf([repo]), repo, explainerSet([])); // empty set
     expect(html).toContain('No explainer authored yet');
   });
@@ -150,10 +167,7 @@ describe('renderTestingRepoPage — edge states', () => {
 describe('renderTestingIndex', () => {
   it('renders the how-to-read explainer + a per-repo summary with worst verdict', () => {
     const view = viewOf(
-      [
-        richRepo(),
-        { repo: 'iah', noData: true, rows: [] },
-      ],
+      [richRepo(), { repo: 'iah', noData: true, rows: [] }],
       '2026-05-30T12:00:05.000Z',
     );
     const html = renderTestingIndex(view, EXPLAINERS);

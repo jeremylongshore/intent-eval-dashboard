@@ -1,25 +1,34 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head><title>Uptime-clean fixture</title><link rel="stylesheet" href="/style.css"></head>
-<body>
-<main>
-  <h1>Best-effort dashboard (must PASS the uptime guard)</h1>
-  <!--
+  <head>
+    <title>Uptime-clean fixture</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Best-effort dashboard (must PASS the uptime guard)</h1>
+      <!--
     This fixture carries the EXACT public commitment language and neutral uses of
     "status" / "liveness". None of these is an uptime-SLA claim, so the guard
     must NOT flag any of them.
   -->
-  <p>This is a best-effort, single-operator dashboard. See /status for liveness.</p>
-  <p>The <a href="/status/">ingest pipeline status</a> page shows current liveness; we make no SLA.</p>
-  <p>Freshness is rendered loudly — an hour we heard nothing verified is never filled.</p>
-</main>
-<footer class="site-footer">
-  <div class="site-footer__inner">
-    <div>
-      <strong>labs.intentsolutions.io</strong> · dashboard <code>v0.1.0</code> · <a href="/status/" class="footer__commitment">best-effort, single-operator, see /status for liveness</a><br>
-      Intent Solutions — <a href="https://intentsolutions.io">intentsolutions.io</a>
-    </div>
-  </div>
-</footer>
-</body>
+      <p>This is a best-effort, single-operator dashboard. See /status for liveness.</p>
+      <p>
+        The <a href="/status/">ingest pipeline status</a> page shows current liveness; we make no
+        SLA.
+      </p>
+      <p>Freshness is rendered loudly — an hour we heard nothing verified is never filled.</p>
+    </main>
+    <footer class="site-footer">
+      <div class="site-footer__inner">
+        <div>
+          <strong>labs.intentsolutions.io</strong> · dashboard <code>v0.1.0</code> ·
+          <a href="/status/" class="footer__commitment"
+            >best-effort, single-operator, see /status for liveness</a
+          ><br />
+          Intent Solutions — <a href="https://intentsolutions.io">intentsolutions.io</a>
+        </div>
+      </div>
+    </footer>
+  </body>
 </html>

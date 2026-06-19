@@ -21,7 +21,7 @@ on:
 
 permissions:
   contents: read
-  id-token: write   # required for Tailscale OIDC
+  id-token: write # required for Tailscale OIDC
 
 concurrency:
   group: deploy-vps-${{ github.repository }}

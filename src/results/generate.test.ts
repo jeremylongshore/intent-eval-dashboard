@@ -55,9 +55,20 @@ describe('applyPublicVisibility', () => {
   it('flips a repo with ONLY non-public rows to no-data (never partial pass)', async () => {
     const k = 'sha256:' + '2'.repeat(64);
     const resolver = new FixtureResolver(
-      new Map([[k, [resolvedRow({ visibility: { tier: 'tier-2' } }), resolvedRow({ visibility: { tier: 'tier-3' } })]]]),
+      new Map([
+        [
+          k,
+          [
+            resolvedRow({ visibility: { tier: 'tier-2' } }),
+            resolvedRow({ visibility: { tier: 'tier-3' } }),
+          ],
+        ],
+      ]),
     );
-    const raw = await buildResultsView(renderInput([repoState('iec', { bundleKeys: [k] })]), resolver);
+    const raw = await buildResultsView(
+      renderInput([repoState('iec', { bundleKeys: [k] })]),
+      resolver,
+    );
     const pub = applyPublicVisibility(raw, NOW);
     expect(pub.repos[0]?.noData).toBe(true);
     expect(pub.repos[0]?.rows).toEqual([]);
@@ -82,7 +93,9 @@ describe('buildPublicResultsView', () => {
 describe('generateResultsFiles', () => {
   it('emits index + per-repo + per-bundle pages', async () => {
     const k = 'sha256:' + '4'.repeat(64);
-    const resolver = new FixtureResolver(new Map([[k, [resolvedRow({ visibility: { tier: 'tier-1' } })]]]));
+    const resolver = new FixtureResolver(
+      new Map([[k, [resolvedRow({ visibility: { tier: 'tier-1' } })]]]),
+    );
     const view = await buildPublicResultsView(
       renderInput([repoState('iec', { bundleKeys: [k] })]),
       resolver,
@@ -122,7 +135,10 @@ describe('generateResultsFiles', () => {
   it('emits an index even when every repo is no-data', async () => {
     const resolver = new FixtureResolver(new Map());
     const view: ResultsView = await buildPublicResultsView(
-      renderInput([repoState('iec', { nullSnapshot: true }), repoState('iel', { nullSnapshot: true })]),
+      renderInput([
+        repoState('iec', { nullSnapshot: true }),
+        repoState('iel', { nullSnapshot: true }),
+      ]),
       resolver,
       NOW,
     );
@@ -144,7 +160,9 @@ describe('writeResultsSite', () => {
     const dir = await mkdtemp(join(tmpdir(), 'iep-results-'));
     try {
       const k = 'sha256:' + '7'.repeat(64);
-      const resolver = new FixtureResolver(new Map([[k, [resolvedRow({ visibility: { tier: 'tier-1' } })]]]));
+      const resolver = new FixtureResolver(
+        new Map([[k, [resolvedRow({ visibility: { tier: 'tier-1' } })]]]),
+      );
       const view = await buildPublicResultsView(
         renderInput([repoState('iec', { bundleKeys: [k] })]),
         resolver,

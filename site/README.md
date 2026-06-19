@@ -24,7 +24,7 @@ When interactive surfaces arrive — results browser (`puxu.6`) + freshness stri
 
 ## Layout
 
-```
+```text
 site/
 ├── style.css                              # shared across all pages
 ├── index.html                             # /labs.intentsolutions.io/ root

@@ -39,7 +39,7 @@ describe('C3 scanner — synthetic fixtures', () => {
     }
     // both the fraction form and the percent form are caught
     const matches = violations.map((v) => v.match.toLowerCase());
-    expect(matches.some((m) => m.includes('/') )).toBe(true);
+    expect(matches.some((m) => m.includes('/'))).toBe(true);
   });
 
   it('scanFiles aggregates per-file results, omitting clean files', async () => {

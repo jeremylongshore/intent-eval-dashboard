@@ -101,7 +101,9 @@ async function main(argv: readonly string[]): Promise<number> {
   const internalSiteRoot = resolve(process.cwd(), requested);
   const written = await generate(internalSiteRoot);
   console.log(`✓ generated ${written.length} operator-internal file(s) under ${internalSiteRoot}`);
-  console.log('  (tailnet-only — NOT served from the public origin; see README "Operator-internal view")');
+  console.log(
+    '  (tailnet-only — NOT served from the public origin; see README "Operator-internal view")',
+  );
   for (const w of written) console.log(`  ${w}`);
   return 0;
 }

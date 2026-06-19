@@ -52,9 +52,10 @@ on:
         default: false
 
 permissions:
-  contents: write   # commit + push regenerated HTML
-  actions: write    # gh workflow run deploy.yml (the GITHUB_TOKEN push below does
-                    # NOT auto-fire deploy.yml — see the "Trigger deploy" step)
+  contents: write # commit + push regenerated HTML
+  actions:
+    write # gh workflow run deploy.yml (the GITHUB_TOKEN push below does
+    # NOT auto-fire deploy.yml — see the "Trigger deploy" step)
 
 concurrency:
   group: regenerate-${{ github.repository }}

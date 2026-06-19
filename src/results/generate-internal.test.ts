@@ -160,9 +160,8 @@ describe('INVERSE-OF-PUBLIC: internal shows what public hides', () => {
     const view = await buildInternalResultsView(input(), resolver);
     const use = buildInternalUse(view, NOW);
     const indexHtml =
-      generateInternalFiles(view, use, NOW).find(
-        (f) => f.path === 'internal/results/index.html',
-      )?.html ?? '';
+      generateInternalFiles(view, use, NOW).find((f) => f.path === 'internal/results/index.html')
+        ?.html ?? '';
 
     expect(indexHtml).toContain('tier 1 — public'); // the public Tier-1 row
     expect(indexHtml).toContain('no consent'); // Tier-2-no-consent reason
@@ -220,10 +219,7 @@ describe('site-internal/ separation (never site/)', () => {
       expect(entries).toContain('site-internal');
       expect(entries).not.toContain('site');
 
-      const indexHtml = await readFile(
-        join(internalRoot, 'internal/results/index.html'),
-        'utf8',
-      );
+      const indexHtml = await readFile(join(internalRoot, 'internal/results/index.html'), 'utf8');
       expect(indexHtml).toContain('<!DOCTYPE html>');
       expect(indexHtml).toContain('Operator-internal results');
     } finally {
@@ -301,8 +297,7 @@ describe('internal index surfaces (4-timestamp + USE view)', () => {
       resolver,
     );
     const files = generateInternalFiles(view, buildInternalUse(view, NOW), NOW);
-    const indexHtml =
-      files.find((f) => f.path === 'internal/results/index.html')?.html ?? '';
+    const indexHtml = files.find((f) => f.path === 'internal/results/index.html')?.html ?? '';
     expect(indexHtml).toContain('no-data');
     // Index page is always emitted.
     expect(files.map((f) => f.path)).toContain('internal/results/index.html');
@@ -341,15 +336,31 @@ describe('C3 cleanliness of internal output', () => {
         [
           kA,
           [
-            resolvedRow({ predicateUri: GATE_RESULT_URI, decision: 'pass', visibility: { tier: 'tier-2' } }),
-            resolvedRow({ predicateUri: GATE_RESULT_URI, decision: 'pass', visibility: { tier: 'tier-1' } }),
+            resolvedRow({
+              predicateUri: GATE_RESULT_URI,
+              decision: 'pass',
+              visibility: { tier: 'tier-2' },
+            }),
+            resolvedRow({
+              predicateUri: GATE_RESULT_URI,
+              decision: 'pass',
+              visibility: { tier: 'tier-1' },
+            }),
           ],
         ],
         [
           kB,
           [
-            resolvedRow({ predicateUri: VALIDATION_URI, decision: 'pass', visibility: { tier: 'tier-3' } }),
-            resolvedRow({ predicateUri: VALIDATION_URI, decision: 'fail', visibility: { tier: 'tier-1', embargoUntil: FUTURE_EMBARGO } }),
+            resolvedRow({
+              predicateUri: VALIDATION_URI,
+              decision: 'pass',
+              visibility: { tier: 'tier-3' },
+            }),
+            resolvedRow({
+              predicateUri: VALIDATION_URI,
+              decision: 'fail',
+              visibility: { tier: 'tier-1', embargoUntil: FUTURE_EMBARGO },
+            }),
           ],
         ],
       ]),

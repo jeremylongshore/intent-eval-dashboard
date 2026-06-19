@@ -23,7 +23,11 @@ describe('loadExplainers', () => {
   it('loads only *.md, derives title from the first `# `, ignores other files', async () => {
     const dir = await mkdtemp(join(tmpdir(), 'iep-expl-'));
     try {
-      await writeFile(join(dir, 'coverage.md'), '# Coverage\n\n## What it is\n\nLines run.', 'utf8');
+      await writeFile(
+        join(dir, 'coverage.md'),
+        '# Coverage\n\n## What it is\n\nLines run.',
+        'utf8',
+      );
       await writeFile(join(dir, 'notitle.md'), 'No heading here.\n', 'utf8');
       await writeFile(join(dir, 'notes.txt'), 'ignored', 'utf8');
 

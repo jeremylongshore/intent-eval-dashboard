@@ -55,11 +55,7 @@ export {
 export { validateEvidenceBundle, type SchemaCheckResult } from './schema-validate.js';
 
 // --- step 6: content addressing ---
-export {
-  canonicalJsonBytes,
-  sha256Key,
-  stableStringify,
-} from './content-address.js';
+export { canonicalJsonBytes, sha256Key, stableStringify } from './content-address.js';
 
 // --- storage ---
 export { MemoryContentStore, MemorySnapshotStore } from './storage-memory.js';

@@ -73,6 +73,7 @@ Phase 2 triggers when `D28-PHASE-A0` returns.
 ## Default ingest contract (DR-035 B1)
 
 Every per-repo ingest worker MUST verify before rendering:
+
 1. OIDC issuer + subject + `workflow_ref:` claim against pinned per-repo allowlist
 2. Rekor inclusion proof, row-by-row
 3. DSSE signature, row-by-row
@@ -156,6 +157,7 @@ The **minimal alerting layer.** Deliberately tiny: the only thing worth waking a
 | Liveness-check CLI | `scripts/check-liveness-alerts.ts` | `pnpm run check:liveness`. What a VPS cron would run: load current liveness → `runAlertPass` → push via the (default no-op) transport. Current honest state = all 6 sources never-seen → would page, but the no-op transport delivers nothing and says so. |
 
 **Four hard bindings (CFO + CISO refusals, DR-035 § 8), enforced in code + test:**
+
 1. **7-day-silence is the ONLY paging trigger** (CISO). `evaluate.test.ts` proves the boundary (exactly 7d → no page; 7d+1ms → page; 6d → no page) AND the only-trigger property (a source erroring its head off with a fresh ingest does NOT page). No latency/error-rate/threshold pagers exist.
 2. **ntfy only, NO PagerDuty** (CFO). The only push protocol is ntfy (`prod-alerts`), behind the `NtfyTransport` seam. No PagerDuty/Opsgenie/Slack/SMS client anywhere.
 3. **No misleading uptime claims** (CFO). The `lint:uptime` grep-guard fails on any uptime-SLA claim in `site/`. The public commitment is exactly **"best-effort, single-operator, see /status for liveness"** — baked into the shared `SITE_FOOTER` (`render-html.ts`) + the `/status` footer (`render-strip.ts`) + the hand-maintained `site/index.html` footer.

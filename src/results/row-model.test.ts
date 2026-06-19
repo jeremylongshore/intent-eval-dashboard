@@ -77,7 +77,9 @@ describe('buildRepoResults', () => {
     expect(r.rekorLogIndices).toEqual([42, 43]);
     expect(r.ingestedAt).toBe('2026-05-30T12:00:05.000Z');
     // All four are distinct values — proving they are not collapsed.
-    expect(new Set([r.evaluatedAt, r.bundleCreatedAt, String(r.rekorLogIndices), r.ingestedAt]).size).toBe(4);
+    expect(
+      new Set([r.evaluatedAt, r.bundleCreatedAt, String(r.rekorLogIndices), r.ingestedAt]).size,
+    ).toBe(4);
   });
 
   it('is no-data with a null snapshot', async () => {
@@ -136,11 +138,16 @@ describe('buildRepoResults', () => {
     const rows = [
       {
         ...resolvedRow(),
-        visibility: { tier: 'tier-2' as const, consent: true, embargoUntil: '2026-07-01T00:00:00Z' },
+        visibility: {
+          tier: 'tier-2' as const,
+          consent: true,
+          embargoUntil: '2026-07-01T00:00:00Z',
+        },
       },
     ];
     const resolver = new FixtureResolver(new Map([[k, rows]]));
-    const v = (await buildRepoResults(repoState('iec', { bundleKeys: [k] }), resolver)).rows[0]!.visibility;
+    const v = (await buildRepoResults(repoState('iec', { bundleKeys: [k] }), resolver)).rows[0]!
+      .visibility;
     expect(v).toEqual({ tier: 'tier-2', consent: true, embargoUntil: '2026-07-01T00:00:00Z' });
   });
 });
@@ -212,7 +219,22 @@ describe('ContentStoreBundleResolver', () => {
     const key = await storeBundle(store, { id: 'not-a-uuid' });
     const resolver = new ContentStoreBundleResolver(
       store,
-      new FixtureGateRowSource(new Map([[key, [{ predicateUri: GATE_RESULT_URI, decision: 'pass', gateName: 'x', evaluatedAt: 'z', visibility: { tier: 'tier-1' } }]]])),
+      new FixtureGateRowSource(
+        new Map([
+          [
+            key,
+            [
+              {
+                predicateUri: GATE_RESULT_URI,
+                decision: 'pass',
+                gateName: 'x',
+                evaluatedAt: 'z',
+                visibility: { tier: 'tier-1' },
+              },
+            ],
+          ],
+        ]),
+      ),
     );
     expect(await resolver.resolve(key)).toBeNull();
   });
@@ -233,8 +255,20 @@ describe('ContentStoreBundleResolver', () => {
         [
           key,
           [
-            { predicateUri: GATE_RESULT_URI, decision: 'pass', gateName: 'kept', evaluatedAt: 'z', visibility: { tier: 'tier-1' } },
-            { predicateUri: VALIDATION_URI, decision: 'pass', gateName: 'dropped', evaluatedAt: 'z', visibility: { tier: 'tier-1' } },
+            {
+              predicateUri: GATE_RESULT_URI,
+              decision: 'pass',
+              gateName: 'kept',
+              evaluatedAt: 'z',
+              visibility: { tier: 'tier-1' },
+            },
+            {
+              predicateUri: VALIDATION_URI,
+              decision: 'pass',
+              gateName: 'dropped',
+              evaluatedAt: 'z',
+              visibility: { tier: 'tier-1' },
+            },
           ],
         ],
       ]),

@@ -86,9 +86,4 @@ export {
 } from './generate-internal.js';
 
 // --- C3 scanner ---
-export {
-  scanFiles,
-  scanForAggregatePass,
-  type C3FileResult,
-  type C3Violation,
-} from './c3-scan.js';
+export { scanFiles, scanForAggregatePass, type C3FileResult, type C3Violation } from './c3-scan.js';

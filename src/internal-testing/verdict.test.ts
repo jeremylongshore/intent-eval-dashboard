@@ -84,7 +84,9 @@ describe('deriveVerdict — robustness', () => {
   });
 
   it('filters whitespace-only reasons out of the fix list', () => {
-    const v = deriveVerdict(testingRow({ decision: 'fail', gateReasons: ['  ', 'real reason', ''] }));
+    const v = deriveVerdict(
+      testingRow({ decision: 'fail', gateReasons: ['  ', 'real reason', ''] }),
+    );
     expect(v.whatToFix).toEqual(['real reason']);
   });
 });
@@ -93,9 +95,7 @@ describe('VERDICT_WEIGHT ordering', () => {
   it('orders fail < error < watch < good (loudest first)', () => {
     const order: VerdictKind[] = ['fail', 'error', 'watch', 'good'];
     for (let i = 1; i < order.length; i++) {
-      expect(VERDICT_WEIGHT[order[i - 1]!]).toBeLessThan(
-        VERDICT_WEIGHT[order[i]!],
-      );
+      expect(VERDICT_WEIGHT[order[i - 1]!]).toBeLessThan(VERDICT_WEIGHT[order[i]!]);
     }
   });
 });

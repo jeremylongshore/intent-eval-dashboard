@@ -91,7 +91,9 @@ describe('HttpManifestFetcher (mocked fetch)', () => {
     globalThis.fetch = vi.fn(() =>
       Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(manifest) } as Response),
     );
-    const fetcher = new HttpManifestFetcher((repo) => `https://ci.example/${repo}/report-manifest.json`);
+    const fetcher = new HttpManifestFetcher(
+      (repo) => `https://ci.example/${repo}/report-manifest.json`,
+    );
     const got = await fetcher.fetch('iec');
     expect(got.repo).toBe('iec');
     const call = vi.mocked(globalThis.fetch).mock.calls[0];

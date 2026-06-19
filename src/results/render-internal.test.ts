@@ -86,10 +86,7 @@ describe('visibilityBadge', () => {
   it('fails closed for an unknown tier (defensive — never surfaces it as public)', () => {
     // A row that somehow carries a tier outside the closed set. The view-model's
     // coerceTier normally prevents this, so this is the defensive last line.
-    const html = visibilityBadge(
-      row({ tier: 'tier-9' as ResultsRow['visibility']['tier'] }),
-      NOW,
-    );
+    const html = visibilityBadge(row({ tier: 'tier-9' as ResultsRow['visibility']['tier'] }), NOW);
     expect(html).toContain('unknown tier');
     expect(html).toContain('internal-only');
   });
@@ -210,9 +207,7 @@ describe('internal per-repo + per-bundle pages', () => {
       new Map([[k, [resolvedRow({ visibility: { tier: 'tier-1' } })]]]),
     );
     const view = await buildInternalResultsView(
-      renderInput([
-        repoState('iec', { bundleKeys: [k], staleSince: '2026-05-29T00:00:00.000Z' }),
-      ]),
+      renderInput([repoState('iec', { bundleKeys: [k], staleSince: '2026-05-29T00:00:00.000Z' })]),
       resolver,
     );
     const indexHtml = renderInternalIndex(view, buildInternalUse(view, NOW), NOW);

@@ -105,7 +105,8 @@ export function deriveVerdict(row: TestingRow): Verdict {
         glyph: '⚠',
         label: 'error',
         headline: 'Could not evaluate — the gate errored. This is not a pass.',
-        whatToFix: reasons.length > 0 ? reasons : ['(gate errored, but no error class was recorded)'],
+        whatToFix:
+          reasons.length > 0 ? reasons : ['(gate errored, but no error class was recorded)'],
       };
 
     default:

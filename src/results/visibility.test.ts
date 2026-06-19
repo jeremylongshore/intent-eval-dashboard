@@ -7,11 +7,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import {
-  decidePublicVisibility,
-  filterPubliclyVisible,
-  type RowVisibility,
-} from './visibility.js';
+import { decidePublicVisibility, filterPubliclyVisible, type RowVisibility } from './visibility.js';
 
 const NOW = '2026-05-30T12:00:00.000Z';
 
@@ -91,7 +87,10 @@ describe('filterPubliclyVisible', () => {
       { id: 'b', visibility: { tier: 'tier-2' } as RowVisibility }, // dropped: no consent
       { id: 'c', visibility: { tier: 'tier-2', consent: true } as RowVisibility },
       { id: 'd', visibility: { tier: 'tier-3' } as RowVisibility }, // dropped
-      { id: 'e', visibility: { tier: 'tier-1', embargoUntil: '2099-01-01T00:00:00Z' } as RowVisibility }, // dropped
+      {
+        id: 'e',
+        visibility: { tier: 'tier-1', embargoUntil: '2099-01-01T00:00:00Z' } as RowVisibility,
+      }, // dropped
     ];
     const kept = filterPubliclyVisible(rows, NOW);
     expect(kept.map((r) => r.id)).toEqual(['a', 'c']);

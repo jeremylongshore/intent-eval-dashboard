@@ -15,7 +15,11 @@ import { type ReportManifest } from './manifest.js';
 import { validEvidenceBundle } from './__fixtures__/bundle-fixtures.js';
 
 const BUNDLE = validEvidenceBundle();
-const BODY = { gate_name: 'coverage', gate_decision: 'pass', evaluated_at: '2026-06-08T00:00:00.000Z' };
+const BODY = {
+  gate_name: 'coverage',
+  gate_decision: 'pass',
+  evaluated_at: '2026-06-08T00:00:00.000Z',
+};
 
 const PINNED: PinnedSubjects = {
   issuer: 'https://token.actions.githubusercontent.com',
@@ -35,10 +39,16 @@ function iecManifest(): ReportManifest {
     signing: {
       issuer: 'https://token.actions.githubusercontent.com',
       subject: 'repo:jeremylongshore/intent-eval-core:ref:refs/tags/v0.3.1',
-      workflowRef: 'jeremylongshore/intent-eval-core/.github/workflows/release.yml@refs/tags/v0.3.1',
+      workflowRef:
+        'jeremylongshore/intent-eval-core/.github/workflows/release.yml@refs/tags/v0.3.1',
     },
     rows: [
-      { bundle: BUNDLE, sigstoreBundle: {}, sourceSha: 'a'.repeat(40), gateResults: [BODY] } as never,
+      {
+        bundle: BUNDLE,
+        sigstoreBundle: {},
+        sourceSha: 'a'.repeat(40),
+        gateResults: [BODY],
+      } as never,
     ],
   };
 }

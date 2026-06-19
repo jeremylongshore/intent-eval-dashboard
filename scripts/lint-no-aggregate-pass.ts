@@ -105,7 +105,9 @@ async function main(argv: readonly string[]): Promise<number> {
 
 function reportViolation(file: string, v: C3Violation): void {
   // GitHub Actions error annotation + human-readable detail.
-  console.error(`::error file=${file}::C3 violation — aggregate "${v.match}" spans ${v.predicateUris.length} predicate URIs`);
+  console.error(
+    `::error file=${file}::C3 violation — aggregate "${v.match}" spans ${v.predicateUris.length} predicate URIs`,
+  );
   console.error(`  file:      ${file}`);
   console.error(`  match:     ${v.match}`);
   console.error(`  predicates: ${v.predicateUris.join(', ')}`);
@@ -113,7 +115,8 @@ function reportViolation(file: string, v: C3Violation): void {
 }
 
 // Run only when invoked directly (not when imported).
-const isMain = process.argv[1] !== undefined && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+const isMain =
+  process.argv[1] !== undefined && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (isMain) {
   main(process.argv.slice(2))
     .then((code) => process.exit(code))

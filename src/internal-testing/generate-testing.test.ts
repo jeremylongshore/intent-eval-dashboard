@@ -21,11 +21,7 @@ import {
   resolvedTestingRow,
 } from './__fixtures__/testing-fixtures.js';
 
-const EXPLAINERS = explainerSet([
-  { key: 'coverage' },
-  { key: 'gate-result' },
-  { key: '_index' },
-]);
+const EXPLAINERS = explainerSet([{ key: 'coverage' }, { key: 'gate-result' }, { key: '_index' }]);
 const KA = 'sha256:' + 'a'.repeat(64);
 
 async function viewWithData() {

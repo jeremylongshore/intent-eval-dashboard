@@ -97,8 +97,12 @@ async function main(argv: readonly string[]): Promise<number> {
   }
   const internalSiteRoot = resolve(process.cwd(), requested);
   const written = await generate(internalSiteRoot);
-  console.log(`✓ generated ${written.length} gated testing-dashboard file(s) under ${internalSiteRoot}`);
-  console.log('  (basicauth-gated at internal.intentsolutions.io — NOT served from the public origin)');
+  console.log(
+    `✓ generated ${written.length} gated testing-dashboard file(s) under ${internalSiteRoot}`,
+  );
+  console.log(
+    '  (basicauth-gated at internal.intentsolutions.io — NOT served from the public origin)',
+  );
   for (const w of written) console.log(`  ${w}`);
   return 0;
 }

@@ -210,11 +210,7 @@ function repoBody(repo: RepoResults, nowIso: string): string {
  * USE-method view of the ingest pipeline (reused from freshness), and a section
  * per repo with the visibility-annotated internal table.
  */
-export function renderInternalIndex(
-  view: ResultsView,
-  use: IngestUseView,
-  nowIso: string,
-): string {
+export function renderInternalIndex(view: ResultsView, use: IngestUseView, nowIso: string): string {
   const title = 'Operator-internal results — Intent Eval Platform (tailnet-only)';
   const description =
     'Operator-internal results view: every verified gate-result row regardless of visibility tier. Tailnet-only, never served from the public origin.';
@@ -224,10 +220,9 @@ export function renderInternalIndex(
         r.staleSince !== undefined
           ? ` <span class="badge badge--stale">stale since ${esc(r.staleSince)}</span>`
           : '';
-      const link =
-        !r.noData
-          ? `\n        <p><a href="${esc(internalRepoUrl(r.repo))}">All internal results for ${esc(r.repo)} →</a></p>`
-          : '';
+      const link = !r.noData
+        ? `\n        <p><a href="${esc(internalRepoUrl(r.repo))}">All internal results for ${esc(r.repo)} →</a></p>`
+        : '';
       return `        <section class="repo-results">
             <h3><a href="${esc(internalRepoUrl(r.repo))}"><code>${esc(r.repo)}</code></a>${stale}</h3>
 ${repoBody(r, nowIso)}${link}
