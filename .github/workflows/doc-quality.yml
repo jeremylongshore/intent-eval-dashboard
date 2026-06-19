@@ -2,13 +2,7 @@ name: Doc Quality
 
 on:
   pull_request:
-    paths:
-      - '**/*.md'
-      - '.markdownlint-cli2.jsonc'
-      - '.vale.ini'
-      - '.vale/**'
-      - 'lychee.toml'
-      - '.github/workflows/doc-quality.yml'
+    branches: [main]
   push:
     branches: [main]
     paths:

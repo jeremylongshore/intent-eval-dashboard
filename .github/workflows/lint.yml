@@ -11,11 +11,7 @@ name: Lint (YAML + Actions)
 
 on:
   pull_request:
-    paths:
-      - '**/*.yml'
-      - '**/*.yaml'
-      - '.yamllint'
-      - '.github/workflows/lint.yml'
+    branches: [main]
   push:
     branches: [main]
     paths:
