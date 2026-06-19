@@ -31,7 +31,13 @@
  * `lint:c3:internal` gate scans it exactly like the public site.
  */
 
-import { esc, decisionBadge, noDataPanel, SITE_FOOTER } from '../results/render-html.js';
+import {
+  esc,
+  decisionBadge,
+  noDataPanel,
+  SITE_FOOTER,
+  trimDashes,
+} from '../results/render-html.js';
 import { type ExplainerSet, explainerFor, INDEX_EXPLAINER_KEY } from './explainers.js';
 import {
   type CoverageDecl,
@@ -49,12 +55,9 @@ export function testingRepoUrl(repo: string): string {
   return `${TESTING_PREFIX}/${slugLocal(repo)}/`;
 }
 
-/** Local slug (same rule as the results lane, kept private to avoid coupling). */
+/** Local slug (same rule as the results lane; reuses its linear dash-trim). */
 function slugLocal(value: string): string {
-  return value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+  return trimDashes(value.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
 }
 
 /** Map an internal testing URL to its file path under the internal site root. */

@@ -13,16 +13,27 @@
  * the `results/` tree so they cannot be mistaken for live results.
  */
 
+/**
+ * Trim a single repeated character from both ends with linear string scans
+ * instead of a `/^c+|c+$/`-style regex, whose anchored quantifier is the
+ * polynomial-ReDoS form CodeQL `js/polynomial-redos` flags on uncontrolled input.
+ */
+function trimChar(value: string, code: number): string {
+  let start = 0;
+  let end = value.length;
+  while (start < end && value.charCodeAt(start) === code) start += 1;
+  while (end > start && value.charCodeAt(end - 1) === code) end -= 1;
+  return value.slice(start, end);
+}
+
 /** Slugify a deep URL path into a single stable filesystem/URL fragment. */
 export function deepUrlSlug(deepUrlPath: string): string {
-  return (
-    deepUrlPath
-      .toLowerCase()
-      .replace(/^\/+|\/+$/g, '') // trim leading/trailing slashes
-      .replace(/[^a-z0-9]+/g, '-') // collapse any non-alphanumeric run to one dash
-      .replace(/^-+|-+$/g, '') || // trim dashes
-    'root'
-  ); // a retracted site root collapses to a stable slug
+  const collapsed = trimChar(deepUrlPath.toLowerCase(), 47 /* '/' */).replace(
+    /[^a-z0-9]+/g, // collapse any non-alphanumeric run to one dash
+    '-',
+  );
+  // trim dashes; a retracted site root collapses to a stable slug
+  return trimChar(collapsed, 45 /* '-' */) || 'root';
 }
 
 /**

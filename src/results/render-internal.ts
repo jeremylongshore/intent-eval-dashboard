@@ -45,6 +45,7 @@ import {
   noDataPanel,
   perPredicateBreakdown,
   SITE_FOOTER,
+  trimDashes,
 } from './render-html.js';
 import { type RepoResults, type ResultsRow, type ResultsView } from './row-model.js';
 import { decidePublicVisibility, type PublicExclusionReason } from './visibility.js';
@@ -62,12 +63,9 @@ export function internalBundleUrl(repo: string, bundleKey: string): string {
   return `${INTERNAL_PREFIX}/${slugLocal(repo)}/${slugLocal(bundleKey)}/`;
 }
 
-/** Local slug (identical rule to render-html's `slug`, kept private to avoid coupling). */
+/** Local slug (identical rule to render-html's `slug`; reuses its linear dash-trim). */
 function slugLocal(value: string): string {
-  return value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+  return trimDashes(value.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
 }
 
 /**

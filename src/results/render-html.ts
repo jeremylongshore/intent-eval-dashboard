@@ -40,10 +40,20 @@ export function esc(value: string): string {
 
 /** Slugify a repo key / predicate URI into a stable URL fragment. */
 export function slug(value: string): string {
-  return value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+  return trimDashes(value.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
+}
+
+/**
+ * Trim leading/trailing `-` from an already-collapsed slug. Uses string scans
+ * (not a `/-+$/`-style regex) so it is provably linear — avoids the polynomial
+ * ReDoS that CodeQL `js/polynomial-redos` flags on the anchored-quantifier form.
+ */
+export function trimDashes(value: string): string {
+  let start = 0;
+  let end = value.length;
+  while (start < end && value.charCodeAt(start) === 45 /* '-' */) start += 1;
+  while (end > start && value.charCodeAt(end - 1) === 45 /* '-' */) end -= 1;
+  return value.slice(start, end);
 }
 
 /** Stable per-repo results URL. */
