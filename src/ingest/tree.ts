@@ -154,9 +154,7 @@ export async function runDeployPass(
 ): Promise<DeployPassResult> {
   // Ingest each repo independently. Settle ALL — one repo's crash must not
   // short-circuit the others (one_for_one isolation).
-  const settled = await Promise.allSettled(
-    repos.map((repo) => runIngestWorker(repo, deps)),
-  );
+  const settled = await Promise.allSettled(repos.map((repo) => runIngestWorker(repo, deps)));
 
   const outcomes: RepoPassOutcome[] = repos.map((repo, i) => {
     const result = settled[i];

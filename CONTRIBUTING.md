@@ -25,7 +25,7 @@ If a proposed change conflicts with DR-035, the right path is a successor DR rat
 
 ## Conventional commits
 
-```
+```text
 feat: short description
 fix: short description
 docs: short description

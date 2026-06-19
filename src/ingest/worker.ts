@@ -35,7 +35,12 @@ import {
 } from './interfaces.js';
 import { isReportManifestShape } from './manifest.js';
 import { checkOidcAllowlist, type PinnedSubjects } from './oidc-allowlist.js';
-import { IngestCrash, type IngestReason, type IngestReasonCode, type IngestStep } from './reason.js';
+import {
+  IngestCrash,
+  type IngestReason,
+  type IngestReasonCode,
+  type IngestStep,
+} from './reason.js';
 import { validateEvidenceBundle } from './schema-validate.js';
 
 /** Everything a worker needs, all behind interfaces (deterministically testable). */
@@ -80,9 +85,21 @@ function crashFromVerifyFailure(repo: string, rowIndex: number, failure: VerifyF
         rowIndex,
       );
     case 'dsse_signature':
-      return crash(repo, 'verify_dsse_signature', 'dsse_signature_invalid', failure.message, rowIndex);
+      return crash(
+        repo,
+        'verify_dsse_signature',
+        'dsse_signature_invalid',
+        failure.message,
+        rowIndex,
+      );
     case 'identity_mismatch':
-      return crash(repo, 'verify_dsse_signature', 'dsse_signature_invalid', failure.message, rowIndex);
+      return crash(
+        repo,
+        'verify_dsse_signature',
+        'dsse_signature_invalid',
+        failure.message,
+        rowIndex,
+      );
   }
 }
 
@@ -109,7 +126,12 @@ export async function runIngestWorker(
     );
   }
   if (!isReportManifestShape(manifestRaw)) {
-    return crash(repo, 'fetch_manifest', 'manifest_malformed', 'manifest failed structural shape check');
+    return crash(
+      repo,
+      'fetch_manifest',
+      'manifest_malformed',
+      'manifest failed structural shape check',
+    );
   }
   const manifest = manifestRaw;
 

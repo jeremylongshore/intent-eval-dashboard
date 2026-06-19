@@ -86,6 +86,8 @@ describe('StoreTestingResolver', () => {
   it('returns null when there are no stored bodies for a verified bundle', async () => {
     const content = new MemoryContentStore();
     const key = await content.put(canonicalJsonBytes(validEvidenceBundle()));
-    expect(await new StoreTestingResolver(content, new MemoryGateRowStore()).resolve(key)).toBeNull();
+    expect(
+      await new StoreTestingResolver(content, new MemoryGateRowStore()).resolve(key),
+    ).toBeNull();
   });
 });

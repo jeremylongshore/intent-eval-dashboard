@@ -1,26 +1,31 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head><title>C3 clean fixture</title><link rel="stylesheet" href="/style.css"></head>
-<body>
-<main>
-  <h1>Results (clean)</h1>
-  <!--
+  <head>
+    <title>C3 clean fixture</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Results (clean)</h1>
+      <!--
     This fixture mixes TWO predicate URIs on the page but renders counts ONLY
     per-predicate, never as a cross-predicate aggregate. The C3 scanner must
     pass it.
   -->
-  <ul class="predicate-breakdown">
-    <li><code>https://evals.intentsolutions.io/gate-result/v1</code> — pass: 3 · fail: 1</li>
-    <li><code>https://evals.intentsolutions.io/validation-result/v1</code> — pass: 2 · advisory: 1</li>
-  </ul>
-  <p>
-    A single-predicate count phrased as a fraction is acceptable because it does
-    not span heterogeneous predicates. The following is scoped to ONE predicate:
-  </p>
-  <section>
-    <p><code>https://evals.intentsolutions.io/gate-result/v1</code></p>
-    <p>3/4 pass for this predicate alone.</p>
-  </section>
-</main>
-</body>
+      <ul class="predicate-breakdown">
+        <li><code>https://evals.intentsolutions.io/gate-result/v1</code> — pass: 3 · fail: 1</li>
+        <li>
+          <code>https://evals.intentsolutions.io/validation-result/v1</code> — pass: 2 · advisory: 1
+        </li>
+      </ul>
+      <p>
+        A single-predicate count phrased as a fraction is acceptable because it does not span
+        heterogeneous predicates. The following is scoped to ONE predicate:
+      </p>
+      <section>
+        <p><code>https://evals.intentsolutions.io/gate-result/v1</code></p>
+        <p>3/4 pass for this predicate alone.</p>
+      </section>
+    </main>
+  </body>
 </html>

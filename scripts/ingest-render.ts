@@ -31,7 +31,11 @@ import { FsGateRowStore } from '../dist/ingest/gate-row-store.js';
 import { runLivePass } from '../dist/ingest/live-pass.js';
 import { ContentStoreBundleResolver } from '../dist/results/bundle-resolver.js';
 import { StoreGateRowSource } from '../dist/results/store-gate-row-source.js';
-import { buildPublicResultsView, generateResultsFiles, writeResultsSite } from '../dist/results/generate.js';
+import {
+  buildPublicResultsView,
+  generateResultsFiles,
+  writeResultsSite,
+} from '../dist/results/generate.js';
 import { StoreTestingResolver } from '../dist/internal-testing/store-testing-resolver.js';
 import { buildTestingView } from '../dist/internal-testing/testing-row.js';
 import {
@@ -54,7 +58,9 @@ async function main(argv) {
   const internalRoot = resolve(process.cwd(), arg(argv, '--internal', 'site-internal'));
   const nowIso = new Date().toISOString();
 
-  const pinned = parsePinnedSubjects(JSON.parse(readFileSync(resolve(process.cwd(), 'ingest/pinned-subjects.json'), 'utf8')));
+  const pinned = parsePinnedSubjects(
+    JSON.parse(readFileSync(resolve(process.cwd(), 'ingest/pinned-subjects.json'), 'utf8')),
+  );
 
   // Loud-on-startup: any pinned subject still `operatorConfirmed: false` has an
   // unverified OIDC workflowRef (placeholder ref, not yet checked against the
@@ -85,11 +91,16 @@ async function main(argv) {
   console.log('── ingest pass (fetch → verify → content-address → snapshot) ──');
   const { input, outcomes } = await runLivePass(deps, INGEST_REPOS);
   for (const o of outcomes) {
-    console.log(`  ${o.repo}: ${o.fresh ? 'VERIFIED ✓' : `no-data (${o.failure?.step ?? 'unreachable'}/${o.failure?.reasonCode ?? '—'})`}`);
+    console.log(
+      `  ${o.repo}: ${o.fresh ? 'VERIFIED ✓' : `no-data (${o.failure?.step ?? 'unreachable'}/${o.failure?.reasonCode ?? '—'})`}`,
+    );
   }
 
   // --- render: public results ---
-  const publicResolver = new ContentStoreBundleResolver(contentStore, new StoreGateRowSource(gateRowStore));
+  const publicResolver = new ContentStoreBundleResolver(
+    contentStore,
+    new StoreGateRowSource(gateRowStore),
+  );
   const resultsView = await buildPublicResultsView(input, publicResolver, nowIso);
   await writeResultsSite(generateResultsFiles(resultsView), siteRoot);
 
@@ -133,7 +144,9 @@ async function main(argv) {
       console.log(`── rendered ${repo.repo}: ${decisions}`);
     }
   }
-  console.log('✓ ingest-render complete (site/ + site-internal/ written; deploy is the human-gated VPS step)');
+  console.log(
+    '✓ ingest-render complete (site/ + site-internal/ written; deploy is the human-gated VPS step)',
+  );
   return 0;
 }
 

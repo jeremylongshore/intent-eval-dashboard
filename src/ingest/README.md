@@ -25,7 +25,7 @@ real, the worker fails closed (crashes); it does not pass through.
 
 ## Supervision tree (DR-035 § 4.B)
 
-```
+```text
 deploy_supervisor          one_for_one* , restart=permanent
 ├── ingest_supervisor      one_for_one,  max_restarts=N per repo per hour
 │   ├── ingest_worker:iec   transient

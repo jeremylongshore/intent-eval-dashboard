@@ -1,10 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head><title>arm-symmetry violation fixture</title><link rel="stylesheet" href="/style.css"></head>
-<body>
-<main>
-  <h1>Phase A.0 (ASYMMETRIC — must fail)</h1>
-  <!--
+  <head>
+    <title>arm-symmetry violation fixture</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Phase A.0 (ASYMMETRIC — must fail)</h1>
+      <!--
     This fixture renders the two arms with ASYMMETRIC structural treatment.
     Two distinct injuries, either of which alone must fail the scanner:
 
@@ -18,32 +21,42 @@
 
     The arm-symmetry scanner must FAIL it.
   -->
-  <table>
-    <tbody>
-      <tr>
-        <td><!-- ARM-A:START id=what -->One shot: take whatever the model returns.<!-- ARM-A:END id=what --></td>
-        <td><!-- ARM-B:START id=what --><strong>The full loop: score the edit, keep it only if better.</strong><!-- ARM-B:END id=what --></td>
-      </tr>
-    </tbody>
-  </table>
+      <table>
+        <tbody>
+          <tr>
+            <td>
+              <!-- ARM-A:START id=what -->One shot: take whatever the model returns.<!-- ARM-A:END id=what -->
+            </td>
+            <td>
+              <!-- ARM-B:START id=what --><strong
+                >The full loop: score the edit, keep it only if better.</strong
+              ><!-- ARM-B:END id=what -->
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-  <!-- ARM-A:START id=walkthrough -->
-  <div class="meta-block">
-    <dl>
-      <dt>started at</dt><dd><code>86 / 100</code></dd>
-      <dt>result</dt><dd><strong>−14 points — worse</strong></dd>
-    </dl>
-  </div>
-  <!-- ARM-A:END id=walkthrough -->
+      <!-- ARM-A:START id=walkthrough -->
+      <div class="meta-block">
+        <dl>
+          <dt>started at</dt>
+          <dd><code>86 / 100</code></dd>
+          <dt>result</dt>
+          <dd><strong>−14 points — worse</strong></dd>
+        </dl>
+      </div>
+      <!-- ARM-A:END id=walkthrough -->
 
-  <!-- ARM-B:START id=walkthrough -->
-  <div class="meta-block" style="border-left: 3px solid #2c5282;">
-    <dl>
-      <dt>started at</dt><dd><code>53 / 100</code></dd>
-      <dt>result</dt><dd><strong>+9 points — accepted</strong></dd>
-    </dl>
-  </div>
-  <!-- ARM-B:END id=walkthrough -->
-</main>
-</body>
+      <!-- ARM-B:START id=walkthrough -->
+      <div class="meta-block" style="border-left: 3px solid #2c5282">
+        <dl>
+          <dt>started at</dt>
+          <dd><code>53 / 100</code></dd>
+          <dt>result</dt>
+          <dd><strong>+9 points — accepted</strong></dd>
+        </dl>
+      </div>
+      <!-- ARM-B:END id=walkthrough -->
+    </main>
+  </body>
 </html>

@@ -37,7 +37,7 @@ Every gate on a repo's page renders as a block with five parts, in order:
 
 ## 4. Architecture
 
-```
+```text
 verified RenderInput (src/ingest/renderer.ts — verify-before-render seam)
    │  buildTestingView + TestingBundleResolver        (richer gate-result/v1 projection)
    ▼
@@ -83,6 +83,7 @@ Caddy artifact: `deploy/internal-testing.caddy` (handle block + the 5 lift-overs
 **This PR (dashboard):** the render lane + explainers + tests (53 new, full coverage) + CLI + `check` wiring + this DR + the Caddy snippet. `pnpm run check` green.
 
 **Follow-ups (sequenced beads):**
+
 - `nr75.4` — emit a signed `report-manifest.json` of `gate-result/v1` rows from `intent-eval-core` CI (the upstream feeder; populates the iec page).
 - production `TestingBundleResolver` + ingest wiring (pairs with the emit work).
 - `nr75.6` — VPS Caddy basicauth wiring (human-gated) + the `040-AT-DECR` addendum in lab.

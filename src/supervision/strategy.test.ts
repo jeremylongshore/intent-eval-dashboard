@@ -6,12 +6,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import {
-  affectedChildIds,
-  budgetExceeded,
-  decide,
-  shouldRestart,
-} from './strategy.js';
+import { affectedChildIds, budgetExceeded, decide, shouldRestart } from './strategy.js';
 import {
   type ExitReason,
   type RestartBudget,

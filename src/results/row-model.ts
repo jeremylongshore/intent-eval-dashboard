@@ -212,9 +212,7 @@ export async function buildResultsView(
     .map((r) => r.ingestedAt)
     .filter((t): t is string => t !== undefined && t.length > 0);
   const asOf =
-    ingestedTimes.length > 0
-      ? ingestedTimes.reduce((min, t) => (t < min ? t : min))
-      : undefined;
+    ingestedTimes.length > 0 ? ingestedTimes.reduce((min, t) => (t < min ? t : min)) : undefined;
 
   return { ...(asOf !== undefined ? { asOf } : {}), repos };
 }

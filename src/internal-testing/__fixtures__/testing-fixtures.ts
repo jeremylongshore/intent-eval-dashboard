@@ -22,9 +22,7 @@ export const GATE_RESULT_URI = 'https://evals.intentsolutions.io/gate-result/v1'
 export const VALIDATION_URI = 'https://evals.intentsolutions.io/validation-result/v1';
 
 /** Build a richer gate-result/v1 testing-row projection (overridable per test). */
-export function resolvedTestingRow(
-  opts: Partial<ResolvedTestingRow> = {},
-): ResolvedTestingRow {
+export function resolvedTestingRow(opts: Partial<ResolvedTestingRow> = {}): ResolvedTestingRow {
   return {
     predicateUri: opts.predicateUri ?? GATE_RESULT_URI,
     gateId: opts.gateId ?? 'intent-eval-core:ci:coverage',
@@ -64,9 +62,7 @@ export class TestingFixtureResolver implements TestingBundleResolver {
 }
 
 /** Build a small in-memory ExplainerSet for render tests (no filesystem). */
-export function explainerSet(
-  docs: readonly Partial<ExplainerDoc>[] = [],
-): ExplainerSet {
+export function explainerSet(docs: readonly Partial<ExplainerDoc>[] = []): ExplainerSet {
   const map = new Map<string, ExplainerDoc>();
   for (const d of docs) {
     const key = d.key ?? 'gate-result';

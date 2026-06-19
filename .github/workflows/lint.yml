@@ -1,0 +1,67 @@
+name: Lint (YAML + Actions)
+
+# Deterministic L1 lint for the dashboard's CI-config surface: yamllint + actionlint.
+# ESLint/Prettier run inside ingest-ci.yml (`pnpm run check` includes format:check);
+# markdownlint runs in doc-quality.yml (its single home — de-duplicated from here).
+# These two jobs are REQUIRED, not advisory: a green required check is signal, a
+# red advisory check is noise. yamllint runs --strict so warnings fail the gate.
+#
+# This repo does not vendor the audit-harness configs dir, so the yamllint policy
+# lives at the repo root in .yamllint (mirrors the kernel @intentsolutions/core).
+
+on:
+  pull_request:
+    paths:
+      - '**/*.yml'
+      - '**/*.yaml'
+      - '.yamllint'
+      - '.github/workflows/lint.yml'
+  push:
+    branches: [main]
+    paths:
+      - '**/*.yml'
+      - '**/*.yaml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lint-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  yamllint:
+    name: yamllint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install yamllint
+        run: pip install --no-cache-dir "yamllint==1.35.1"
+
+      - name: Run yamllint (--strict — warnings fail the gate)
+        run: |
+          yamllint --strict \
+            --config-file .yamllint \
+            .github/ .coderabbit.yaml
+
+  actionlint:
+    name: actionlint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run actionlint
+        uses: reviewdog/action-actionlint@v1
+        with:
+          reporter: github-pr-check
+          fail_level: error

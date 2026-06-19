@@ -1,7 +1,23 @@
+# Build artifacts + vendored
 dist/
 node_modules/
 coverage/
-site/
 pnpm-lock.yaml
 *.md
 LICENSE
+
+# Machine-REGENERATED output — the generator is the source of truth, not prettier.
+# `regenerate.yml` (daily cron) + the generate:* scripts own these; formatting them
+# here would fight the generator and produce churn on every refresh.
+#   - site/            public rendered HTML (regenerate.py + ingest-render.ts)
+#   - site-internal/   tailnet-only operator HTML (generate-internal*.ts)
+#   - data/            eval-set source data refreshed by regenerate.py
+#   - .ingest-store/   content-addressed verified-bundle store
+site/
+site-internal/
+data/
+.ingest-store/
+
+# Hand-authored test fixtures under src/**/__fixtures__/ are NOT ignored here —
+# they are committed-once HTML fixtures asserted against by *.test.ts, so prettier
+# keeps them consistent like any other source file.

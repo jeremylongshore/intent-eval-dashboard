@@ -26,7 +26,12 @@ import { canonicalJsonBytes, sha256Key } from './content-address.js';
 import { type ManifestFetcher, type IngestClock } from './interfaces.js';
 import { type ReportManifest } from './manifest.js';
 import { type PinnedSubjects } from './oidc-allowlist.js';
-import { REPO_GITHUB, mintManifest, mintRow, signingClaimsFor } from './__fixtures__/bundle-fixtures.js';
+import {
+  REPO_GITHUB,
+  mintManifest,
+  mintRow,
+  signingClaimsFor,
+} from './__fixtures__/bundle-fixtures.js';
 
 const clock: IngestClock = { nowIso: () => '2026-05-30T00:00:00.000Z', nowMs: () => 0 };
 
@@ -128,7 +133,13 @@ describe('Scenario 1 — malicious manifest with wrong workflow_ref', () => {
     const { sink, last } = recordingSink();
     const renderer = new Renderer(snapshotStore, sink);
     await renderer.render(
-      [{ repo: 'iec', fresh: false, failure: { step: 'verify_oidc', reasonCode: 'oidc_workflow_ref_mismatch' } }],
+      [
+        {
+          repo: 'iec',
+          fresh: false,
+          failure: { step: 'verify_oidc', reasonCode: 'oidc_workflow_ref_mismatch' },
+        },
+      ],
       '2026-05-30T00:00:00.000Z',
     );
     const rendered = last();

@@ -38,7 +38,11 @@ describe('StoreGateRowSource', () => {
       repo: 'iec',
       bodies: [
         { gate_name: 'coverage', gate_decision: 'pass', evaluated_at: '2026-06-08T00:00:00.000Z' },
-        { gate_name: 'architecture', gate_decision: 'fail', evaluated_at: '2026-06-08T00:01:00.000Z' },
+        {
+          gate_name: 'architecture',
+          gate_decision: 'fail',
+          evaluated_at: '2026-06-08T00:01:00.000Z',
+        },
       ],
     });
     const rows = await new StoreGateRowSource(store).rowsFor(KEY);

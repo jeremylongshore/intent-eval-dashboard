@@ -16,11 +16,7 @@
  * verification or supervision logic.)
  */
 
-import {
-  type PublishRequest,
-  type PublishResult,
-  type PublisherTransport,
-} from './publisher.js';
+import { type PublishRequest, type PublishResult, type PublisherTransport } from './publisher.js';
 
 export interface NoopLogger {
   info(message: string): void;
@@ -28,7 +24,6 @@ export interface NoopLogger {
 
 const consoleLogger: NoopLogger = {
   info: (message: string): void => {
-     
     console.info(message);
   },
 };

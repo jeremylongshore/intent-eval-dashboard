@@ -1,0 +1,39 @@
+# yamllint config for intent-eval-dashboard (the public reports dashboard).
+#
+# This repo does not vendor the audit-harness configs dir, so the YAML lint
+# policy lives at the repo root and is referenced by .github/workflows/lint.yml.
+# Rule set mirrors the kernel (@intentsolutions/core) so the L1 lint posture is
+# identical across the Intent Eval Platform.
+#
+# Scope: the YAML the dashboard actually carries — GitHub Actions workflows and
+# the .coderabbit.yaml review config. node_modules/ and pnpm-lock.yaml are not
+# linted (generated / vendored).
+#
+# Rationale for the relaxed rules below: GitHub Actions workflows routinely use
+# long `run:` one-liners and `on:`/`true` keys that the stock default profile
+# flags. We keep the structural checks (indentation, key duplication, trailing
+# whitespace, syntax) strict and relax only the cosmetic ones that conflict
+# with hand-authored Actions YAML.
+
+extends: default
+
+rules:
+  # GitHub Actions `run:` steps run long; line-length as a hard error produces
+  # churn without catching real defects.
+  line-length: disable
+
+  # `on:` is the canonical Actions trigger key; the truthy check would flag it.
+  truthy:
+    allowed-values: ['true', 'false']
+    check-keys: false
+
+  # `---` document-start marker is optional for single-document workflow files.
+  document-start: disable
+
+  # Comments are hand-authored; don't require exactly two leading spaces.
+  comments:
+    min-spaces-from-content: 1
+
+  # Keep these STRICT — they catch real defects:
+  #   indentation, key-duplicates, trailing-spaces, new-line-at-end-of-file,
+  #   colons, commas, brackets, braces (inherited from `extends: default`).

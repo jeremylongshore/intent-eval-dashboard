@@ -53,7 +53,10 @@ describe('buildTestingRepo — resolved rows', () => {
   it('flattens rows across bundles with stable repo/bundle/row identity', async () => {
     const resolver = new TestingFixtureResolver(
       new Map([
-        [KA, [resolvedTestingRow({ gateName: 'coverage' }), resolvedTestingRow({ gateName: 'crap' })]],
+        [
+          KA,
+          [resolvedTestingRow({ gateName: 'coverage' }), resolvedTestingRow({ gateName: 'crap' })],
+        ],
         [KB, [resolvedTestingRow({ gateName: 'architecture' })]],
       ]),
     );

@@ -1,0 +1,19 @@
+verbose = "info"
+no_progress = true
+include_verbatim = true
+
+exclude = [
+  "^https://localhost",
+  "^http://localhost",
+  "^https://127\\.0\\.0\\.1",
+  "^https://twitter\\.com",
+  "^https://x\\.com",
+]
+
+exclude_path = [
+  "node_modules",
+  "dist",
+]
+
+# No cache: this is an --offline check, so request caching has no effect and a
+# .lycheecache artifact would trip the repo-root dotfile boundary gate.

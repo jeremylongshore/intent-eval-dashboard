@@ -40,10 +40,20 @@ export function esc(value: string): string {
 
 /** Slugify a repo key / predicate URI into a stable URL fragment. */
 export function slug(value: string): string {
-  return value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+  return trimDashes(value.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
+}
+
+/**
+ * Trim leading/trailing `-` from an already-collapsed slug. Uses string scans
+ * (not a `/-+$/`-style regex) so it is provably linear — avoids the polynomial
+ * ReDoS that CodeQL `js/polynomial-redos` flags on the anchored-quantifier form.
+ */
+export function trimDashes(value: string): string {
+  let start = 0;
+  let end = value.length;
+  while (start < end && value.charCodeAt(start) === 45 /* '-' */) start += 1;
+  while (end > start && value.charCodeAt(end - 1) === 45 /* '-' */) end -= 1;
+  return value.slice(start, end);
 }
 
 /** Stable per-repo results URL. */
@@ -56,7 +66,11 @@ export function bundleUrl(repo: string, bundleKey: string): string {
   return `/results/${slug(repo)}/${slug(bundleKey)}/`;
 }
 
-const PAGE_HEAD = (title: string, description: string, canonical: string): string => `<!DOCTYPE html>
+const PAGE_HEAD = (
+  title: string,
+  description: string,
+  canonical: string,
+): string => `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -139,9 +153,7 @@ function freshnessStrip(view: ResultsView): string {
         ? `<span class="badge badge--no-data">no-data</span>`
         : `<span class="badge badge--fresh">${r.rows.length} row${r.rows.length === 1 ? '' : 's'}</span>`;
       const ingested =
-        r.ingestedAt !== undefined
-          ? `<code>${esc(r.ingestedAt)}</code>`
-          : `<code>—</code>`;
+        r.ingestedAt !== undefined ? `<code>${esc(r.ingestedAt)}</code>` : `<code>—</code>`;
       return `                <tr>
                     <td><a href="${esc(repoUrl(r.repo))}"><code>${esc(r.repo)}</code></a></td>
                     <td>${status}${stale}</td>
@@ -321,9 +333,7 @@ export function renderBundlePage(
   const title = `Bundle ${bundleKey} — Intent Eval Platform`;
   const description = `Verified gate-result rows for content-addressed bundle ${bundleKey}.`;
   const body =
-    rows.length === 0
-      ? noDataPanel(repo)
-      : perPredicateBreakdown(rows) + '\n' + resultsTable(rows);
+    rows.length === 0 ? noDataPanel(repo) : perPredicateBreakdown(rows) + '\n' + resultsTable(rows);
   return `${PAGE_HEAD(title, description, bundleUrl(repo, bundleKey))}
 <body>
 ${SITE_HEADER}

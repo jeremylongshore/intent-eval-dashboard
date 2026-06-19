@@ -6,11 +6,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import {
-  checkOidcAllowlist,
-  matchesPinnedPattern,
-  type PinnedSubjects,
-} from './oidc-allowlist.js';
+import { checkOidcAllowlist, matchesPinnedPattern, type PinnedSubjects } from './oidc-allowlist.js';
 import {
   parsePinnedSubjects,
   defaultPinnedSubjectsPath,
@@ -46,8 +42,12 @@ describe('matchesPinnedPattern', () => {
     expect(matchesPinnedPattern('a/b/c', 'a/b/d')).toBe(false);
   });
   it('single trailing-star prefix match', () => {
-    expect(matchesPinnedPattern('repo:x:ref:refs/tags/*', 'repo:x:ref:refs/tags/v1.0.0')).toBe(true);
-    expect(matchesPinnedPattern('repo:x:ref:refs/tags/*', 'repo:y:ref:refs/tags/v1.0.0')).toBe(false);
+    expect(matchesPinnedPattern('repo:x:ref:refs/tags/*', 'repo:x:ref:refs/tags/v1.0.0')).toBe(
+      true,
+    );
+    expect(matchesPinnedPattern('repo:x:ref:refs/tags/*', 'repo:y:ref:refs/tags/v1.0.0')).toBe(
+      false,
+    );
   });
   it('mid-string star is treated literally (no wildcard smuggling)', () => {
     expect(matchesPinnedPattern('a/*/c', 'a/b/c')).toBe(false);
@@ -104,7 +104,11 @@ describe('isReportManifestShape', () => {
   });
   it('rejects when signing claims are not strings', () => {
     expect(
-      isReportManifestShape({ repo: 'x', signing: { issuer: 1, subject: 's', workflowRef: 'w' }, rows: [] }),
+      isReportManifestShape({
+        repo: 'x',
+        signing: { issuer: 1, subject: 's', workflowRef: 'w' },
+        rows: [],
+      }),
     ).toBe(false);
   });
   it('rejects when rows is not an array of well-shaped rows', () => {
@@ -149,7 +153,11 @@ describe('buildRenderInput', () => {
       store,
       [
         { repo: 'iec', fresh: true },
-        { repo: 'iah', fresh: false, failure: { step: 'fetch_manifest', reasonCode: 'manifest_unreachable' } },
+        {
+          repo: 'iah',
+          fresh: false,
+          failure: { step: 'fetch_manifest', reasonCode: 'manifest_unreachable' },
+        },
       ],
       '2026-05-30T12:00:00.000Z',
     );
@@ -177,7 +185,13 @@ describe('offline verifier — Merkle internals', () => {
   it('computeMerkleRootHex on a single-leaf tree returns the leaf', () => {
     const leaf = merkleLeafHashHex(new TextEncoder().encode('x'));
     expect(
-      computeMerkleRootHex({ leafHashHex: leaf, leafIndex: 0, treeSize: 1, auditPathHex: [], rootHashHex: leaf }),
+      computeMerkleRootHex({
+        leafHashHex: leaf,
+        leafIndex: 0,
+        treeSize: 1,
+        auditPathHex: [],
+        rootHashHex: leaf,
+      }),
     ).toBe(leaf);
   });
   it('throws when the audit path is longer than the tree height', () => {
@@ -203,8 +217,12 @@ describe('offline verifier — Merkle internals', () => {
     // odd-child (right sibling) audit-path branches.
     const NODE = Buffer.from([0x01]);
     const node = (l: string, r: string): string =>
-      sha256Key(Buffer.concat([NODE, Buffer.from(l, 'hex'), Buffer.from(r, 'hex')])).slice('sha256:'.length);
-    const leaves = [0, 1, 2, 3].map((n) => merkleLeafHashHex(new TextEncoder().encode(`leaf-${n}`)));
+      sha256Key(Buffer.concat([NODE, Buffer.from(l, 'hex'), Buffer.from(r, 'hex')])).slice(
+        'sha256:'.length,
+      );
+    const leaves = [0, 1, 2, 3].map((n) =>
+      merkleLeafHashHex(new TextEncoder().encode(`leaf-${n}`)),
+    );
     const h01 = node(leaves[0]!, leaves[1]!);
     const h23 = node(leaves[2]!, leaves[3]!);
     const root = node(h01, h23);
@@ -230,12 +248,20 @@ describe('offline verifier — Merkle internals', () => {
 });
 
 describe('offline verifier — failure branches', () => {
-  const expected = { issuer: 'https://issuer', subject: 's', workflowRef: 'o/r/.github/workflows/release.yml@refs/tags/v1' };
+  const expected = {
+    issuer: 'https://issuer',
+    subject: 's',
+    workflowRef: 'o/r/.github/workflows/release.yml@refs/tags/v1',
+  };
   const verifier = new OfflineRowVerifier();
 
   async function failKind(bundle: OfflineBundle, payloadBytes: Uint8Array): Promise<string> {
     try {
-      await verifier.verifyRow({ sigstoreBundle: bundle, payloadBytes, expectedIdentity: expected });
+      await verifier.verifyRow({
+        sigstoreBundle: bundle,
+        payloadBytes,
+        expectedIdentity: expected,
+      });
     } catch (err: unknown) {
       if (err instanceof VerifyFailure) return err.kind;
     }
@@ -245,7 +271,11 @@ describe('offline verifier — failure branches', () => {
   it('rejects an inclusion proof whose leaf hash does not match the payload', async () => {
     const payload = new TextEncoder().encode('real');
     const bundle: OfflineBundle = {
-      dsse: { payloadType: 't', payload: Buffer.from(payload).toString('base64'), signatures: [{ sig: '' }] },
+      dsse: {
+        payloadType: 't',
+        payload: Buffer.from(payload).toString('base64'),
+        signatures: [{ sig: '' }],
+      },
       inclusionProof: {
         leafHashHex: 'f'.repeat(64), // wrong leaf
         leafIndex: 0,
@@ -263,7 +293,11 @@ describe('offline verifier — failure branches', () => {
     const payload = new TextEncoder().encode('real');
     const leaf = merkleLeafHashHex(payload);
     const bundle: OfflineBundle = {
-      dsse: { payloadType: 't', payload: Buffer.from(payload).toString('base64'), signatures: [{ sig: '' }] },
+      dsse: {
+        payloadType: 't',
+        payload: Buffer.from(payload).toString('base64'),
+        signatures: [{ sig: '' }],
+      },
       inclusionProof: {
         leafHashHex: leaf,
         leafIndex: 0,
@@ -286,7 +320,13 @@ describe('offline verifier — failure branches', () => {
         payload: Buffer.from(new TextEncoder().encode('different')).toString('base64'),
         signatures: [{ sig: '' }],
       },
-      inclusionProof: { leafHashHex: leaf, leafIndex: 0, treeSize: 1, auditPathHex: [], rootHashHex: leaf },
+      inclusionProof: {
+        leafHashHex: leaf,
+        leafIndex: 0,
+        treeSize: 1,
+        auditPathHex: [],
+        rootHashHex: leaf,
+      },
       signerPublicKeyPem: 'x',
       identity: { issuer: expected.issuer, workflowRef: expected.workflowRef },
     };
@@ -298,7 +338,13 @@ describe('offline verifier — failure branches', () => {
     const leaf = merkleLeafHashHex(payload);
     const bundle: OfflineBundle = {
       dsse: { payloadType: 't', payload: Buffer.from(payload).toString('base64'), signatures: [] },
-      inclusionProof: { leafHashHex: leaf, leafIndex: 0, treeSize: 1, auditPathHex: [], rootHashHex: leaf },
+      inclusionProof: {
+        leafHashHex: leaf,
+        leafIndex: 0,
+        treeSize: 1,
+        auditPathHex: [],
+        rootHashHex: leaf,
+      },
       signerPublicKeyPem: 'x',
       identity: { issuer: expected.issuer, workflowRef: expected.workflowRef },
     };
@@ -314,7 +360,13 @@ describe('offline verifier — failure branches', () => {
         payload: Buffer.from(payload).toString('base64'),
         signatures: [{ sig: Buffer.from('xx').toString('base64') }],
       },
-      inclusionProof: { leafHashHex: leaf, leafIndex: 0, treeSize: 1, auditPathHex: [], rootHashHex: leaf },
+      inclusionProof: {
+        leafHashHex: leaf,
+        leafIndex: 0,
+        treeSize: 1,
+        auditPathHex: [],
+        rootHashHex: leaf,
+      },
       signerPublicKeyPem: 'not-a-pem',
       identity: { issuer: expected.issuer, workflowRef: expected.workflowRef },
     };
@@ -326,7 +378,9 @@ describe('parsePinnedSubjects', () => {
   it('parses a valid document', () => {
     const doc = parsePinnedSubjects({
       issuer: 'https://i',
-      repos: { iec: { githubRepo: 'o/iec', subjects: ['s'], workflowRefs: ['w'], operatorConfirmed: true } },
+      repos: {
+        iec: { githubRepo: 'o/iec', subjects: ['s'], workflowRefs: ['w'], operatorConfirmed: true },
+      },
     });
     expect(doc.issuer).toBe('https://i');
     expect(doc.repos['iec']?.operatorConfirmed).toBe(true);
@@ -343,14 +397,20 @@ describe('parsePinnedSubjects', () => {
     expect(() => parsePinnedSubjects({})).toThrow(/issuer/);
     expect(() => parsePinnedSubjects({ issuer: 'i' })).toThrow(/repos/);
     expect(() => parsePinnedSubjects({ issuer: 'i', repos: { x: null } })).toThrow(/not an object/);
-    expect(() => parsePinnedSubjects({ issuer: 'i', repos: { x: { subjects: [], workflowRefs: [] } } })).toThrow(
-      /githubRepo/,
-    );
     expect(() =>
-      parsePinnedSubjects({ issuer: 'i', repos: { x: { githubRepo: 'g', subjects: 'no', workflowRefs: [] } } }),
+      parsePinnedSubjects({ issuer: 'i', repos: { x: { subjects: [], workflowRefs: [] } } }),
+    ).toThrow(/githubRepo/);
+    expect(() =>
+      parsePinnedSubjects({
+        issuer: 'i',
+        repos: { x: { githubRepo: 'g', subjects: 'no', workflowRefs: [] } },
+      }),
     ).toThrow(/subjects/);
     expect(() =>
-      parsePinnedSubjects({ issuer: 'i', repos: { x: { githubRepo: 'g', subjects: [], workflowRefs: 1 } } }),
+      parsePinnedSubjects({
+        issuer: 'i',
+        repos: { x: { githubRepo: 'g', subjects: [], workflowRefs: 1 } },
+      }),
     ).toThrow(/workflowRefs/);
   });
   it('defaultPinnedSubjectsPath ends at the ingest allowlist file', () => {
