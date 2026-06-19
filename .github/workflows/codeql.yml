@@ -1,8 +1,8 @@
 name: CodeQL
 
 # Security scanning ONLY (security-extended query suite — no quality/maintainability
-# queries). Code-quality, design, and correctness review is Gemini's job (see
-# .gemini/styleguide.md); the two are intentionally non-overlapping. Free on public repos.
+# queries). Code-quality, design, and correctness review is CodeRabbit's job (see
+# .coderabbit.yaml); the two are intentionally non-overlapping. Free on public repos.
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
   pull_request:
     branches: [main]
   schedule:
-    - cron: "27 3 * * 1"
+    - cron: '27 3 * * 1'
 
 permissions:
   contents: read
@@ -42,4 +42,4 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
-          category: "/language:${{ matrix.language }}"
+          category: '/language:${{ matrix.language }}'
