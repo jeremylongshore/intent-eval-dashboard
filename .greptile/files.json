@@ -7,7 +7,7 @@
     },
     {
       "path": "README.md",
-      "description": "Public-facing repo overview: the 6-repo Intent Eval Platform map, where this dashboard fits (renders eval-set methodology + signed Evidence Bundles + gate results from the 5 platform repos), the v0.1.0 single-file-HTML/zero-build posture, the public-vs-operator-internal (site/ vs site-internal/) split and its load-bearing strict separation, and the anti-goals (hard refusal triggers). Authoritative on scope, status, and what ships per phase.",
+      "description": "Public-facing repo overview: the 6-repo Intent Eval Platform map, where this dashboard fits (renders eval-set methodology + signed Evidence Bundles + gate results from the 5 platform repos), the v0.1.0 single-file-HTML/zero-build posture, the public-vs-operator-internal (site/ vs site-internal/) split and its load-bearing strict separation, and the anti-goals (hard refusal triggers). Authoritative on the repo map, anti-corruption posture, and anti-goals. STALE-PHASING CAVEAT: its 'What ships in Phase 2' section (results browser, 6-worker ingest supervision tree, retraction protocol, ops-lite alerting) is now OUT OF DATE — those surfaces are BUILT (puxu.6/.7/.9/.10/.11). For current build status defer to CLAUDE.md (the live binding), not this README's phase framing.",
       "scope": ["src/**", "site/**"]
     },
     {
@@ -17,7 +17,7 @@
     },
     {
       "path": "000-docs/002-DR-RFC-internal-testing-dashboard-design-2026-06-07.md",
-      "description": "Internal testing dashboard design RFC (Pillar 1 of the internal ops portal). Authoritative on the gated, teaching-oriented internal testing render lane (src/internal-testing/) that renders per-repo testing gates with 5-part teaching blocks (authored explainer + verified data + auto verdict + what-we-measured + what-to-fix). Output goes to site-internal/internal/testing/, basicauth-gated at internal.intentsolutions.io (per successor DR-040 override — distinct from the no-basicauth public-origin rule). A sibling of the puxu.9 operator-results view, not a replacement.",
+      "description": "Internal testing dashboard design RFC (Pillar 1 of the internal ops portal). STATUS = ACCEPTED (acting-head 2026-06-07) AND IMPLEMENTED — not a live/open proposal; the render lane it describes is BUILT (src/internal-testing/ + site-internal/internal/testing/ exist). Authoritative on the gated, teaching-oriented internal testing render lane that renders per-repo testing gates with 5-part teaching blocks (authored explainer + verified data + auto verdict + what-we-measured + what-to-fix). Output goes to site-internal/internal/testing/, basicauth-gated at internal.intentsolutions.io per the ratified successor DR-040 override (intent-eval-lab/000-docs/040-AT-DECR-...) — a deliberate per-named-surface exception to the no-basicauth-on-public-origin rule, NOT a contradiction of it. A sibling of the puxu.9 operator-results view, not a replacement.",
       "scope": ["src/internal-testing/**", "site-internal/**"]
     },
     {
@@ -27,7 +27,7 @@
     },
     {
       "path": "tests/TESTING.md",
-      "description": "Per-repo testing-policy doc (IS Testing SOP). Maps the 7-layer taxonomy to current status, lists the REQUIRED CI gates defined per DR-035 § 9 (partner-name grep, harness hash verify, C3 aggregate-PASS% lint, predicate-URI-at-labs scan, A.0 HTML arm-symmetry diff), coverage/mutation policy, and the hash-pinning workflow. @intentsolutions/audit-harness is vendored as a dev dep; CI references the in-repo copy, never ~/.claude/ paths.",
+      "description": "Per-repo testing-policy doc (IS Testing SOP). AUTHORITATIVE on the REQUIRED CI gate list defined per DR-035 § 9 (partner-name grep, harness hash verify, C3 aggregate-PASS% lint, predicate-URI-at-labs scan, A.0 HTML arm-symmetry diff — the latter now BUILT as puxu.12) and the hash-pinning workflow. STALE-STATUS CAVEAT: the 'Status — v0.1.0 (Phase 1)' / 'initial scaffolding' / 'no test code shipped' framing and parts of the layer-status table LAG reality — the ingest/supervision/results/freshness/retraction/alerting suites are ONLINE with full coverage. Trust the gate list, not the scaffolding banner; for current build status defer to CLAUDE.md. @intentsolutions/audit-harness is vendored as a dev dep; CI references the in-repo copy, never ~/.claude/ paths.",
       "scope": ["tests/**", "src/**", ".github/workflows/**"]
     }
   ]
