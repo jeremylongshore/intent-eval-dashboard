@@ -48,19 +48,24 @@ Full catalog: DR-035 § 8.
 - **DNS:** Porkbun A + CAA (LE-only) + DNSSEC (zone-level inherited)
 - **TUI (v0.2.0+ reservation):** Go, `cmd/labs-tui/` — NOT implemented at v0.1.0; directory + module path reserved per A3 ratified deferral
 
-## What ships at v0.1.0 (Phase 1)
+## The v0.1.0 baseline (Phase 1)
 
 - Eval-set browser at `/eval-sets/` — versioned, lineage-tracked spec rendering
-- Public anonymous root with CMO substance constraint (eval-set browser + freshness-strip stub + methodology docs link + end-to-end signed example)
+- Public anonymous root with CMO substance constraint (eval-set browser + freshness strip + methodology docs link + end-to-end signed example)
 - `/healthz` endpoint
-- **No `gate-result/v1` row rendering** — predicate-bearing rows are Phase 2 work
-- **No predicate URIs declared at `labs.*`** — methodology + spec rendering only
+- **No predicate URIs declared at `labs.*`** — predicate URIs are only ever rendered (pointed at `evals.*`), never declared here
 
-## What ships in Phase 2
+## Built on top of the baseline (shipped)
 
-Schema evolution to `@intentsolutions/core@0.2.0` · 6-worker ingest supervision tree (iec, iel, iah, iaj, iar, ccp — ICOS struck per cross-tier policy) · results browser · per-row visibility-tier gating · sign-your-own-homework (sequenced) · retraction protocol + Caddy kill-switch · ops-lite (ntfy + /status + 7d pager) · Phase A.0 symmetric rendering
+The dashboard now consumes `@intentsolutions/core@0.2.0` and the following are **built and committed** — see the per-feature sections below for the module maps:
 
-Phase 2 triggers when `D28-PHASE-A0` returns.
+- 6-worker verify-before-render ingest supervision tree (iec, iel, iah, iaj, iar, ccp — ICOS struck per cross-tier policy) + live ingest→render pipeline in the daily cron
+- Results browser with per-row visibility-tier gating (puxu.6)
+- Freshness + decision-mix strip + `/status` USE-method view (puxu.7)
+- Operator-internal view (puxu.9), retraction protocol + Caddy 410 kill-switch (puxu.10), ops-lite ntfy alerting (puxu.11)
+- Phase A.0 symmetric-render HTML structural-diff gate (puxu.12)
+
+Still genuinely deferred: the Astro migration (the site remains single-file HTML), the `cmd/labs-tui/` Go TUI (v0.2.0+ reservation, validated-demand-gated), and the tailnet/basicauth VPS deploy wiring for the operator-internal surfaces (documented human-gated ops step).
 
 ## Default visibility (DR-035 C2 — CSO hybrid)
 

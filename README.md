@@ -19,7 +19,7 @@ The 6th member of the Intent Eval Platform. Renders eval-set methodology + signe
 
 ## Status
 
-**v0.1.0 in flight.** Phase 1 work tracked at [issue #1](https://github.com/jeremylongshore/intent-eval-dashboard/issues/1) (umbrella).
+**Built and live at [labs.intentsolutions.io](https://labs.intentsolutions.io).** The eval-set browser, results browser (`gate-result/v1` rows from verified ingest snapshots), freshness + decision-mix strip, `/status` USE-method view, operator-internal view, retraction protocol, and ops-lite alerting are all shipped (beads puxu.6/.7/.9/.10/.11). The 6-worker verify-before-render ingest tree and the live ingest→render pipeline are running in the daily cron. Tracking at [issue #1](https://github.com/jeremylongshore/intent-eval-dashboard/issues/1) (umbrella).
 
 Ratified by ISEDC Session 8 — see [DR-035](https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/035-AT-DECR-isedc-council-session-8-labs-dashboard-2026-05-29.md) on the lab repo.
 
@@ -70,11 +70,11 @@ pnpm run lint:c3:internal       # C3 gate over the internal output
 
 The tailnet-only **hostname** (e.g. `labs-internal.<tailnet>`), the **Tailscale-identity-gated Caddy block** that serves `site-internal/`, and the DNS/port wiring are a **human-gated VPS ops step** — they are intentionally **not** implemented here. This change builds the generator + its output only. Per the puxu.9 bead and the VP DevRel binding (DR-035 § 8): **no basicauth on this hostname — Tailscale identity is the gate.** It matches the existing tailnet-only infra pattern (Netdata at `intentsolutions:19999`, ntfy at `intentsolutions:8080`). Until that ops step is done, there is **no route** to this output.
 
-## What ships in Phase 2
+## Beyond the v0.1.0 baseline (shipped)
 
-Schema evolution to `@intentsolutions/core@0.2.0` (adds `pre_registration_hash`, `retraction/v1`, `dashboard-render/v1`) · 6-worker ingest supervision tree · results browser · sign-your-own-homework (sequenced) · retraction protocol with Caddy kill-switch · ops-lite alerting · Phase A.0 symmetric rendering.
+The dashboard now consumes `@intentsolutions/core@0.2.0` (`pre_registration_hash`, `retraction/v1`, `dashboard-render/v1`) and the following are **built and committed** on top of the original v0.1.0 methodology-first cut: the 6-worker verify-before-render ingest supervision tree, the results browser, the retraction protocol with its Caddy 410 kill-switch, ops-lite alerting, and the Phase A.0 symmetric-render HTML structural-diff gate (puxu.12). See `CLAUDE.md` for the per-feature module map.
 
-Phase 2 triggers when [`D28-PHASE-A0`](https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/028-AT-DECR-isedc-council-session-7-skill-refiner-plan-ratification-2026-05-27.md) returns.
+Still genuinely deferred: the Astro migration (the site remains single-file HTML) and the tailnet/basicauth VPS deploy wiring for the operator-internal surfaces (a documented human-gated ops step).
 
 ## Anti-goals (hard refusal triggers — see DR-035 § 8)
 

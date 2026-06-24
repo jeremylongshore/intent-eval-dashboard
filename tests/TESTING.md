@@ -2,9 +2,9 @@
 
 Per the Intent Solutions Testing SOP. The `@intentsolutions/audit-harness` package is vendored as a dev dependency; all hooks and CI workflows reference the in-repo copy.
 
-## Status — v0.1.0 (Phase 1)
+## Status
 
-The dashboard is in initial scaffolding. The 7-layer taxonomy is not yet fully populated. This document is updated as layers come online.
+The TS pipeline test suites are online: 40 Vitest files across `ingest/`, `supervision/`, `results/`, `freshness/`, `retraction/`, `alerting/`, and `internal-testing/` (unit, integration, and synthetic compromised-CI attack scenarios). The taxonomy below is populated for the kernel-consumer code paths; L5 (Playwright site-build smoke) and Gherkin acceptance remain pending. This document is updated as the remaining layers come online.
 
 ## Layer status
 
@@ -30,7 +30,7 @@ The dashboard is in initial scaffolding. The 7-layer taxonomy is not yet fully p
 
 ## Coverage policy
 
-Target: `80%` for kernel-consumer code paths (Phase 2). Not yet measured at Phase 1 (no test code shipped at v0.1.0 scaffolding).
+Measured and enforced via Vitest v8 coverage on `src/**/*.ts` (test files, barrels, fixtures, and the no-op publisher stub excluded). The CI floor (`vitest.config.ts` thresholds, run as the `Coverage` gate in `ingest-ci.yml`) is lines 95% / functions 95% / branches 90% / statements 95%.
 
 ## Mutation policy
 
