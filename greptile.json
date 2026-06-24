@@ -1,0 +1,7 @@
+{
+  "instructions": "Terse, technical, findings-only: no preamble, praise, or summaries — state the problem, the file:line, and the concrete fix. Flag every real issue; never soft-pedal or skip. This is the SEMANTIC review layer ONLY — do not re-report style/formatting/lint (deterministic L1 CI owns that: eslint, prettier, markdownlint, yamllint, actionlint, ruff, typos) or security (CodeQL owns that). Focus on logic errors, contract/invariant violations, missed edge cases, and correctness.",
+  "commentTypes": ["logic"],
+  "strictness": 1,
+  "shouldUpdateDescription": false,
+  "ignorePatterns": "greptile.json\ndist/**\nnode_modules/**\ncoverage/**\n*.snap\n*.lock\npnpm-lock.yaml\n.harness-hash\n.audit-harness/**"
+}
