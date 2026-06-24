@@ -1,0 +1,19 @@
+{
+  "files": [
+    {
+      "path": "CLAUDE.md",
+      "description": "Repo charter and the load-bearing invariants. § 'Hard refusal triggers' carries the DR-035 § 8 hard-refusal catalog (the source of truth for this repo — the DR itself lives in intent-eval-lab/000-docs/). Also documents the anti-corruption layer (consume @intentsolutions/core, never vendor), the verify-before-render ingest contract (DR-035 B1), the default visibility tiers (C2), the C3 aggregate-PASS%-across-predicates ban, and the no-data-shown-loudly binding (C4). Read this before reviewing any change to src/, site/, scripts/, or deploy/.",
+      "scope": ["src/**", "site/**", "scripts/**", "deploy/**"]
+    },
+    {
+      "path": "000-docs/001-RR-RUNB-retraction-protocol-4h-slo-runbook-2026-06-04.md",
+      "description": "Retraction protocol 4h-SLO operator runbook. Governs src/retraction/ — the integrity capability to take down a published attestation honestly via an append-only signed retraction/v1 record + 410 Gone + tombstone, with no site rebuild. Predicate URI is the kernel RETRACTION_V1_URI at evals.* (never labs.*); reason_class is a closed enum sourced from the kernel.",
+      "scope": ["src/retraction/**", "deploy/**"]
+    },
+    {
+      "path": "000-docs/002-DR-RFC-internal-testing-dashboard-design-2026-06-07.md",
+      "description": "Internal testing dashboard design RFC. Context for the operator-internal (site-internal/) surface — the tailnet-only superset of the public results browser. Operator views are Tailscale-identity-gated, never basicauth; internal output goes to site-internal/, never the public site/ origin.",
+      "scope": ["src/results/**", "site-internal/**", "scripts/**"]
+    }
+  ]
+}

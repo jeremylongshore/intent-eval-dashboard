@@ -1,0 +1,58 @@
+{
+  "rules": [
+    {
+      "id": "no-predicate-uri-at-labs",
+      "rule": "Predicate URIs MUST live exclusively at evals.intentsolutions.io and NEVER at labs.* (or labs.intentsolutions.io). Refuse any in-toto predicate URI, attestation predicate identifier, OTel attribute namespace, or schema $id that points a predicate at a labs.* host. This dashboard serves labs.intentsolutions.io and renders methodology + signed bundles only — it declares no predicate URIs of its own. DR-035 / DR-010 CISO binding.",
+      "scope": ["src/**", "site/**", "scripts/**", "deploy/**"],
+      "severity": "high"
+    },
+    {
+      "id": "no-aggregate-pass-across-predicates",
+      "rule": "C3 — the hard integrity binding (CTO + CMO + VP DevRel triple-refusal). NEVER emit an aggregate PASS%, an X-of-N count, or an X% figure computed ACROSS heterogeneous predicate URIs. Per-predicate counts only (single predicate URI). Any 'X/N pass' or 'X% pass' spanning two or more distinct predicate URIs is a refusal. Do not weaken src/results/c3-scan.ts, scripts/lint-no-aggregate-pass.ts, or the c3 CI gate to make a test pass.",
+      "scope": ["src/**", "site/**", "scripts/**"],
+      "severity": "high"
+    },
+    {
+      "id": "no-partner-bundle-without-consent",
+      "rule": "No partner-implicated Evidence Bundle may be published to the public origin without affirmative written consent (GC refusal, DR-035 § 8). Tier-2 partner-implicated rows default to internal-only; public exposure requires a per-partner consent clause. The public visibility gate (src/results/visibility.ts) must fail closed to Tier 2 — never default-publish a partner-implicated row.",
+      "scope": ["src/**", "site/**"],
+      "severity": "high"
+    },
+    {
+      "id": "no-basicauth-on-public-origin",
+      "rule": "No basicauth on the public origin for operator views (VP DevRel refusal, DR-035 § 8). Operator-internal surfaces (site-internal/) are tailnet-only and gated by Tailscale identity — NEVER by basicauth. Do not add basicauth directives, HTTP Basic credential checks, or password gates to any public-origin config, generator, or Caddy snippet emitted by this repo.",
+      "scope": ["src/**", "site/**", "scripts/**", "deploy/**"],
+      "severity": "high"
+    },
+    {
+      "id": "no-gcp-object-storage",
+      "rule": "No GCP object storage (CISO refusal, GCP-exodus binding, DR-035 § 8). Content is content-addressed into local Contabo disk, migrating to Backblaze B2 at the 12-month/100GB trigger. Refuse any Google Cloud Storage / GCS bucket client, gs:// URI, @google-cloud/storage import, or storage.googleapis.com dependency for bundle/artifact persistence.",
+      "scope": ["src/**", "scripts/**", "deploy/**"],
+      "severity": "high"
+    },
+    {
+      "id": "no-render-without-reverification",
+      "rule": "No render-from-manifest without re-verification (CTO + CISO independent refusals, DR-035 § 8 + B1). Every ingest worker MUST verify, row-by-row, BEFORE rendering: (1) OIDC issuer + subject + workflow_ref: claim against the pinned per-repo allowlist, (2) Rekor inclusion proof, (3) DSSE signature, (4) schema validation against the kernel-pinned @intentsolutions/core. The renderer consumes the verify-before-render RenderInput seam (src/ingest/renderer.ts / src/results/row-model.ts) — NEVER a raw manifest. On verification failure the worker crashes with a structured reason; it does not render unverified data.",
+      "scope": ["src/**", "scripts/**"],
+      "severity": "high"
+    },
+    {
+      "id": "no-data-shown-loudly-never-carried-forward",
+      "rule": "Absence is shown loudly, never silently filled (Gregg / CMO C4 binding, DR-035 § 8). An hour or row with no verified data is 'no-data' and is colored as loudly as 'fail'. no-data is NEVER carried forward, inferred, back-filled, blanked, or treated as a pass. A bucket's kind is no-data IFF its row count is 0 — there must be no carry-forward code path (src/freshness/bucket-model.ts, src/results/render-html.ts). A fail severity is never masked by a pass.",
+      "scope": ["src/**", "site/**"],
+      "severity": "high"
+    },
+    {
+      "id": "anti-corruption-import-kernel-never-vendor",
+      "rule": "Anti-corruption layer (Blueprint A § 1.2 principle 10). This repo is a published-kernel consumer of @intentsolutions/core — exactly like an external integrator. Always IMPORT canonical types, JSON Schemas, Zod validators, and predicate URIs from @intentsolutions/core. NEVER vendor, copy, re-declare, or fork kernel types/schemas/validators into this repo (e.g. local EvidenceBundle/gate-result/retraction type or schema definitions). Predicate-URI constants (RETRACTION_V1_URI, etc.) come from the kernel, not local literals.",
+      "scope": ["src/**", "scripts/**"],
+      "severity": "high"
+    },
+    {
+      "id": "no-misleading-uptime-or-paging-slo",
+      "rule": "No production-system SLO with paging beyond the 7-day-silence threshold (CFO refusal, DR-035 § 8) and no misleading uptime claims. The ONLY paging trigger is a source silent > 7 days; the only push protocol is ntfy (no PagerDuty/Opsgenie/Slack/SMS). No uptime/availability SLA or 'N nines' claim may appear in public output (scripts/check-uptime-claims.ts enforces this). The public commitment is exactly 'best-effort, single-operator, see /status for liveness'. Do not add latency/error-rate pagers or weaken src/alerting/.",
+      "scope": ["src/alerting/**", "site/**", "scripts/**"],
+      "severity": "medium"
+    }
+  ]
+}
