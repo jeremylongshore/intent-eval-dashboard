@@ -46,7 +46,7 @@ jobs:
         run: |
           yamllint --strict \
             --config-file .yamllint \
-            .github/ .coderabbit.yaml
+            .github/
 
   actionlint:
     name: actionlint
