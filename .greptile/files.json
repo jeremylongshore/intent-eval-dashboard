@@ -2,18 +2,33 @@
   "files": [
     {
       "path": "CLAUDE.md",
-      "description": "Repo charter and the load-bearing invariants. § 'Hard refusal triggers' carries the DR-035 § 8 hard-refusal catalog (the source of truth for this repo — the DR itself lives in intent-eval-lab/000-docs/). Also documents the anti-corruption layer (consume @intentsolutions/core, never vendor), the verify-before-render ingest contract (DR-035 B1), the default visibility tiers (C2), the C3 aggregate-PASS%-across-predicates ban, and the no-data-shown-loudly binding (C4). Read this before reviewing any change to src/, site/, scripts/, or deploy/.",
+      "description": "Repo charter and the single source of truth for this repo's load-bearing invariants. Carries the DR-035 § 8 hard-refusal catalog (predicate-URI-at-evals-only, no cross-predicate aggregate PASS%, no partner bundle without consent, no basicauth on public origin, no GCP object storage, no render-without-reverification, no paging-SLO-beyond-7-day-silence, symmetric A.0 render), the anti-corruption layer (consume @intentsolutions/core, never vendor), the verify-before-render ingest contract (DR-035 B1, 4 checks), the default visibility tiers (C2), and the no-data-shown-loudly binding (C4). Read this before reviewing ANY change under src/, site/, scripts/, or deploy/.",
       "scope": ["src/**", "site/**", "scripts/**", "deploy/**"]
     },
     {
+      "path": "README.md",
+      "description": "Public-facing repo overview: the 6-repo Intent Eval Platform map, where this dashboard fits (renders eval-set methodology + signed Evidence Bundles + gate results from the 5 platform repos), the v0.1.0 single-file-HTML/zero-build posture, the public-vs-operator-internal (site/ vs site-internal/) split and its load-bearing strict separation, and the anti-goals (hard refusal triggers). Authoritative on scope, status, and what ships per phase.",
+      "scope": ["src/**", "site/**"]
+    },
+    {
       "path": "000-docs/001-RR-RUNB-retraction-protocol-4h-slo-runbook-2026-06-04.md",
-      "description": "Retraction protocol 4h-SLO operator runbook. Governs src/retraction/ — the integrity capability to take down a published attestation honestly via an append-only signed retraction/v1 record + 410 Gone + tombstone, with no site rebuild. Predicate URI is the kernel RETRACTION_V1_URI at evals.* (never labs.*); reason_class is a closed enum sourced from the kernel.",
+      "description": "Retraction protocol 4h-SLO operator runbook. Governs src/retraction/ — the integrity capability to take down a published attestation HONESTLY via an append-only signed retraction/v1 record + 410 Gone (never 404) + tombstone disclosing reason_class, with NO site rebuild (rsync + caddy reload only). Predicate URI is the kernel RETRACTION_V1_URI at evals.* (never labs.*); reason_class is a closed enum sourced FROM the kernel. The real <4h deep-URL 410 is a human-gated VPS step.",
       "scope": ["src/retraction/**", "deploy/**"]
     },
     {
       "path": "000-docs/002-DR-RFC-internal-testing-dashboard-design-2026-06-07.md",
-      "description": "Internal testing dashboard design RFC. Context for the operator-internal (site-internal/) surface — the tailnet-only superset of the public results browser. Operator views are Tailscale-identity-gated, never basicauth; internal output goes to site-internal/, never the public site/ origin.",
-      "scope": ["src/results/**", "site-internal/**", "scripts/**"]
+      "description": "Internal testing dashboard design RFC (Pillar 1 of the internal ops portal). Authoritative on the gated, teaching-oriented internal testing render lane (src/internal-testing/) that renders per-repo testing gates with 5-part teaching blocks (authored explainer + verified data + auto verdict + what-we-measured + what-to-fix). Output goes to site-internal/internal/testing/, basicauth-gated at internal.intentsolutions.io (per successor DR-040 override — distinct from the no-basicauth public-origin rule). A sibling of the puxu.9 operator-results view, not a replacement.",
+      "scope": ["src/internal-testing/**", "site-internal/**"]
+    },
+    {
+      "path": "src/ingest/README.md",
+      "description": "Ingest pipeline + supervision-tree design doc (DR-035 § 4.B, Armstrong supervision spec). SECURITY-CRITICAL. Authoritative on the verify-before-render fail-closed binding, the 6-worker Erlang/OTP-style supervision tree (one_for_one + rest_for_one + transient/permanent + max_restarts), the 8-step per-worker B1 contract (fetch → verify OIDC → Rekor inclusion → DSSE → kernel schema → content-address → emit snapshot → crash-with-structured-reason on any failure), the two REAL verifiers (sigstore-js prod + offline Node-crypto for tests; neither a no-op), and the pinned-subjects OIDC allowlist. Read before reviewing any src/ingest/ or src/supervision/ change.",
+      "scope": ["src/ingest/**", "src/supervision/**"]
+    },
+    {
+      "path": "tests/TESTING.md",
+      "description": "Per-repo testing-policy doc (IS Testing SOP). Maps the 7-layer taxonomy to current status, lists the REQUIRED CI gates defined per DR-035 § 9 (partner-name grep, harness hash verify, C3 aggregate-PASS% lint, predicate-URI-at-labs scan, A.0 HTML arm-symmetry diff), coverage/mutation policy, and the hash-pinning workflow. @intentsolutions/audit-harness is vendored as a dev dep; CI references the in-repo copy, never ~/.claude/ paths.",
+      "scope": ["tests/**", "src/**", ".github/workflows/**"]
     }
   ]
 }
