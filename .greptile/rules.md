@@ -144,7 +144,6 @@ Flag, with high severity, any change that introduces:
 When in doubt about whether something is load-bearing, read `CLAUDE.md` — every
 refusal above is documented there with its originating council seat.
 
-
 ## Review priorities — what to weight, what to skip
 
 Greptile is **advisory** here. The deterministic merge gate is this repo's own

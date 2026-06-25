@@ -14,7 +14,9 @@ Gemini is the **workhorse code reviewer** for this repo (design · logic · corr
 8. **Governance traceability.** A change citing a Decision Record must not silently resolve a conflict between two ratified clauses; flag unilateral resolutions of contradictory bindings.
 
 ## Also flag (normal review)
+
 Correctness bugs, missing edge-case tests (root/empty/null cases), error-handling gaps, security-relevant logic Gemini sees that CodeQL might miss, and comments that claim behavior the code doesn't implement.
 
 ## Do NOT
+
 No style nitpicks already covered by ESLint/Prettier/Ruff. No praise-only comments. No security-CVE findings (CodeQL owns those).
