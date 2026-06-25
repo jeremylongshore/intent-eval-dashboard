@@ -1,5 +1,18 @@
 {
+  "strictness": 3,
+  "commentTypes": ["logic", "syntax"],
+  "triggerOnUpdates": true,
+  "fixWithAI": true,
+  "statusCheck": false,
+  "ignorePatterns": "node_modules/\ndist/\n.astro/\nsite/**/dist/\nsite-internal/dist/\ncoverage/\npnpm-lock.yaml\n.audit-harness/\n**/*.snap",
+  "confidenceScoreSection": { "included": true },
+  "sequenceDiagramSection": { "included": true },
   "rules": [
+    {
+      "id": "no-gate-weakening",
+      "rule": "Never suggest lowering a CI threshold, deleting/skipping/weakening a test, relaxing an assertion, bypassing type checks, disabling a security/policy/audit check, or reducing coverage/mutation/audit requirements — unless the same PR replaces it with a stronger equivalent.",
+      "severity": "high"
+    },
     {
       "id": "no-predicate-uri-at-labs",
       "rule": "Predicate URIs MUST live exclusively at evals.intentsolutions.io and NEVER at labs.* (or labs.intentsolutions.io). Refuse any in-toto predicate URI, attestation predicate identifier, OTel attribute namespace, or schema $id that points a predicate at a labs.* host. This dashboard serves labs.intentsolutions.io and renders methodology + signed bundles only — it declares no predicate URIs of its own. DR-035 / DR-010 CISO binding.",

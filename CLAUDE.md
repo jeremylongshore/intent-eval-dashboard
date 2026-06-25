@@ -170,6 +170,23 @@ The **minimal alerting layer.** Deliberately tiny: the only thing worth waking a
 
 **Human-gated VPS seam (NOT in this repo's automation):** the REAL ntfy push (HTTP POST to the tailnet ntfy `http://intentsolutions:8080`) and the cron that runs `check:liveness` live on the VPS, where a real `NtfyTransport` is injected via `IEP_NTFY_BASE_URL`. Do NOT touch the VPS / ntfy server / cron / Caddy to wire it without explicit human go-ahead — same posture as the publisher rsync seam and the retraction Caddy reload.
 
+## AI code review (Greptile + Gemini)
+
+Two AI reviewers run on PRs here, **both advisory** — neither is a branch-protection
+required check. The deterministic merge gate is this repo's own CI (the C3 no-aggregate-PASS gate + lint:uptime + audit-harness verify + ingest/deploy gates) plus CodeQL.
+
+- **Gemini Code Assist** (`.gemini/config.yaml` + `.gemini/styleguide.md`) is the
+  **active** reviewer. Re-instated 2026-06-24 as the fallback after the Greptile
+  review quota was exhausted. Workhorse for design / logic / correctness /
+  cross-artifact consistency; CodeQL owns security.
+- **Greptile** (`.greptile/config.json` + `rules.md` + `files.json`) is configured to
+  the platform-unified schema (`strictness: 3`, `commentTypes: ["logic","syntax"]`,
+  `statusCheck: false`, a universal `no-gate-weakening` rule, plus this repo's scoped
+  invariant rules). It stays in place and resumes when the Greptile quota resets.
+
+Read either review when present; the required gate is CI. Re-installing/uninstalling
+the GitHub Apps is an admin (UI) action — the in-repo config here does not install them.
+
 ## Tactical guidance
 
 - **Partner-name discipline (DR-004 S1Q2):** enforced via CI grep gate. The grep pattern lives in PRIVATE `~/000-projects/CLAUDE.md`; never inline in any file in this repo.
