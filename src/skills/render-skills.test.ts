@@ -109,14 +109,20 @@ describe('render-skills — chrome + bindings', () => {
     const html = renderSkillPage(populatedCard('my-skill'));
     // canonical/og url are labs.* (the page's own identity) ...
     expect(html).toContain('https://labs.intentsolutions.io/skills/my-skill/');
-    // ... but every predicate URI in the body points at evals.*, never labs.*
-    const predicateHits = html.match(/[a-z]+\.intentsolutions\.io\/[a-z-]+\/v[0-9]+/gi) ?? [];
+    // ... but every predicate URI in the body points at evals.*, never labs.*.
+    // Capture the FULL https://<sub>.intentsolutions.io/<name>/vN and parse the
+    // host via URL (not a substring/startsWith check, which CodeQL rightly flags
+    // as bypassable host validation) — assert the subdomain is exactly "evals".
+    const predicateHits =
+      html.match(/https:\/\/[a-z]+\.intentsolutions\.io\/[a-z-]+\/v[0-9]+/gi) ?? [];
     expect(predicateHits.length).toBeGreaterThan(0);
     for (const hit of predicateHits) {
-      expect(hit.startsWith('evals.intentsolutions.io')).toBe(true);
+      const host = new URL(hit).host;
+      expect(host).toBe('evals.intentsolutions.io');
     }
-    // And no predicate URI (a `<host>/<name>/vN`) is ever at labs.*
-    expect(/labs\.intentsolutions\.io\/[a-z-]+\/v[0-9]+/i.test(html)).toBe(false);
+    // And no predicate URI is ever declared at labs.* — anchor the host on a
+    // scheme so the pattern cannot match anywhere (CodeQL missing-anchor).
+    expect(/https:\/\/labs\.intentsolutions\.io\/[a-z-]+\/v[0-9]+/i.test(html)).toBe(false);
   });
 
   it('renders an em-dash for a populated dimension whose ingest timestamp is empty', () => {
