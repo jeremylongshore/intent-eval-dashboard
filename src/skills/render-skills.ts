@@ -87,7 +87,13 @@ export function renderAdoptionPanel(skill: string, adoption: AdoptionSignal): st
 ${indent(noDataPanel(`${skill} · adoption`))}
         </section>`;
   }
-  const rows = adoption.perMeter
+  // Deterministic render order: sort by the stable composite (meter, then unit)
+  // key so the emitted HTML is byte-stable regardless of the model's `perMeter`
+  // iteration order (which follows verified-event arrival, not a stable key).
+  // Matches the determinism discipline of the rest of this surface. This sort is
+  // ordering ONLY — it never sums, ratios, or combines across (meter, unit) pairs.
+  const rows = [...adoption.perMeter]
+    .sort((a, b) => a.meter.localeCompare(b.meter) || a.unit.localeCompare(b.unit))
     .map(
       (m) => `                <tr>
                     <td><code>${esc(m.meter)}</code></td>
@@ -169,7 +175,11 @@ ${provenanceLine(trust.provenance.predicateUri, trust.provenance.ingestedAt)}
  * dimensions. no-data (no rubric ref) is loud.
  */
 export function renderQualityPanel(skill: string, quality: QualitySignal): string {
-  if (quality.noData || quality.rubricRef === null) {
+  // A null OR blank/whitespace-only rubricRef is no-data: render it LOUD
+  // (`badge--no-data` == fail weight) rather than emit a broken empty `<a href="">`.
+  // Absence is loud, never a silently broken link (DR-035 C4).
+  const rubricRef = quality.rubricRef;
+  if (quality.noData || rubricRef === null || rubricRef.trim().length === 0) {
     return `        <section class="dimension dimension--quality">
             <h3>Quality (authoring rubric)</h3>
 ${indent(noDataPanel(`${skill} · quality-rubric`))}
@@ -178,7 +188,7 @@ ${indent(noDataPanel(`${skill} · quality-rubric`))}
   return `        <section class="dimension dimension--quality">
             <h3>Quality (authoring rubric)</h3>
             <p class="dimension-note">The authoring-quality grade is owned by <code>validate-skillmd</code> and rendered there unchanged — we link to it rather than re-score or combine it with adoption / human-trust.</p>
-            <p><a href="${esc(quality.rubricRef)}">View the validate-skillmd rubric grade for <code>${esc(skill)}</code> →</a></p>
+            <p><a href="${esc(rubricRef)}">View the validate-skillmd rubric grade for <code>${esc(skill)}</code> →</a></p>
 ${provenanceLine(quality.provenance.predicateUri, quality.provenance.ingestedAt)}
         </section>`;
 }

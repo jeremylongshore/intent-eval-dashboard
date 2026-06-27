@@ -83,12 +83,16 @@ export async function writeSkillsSite(
   files: readonly GeneratedSkillFile[],
   siteRoot: string,
 ): Promise<string[]> {
-  const written: string[] = [];
-  for (const file of files) {
-    const abs = join(siteRoot, file.path);
-    await mkdir(dirname(abs), { recursive: true });
-    await writeFile(abs, file.html, 'utf8');
-    written.push(abs);
-  }
-  return written;
+  // The files are independent (distinct paths, each with its own parent dir;
+  // `mkdir … { recursive: true }` is idempotent so a shared parent is safe), so
+  // there is no ordering reason to write them one at a time. Parallelize the
+  // mkdir+write pairs and preserve the input order in the returned paths.
+  return Promise.all(
+    files.map(async (file) => {
+      const abs = join(siteRoot, file.path);
+      await mkdir(dirname(abs), { recursive: true });
+      await writeFile(abs, file.html, 'utf8');
+      return abs;
+    }),
+  );
 }
