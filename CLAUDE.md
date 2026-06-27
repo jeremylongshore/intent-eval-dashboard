@@ -57,10 +57,11 @@ Full catalog: DR-035 § 8.
 
 ## Built on top of the baseline (shipped)
 
-The dashboard now consumes `@intentsolutions/core@0.2.0` and the following are **built and committed** — see the per-feature sections below for the module maps:
+The dashboard now consumes `@intentsolutions/core@^0.9.0` (bumped from `^0.2.0` for the wave-2 `UsageEvent` + `HumanReview` entities) and the following are **built and committed** — see the per-feature sections below for the module maps:
 
 - 6-worker verify-before-render ingest supervision tree (iec, iel, iah, iaj, iar, ccp — ICOS struck per cross-tier policy) + live ingest→render pipeline in the daily cron
 - Results browser with per-row visibility-tier gating (puxu.6)
+- Per-skill adoption + human-trust signals surface, C3-safe per-dimension (`/skills/`, ig4h.6 — wave-2)
 - Freshness + decision-mix strip + `/status` USE-method view (puxu.7)
 - Operator-internal view (puxu.9), retraction protocol + Caddy 410 kill-switch (puxu.10), ops-lite ntfy alerting (puxu.11)
 - Phase A.0 symmetric-render HTML structural-diff gate (puxu.12)
@@ -105,6 +106,20 @@ The public results browser renders `gate-result/v1` rows from the VERIFIED inges
 | **C3 gate** | `src/results/c3-scan.ts` + `scripts/lint-no-aggregate-pass.ts` | `pnpm run lint:c3`. Cross-predicate-aware scanner: any `X/N pass` / `X% pass` spanning ≥2 predicate URIs → exit 1. Single-predicate counts allowed. Wired into `ingest-ci.yml` + `deploy.yml` as a REQUIRED gate (run directly, never piped through `tee` — exit code is load-bearing). Synthetic fixtures at `src/results/__fixtures__/c3-{clean,violation}.html`. |
 
 **C3 is the hard integrity binding** (CTO + CMO + VP DevRel triple-refusal). Never weaken the scanner or the gate to make a test pass. The tailnet-internal operator view (puxu.9) is a SEPARATE surface that reuses the same view-model but skips `filterPubliclyVisible` — it is BUILT (see § "Operator-internal view" below) and emits to `site-internal/`, never `site/`.
+
+## Per-skill signals (`/skills/`, ig4h.6 — wave-2, built)
+
+The public per-skill surface renders the wave-2 adoption + human-trust + authoring-quality signals **per skill, per dimension, side by side — never rolled.** It is a SIBLING of `src/results/` (mirrors the same verify-before-render seam), not a parallel ingest path. It consumes the new `@intentsolutions/core@^0.9.0` entities (`UsageEvent` — the 15th kernel entity — and `HumanReview`) through a clean `SkillSignalResolver` seam. The adoption-score values are produced upstream by j-rig (`UsageEvent` ingest + the `HumanReview` capture verb, DR-103 Items 1/2/4/5, built in parallel); this repo is a **pure consumer**.
+
+| Piece | Location | Role |
+|---|---|---|
+| View-model + resolver seam | `src/skills/skill-signal-model.ts` | `SkillSignalResolver` → `SkillCard`s. Three INDEPENDENT dimensions (`AdoptionSignal`, `HumanTrustSignal`, `QualitySignal`), each with its own provenance + predicate URI. Adoption = raw per-`(meter, unit)` verified counts (never cross-`(meter,unit)` summed). Human-trust = orthogonal thumbs / score_text / annotation channels (never folded). Quality = link-out to the validate-skillmd rubric (no scalar stored). |
+| HTML render | `src/skills/render-skills.ts` | THREE separate single-dimension renderers (`renderAdoptionPanel` / `renderHumanTrustPanel` / `renderQualityPanel`) — **none takes more than one dimension; there is deliberately no `renderRolledScore`.** Reuses `esc`/`slug`/`SITE_HEADER`/`SITE_FOOTER`/`noDataPanel` from `render-html.ts`. no-data renders LOUD (`badge--no-data` == fail weight). No renderer arithmetic (counts printed verbatim, never divided). |
+| Generator | `src/skills/generate-skills.ts` + `scripts/generate-skills.ts` | `pnpm run generate:skills`. Emits `site/skills/index.html` + `site/skills/<skill>/index.html`. Current state = all tracked skills no-data (upstream signals not wired yet) — rendered loud, never blanked. |
+| Fixtures | `src/skills/__fixtures__/skills-fixtures.ts` | KERNEL-VALIDATED `UsageEvent` / `HumanReview` builders (parse against the real `@intentsolutions/core` schemas) + map-backed fixture resolver. |
+| C3 gate | reuses `src/results/c3-scan.ts` via `pnpm run lint:c3` over `site/` | The same cross-predicate scanner walks `site/skills/` automatically. The PRIMARY C3 defence is STRUCTURAL: `SkillCard` has no aggregate field and no renderer combines two dimensions — verifiable by reading the types. The scanner is belt-and-suspenders. |
+
+**C3-SAFE BY CONSTRUCTION (DR-035 C3 + DR-103 C3 — HARD refusal):** there is **no representable cross-dimension or cross-predicate rollup** on this surface. No `rolledScore` / `overallScore` / `passPct` field exists on `SkillCard`; no exported function combines two dimensions (a test asserts no `roll`/`aggregate`/`overall`/`composite` symbol is exported). Each dimension is a different measurement against a different predicate URI and is rendered independently. Predicate URIs are only ever RENDERED (pointed at `evals.*`), never declared at `labs.*` (CISO binding). **This surface ships ZERO kernel artifacts — it is a pure consumer; the Evidence-Bundle-compat obligation is the sibling kernel beads' (DR-103 Items 1/2).** Until the upstream `UsageEvent`/`HumanReview` ingest lands, the production resolver cannot wire — the surface ships fed by the in-memory fixture resolver with an honest loud no-data state.
 
 ## Freshness + decision-mix strip + `/status` (puxu.7 — built)
 

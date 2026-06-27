@@ -29,6 +29,7 @@
     "harness:verify": "audit-harness verify",
     "harness:init": "audit-harness init",
     "generate:results": "node --experimental-strip-types scripts/generate-results.ts site",
+    "generate:skills": "node --experimental-strip-types scripts/generate-skills.ts site",
     "generate:status": "node --experimental-strip-types scripts/generate-status.ts site",
     "generate:internal": "node --experimental-strip-types scripts/generate-internal.ts site-internal",
     "generate:internal-testing": "node --experimental-strip-types scripts/generate-internal-testing.ts site-internal",
@@ -38,10 +39,10 @@
     "lint:uptime": "node --experimental-strip-types scripts/check-uptime-claims.ts site",
     "lint:arm-symmetry": "node --experimental-strip-types scripts/lint-arm-symmetry.ts site/eval-sets/j-rig-bench",
     "check:liveness": "node --experimental-strip-types scripts/check-liveness-alerts.ts",
-    "check": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build && pnpm run generate:results && pnpm run generate:status && pnpm run generate:internal && pnpm run generate:internal-testing && pnpm run generate:retractions && pnpm run lint:c3 && pnpm run lint:c3:internal && pnpm run lint:uptime && pnpm run lint:arm-symmetry"
+    "check": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build && pnpm run generate:results && pnpm run generate:skills && pnpm run generate:status && pnpm run generate:internal && pnpm run generate:internal-testing && pnpm run generate:retractions && pnpm run lint:c3 && pnpm run lint:c3:internal && pnpm run lint:uptime && pnpm run lint:arm-symmetry"
   },
   "dependencies": {
-    "@intentsolutions/core": "^0.2.0",
+    "@intentsolutions/core": "^0.9.0",
     "@sigstore/bundle": "^4.0.0",
     "@sigstore/verify": "^4.0.0",
     "sigstore": "^5.0.0",

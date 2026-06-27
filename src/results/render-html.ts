@@ -96,6 +96,7 @@ export const SITE_HEADER = `    <header class="site-header">
             <nav class="site-nav" aria-label="Primary">
                 <a href="/eval-sets/">Eval Sets</a>
                 <a href="/results/">Results</a>
+                <a href="/skills/">Skills</a>
                 <a href="/methodology/">Methodology</a>
                 <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
             </nav>
@@ -112,6 +113,7 @@ export const SITE_FOOTER = `    <footer class="site-footer">
                 <a href="/methodology/">Methodology</a> ·
                 <a href="/eval-sets/">Eval Sets</a> ·
                 <a href="/results/">Results</a> ·
+                <a href="/skills/">Skills</a> ·
                 <a href="/status/">Status</a> ·
                 <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
             </div>
