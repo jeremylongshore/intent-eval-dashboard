@@ -116,13 +116,14 @@ describe('render-skills — chrome + bindings', () => {
     const predicateHits =
       html.match(/https:\/\/[a-z]+\.intentsolutions\.io\/[a-z-]+\/v[0-9]+/gi) ?? [];
     expect(predicateHits.length).toBeGreaterThan(0);
-    for (const hit of predicateHits) {
-      const host = new URL(hit).host;
+    // Parse each hit's host via URL (not a substring/regex check, which CodeQL
+    // rightly flags as bypassable host validation): the predicate-URI subdomain
+    // is ALWAYS evals.* and NEVER labs.*.
+    const hosts = predicateHits.map((hit) => new URL(hit).host);
+    for (const host of hosts) {
       expect(host).toBe('evals.intentsolutions.io');
     }
-    // And no predicate URI is ever declared at labs.* — anchor the host on a
-    // scheme so the pattern cannot match anywhere (CodeQL missing-anchor).
-    expect(/https:\/\/labs\.intentsolutions\.io\/[a-z-]+\/v[0-9]+/i.test(html)).toBe(false);
+    expect(hosts).not.toContain('labs.intentsolutions.io');
   });
 
   it('renders an em-dash for a populated dimension whose ingest timestamp is empty', () => {
