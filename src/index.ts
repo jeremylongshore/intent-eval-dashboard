@@ -19,6 +19,7 @@
 export * from './supervision/index.js';
 export * from './ingest/index.js';
 export * from './results/index.js';
+export * from './skills/index.js';
 export * from './freshness/index.js';
 export * from './retraction/index.js';
 export * from './alerting/index.js';

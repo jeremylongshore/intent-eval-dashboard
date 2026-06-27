@@ -18,9 +18,9 @@ code_review:
 # NOTE: _generated/ is intentionally NOT ignored — three-way schema/validator/Pydantic
 # drift hides there (a real class of one-way-door bug). Gemini must review it.
 ignore_patterns:
-  - "**/dist/**"
-  - "**/node_modules/**"
-  - "**/coverage/**"
-  - "**/*.snap"
-  - "pnpm-lock.yaml"
-  - "**/*.lock"
+  - '**/dist/**'
+  - '**/node_modules/**'
+  - '**/coverage/**'
+  - '**/*.snap'
+  - 'pnpm-lock.yaml'
+  - '**/*.lock'

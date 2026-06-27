@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@intentsolutions/core':
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: ^0.9.0
+        version: 0.9.0
       '@sigstore/bundle':
         specifier: ^4.0.0
         version: 4.0.0
@@ -292,8 +292,8 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  '@intentsolutions/core@0.2.0':
-    resolution: {integrity: sha512-4JxU+WatVvYyt5q+O3sChvnGBHXoOWCebpPs6YcKbJPQKmyyXHL5C0GsHPycUN7xjOc4ewMV7Gfo/m0hFAqmSA==}
+  '@intentsolutions/core@0.9.0':
+    resolution: {integrity: sha512-XGF3rR/FFgRz1qkiXMEXLijmPX3/9layH9e2wqykMitkl2gX/JREpS6ilRXB1tVnkdcHnDdfAxWstpW/UoGKsA==}
     engines: {node: '>=20.0.0', pnpm: '>=9.0.0'}
 
   '@isaacs/cliui@8.0.2':
@@ -1507,7 +1507,7 @@ snapshots:
 
   '@intentsolutions/audit-harness@1.1.5': {}
 
-  '@intentsolutions/core@0.2.0':
+  '@intentsolutions/core@0.9.0':
     dependencies:
       zod: 4.4.3
 

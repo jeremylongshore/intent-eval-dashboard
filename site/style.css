@@ -293,6 +293,31 @@ main {
 .predicate-breakdown { font-size: 0.88rem; margin-top: 0.5rem; }
 .predicate-breakdown code { font-size: 0.85em; }
 
+/* --- Per-skill signals (adoption + human-trust + quality, per dimension) --- */
+.skill-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 1.25rem;
+    margin-top: 1.5rem;
+    background: #fdfdfb;
+}
+.skill-card h2 { margin-top: 0; }
+.skill-card__note { font-size: 0.85rem; color: #6b7280; margin: 0.25rem 0 1rem; }
+
+/* The three dimensions are independent siblings — never a combined block. */
+.dimension {
+    border-top: 1px solid #eef0f2;
+    padding-top: 1rem;
+    margin-top: 1rem;
+}
+.dimension h3 { margin: 0 0 0.5rem; font-size: 1rem; }
+.dimension-note { font-size: 0.85rem; color: #6b7280; margin: 0 0 0.75rem; }
+.dimension-subhead { font-size: 0.85rem; color: #4b5563; margin: 0.75rem 0 0.25rem; font-weight: 600; }
+.dimension-list { font-size: 0.9rem; margin: 0.25rem 0 0; padding-left: 1.25rem; }
+.dimension-table { font-size: 0.85rem; border-collapse: collapse; }
+.dimension-table th, .dimension-table td { padding: 0.4rem 0.6rem; text-align: left; }
+.dimension-provenance { font-size: 0.78rem; color: #9ca3af; margin-top: 0.6rem; }
+
 /* --- Eval-set list (index card layout) --- */
 .eval-list {
     list-style: none;
