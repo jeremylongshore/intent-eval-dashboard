@@ -93,6 +93,11 @@ On failure → ingest worker crashes with structured reason; supervisor marks `l
 
 `tests/TESTING.md` is the per-repo testing-policy doc. CI references in-repo harness commands — never `~/.claude/` paths.
 
+**Full pre-commit gate chain:** `pnpm run check` runs `format:check` → `lint` → `typecheck` → `test` → `build` → all generators (`generate:results` + `generate:skills` + `generate:status` + `generate:internal` + `generate:internal-testing` + `generate:retractions`) → `lint:c3` + `lint:c3:internal` + `lint:uptime` + `lint:arm-symmetry`. Run it before every commit.
+
+- `pnpm run lint:arm-symmetry` — symmetric-render structural-diff gate over `site/eval-sets/j-rig-bench` (`scripts/lint-arm-symmetry.ts`, backed by `src/results/arm-symmetry-scan.ts`; enforces the "no asymmetric Phase A.0 render" hard refusal). REQUIRED in `deploy.yml` (run directly, plus a self-check against the synthetic asymmetric fixture).
+- `pnpm run generate:internal-testing` — the internal teaching-dashboard lane (§ above).
+
 ## Results browser (`/results/`, puxu.6 — built)
 
 The public results browser renders `gate-result/v1` rows from the VERIFIED ingest snapshots. It consumes `src/ingest/renderer.ts`'s `RenderInput` (the verify-before-render seam) — never raw manifests — resolves content-addressed bundles to gate-result rows, applies the public visibility-tier gate, and emits self-contained HTML under `site/results/` (same static pattern as `scripts/regenerate.py`; served directly by Caddy, no Hugo project in this repo).
@@ -149,6 +154,19 @@ The **inverse of the public results browser.** The public `/results/` generator 
 
 **Deploy is a human-gated follow-up — NOT in this repo's automation.** The tailnet-only hostname, the Tailscale-identity-gated Caddy block serving `site-internal/`, and DNS/port wiring are a manual VPS ops step. Per VP DevRel binding (DR-035 § 8): **no basicauth on the operator hostname — Tailscale identity is the gate.** Matches existing tailnet-only infra (Netdata `intentsolutions:19999`, ntfy `intentsolutions:8080`). Until that step is done there is no route to `site-internal/`. Do NOT touch the VPS/Caddy/Tailscale to wire it without explicit human go-ahead.
 
+## Internal testing dashboard (`site-internal/internal/testing/`, nr75 — built)
+
+The **gated teaching dashboard** — Pillar 1 of the internal ops portal (`002-DR-RFC-internal-testing-dashboard-design-2026-06-07.md`). A SECOND internal render lane (sibling of the operator-RESULTS view, not a replacement) that renders testing/gate results to *teach*: what each gate is, how it runs, what the numbers mean. Lives in `src/internal-testing/` (verdict + explainers + markdown + row model + resolver + render).
+
+| Piece | Location | Role |
+|---|---|---|
+| Verdict + explainers | `src/internal-testing/{verdict,explainers}.ts` | Per-gate teaching copy + pass/fail verdict logic. `explainers.ts` renders authored prose via `markdown.ts` (`renderMarkdown`). |
+| Row model + resolver | `src/internal-testing/{testing-row,store-testing-resolver}.ts` | Consumes the same verified ingest store as the other lanes. |
+| HTML render | `src/internal-testing/render-testing.ts` | Teaching-oriented render (markdown → HTML via `markdown.ts`). |
+| Generator + CLI | `src/internal-testing/generate-testing.ts` + `scripts/generate-internal-testing.ts` | `pnpm run generate:internal-testing`. Emits to `site-internal/internal/testing/` — **REFUSES to write into `site/`** (exits non-zero). |
+
+**Deploy is a human-gated follow-up** (basicauth-gated per DR-040 override; `deploy/internal-testing.caddy` + runbook). Not in this repo's automation — same posture as the other internal surfaces. Do NOT wire the VPS/Caddy without explicit go-ahead.
+
 ## Retraction protocol (`src/retraction/`, puxu.10 — built)
 
 The **INTEGRITY capability to take down a published attestation honestly.** Sigstore/Rekor entries are append-only and **cannot be un-logged** — so we do not pretend a retracted result never existed. We record an append-only signed `retraction/v1` record, return **410 Gone** at the deep URL (not 404 — that would lie), and serve a tombstone disclosing the `reason_class`. **No site rebuild** in this path (`git commit + rsync + caddy reload`).
@@ -171,7 +189,7 @@ The **minimal alerting layer.** Deliberately tiny: the only thing worth waking a
 | Piece | Location | Role |
 |---|---|---|
 | Alert evaluator | `src/alerting/evaluate.ts` | Pure function. Given per-source `lastSuccessfulIngestIso` + an INJECTED `now`, emits a critical alert for every source silent > 7 days. `SEVEN_DAYS_MS` is the ONLY threshold. Never reads the clock (`now` is a parameter). Fail-closed: unparseable last-ingest → `Infinity` silence (pages); future-dated (skew) → clamps to 0 (no page); unparseable `now` → epoch-0 anchor (never pages a real-dated source off a garbage clock). |
-| ntfy formatter + transport seam | `src/alerting/ntfy.ts` | `formatCriticalMessage` builds the ntfy payload: priority `5`, topic `prod-alerts`, names each silent source + days-silent, links to the PUBLIC `/status`. THROWS on an empty critical list (never page on nothing). Push behind the injectable `NtfyTransport`; default `NoopNtfyTransport` logs what it WOULD push and returns `delivered: false` — NEVER fakes a send, NEVER hardcodes the VPS address (base URL via `IEP_NTFY_BASE_URL`, documented `http://ntfy.invalid` placeholder). |
+| ntfy formatter + transport seam | `src/alerting/ntfy.ts` | `formatCriticalMessage` builds the ntfy payload: priority `5`, topic `prod-alerts` (Note: code still targets `prod-alerts`; the VPS renamed `prod-alerts`→`prod-health` — reconciled via the injected topic on the VPS cron, not in-repo.), names each silent source + days-silent, links to the PUBLIC `/status`. THROWS on an empty critical list (never page on nothing). Push behind the injectable `NtfyTransport`; default `NoopNtfyTransport` logs what it WOULD push and returns `delivered: false` — NEVER fakes a send, NEVER hardcodes the VPS address (base URL via `IEP_NTFY_BASE_URL`, documented `http://ntfy.invalid` placeholder). |
 | Pass orchestrator | `src/alerting/run.ts` | `runAlertPass(liveness, now, transport)` = evaluate → (only if any silent>7d) format + push. Can never page on an empty list by construction. |
 | No-uptime grep-guard | `src/alerting/no-uptime-scan.ts` + `scripts/check-uptime-claims.ts` | `pnpm run lint:uptime`. Self-contained detector (mirrors `c3-scan.ts`) that fails if any uptime-SLA claim (`99.9% uptime`, uptime/availability guarantee, `uptime SLA`, `N nines`) appears in `site/`. Neutral "liveness"/"status" prose + the exact best-effort commitment are NOT flagged. Wired into `deploy.yml` as a REQUIRED gate + a self-check (the synthetic `__fixtures__/uptime-violation.html` MUST fail the scanner). |
 | Liveness-check CLI | `scripts/check-liveness-alerts.ts` | `pnpm run check:liveness`. What a VPS cron would run: load current liveness → `runAlertPass` → push via the (default no-op) transport. Current honest state = all 6 sources never-seen → would page, but the no-op transport delivers nothing and says so. |
