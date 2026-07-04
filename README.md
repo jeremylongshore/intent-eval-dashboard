@@ -1,6 +1,6 @@
 # intent-eval-dashboard
 
-Part of the **[Intent Eval Platform](https://github.com/intent-solutions-io/intent-eval-platform)** — the umbrella mapping the six repos that converge via a shared Evidence Bundle schema.
+Part of the **[Intent Eval Platform](https://github.com/intent-solutions-io/intent-eval-platform)** — the umbrella grouping the platform's six repos: five converge via a shared Evidence Bundle schema (`intent-eval-core`, `intent-eval-lab`, `audit-harness`, `j-rig-skill-binary-eval`, `intent-rollout-gate`), and this repo — `intent-eval-dashboard` — is the satellite consumer (not part of the convergence taxonomy).
 
 > Public reports dashboard for the Intent Eval Platform. Live at [labs.intentsolutions.io](https://labs.intentsolutions.io).
 
@@ -72,7 +72,7 @@ The tailnet-only **hostname** (e.g. `labs-internal.<tailnet>`), the **Tailscale-
 
 ## Beyond the v0.1.0 baseline (shipped)
 
-The dashboard now consumes `@intentsolutions/core@0.2.0` (`pre_registration_hash`, `retraction/v1`, `dashboard-render/v1`) and the following are **built and committed** on top of the original v0.1.0 methodology-first cut: the 6-worker verify-before-render ingest supervision tree, the results browser, the retraction protocol with its Caddy 410 kill-switch, ops-lite alerting, and the Phase A.0 symmetric-render HTML structural-diff gate (puxu.12). See `CLAUDE.md` for the per-feature module map.
+The dashboard now consumes `@intentsolutions/core@^0.9.0` (`pre_registration_hash`, `retraction/v1`, `dashboard-render/v1`, and the `UsageEvent`/`HumanReview` entities behind the per-skill signals surface) and the following are **built and committed** on top of the original v0.1.0 methodology-first cut: the 6-worker verify-before-render ingest supervision tree, the results browser, the retraction protocol with its Caddy 410 kill-switch, ops-lite alerting, the Phase A.0 symmetric-render HTML structural-diff gate (puxu.12), the internal teaching-dashboard testing lane (`site-internal/internal/testing/`), and the public per-skill adoption + human-trust signals surface (`site/skills/`). See `CLAUDE.md` for the per-feature module map.
 
 Still genuinely deferred: the Astro migration (the site remains single-file HTML) and the tailnet/basicauth VPS deploy wiring for the operator-internal surfaces (a documented human-gated ops step).
 

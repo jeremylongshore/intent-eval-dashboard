@@ -3,7 +3,7 @@ name: Ingest CI
 # Lint + typecheck + test + build for the TypeScript ingest + supervision
 # pipeline (src/, ingest/). Runs the full `pnpm run check` gate.
 #
-# The kernel @intentsolutions/core@^0.2.0 installs from the npm registry
+# The kernel @intentsolutions/core@^0.9.0 installs from the npm registry
 # (published with sigstore provenance via intent-eval-core's release.yml).
 
 on:
