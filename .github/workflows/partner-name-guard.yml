@@ -12,6 +12,13 @@ name: Partner-name guard
 # list below MUST stay in sync with the PRIVATE umbrella CLAUDE.md grep
 # pattern; mismatch is an audit-trail concern, not an enforcement gap (the
 # umbrella is the source of truth for the human-driven scrub).
+#
+# CoreWeave|Databricks added 2026-07-06 as a fail-closed default-deny while the
+# signed-dogfood publication is gated (intent-os 023-AT-DECR, Gate 1). These are
+# vendors whose skills the platform dogfoods; their names must not reach this
+# public surface until a deliberate GC decision. If GC later clears naming a
+# vendor openly, relax this pattern as part of that decision. TODO(human): mirror
+# this addition into the private umbrella canonical pattern.
 
 on:
   pull_request:
@@ -48,7 +55,7 @@ jobs:
         # The umbrella is the source of truth.
         run: |
           set -euo pipefail
-          HITS=$(grep -rEni "Kobiton|Polygon|Nixtla|Lit Protocol|Mudit Gupta|Mudit" \
+          HITS=$(grep -rEni "Kobiton|Polygon|Nixtla|Lit Protocol|Mudit Gupta|Mudit|CoreWeave|Databricks" \
             000-docs/ site/ README.md CLAUDE.md CONTRIBUTING.md SECURITY.md CHANGELOG.md 2>/dev/null | \
             grep -vE "^[^:]+:[0-9]+: *#" || true)
           if [ -n "$HITS" ]; then
