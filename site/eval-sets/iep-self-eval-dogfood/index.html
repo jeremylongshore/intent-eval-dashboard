@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Dogfood — the platform evaluates its own shipped skills — IEP Labs</title>
-    <meta name="description" content="The Intent Eval Platform's 7-layer skill evaluation, run against Intent Solutions' own published skills. The harness that gates external skills, gating ours — measured, with every row pending its signature.">
+    <meta name="description" content="The Intent Eval Platform's 7-layer skill evaluation, run against Intent Solutions' own published CoreWeave skills. The harness that gates external skills, gating ours — with the first verdict signed and anchored in the public Rekor transparency log.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://labs.intentsolutions.io/eval-sets/iep-self-eval-dogfood/">
     <link rel="stylesheet" href="/style.css">
 
     <meta property="og:title" content="Dogfood — the platform evaluates its own shipped skills">
-    <meta property="og:description" content="The harness that gates external skills, gating ours. Measured — and pending its signature, because we do not render attestation we do not have.">
+    <meta property="og:description" content="The harness that gates external skills, gating ours. The first verdict is signed and Rekor-anchored — verifiable by a stranger, not asserted.">
     <meta property="og:url" content="https://labs.intentsolutions.io/eval-sets/iep-self-eval-dogfood/">
     <meta property="og:type" content="article">
 
@@ -46,10 +46,10 @@
             that claim is whether it grades <em>ours</em> — on the same bench, by the same
             harness, held to the same signature discipline. This scorecard is that test: the
             <a href="/eval-sets/j-rig-binary-eval-7-layer/">7-layer skill-binary-eval methodology</a>
-            run against Intent Solutions' own published skills. The measurement is done. The
-            <strong>verdicts are deliberately not shown here yet</strong> — because a row on this
-            board earns its outcome only when it carries a signature, and these do not carry one
-            yet.
+            run against Intent Solutions' own published CoreWeave skills. The first row is now
+            <strong>signed and anchored in the public Rekor transparency log</strong> — a verdict
+            a stranger can verify without trusting us. The second is held, on purpose, and the
+            page says exactly why.
         </p>
 
         <div class="freshness-stub">
@@ -69,11 +69,11 @@
             <dl>
                 <dt>id</dt><dd><code>iep-self-eval-dogfood</code></dd>
                 <dt>kind</dt><dd>scorecard (results) — a measurement against the <a href="/eval-sets/j-rig-binary-eval-7-layer/">j-rig 7-layer eval-set</a>, not a new specification. A result is never rendered as if it were a spec.</dd>
-                <dt>status</dt><dd><span class="badge badge--draft">draft</span> — measurement complete; every row's signature is pending</dd>
+                <dt>status</dt><dd><span class="badge badge--draft">draft</span> — one row signed, one row held</dd>
                 <dt>predicate URI</dt><dd><code>evals.intentsolutions.io/skill-binary-eval/v1</code> <span style="color: #6b7280; font-size: 0.85em;">(reserved; declared at Phase 2 — never declared under labs.*)</span></dd>
                 <dt>upstream source</dt><dd><a href="https://github.com/jeremylongshore/j-rig-skill-binary-eval">jeremylongshore/j-rig-skill-binary-eval</a> — the harness that produced these runs</dd>
-                <dt>skills under test</dt><dd>drawn from Intent Solutions' public skill packs (<a href="https://github.com/jeremylongshore/claude-code-plugins">claude-code-plugins</a>); each reasons over pasted evidence and fixtures — no third-party infrastructure credentials are used</dd>
-                <dt>attestation</dt><dd><span class="badge badge--no-data">pending</span> — measured, not yet signed (see <a href="#promotion">what promotes a row to signed</a>)</dd>
+                <dt>skills under test</dt><dd>from Intent Solutions' public skill packs (<a href="https://github.com/jeremylongshore/claude-code-plugins">claude-code-plugins</a>); each reasons over pasted evidence + fixtures — no CoreWeave or other third-party infrastructure credentials are used</dd>
+                <dt>attestation</dt><dd><strong>1 of 2 signed</strong> — node-forensics anchored at Rekor <a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=2085904207"><code>2085904207</code></a>; cost-leak-hunter held (see <a href="#held">below</a>)</dd>
             </dl>
         </div>
 
@@ -83,12 +83,10 @@
             Each row is one of our own shipped skills, measured by the platform. The
             <strong>attestation</strong> column is the load-bearing one: <code>signed</code> means
             an Evidence Bundle exists, is sigstore-signed, and is anchored in the Rekor
-            transparency log at a citable index; <code>pending</code> means the measurement exists
-            but the signing pipeline has not yet run against it. Every row below reads
-            <code>pending</code> today. There is deliberately <strong>no composite score
-            column</strong> and <strong>no outcome shown</strong> — composing incommensurable
-            findings into one number is the failure mode this platform exists to refuse, and
-            rendering an outcome that has not been signed is the second one.
+            transparency log at a citable index; <code>held</code> means the measurement exists but
+            we are deliberately not signing it yet, for a stated reason. There is deliberately
+            <strong>no composite score column</strong> — composing incommensurable findings into
+            one number is the failure mode this platform exists to refuse.
         </p>
 
         <table>
@@ -102,55 +100,82 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><strong>GPU-node forensics skill</strong></td>
-                    <td>j-rig 7-layer behavioral eval — including a deterministic self-test executed as a blocking criterion — of an infrastructure-triage skill that reasons over pasted node-failure evidence</td>
-                    <td><span style="color:#6b7280;">measurement complete — signature pending</span></td>
-                    <td><span class="badge badge--no-data">pending</span></td>
+                    <td><strong><code>coreweave-gpu-node-forensics</code></strong></td>
+                    <td>j-rig 7-layer behavioral eval of a GPU-node triage skill — including a <strong>deterministic self-test</strong> (20/20) executed as a blocking criterion, plus judgment 17/17 on the functional layer</td>
+                    <td><strong>SHIP</strong> — reproduced identically across two runs</td>
+                    <td><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=2085904207"><span class="badge badge--active">signed</span></a></td>
                 </tr>
                 <tr>
-                    <td><strong>GPU cost-leak hunter skill</strong></td>
-                    <td>j-rig 7-layer behavioral eval of a cost-analysis skill, including whether its report is legible to a non-engineer reader without further engineering work</td>
-                    <td><span style="color:#6b7280;">measurement complete — signature pending</span></td>
-                    <td><span class="badge badge--no-data">pending</span></td>
-                </tr>
-                <tr>
-                    <td><strong>Warehouse cost-leak hunter skill</strong></td>
-                    <td>j-rig 7-layer behavioral eval of a data-warehouse cost-analysis skill, on the same legibility and functional criteria as its sibling above</td>
-                    <td><span style="color:#6b7280;">measurement complete — signature pending</span></td>
-                    <td><span class="badge badge--no-data">pending</span></td>
+                    <td><strong><code>coreweave-gpu-cost-leak-hunter</code></strong></td>
+                    <td>j-rig 7-layer behavioral eval of a GPU cost-analysis skill, including whether its report is legible to a non-engineer reader without further engineering work</td>
+                    <td><span style="color:#6b7280;">measured — verdict not stable enough to sign</span></td>
+                    <td><span class="badge badge--no-data">held</span></td>
                 </tr>
             </tbody>
         </table>
 
-        <p style="font-size: 0.85rem; color: #6b7280;">
-            Skills are named here by function. The packs they ship in are public and linked above;
-            we describe our own skills by what they do rather than trade on any third party's name.
-        </p>
-
-        <h2 id="why-blank">Why the verdicts are blank</h2>
+        <h2 id="provenance">Provenance — signed, and verifiable by you</h2>
 
         <p>
-            We have the results. The harness produced a differentiated grade for each skill —
-            genuinely differentiated, which is the point of running it: at least one of these rows
-            did <em>not</em> come back clean, and surfacing that gap is exactly what the eval is
-            for. So the reason the Outcome column is grey is not that there is nothing to report.
-            It is that a verdict on this board is only as trustworthy as the signature under it,
-            and these runs were produced locally, without the keyless signing identity that makes
-            a result verifiable by a stranger. Rendering the verdicts now would mean asking you to
-            trust our word — which is the one thing this platform is built to make unnecessary.
+            The <code>coreweave-gpu-node-forensics</code> verdict is not a claim you have to trust.
+            Its Evidence Bundle was <strong>keyless-signed</strong> (Fulcio, no long-lived private
+            key) by a reproducible GitHub Actions workflow identity — not a person's machine — and
+            anchored in the <strong>public production Rekor transparency log</strong> at
+            <a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=2085904207">log index
+            <code>2085904207</code></a>. This is the same public-good infrastructure (Fulcio +
+            Rekor) behind npm provenance and SLSA.
         </p>
 
+        <div class="meta-block">
+            <dl>
+                <dt>verdict</dt><dd><strong>SHIP</strong> — self-test 20/20 (deterministic blocker), judgment 17/17</dd>
+                <dt>Rekor log index</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=2085904207"><code>2085904207</code></a> (public production transparency log)</dd>
+                <dt>signer identity</dt><dd><code>github.com/jeremylongshore/intent-eval-lab/.github/workflows/sign-dogfood-bundle.yml</code> (keyless GitHub-OIDC, reviewer-gated)</dd>
+                <dt>signed bundle</dt><dd><a href="coreweave-gpu-node-forensics.bundle.sigstore.json"><code>coreweave-gpu-node-forensics.bundle.sigstore.json</code></a> (Fulcio cert + signature + inclusion proof)</dd>
+                <dt>evidence bundle</dt><dd><a href="coreweave-gpu-node-forensics.bundle.json"><code>coreweave-gpu-node-forensics.bundle.json</code></a> (the <code>gate-result/v1</code> statement that was signed)</dd>
+            </dl>
+        </div>
+
+        <p>You do not have to trust us. Verify it yourself with
+            <a href="https://docs.sigstore.dev/cosign/installation/">cosign</a> (no account, no
+            keys) against the committed bundle:
+        </p>
+
+        <pre><code>cosign verify-blob \
+  --new-bundle-format \
+  --bundle coreweave-gpu-node-forensics.bundle.sigstore.json \
+  --certificate-identity 'https://github.com/jeremylongshore/intent-eval-lab/.github/workflows/sign-dogfood-bundle.yml@refs/heads/main' \
+  --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
+  coreweave-gpu-node-forensics.bundle.json</code></pre>
+
         <p>
-            This mirrors the discipline on the <a href="/eval-sets/j-rig-bench/">Evidence Bench</a>,
-            where a row read <code>pending</code> until its signature was real. We do not render
-            attestation we do not have — not for a competitor, and not for ourselves.
+            <strong>What the signature attests — and what it does not.</strong> It proves the
+            Evidence Bundle (by digest) is authentic and unaltered, and that this workflow identity
+            signed it at the logged time. It does <em>not</em> declare a predicate URI —
+            the <code>skill-binary-eval/v1</code> predicate stays <strong>reserved</strong>, never
+            under labs.*. And it does <em>not</em> claim the verdict is "correct" beyond the
+            pre-registered criteria: a signature attests authenticity, not the truth of the
+            science. The science stands on the eval, not the signature.
+        </p>
+
+        <h2 id="held">Why the second row is held, not signed</h2>
+
+        <p>
+            <code>coreweave-gpu-cost-leak-hunter</code> was measured, but it is <strong>not
+            signed</strong> — and that is the discipline working, not a gap. The same skill, same
+            harness, same judge model returned <strong>SHIP</strong> on one run and
+            <strong>BLOCK</strong> on another: its verdict is not yet stable across runs. A Rekor
+            entry is permanent and public; signing a coin-flip would attest one noisy sample as if
+            it were ground truth. So it waits for a seeded or multi-run majority verdict before it
+            earns a signature. Rendering it now — either way — would be exactly the "trust our
+            word" move this board exists to refuse.
         </p>
 
         <h2 id="promotion">What promotes a row to signed</h2>
 
         <p>
-            A pending row becomes a signed row — with its verdict and a citable Rekor index —
-            when the same three things line up that promoted the first Evidence Bench row:
+            A held row becomes a signed row — with its verdict and a citable Rekor index — when
+            three things line up, as they did for node-forensics above:
         </p>
 
         <ol>
@@ -158,16 +183,6 @@
             <li>its Evidence Bundle is <strong>keyless-signed</strong> through Fulcio (the same public-good infrastructure behind npm provenance and SLSA);</li>
             <li>the signature is <strong>anchored in the public Rekor transparency log</strong> at an index anyone can fetch and verify with <a href="https://docs.sigstore.dev/cosign/installation/">cosign</a>, no account and no keys required.</li>
         </ol>
-
-        <p>
-            When that pipeline runs against these three measurements, the rows above flip from
-            <code>pending</code> to <code>signed</code>, the outcomes appear, and each links to its
-            transparency-log entry. Until then the board stays honestly blank. A signature, when it
-            lands, attests <em>authenticity, identity, and time</em> — that this workflow measured
-            this skill at this moment and produced exactly this output. It does not, and will not,
-            declare the reserved <code>skill-binary-eval/v1</code> predicate under labs.*, and it
-            does not claim the verdict is "correct" beyond what the pre-registered criteria state.
-        </p>
 
         <h2>Source and references</h2>
 

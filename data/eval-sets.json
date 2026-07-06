@@ -38,9 +38,9 @@
     {
       "id": "iep-self-eval-dogfood",
       "title": "Dogfood — the platform evaluates its own shipped skills",
-      "short_description": "The 7-layer skill-binary-eval methodology run against Intent Solutions' own published skills — the harness that gates external skills, gating ours. Measurement is complete; every row stays pending until it carries a signed, Rekor-anchored Evidence Bundle. No verdict is rendered without a signature.",
+      "short_description": "The 7-layer skill-binary-eval methodology run against Intent Solutions' own published CoreWeave skills — the harness that gates external skills, gating ours. The first verdict (coreweave-gpu-node-forensics, SHIP) is keyless-signed and anchored in the public Rekor log at index 2085904207, verifiable by anyone with cosign; the second is held until its verdict is stable across runs.",
       "status": "draft",
-      "attestation_status": "pending",
+      "attestation_status": "partial",
       "predicate_uri": "evals.intentsolutions.io/skill-binary-eval/v1",
       "predicate_uri_reserved": true,
       "upstream": {

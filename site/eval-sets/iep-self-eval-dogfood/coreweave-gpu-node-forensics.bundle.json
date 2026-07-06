@@ -1,0 +1,50 @@
+[
+  {
+    "_type": "https://in-toto.io/Statement/v1",
+    "subject": [
+      {
+        "name": "j-rig:local:coreweave-gpu-node-forensics.deepseek-v4-flash",
+        "digest": {
+          "sha256": "533fe0c6bed6d01643124c5ae10c62b4fcdc70d7a9dd57a01e033e849c991699"
+        }
+      }
+    ],
+    "predicateType": "https://evals.intentsolutions.io/gate-result/v1",
+    "predicate": {
+      "gate_id": "j-rig:local:coreweave-gpu-node-forensics.deepseek-v4-flash",
+      "gate_name": "rollout",
+      "gate_version": "0.1.2",
+      "gate_decision": "pass",
+      "gate_reasons": [
+        "All 17 criteria passed. Ready to ship."
+      ],
+      "coverage": {
+        "dimensions_evaluated": [
+          "trigger",
+          "functional",
+          "behavioral"
+        ],
+        "dimensions_skipped": [
+          "regression",
+          "baseline"
+        ]
+      },
+      "policy_ref": "sha256:58228e6b5c7c591986306ee3e956ac6c7dc2d21ba66f1430593728c82f4ff774:eval-spec.yaml",
+      "policy_hash": "sha256:58228e6b5c7c591986306ee3e956ac6c7dc2d21ba66f1430593728c82f4ff774",
+      "input_hash": "sha256:533fe0c6bed6d01643124c5ae10c62b4fcdc70d7a9dd57a01e033e849c991699",
+      "evaluated_at": "2026-07-06T13:19:12.946Z",
+      "runner": "j-rig@0.1.2",
+      "commit_sha": "25adfa46d38b55bc957d07e66904169d9ee9e8ca",
+      "metadata": {
+        "model": "deepseek-v4-flash",
+        "provider": "deepseek",
+        "ground_truth": true,
+        "rollout_decision": "ship",
+        "pass_rate": 1,
+        "passed": 17,
+        "total_criteria": 17,
+        "commit_sha_source": "git:skill-dir-HEAD"
+      }
+    }
+  }
+]
