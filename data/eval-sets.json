@@ -34,6 +34,21 @@
         "branch": "main"
       },
       "page_path": "/eval-sets/j-rig-bench/"
+    },
+    {
+      "id": "iep-self-eval-dogfood",
+      "title": "Dogfood — the platform evaluates its own shipped skills",
+      "short_description": "The 7-layer skill-binary-eval methodology run against Intent Solutions' own published skills — the harness that gates external skills, gating ours. Measurement is complete; every row stays pending until it carries a signed, Rekor-anchored Evidence Bundle. No verdict is rendered without a signature.",
+      "status": "draft",
+      "attestation_status": "pending",
+      "predicate_uri": "evals.intentsolutions.io/skill-binary-eval/v1",
+      "predicate_uri_reserved": true,
+      "upstream": {
+        "owner": "jeremylongshore",
+        "repo": "j-rig-skill-binary-eval",
+        "branch": "main"
+      },
+      "page_path": "/eval-sets/iep-self-eval-dogfood/"
     }
   ],
   "queued_for_v0_2_0": [

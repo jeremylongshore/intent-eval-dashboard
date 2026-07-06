@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dogfood — the platform evaluates its own shipped skills — IEP Labs</title>
+    <meta name="description" content="The Intent Eval Platform's 7-layer skill evaluation, run against Intent Solutions' own published skills. The harness that gates external skills, gating ours — measured, with every row pending its signature.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://labs.intentsolutions.io/eval-sets/iep-self-eval-dogfood/">
+    <link rel="stylesheet" href="/style.css">
+
+    <meta property="og:title" content="Dogfood — the platform evaluates its own shipped skills">
+    <meta property="og:description" content="The harness that gates external skills, gating ours. Measured — and pending its signature, because we do not render attestation we do not have.">
+    <meta property="og:url" content="https://labs.intentsolutions.io/eval-sets/iep-self-eval-dogfood/">
+    <meta property="og:type" content="article">
+
+    <meta name="iep-source-repo" content="github.com/jeremylongshore/intent-eval-dashboard">
+    <meta name="iep-dashboard-version" content="0.1.0">
+    <meta name="iep-eval-set-id" content="iep-self-eval-dogfood">
+    <meta name="iep-eval-set-status" content="draft">
+    <meta name="iep-eval-set-upstream-source" content="github.com/jeremylongshore/j-rig-skill-binary-eval">
+</head>
+<body>
+    <header class="site-header">
+        <div class="site-header__inner">
+            <a href="/" class="site-header__wordmark">IEP&nbsp;Labs</a>
+            <nav class="site-nav" aria-label="Primary">
+                <a href="/eval-sets/">Eval Sets</a>
+                <a href="/methodology/">Methodology</a>
+                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <p style="font-size: 0.85rem; color: #6b7280; margin: 0;">
+            <a href="/eval-sets/" style="color: #6b7280;">← Eval sets</a>
+        </p>
+
+        <h1>Dogfood — the platform evaluates its own shipped skills
+            <span class="badge badge--draft" style="font-size: 0.6em; vertical-align: middle;">draft</span>
+        </h1>
+
+        <p class="lead">
+            The Intent Eval Platform's job is to grade other people's skills. The fair test of
+            that claim is whether it grades <em>ours</em> — on the same bench, by the same
+            harness, held to the same signature discipline. This scorecard is that test: the
+            <a href="/eval-sets/j-rig-binary-eval-7-layer/">7-layer skill-binary-eval methodology</a>
+            run against Intent Solutions' own published skills. The measurement is done. The
+            <strong>verdicts are deliberately not shown here yet</strong> — because a row on this
+            board earns its outcome only when it carries a signature, and these do not carry one
+            yet.
+        </p>
+
+        <div class="freshness-stub">
+            <div class="freshness-stub__title">Why a dogfood scorecard is a stronger claim than an external one</div>
+            <p style="margin-top: 0.5rem;">
+                Anyone can publish a favourable score of a rival. It is harder — and more
+                honest — to publish the score of your own work under a gate you cannot quietly
+                relax. These skills were run through the identical harness that gates external
+                submissions: the same seven binary layers, the same "no composite score" rule,
+                the same refusal to render a result that has not been signed. If the platform's
+                discipline only survives when it is pointed outward, it is theatre. This page
+                exists so the discipline is pointed inward, in public.
+            </p>
+        </div>
+
+        <div class="meta-block">
+            <dl>
+                <dt>id</dt><dd><code>iep-self-eval-dogfood</code></dd>
+                <dt>kind</dt><dd>scorecard (results) — a measurement against the <a href="/eval-sets/j-rig-binary-eval-7-layer/">j-rig 7-layer eval-set</a>, not a new specification. A result is never rendered as if it were a spec.</dd>
+                <dt>status</dt><dd><span class="badge badge--draft">draft</span> — measurement complete; every row's signature is pending</dd>
+                <dt>predicate URI</dt><dd><code>evals.intentsolutions.io/skill-binary-eval/v1</code> <span style="color: #6b7280; font-size: 0.85em;">(reserved; declared at Phase 2 — never declared under labs.*)</span></dd>
+                <dt>upstream source</dt><dd><a href="https://github.com/jeremylongshore/j-rig-skill-binary-eval">jeremylongshore/j-rig-skill-binary-eval</a> — the harness that produced these runs</dd>
+                <dt>skills under test</dt><dd>drawn from Intent Solutions' public skill packs (<a href="https://github.com/jeremylongshore/claude-code-plugins">claude-code-plugins</a>); each reasons over pasted evidence and fixtures — no third-party infrastructure credentials are used</dd>
+                <dt>attestation</dt><dd><span class="badge badge--no-data">pending</span> — measured, not yet signed (see <a href="#promotion">what promotes a row to signed</a>)</dd>
+            </dl>
+        </div>
+
+        <h2>The board</h2>
+
+        <p>
+            Each row is one of our own shipped skills, measured by the platform. The
+            <strong>attestation</strong> column is the load-bearing one: <code>signed</code> means
+            an Evidence Bundle exists, is sigstore-signed, and is anchored in the Rekor
+            transparency log at a citable index; <code>pending</code> means the measurement exists
+            but the signing pipeline has not yet run against it. Every row below reads
+            <code>pending</code> today. There is deliberately <strong>no composite score
+            column</strong> and <strong>no outcome shown</strong> — composing incommensurable
+            findings into one number is the failure mode this platform exists to refuse, and
+            rendering an outcome that has not been signed is the second one.
+        </p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Skill under test</th>
+                    <th>What is measured</th>
+                    <th>Outcome</th>
+                    <th>Attestation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>GPU-node forensics skill</strong></td>
+                    <td>j-rig 7-layer behavioral eval — including a deterministic self-test executed as a blocking criterion — of an infrastructure-triage skill that reasons over pasted node-failure evidence</td>
+                    <td><span style="color:#6b7280;">measurement complete — signature pending</span></td>
+                    <td><span class="badge badge--no-data">pending</span></td>
+                </tr>
+                <tr>
+                    <td><strong>GPU cost-leak hunter skill</strong></td>
+                    <td>j-rig 7-layer behavioral eval of a cost-analysis skill, including whether its report is legible to a non-engineer reader without further engineering work</td>
+                    <td><span style="color:#6b7280;">measurement complete — signature pending</span></td>
+                    <td><span class="badge badge--no-data">pending</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Warehouse cost-leak hunter skill</strong></td>
+                    <td>j-rig 7-layer behavioral eval of a data-warehouse cost-analysis skill, on the same legibility and functional criteria as its sibling above</td>
+                    <td><span style="color:#6b7280;">measurement complete — signature pending</span></td>
+                    <td><span class="badge badge--no-data">pending</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p style="font-size: 0.85rem; color: #6b7280;">
+            Skills are named here by function. The packs they ship in are public and linked above;
+            we describe our own skills by what they do rather than trade on any third party's name.
+        </p>
+
+        <h2 id="why-blank">Why the verdicts are blank</h2>
+
+        <p>
+            We have the results. The harness produced a differentiated grade for each skill —
+            genuinely differentiated, which is the point of running it: at least one of these rows
+            did <em>not</em> come back clean, and surfacing that gap is exactly what the eval is
+            for. So the reason the Outcome column is grey is not that there is nothing to report.
+            It is that a verdict on this board is only as trustworthy as the signature under it,
+            and these runs were produced locally, without the keyless signing identity that makes
+            a result verifiable by a stranger. Rendering the verdicts now would mean asking you to
+            trust our word — which is the one thing this platform is built to make unnecessary.
+        </p>
+
+        <p>
+            This mirrors the discipline on the <a href="/eval-sets/j-rig-bench/">Evidence Bench</a>,
+            where a row read <code>pending</code> until its signature was real. We do not render
+            attestation we do not have — not for a competitor, and not for ourselves.
+        </p>
+
+        <h2 id="promotion">What promotes a row to signed</h2>
+
+        <p>
+            A pending row becomes a signed row — with its verdict and a citable Rekor index —
+            when the same three things line up that promoted the first Evidence Bench row:
+        </p>
+
+        <ol>
+            <li>the eval runs under a reproducible <strong>GitHub Actions workflow identity</strong>, not a person's machine;</li>
+            <li>its Evidence Bundle is <strong>keyless-signed</strong> through Fulcio (the same public-good infrastructure behind npm provenance and SLSA);</li>
+            <li>the signature is <strong>anchored in the public Rekor transparency log</strong> at an index anyone can fetch and verify with <a href="https://docs.sigstore.dev/cosign/installation/">cosign</a>, no account and no keys required.</li>
+        </ol>
+
+        <p>
+            When that pipeline runs against these three measurements, the rows above flip from
+            <code>pending</code> to <code>signed</code>, the outcomes appear, and each links to its
+            transparency-log entry. Until then the board stays honestly blank. A signature, when it
+            lands, attests <em>authenticity, identity, and time</em> — that this workflow measured
+            this skill at this moment and produced exactly this output. It does not, and will not,
+            declare the reserved <code>skill-binary-eval/v1</code> predicate under labs.*, and it
+            does not claim the verdict is "correct" beyond what the pre-registered criteria state.
+        </p>
+
+        <h2>Source and references</h2>
+
+        <ul>
+            <li><a href="/eval-sets/j-rig-binary-eval-7-layer/">j-rig 7-layer eval-set</a> — the specification these skills were measured against</li>
+            <li><a href="/eval-sets/j-rig-bench/">Evidence Bench — j-rig-bench scorecard</a> — the sibling results board whose signing discipline this page follows</li>
+            <li><a href="https://github.com/jeremylongshore/j-rig-skill-binary-eval">jeremylongshore/j-rig-skill-binary-eval</a> — the harness that ran these evaluations</li>
+            <li><a href="https://github.com/jeremylongshore/claude-code-plugins">jeremylongshore/claude-code-plugins</a> — the public packs the skills under test ship in</li>
+        </ul>
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-footer__inner">
+            <div>
+                <strong>labs.intentsolutions.io</strong> · dashboard <code>v0.1.0</code><br>
+                Intent Solutions — <a href="https://intentsolutions.io">intentsolutions.io</a>
+            </div>
+            <div>
+                <a href="/methodology/">Methodology</a> ·
+                <a href="/eval-sets/">Eval Sets</a> ·
+                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
