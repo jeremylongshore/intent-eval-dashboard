@@ -31,39 +31,13 @@
         <div class="operator-banner">
             <p style="margin:0;"><strong>Internal testing dashboard (gated).</strong> This surface renders our own testing results — coverage, mutation, CRAP, architecture, and escape-scan gates — for every platform repo, each one <em>taught</em>: what the gate is, how we run it, what good looks like, our number, the verdict, and exactly what to fix. Every row traces back to a signed, Rekor-anchored <code>gate-result/v1</code> attestation re-verified at ingest. It is served behind a password at <code>internal.intentsolutions.io</code>; it is never indexed and never part of the public site.</p>
         </div>
-        <div class="meta-block as-of">
-            <p style="margin:0;"><strong>As of:</strong> <time datetime="2026-07-06T07:43:00.075Z">2026-07-06T07:43:00.075Z</time> — the oldest ingest across all sources in this view (<code>min(ingested_at)</code>).</p>
+        <div class="meta-block as-of as-of--none">
+            <p style="margin:0;"><strong>As of:</strong> no source has a verified snapshot yet. Every repo below is in a <code>no-data</code> state.</p>
         </div>
-        <section class="gate-block">
-            <h2><code>harness-hash</code></h2>
-            <div class="gate-explainer">
-            <h2>What it is</h2>
-            <p>The <strong>harness hash</strong> is the integrity check on the testing policy itself. The audit-harness records a SHA-256 of every policy-bearing script and the policy manifest into a pinned file (<code>.harness-hash</code>). <code>harness-hash --verify</code> recomputes those digests and confirms they still match the pin. In plain terms: *has anyone changed the gates — the coverage floor, the escape-scan rules, the architecture checker — without doing it openly?* A passing harness hash means the gates that produced all the other evidence are themselves the ones that were reviewed and pinned.</p>
-            <h2>How we run it</h2>
-            <p><code>harness-hash --verify</code> runs in CI on every change and again at release time. It is the foundation the rest of the evidence stands on: a coverage number or an escape-scan result only means something if the script that produced it hasn&#39;t been quietly edited. If a policy script changes legitimately, the author re-pins the manifest (<code>audit-harness init</code>) and commits the new <code>.harness-hash</code> alongside the change — so the edit is explicit and reviewable, never silent.</p>
-            <h2>What good looks like</h2>
-            <ul>
-                <li><strong>All digests match the pin</strong> — <code>pass</code>. The testing policy is intact; no gate was altered out-of-band.</li>
-                <li><strong>A digest drift</strong> — <code>fail</code>. The <strong>what to fix</strong> list names which script drifted. Either the change should not have touched a pinned policy file, or the policy change is legitimate and must be re-pinned + reviewed explicitly.</li>
-                <li>This gate is a trust amplifier: a green harness hash is what lets every other signed gate-result on this page be taken at face value — it proves the gates weren&#39;t moved.</li>
-            </ul>
-            </div>
-            <div class="gate-row gate-row--good">
-                <p class="gate-row__verdict"><span class="verdict verdict--good"><span aria-hidden="true">✓</span> good</span> <span class="badge badge--result-pass">pass</span> <span class="gate-row__headline">Passing — meets the policy bar.</span></p>
-                <dl class="gate-row__meta">
-                    <dt>gate version</dt><dd><code>1.0.0</code></dd>
-                    <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-07-05T16:24:54.963Z">2026-07-05T16:24:54.963Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-07-05T16:24:54.963Z">2026-07-05T16:24:54.963Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><code>—</code></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-07-06T07:43:00.791Z">2026-07-06T07:43:00.791Z</time></dd>
-                </dl>
-                <div class="measured">
-                    <p><strong>What we measured:</strong> <code>hash-manifest-consistency</code></p>
-                </div>
-                <p class="what-to-fix what-to-fix--none">Nothing to fix — this gate is passing.</p>
-            </div>
-        </section>
+        <div class="no-data-panel">
+            <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results for <code>iah</code></p>
+            <p>This source has not yet published a verified, signed Evidence Bundle to this dashboard. <strong>No data is not a pass.</strong> It is rendered with the same prominence as a failure so an empty source can never be mistaken for a clean one.</p>
+        </div>
     </main>
     <footer class="site-footer">
         <div class="site-footer__inner">

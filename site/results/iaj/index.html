@@ -33,37 +33,13 @@
     <main>
         <p><a href="/results/">← All results</a></p>
         <h1>Results: <code>iaj</code></h1>
-        <div class="meta-block as-of">
-            <p style="margin:0;"><strong>As of:</strong> <time datetime="2026-07-06T07:43:00.075Z">2026-07-06T07:43:00.075Z</time> — the oldest ingest across all sources in this view (<code>min(ingested_at)</code>). Sources verified more recently may be fresher.</p>
+        <div class="meta-block as-of as-of--none">
+            <p style="margin:0;"><strong>As of:</strong> no source has a verified snapshot yet. Every repo below is in a <code>no-data</code> state.</p>
         </div>
-        <p class="predicate-note">Decision counts are shown <em>per predicate URI</em> only. We never composite a pass-rate across heterogeneous predicates — that is metric laundering.</p>
-        <ul class="predicate-breakdown">
-            <li><code>https://evals.intentsolutions.io/gate-result/v1</code> — pass: 1</li>
-        </ul>
-        <table class="results-table">
-            <thead>
-                <tr>
-                    <th>Gate</th>
-                    <th>Decision</th>
-                    <th>Predicate URI</th>
-                    <th>Evaluated at</th>
-                    <th>Bundle created at</th>
-                    <th>Rekor anchor</th>
-                    <th>Ingested at</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><a href="/results/iaj/sha256-7eaedef685a09bd476c29d8c8d2c34f9eaaa7fde84758d320fc92796bf733219/"><code>coverage</code></a></td>
-                    <td><span class="badge badge--result-pass">pass</span></td>
-                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-06-15T18:34:28.968Z">2026-06-15T18:34:28.968Z</time></td>
-                    <td><time datetime="2026-06-15T18:34:28.968Z">2026-06-15T18:34:28.968Z</time></td>
-                    <td><code>—</code></td>
-                    <td><time datetime="2026-07-06T07:43:01.132Z">2026-07-06T07:43:01.132Z</time></td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="no-data-panel">
+            <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results for <code>iaj</code></p>
+            <p>This source has not yet published a verified, signed Evidence Bundle to this dashboard. <strong>No data is not a pass.</strong> It is rendered with the same prominence as a failure so an empty source can never be mistaken for a clean one.</p>
+        </div>
     </main>
     <footer class="site-footer">
         <div class="site-footer__inner">
