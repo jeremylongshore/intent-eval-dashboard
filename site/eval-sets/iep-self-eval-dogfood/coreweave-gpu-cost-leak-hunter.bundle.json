@@ -1,0 +1,214 @@
+[
+  {
+    "_type": "https://in-toto.io/Statement/v1",
+    "subject": [
+      {
+        "name": "j-rig:local:coreweave-gpu-cost-leak-hunter.deepseek-v4-flash",
+        "digest": {
+          "sha256": "561c9e3a2fdd4a1f4f39b763dd3caf4df0a914e2169c03499c5f8eda7ebbecf6"
+        }
+      }
+    ],
+    "predicateType": "https://evals.intentsolutions.io/gate-result/v1",
+    "predicate": {
+      "gate_id": "j-rig:local:coreweave-gpu-cost-leak-hunter.deepseek-v4-flash",
+      "gate_name": "rollout",
+      "gate_version": "0.1.2",
+      "gate_decision": "fail",
+      "gate_reasons": [
+        "2 blocker criteria failed"
+      ],
+      "coverage": {
+        "dimensions_evaluated": [
+          "trigger",
+          "functional",
+          "behavioral"
+        ],
+        "dimensions_skipped": [
+          "regression",
+          "baseline"
+        ]
+      },
+      "policy_ref": "sha256:683f601ca3d772b5ee242828cf8422873cccbec94c0e9fc444ed97ba6af1a6d4:eval-spec.yaml",
+      "policy_hash": "sha256:683f601ca3d772b5ee242828cf8422873cccbec94c0e9fc444ed97ba6af1a6d4",
+      "input_hash": "sha256:561c9e3a2fdd4a1f4f39b763dd3caf4df0a914e2169c03499c5f8eda7ebbecf6",
+      "evaluated_at": "2026-07-07T00:22:37.638Z",
+      "runner": "j-rig@0.1.2",
+      "commit_sha": "561c9e3a2fdd4a1f4f39b763dd3caf4df0a914e2",
+      "metadata": {
+        "model": "deepseek-v4-flash",
+        "provider": "deepseek",
+        "ground_truth": true,
+        "rollout_decision": "block",
+        "pass_rate": 0.6,
+        "passed": 6,
+        "total_criteria": 10,
+        "commit_sha_source": "skill-content-sha (skill not git-tracked)",
+        "aggregation": {
+          "rule": "majority-vote",
+          "denominator_rule": "errored-samples-count-as-unsure",
+          "blocker_quorum": 0.8,
+          "samples_default": 5
+        },
+        "criteria": [
+          {
+            "criterion_id": "triggers-on-cost-question",
+            "blocker": true,
+            "method": "judge",
+            "verdict": "yes",
+            "samples": 5,
+            "agreement": 1,
+            "sample_verdicts": [
+              "yes",
+              "yes",
+              "yes",
+              "yes",
+              "yes"
+            ]
+          },
+          {
+            "criterion_id": "produces-cfo-grokkable-report",
+            "blocker": true,
+            "method": "judge",
+            "verdict": "no",
+            "samples": 5,
+            "agreement": 1,
+            "sample_verdicts": [
+              "no",
+              "no",
+              "no",
+              "no",
+              "no"
+            ]
+          },
+          {
+            "criterion_id": "splits-confirmed-vs-estimated",
+            "blocker": false,
+            "method": "judge",
+            "verdict": "yes",
+            "samples": 5,
+            "agreement": 1,
+            "sample_verdicts": [
+              "yes",
+              "yes",
+              "yes",
+              "yes",
+              "yes"
+            ]
+          },
+          {
+            "criterion_id": "dollars-from-promql-not-guessed",
+            "blocker": false,
+            "method": "judge",
+            "verdict": "no",
+            "samples": 5,
+            "agreement": 1,
+            "sample_verdicts": [
+              "no",
+              "no",
+              "no",
+              "no",
+              "no"
+            ]
+          },
+          {
+            "criterion_id": "triggers-on-cost-question",
+            "blocker": true,
+            "method": "judge",
+            "verdict": "yes",
+            "samples": 5,
+            "agreement": 0.8,
+            "sample_verdicts": [
+              "yes",
+              "no",
+              "yes",
+              "yes",
+              "yes"
+            ]
+          },
+          {
+            "criterion_id": "produces-cfo-grokkable-report",
+            "blocker": true,
+            "method": "judge",
+            "verdict": "no",
+            "samples": 5,
+            "agreement": 1,
+            "sample_verdicts": [
+              "no",
+              "no",
+              "no",
+              "no",
+              "no"
+            ]
+          },
+          {
+            "criterion_id": "splits-confirmed-vs-estimated",
+            "blocker": false,
+            "method": "judge",
+            "verdict": "yes",
+            "samples": 5,
+            "agreement": 1,
+            "sample_verdicts": [
+              "yes",
+              "yes",
+              "yes",
+              "yes",
+              "yes"
+            ]
+          },
+          {
+            "criterion_id": "triggers-on-cost-question",
+            "blocker": true,
+            "method": "judge",
+            "verdict": "yes",
+            "samples": 5,
+            "agreement": 1,
+            "sample_verdicts": [
+              "yes",
+              "yes",
+              "yes",
+              "yes",
+              "yes"
+            ]
+          },
+          {
+            "criterion_id": "right-sizing-grounded-and-hedged",
+            "blocker": false,
+            "method": "judge",
+            "verdict": "no",
+            "samples": 5,
+            "agreement": 1,
+            "sample_verdicts": [
+              "no",
+              "no",
+              "no",
+              "no",
+              "no"
+            ]
+          },
+          {
+            "criterion_id": "checks-metric-access-upfront",
+            "blocker": false,
+            "method": "judge",
+            "verdict": "yes",
+            "samples": 5,
+            "agreement": 1,
+            "sample_verdicts": [
+              "yes",
+              "yes",
+              "yes",
+              "yes",
+              "yes"
+            ]
+          }
+        ],
+        "stability": {
+          "min_blocker_agreement": 0.8,
+          "unstable_blocker_failures": 0
+        }
+      },
+      "failure_mode": "2 blocker criteria failed",
+      "replay_fidelity_level": "RF-1"
+    }
+  }
+]

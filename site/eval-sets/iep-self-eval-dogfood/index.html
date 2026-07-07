@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Dogfood — the platform evaluates its own shipped skills — IEP Labs</title>
-    <meta name="description" content="The Intent Eval Platform's 7-layer skill evaluation, run against Intent Solutions' own published CoreWeave skills. The harness that gates external skills, gating ours — with the first verdict signed and anchored in the public Rekor transparency log.">
+    <meta name="description" content="The Intent Eval Platform's 7-layer skill evaluation, run against Intent Solutions' own published CoreWeave skills. The harness that gates external skills, gating ours — both verdicts signed and anchored in the public Rekor transparency log, including an honest BLOCK of our own skill.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://labs.intentsolutions.io/eval-sets/iep-self-eval-dogfood/">
     <link rel="stylesheet" href="/style.css">
 
     <meta property="og:title" content="Dogfood — the platform evaluates its own shipped skills">
-    <meta property="og:description" content="The harness that gates external skills, gating ours. The first verdict is signed and Rekor-anchored — verifiable by a stranger, not asserted.">
+    <meta property="og:description" content="The harness that gates external skills, gating ours. Both verdicts are signed and Rekor-anchored — including an honest BLOCK of our own skill, with the judge's votes in the signed evidence.">
     <meta property="og:url" content="https://labs.intentsolutions.io/eval-sets/iep-self-eval-dogfood/">
     <meta property="og:type" content="article">
 
@@ -46,10 +46,13 @@
             that claim is whether it grades <em>ours</em> — on the same bench, by the same
             harness, held to the same signature discipline. This scorecard is that test: the
             <a href="/eval-sets/j-rig-binary-eval-7-layer/">7-layer skill-binary-eval methodology</a>
-            run against Intent Solutions' own published CoreWeave skills. The first row is now
-            <strong>signed and anchored in the public Rekor transparency log</strong> — a verdict
-            a stranger can verify without trusting us. The second is held, on purpose, and the
-            page says exactly why.
+            run against Intent Solutions' own published CoreWeave skills. Both rows are now
+            <strong>signed and anchored in the public Rekor transparency log</strong> — verdicts
+            a stranger can verify without trusting us. The second row is a <strong>BLOCK of our
+            own skill</strong>: it spent its first days held because its verdict flip-flopped
+            across identical re-runs, and it earned its signature only after the judging was made
+            noise-robust — 7/7 identical verdicts, with the judge's individual votes carried
+            inside the signed evidence. The page says exactly how.
         </p>
 
         <div class="freshness-stub">
@@ -69,11 +72,11 @@
             <dl>
                 <dt>id</dt><dd><code>iep-self-eval-dogfood</code></dd>
                 <dt>kind</dt><dd>scorecard (results) — a measurement against the <a href="/eval-sets/j-rig-binary-eval-7-layer/">j-rig 7-layer eval-set</a>, not a new specification. A result is never rendered as if it were a spec.</dd>
-                <dt>status</dt><dd><span class="badge badge--draft">draft</span> — one row signed, one row held</dd>
+                <dt>status</dt><dd><span class="badge badge--draft">draft</span> — both rows signed (one SHIP, one BLOCK)</dd>
                 <dt>predicate URI</dt><dd><code>evals.intentsolutions.io/skill-binary-eval/v1</code> <span style="color: #6b7280; font-size: 0.85em;">(reserved; declared at Phase 2 — never declared under labs.*)</span></dd>
                 <dt>upstream source</dt><dd><a href="https://github.com/jeremylongshore/j-rig-skill-binary-eval">jeremylongshore/j-rig-skill-binary-eval</a> — the harness that produced these runs</dd>
                 <dt>skills under test</dt><dd>from Intent Solutions' public skill packs (<a href="https://github.com/jeremylongshore/claude-code-plugins">claude-code-plugins</a>); each reasons over pasted evidence + fixtures — no CoreWeave or other third-party infrastructure credentials are used</dd>
-                <dt>attestation</dt><dd><strong>1 of 2 signed</strong> — node-forensics anchored at Rekor <a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=2085904207"><code>2085904207</code></a>; cost-leak-hunter held (see <a href="#held">below</a>)</dd>
+                <dt>attestation</dt><dd><strong>2 of 2 signed</strong> — node-forensics anchored at Rekor <a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=2085904207"><code>2085904207</code></a>; cost-leak-hunter anchored at Rekor <a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=2091983416"><code>2091983416</code></a> (promoted from held — see <a href="#held">how</a>)</dd>
             </dl>
         </div>
 
@@ -89,6 +92,14 @@
             one number is the failure mode this platform exists to refuse.
         </p>
 
+        <p style="font-size: 0.9em; color: #6b7280;">
+            Coverage, as recorded in each signed bundle's <code>coverage</code> field: these rows
+            were measured on the <strong>trigger, functional, and behavioral</strong> layers of
+            the 7-layer methodology; the <strong>regression and baseline</strong> layers were
+            skipped, and the signed evidence says so explicitly rather than implying full
+            coverage.
+        </p>
+
         <table>
             <thead>
                 <tr>
@@ -101,20 +112,22 @@
             <tbody>
                 <tr>
                     <td><strong><code>coreweave-gpu-node-forensics</code></strong></td>
-                    <td>j-rig 7-layer behavioral eval of a GPU-node triage skill — including a <strong>deterministic self-test</strong> (20/20) executed as a blocking criterion, plus judgment 17/17 on the functional layer</td>
-                    <td><strong>SHIP</strong> — reproduced identically across two runs</td>
+                    <td>j-rig behavioral eval of a GPU-node triage skill — including a <strong>deterministic self-test</strong> (20/20 per the run log; its signed bundle attests the 17/17 total, not per-criterion detail), plus judgment 17/17 across the evaluated layers</td>
+                    <td><strong>SHIP</strong> — reproduced across two runs (run log)</td>
                     <td><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=2085904207"><span class="badge badge--active">signed</span></a></td>
                 </tr>
                 <tr>
                     <td><strong><code>coreweave-gpu-cost-leak-hunter</code></strong></td>
-                    <td>j-rig 7-layer behavioral eval of a GPU cost-analysis skill, including whether its report is legible to a non-engineer reader without further engineering work</td>
-                    <td><span style="color:#6b7280;">measured — verdict not stable enough to sign</span></td>
-                    <td><span class="badge badge--no-data">held</span></td>
+                    <td>j-rig 7-layer behavioral eval of a GPU cost-analysis skill, including whether its report is legible to a non-engineer reader without further engineering work — judged by <strong>5-sample majority voting</strong> with the per-vote record in the signed evidence</td>
+                    <td><strong>BLOCK</strong> — identical across 7/7 re-runs; the blocker criterion fails unanimously [5/5 votes]</td>
+                    <td><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=2091983416"><span class="badge badge--active">signed</span></a></td>
                 </tr>
             </tbody>
         </table>
 
         <h2 id="provenance">Provenance — signed, and verifiable by you</h2>
+
+        <h3>The first row — node-forensics (SHIP)</h3>
 
         <p>
             The <code>coreweave-gpu-node-forensics</code> verdict is not a claim you have to trust.
@@ -128,7 +141,7 @@
 
         <div class="meta-block">
             <dl>
-                <dt>verdict</dt><dd><strong>SHIP</strong> — self-test 20/20 (deterministic blocker), judgment 17/17</dd>
+                <dt>verdict</dt><dd><strong>SHIP</strong> — judgment 17/17 (as attested in the bundle); self-test 20/20 per the run log. This bundle predates the vote-evidence standard the second row sets — its per-criterion detail lives in the run record, not the signed bytes.</dd>
                 <dt>Rekor log index</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=2085904207"><code>2085904207</code></a> (public production transparency log)</dd>
                 <dt>signer identity</dt><dd><code>github.com/jeremylongshore/intent-eval-lab/.github/workflows/sign-dogfood-bundle.yml</code> (keyless GitHub-OIDC, reviewer-gated)</dd>
                 <dt>signed bundle</dt><dd><a href="coreweave-gpu-node-forensics.bundle.sigstore.json"><code>coreweave-gpu-node-forensics.bundle.sigstore.json</code></a> (Fulcio cert + signature + inclusion proof)</dd>
@@ -148,6 +161,37 @@
   --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
   coreweave-gpu-node-forensics.bundle.json</code></pre>
 
+        <h3>The second row — a signed BLOCK, with the votes inside</h3>
+
+        <p>
+            The <code>coreweave-gpu-cost-leak-hunter</code> verdict is also signed — and it is a
+            <strong>BLOCK of our own skill</strong>. Its Evidence Bundle is the first on this
+            board to carry the <strong>fold inputs</strong>, not just the folded decision: for
+            every criterion, the number of judge samples, the agreement fraction, and the
+            individual per-sample votes, plus the aggregation rule in force (5-sample majority
+            voting, 0.8 blocker quorum). The signed claim is <em>"the majority of these N recorded
+            votes"</em> — never <em>"the judge said so"</em> — and a verifier can re-derive the
+            verdict from the signed bytes.
+        </p>
+
+        <div class="meta-block">
+            <dl>
+                <dt>verdict</dt><dd><strong>BLOCK</strong> — identical across 7/7 re-runs; blocker criterion <code>produces-cfo-grokkable-report</code> fails unanimously [5/5 votes, agreement 1.0] on two reporting test cases</dd>
+                <dt>Rekor log index</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=2091983416"><code>2091983416</code></a> (public production transparency log)</dd>
+                <dt>signer identity</dt><dd><code>github.com/jeremylongshore/intent-eval-lab/.github/workflows/sign-dogfood-bundle.yml</code> (keyless GitHub-OIDC, reviewer-gated; dispatched on the evidence branch <code>feat/sign-cost-leak-stable-block</code>)</dd>
+                <dt>signed bundle</dt><dd><a href="coreweave-gpu-cost-leak-hunter.bundle.sigstore.json"><code>coreweave-gpu-cost-leak-hunter.bundle.sigstore.json</code></a> (Fulcio cert + signature + inclusion proof)</dd>
+                <dt>evidence bundle</dt><dd><a href="coreweave-gpu-cost-leak-hunter.bundle.json"><code>coreweave-gpu-cost-leak-hunter.bundle.json</code></a> (the <code>gate-result/v1</code> statement that was signed — vote evidence in <code>predicate.metadata.criteria</code>)</dd>
+                <dt>replay fidelity</dt><dd><code>replay_fidelity_level: RF-1</code>, stated in the signed predicate — the fold is replayable from the recorded votes; the votes themselves are not reproducible from scratch (an un-seeded API judge). The claim is scoped to what the record supports.</dd>
+            </dl>
+        </div>
+
+        <pre><code>cosign verify-blob \
+  --new-bundle-format \
+  --bundle coreweave-gpu-cost-leak-hunter.bundle.sigstore.json \
+  --certificate-identity 'https://github.com/jeremylongshore/intent-eval-lab/.github/workflows/sign-dogfood-bundle.yml@refs/heads/feat/sign-cost-leak-stable-block' \
+  --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
+  coreweave-gpu-cost-leak-hunter.bundle.json</code></pre>
+
         <p>
             <strong>What the signature attests — and what it does not.</strong> It proves the
             Evidence Bundle (by digest) is authentic and unaltered, and that this workflow identity
@@ -158,24 +202,51 @@
             science. The science stands on the eval, not the signature.
         </p>
 
-        <h2 id="held">Why the second row is held, not signed</h2>
+        <h2 id="held">How a coin-flip became a signable verdict</h2>
 
         <p>
-            <code>coreweave-gpu-cost-leak-hunter</code> was measured, but it is <strong>not
-            signed</strong> — and that is the discipline working, not a gap. The same skill, same
+            This row spent its first days <strong>held, not signed</strong>: the same skill, same
             harness, same judge model returned <strong>SHIP</strong> on one run and
-            <strong>BLOCK</strong> on another: its verdict is not yet stable across runs. A Rekor
-            entry is permanent and public; signing a coin-flip would attest one noisy sample as if
-            it were ground truth. So it waits for a seeded or multi-run majority verdict before it
-            earns a signature. Rendering it now — either way — would be exactly the "trust our
-            word" move this board exists to refuse.
+            <strong>BLOCK</strong> on another. A Rekor entry is permanent and public; signing a
+            coin-flip would attest one noisy sample as if it were ground truth. Diagnosis found
+            <strong>two</strong> noise layers, neither of them the skill:
+        </p>
+
+        <ol>
+            <li><strong>Judge noise.</strong> The LLM judge was called once per criterion —
+                un-seeded, and nondeterministic even at temperature 0. With ~10 subjective
+                criteria at ~85% per-criterion reliability and a gate that blocks on any single
+                blocker "no", roughly <strong>80% of runs BLOCK from judge noise alone</strong>,
+                even for a good skill (0.85<sup>10</sup> ≈ 0.20).</li>
+            <li><strong>Execution sampling.</strong> The skill-under-test was executed at the
+                API's default temperature (~1.0), so the <em>output being judged</em> was a fresh
+                random draw every run.</li>
+        </ol>
+
+        <p>
+            Measured live under both noise layers together: <strong>6 BLOCK / 1 SHIP</strong>
+            across 7 identical re-runs.
+        </p>
+
+        <p>
+            The fix, now in the <a href="https://github.com/jeremylongshore/j-rig-skill-binary-eval">harness</a>:
+            each judge criterion is sampled <strong>N times and majority-voted</strong>, the
+            measured agreement fraction replaces the judge's self-reported confidence, a blocker
+            "no" below the agreement quorum can <em>warn</em> but never noise-BLOCK, and execution
+            is pinned to greedy decoding. Re-run under the full fix: <strong>7/7 identical
+            BLOCK</strong>, every criterion's votes recorded. The verdict is real, not noise —
+            under reproducible conditions the skill leads with credential requests instead of the
+            CFO-legible dollar headline its blocker criterion demands. Publishing a signed failing
+            grade of our own skill is the discipline this board exists for: the earlier favorable
+            run was the lucky draw, and the fix is now the skill's to make.
         </p>
 
         <h2 id="promotion">What promotes a row to signed</h2>
 
         <p>
             A held row becomes a signed row — with its verdict and a citable Rekor index — when
-            three things line up, as they did for node-forensics above:
+            three things line up, as they now have for both rows above (cost-leak-hunter is the
+            worked example: held first, promoted only after its verdict reproduced 7/7):
         </p>
 
         <ol>
