@@ -192,6 +192,13 @@
   --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
   coreweave-gpu-cost-leak-hunter.bundle.json</code></pre>
 
+        <p style="font-size: 0.9em; color: #6b7280;">
+            The identity string ends in the <em>evidence branch</em> ref that was checked out at
+            signing time — that ref is frozen into the Fulcio certificate itself, so this command
+            verifies permanently, whether or not the branch still exists in the repository. It is
+            a historical fact about the signing run, not a live pointer.
+        </p>
+
         <p>
             <strong>What the signature attests — and what it does not.</strong> It proves the
             Evidence Bundle (by digest) is authentic and unaltered, and that this workflow identity
