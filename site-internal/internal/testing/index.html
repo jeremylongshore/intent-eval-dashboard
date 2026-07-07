@@ -55,8 +55,8 @@
             </ul>
             <p>Every result here is signed, anchored in the public Rekor transparency log, and re-verified the moment this dashboard ingests it. If a result cannot be verified, it does not appear — it is not silently treated as a pass.</p>
         </section>
-        <div class="meta-block as-of as-of--none">
-            <p style="margin:0;"><strong>As of:</strong> no source has a verified snapshot yet. Every repo below is in a <code>no-data</code> state.</p>
+        <div class="meta-block as-of">
+            <p style="margin:0;"><strong>As of:</strong> <time datetime="2026-07-06T07:43:00.075Z">2026-07-06T07:43:00.075Z</time> — the oldest ingest across all sources in this view (<code>min(ingested_at)</code>).</p>
         </div>
         <h2>Per-repo testing results</h2>
         <table class="freshness-strip">
@@ -66,32 +66,32 @@
             <tbody>
                 <tr>
                     <td><a href="/internal/testing/iec/"><code>iec</code></a></td>
-                    <td><span class="badge badge--no-data">no-data</span></td>
-                    <td><code>—</code></td>
+                    <td><span class="badge badge--fresh">2 gate-result rows</span></td>
+                    <td><span class="verdict verdict--good"><span aria-hidden="true">✓</span> good</span></td>
                 </tr>
                 <tr>
                     <td><a href="/internal/testing/iel/"><code>iel</code></a></td>
-                    <td><span class="badge badge--no-data">no-data</span></td>
-                    <td><code>—</code></td>
+                    <td><span class="badge badge--fresh">1 gate-result row</span></td>
+                    <td><span class="verdict verdict--good"><span aria-hidden="true">✓</span> good</span></td>
                 </tr>
                 <tr>
                     <td><a href="/internal/testing/iah/"><code>iah</code></a></td>
-                    <td><span class="badge badge--no-data">no-data</span></td>
-                    <td><code>—</code></td>
+                    <td><span class="badge badge--fresh">1 gate-result row</span></td>
+                    <td><span class="verdict verdict--good"><span aria-hidden="true">✓</span> good</span></td>
                 </tr>
                 <tr>
                     <td><a href="/internal/testing/iaj/"><code>iaj</code></a></td>
-                    <td><span class="badge badge--no-data">no-data</span></td>
-                    <td><code>—</code></td>
+                    <td><span class="badge badge--fresh">1 gate-result row</span></td>
+                    <td><span class="verdict verdict--good"><span aria-hidden="true">✓</span> good</span></td>
                 </tr>
                 <tr>
                     <td><a href="/internal/testing/iar/"><code>iar</code></a></td>
-                    <td><span class="badge badge--no-data">no-data</span></td>
+                    <td><span class="badge badge--no-data">no-data</span> <span class="badge badge--stale">stale since 2026-07-06T07:43:01.477Z</span></td>
                     <td><code>—</code></td>
                 </tr>
                 <tr>
                     <td><a href="/internal/testing/ccp/"><code>ccp</code></a></td>
-                    <td><span class="badge badge--no-data">no-data</span></td>
+                    <td><span class="badge badge--no-data">no-data</span> <span class="badge badge--stale">stale since 2026-07-06T07:43:01.477Z</span></td>
                     <td><code>—</code></td>
                 </tr>
             </tbody>
