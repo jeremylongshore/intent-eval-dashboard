@@ -25,7 +25,7 @@
       "title": "Evidence Bench — j-rig-bench scorecard",
       "short_description": "Signed, reproducible AI eval results. Each row is built to ship as a sigstore-signed, Rekor-anchored Evidence Bundle — reproducibility via signature, not just transparency. First row: Skill Refiner Phase A.0 (PROCEED). Complements gbrain-evals on an orthogonal dimension; does not restate it.",
       "status": "draft",
-      "attestation_status": "pending",
+      "attestation_status": "1 of 1 signed",
       "predicate_uri": "evals.intentsolutions.io/skill-binary-eval/v1",
       "predicate_uri_reserved": true,
       "upstream": {

@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Intent Eval Platform — labs.intentsolutions.io</title>
-    <meta name="description" content="Public reports surface for the Intent Eval Platform. Methodology-first: eval-set browser shipping ahead of any results browser.">
+    <meta name="description" content="Public reports surface for the Intent Eval Platform. Eval-set specs, signed scorecards, a verified results browser, per-skill signals, and pipeline status — every number traces to a sigstore-signed Evidence Bundle.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://labs.intentsolutions.io/">
     <link rel="stylesheet" href="/style.css">
 
     <!-- Open Graph -->
     <meta property="og:title" content="Intent Eval Platform — labs.intentsolutions.io">
-    <meta property="og:description" content="Methodology-first public surface for the Intent Eval Platform. Eval-set browser shipping ahead of any results browser.">
+    <meta property="og:description" content="Methodology-first public surface for the Intent Eval Platform. Eval-set specs, signed scorecards, and a verified results browser — every number traces to a signed Evidence Bundle.">
     <meta property="og:url" content="https://labs.intentsolutions.io/">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="IEP Labs">
@@ -95,14 +95,23 @@
         </p>
 
         <div class="meta-block" style="border-left: 3px solid #2c5282;">
-            <p class="freshness-stub__title" style="margin-bottom: 0.5rem;">First signed result is live</p>
+            <p class="freshness-stub__title" style="margin-bottom: 0.5rem;">Three signed results are live — including a failing grade we gave ourselves</p>
             <p style="margin: 0;">
-                The <a href="/eval-sets/j-rig-bench/"><strong>Evidence Bench scorecard</strong></a> carries
-                its first signed row: the Skill Refiner Phase A.0 baseline (PROCEED), with its
-                Evidence Bundle signed keyless against the <strong>public production sigstore
-                transparency log</strong>. Verify it yourself —
-                <a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=1689291334">Rekor log index <code>1689291334</code></a>
-                — or run the <code>cosign verify-blob</code> command published on the scorecard.
+                The <a href="/eval-sets/iep-self-eval-dogfood/"><strong>dogfood scorecard</strong></a> runs
+                our own 7-layer methodology against our own published CoreWeave skills. It produced one
+                <strong>SHIP</strong> — <code>coreweave-gpu-node-forensics</code>
+                (<a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=2085904207">Rekor log index <code>2085904207</code></a>)
+                — and one <strong>BLOCK</strong> — <code>coreweave-gpu-cost-leak-hunter</code>
+                (<a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=2091983416">Rekor log index <code>2091983416</code></a>),
+                an honest failing grade of our own skill, published only after noise-robust majority
+                judging made the verdict reproduce 7 out of 7 runs, with the per-vote record inside the
+                signed evidence. The <a href="/eval-sets/j-rig-bench/"><strong>Evidence Bench
+                scorecard</strong></a> carries the first signed row of all: the Skill Refiner Phase A.0
+                baseline (PROCEED),
+                <a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=1689291334">Rekor log index <code>1689291334</code></a>.
+                All three Evidence Bundles are signed keyless against the <strong>public production
+                sigstore transparency log</strong> — verify any of them with the
+                <code>cosign verify-blob</code> command published on its scorecard.
                 This is reproducibility via <em>signature</em>, not just transparency: the layer
                 a memory-eval leaderboard like
                 <a href="https://github.com/garrytan/gbrain-evals">gbrain-evals</a> does not have.
@@ -113,7 +122,11 @@
 
         <ul>
             <li><a href="/eval-sets/">Eval-set browser</a> — versioned, lineage-tracked specifications of what we measure. The brand asset of this site.</li>
-            <li><a href="/eval-sets/j-rig-bench/">Evidence Bench scorecard</a> — the first signed result row (Phase A.0), anchored in the public Rekor log. A scorecard is a <em>result</em>; an eval-set is the <em>spec</em>.</li>
+            <li><a href="/eval-sets/j-rig-bench/">Evidence Bench scorecard</a> — the first signed result row (Phase A.0 PROCEED), anchored in the public Rekor log. A scorecard is a <em>result</em>; an eval-set is the <em>spec</em>.</li>
+            <li><a href="/eval-sets/iep-self-eval-dogfood/">Dogfood scorecard</a> — the platform's own methodology run against our own shipped skills: one SHIP, one BLOCK, both keyless-signed and Rekor-anchored.</li>
+            <li><a href="/results/">Results browser</a> — verified gate-result rows per source repo, re-verified at ingest (pinned OIDC subject + DSSE signature + Rekor inclusion proof, row by row).</li>
+            <li><a href="/skills/">Skill signals</a> — adoption, human-trust, and authoring-quality signals per skill, rendered per dimension, never rolled into a single score.</li>
+            <li><a href="/status/">Status</a> — USE-method view of the ingest pipeline itself; an hour of silence renders as loudly as a failure.</li>
             <li><a href="/methodology/">Methodology</a> — how the Evidence Bundle predicate spec works, where the schema authority lives, and why we sequence the eval-set ahead of the results.</li>
         </ul>
 
