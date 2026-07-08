@@ -17,7 +17,7 @@
     <meta name="iep-source-repo" content="github.com/jeremylongshore/intent-eval-dashboard">
     <meta name="iep-dashboard-version" content="0.1.0">
     <meta name="iep-eval-set-id" content="j-rig-binary-eval-7-layer">
-    <meta name="iep-eval-set-version" content="1.0.0">
+    <meta name="iep-eval-set-version" content="2.1.0">
     <meta name="iep-eval-set-status" content="active">
     <meta name="iep-eval-set-upstream-source" content="github.com/jeremylongshore/j-rig-skill-binary-eval">
 </head>
@@ -27,6 +27,9 @@
             <a href="/" class="site-header__wordmark">IEP&nbsp;Labs</a>
             <nav class="site-nav" aria-label="Primary">
                 <a href="/eval-sets/">Eval Sets</a>
+                <a href="/results/">Results</a>
+                <a href="/skills/">Skills</a>
+                <a href="/status/">Status</a>
                 <a href="/methodology/">Methodology</a>
                 <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
             </nav>
@@ -128,8 +131,23 @@
             </thead>
             <tbody>
                 <tr>
+                    <td><code>2.1.0</code></td>
+                    <td>2026-06-15</td>
+                    <td>Skill-frontmatter validation cut over to the kernel <code>@intentsolutions/core</code> <code>authoring/v1</code> single source of truth; rollout decision logic extracted into the published <code>@intentsolutions/rollout-gate</code> package; provider measurement adapters added.</td>
+                </tr>
+                <tr>
+                    <td><code>2.0.0</code></td>
+                    <td>2026-06-12</td>
+                    <td>Breaking: full predicate-body migration from the <code>v0.1.0-draft</code> shape to the kernel <code>gate-result/v1</code> normative shape (DR-018 Option α). See upstream <code>MIGRATION.md</code>.</td>
+                </tr>
+                <tr>
+                    <td><code>1.1.0</code> / <code>1.2.0</code></td>
+                    <td>2026-05-26 / 2026-06-08</td>
+                    <td>Stub-provider explicit opt-in; emit-evidence produces signed <code>gate-result/v1</code> rows consumed by this site's results browser.</td>
+                </tr>
+                <tr>
                     <td><code>1.0.0</code></td>
-                    <td>2026-05-21</td>
+                    <td>2026-05-19</td>
                     <td>Initial release. Seven layers locked. License relicensed Apache 2.0 from MIT (see <a href="https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/73">PR #73</a>).</td>
                 </tr>
                 <tr>
