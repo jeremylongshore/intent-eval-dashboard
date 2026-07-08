@@ -197,5 +197,5 @@ export const REPO_GITHUB: Readonly<Record<string, string>> = {
   iah: 'jeremylongshore/intent-audit-harness',
   iaj: 'jeremylongshore/j-rig-skill-binary-eval',
   iar: 'jeremylongshore/intent-rollout-gate',
-  ccp: 'jeremylongshore/claude-code-plugins',
+  ccp: 'jeremylongshore/claude-code-plugins-plus-skills',
 };

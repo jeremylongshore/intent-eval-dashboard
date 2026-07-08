@@ -392,6 +392,31 @@ describe('parsePinnedSubjects', () => {
     });
     expect(doc.repos['iec']?.operatorConfirmed).toBe(false);
   });
+  it('carries an optional manifestTag through, and omits it when absent', () => {
+    const doc = parsePinnedSubjects({
+      issuer: 'https://i',
+      repos: {
+        ccp: {
+          githubRepo: 'o/ccp',
+          subjects: ['s'],
+          workflowRefs: ['w'],
+          manifestTag: 'evidence-latest',
+        },
+        iec: { githubRepo: 'o/iec', subjects: ['s'], workflowRefs: ['w'] },
+      },
+    });
+    expect(doc.repos['ccp']?.manifestTag).toBe('evidence-latest');
+    expect(doc.repos['iec']?.manifestTag).toBeUndefined();
+    expect(Object.keys(doc.repos['iec'] ?? {})).not.toContain('manifestTag');
+  });
+  it('rejects a non-string manifestTag', () => {
+    expect(() =>
+      parsePinnedSubjects({
+        issuer: 'i',
+        repos: { x: { githubRepo: 'g', subjects: [], workflowRefs: [], manifestTag: 7 } },
+      }),
+    ).toThrow(/manifestTag/);
+  });
   it('rejects malformed documents', () => {
     expect(() => parsePinnedSubjects(null)).toThrow();
     expect(() => parsePinnedSubjects({})).toThrow(/issuer/);

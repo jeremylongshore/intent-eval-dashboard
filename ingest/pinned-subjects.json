@@ -13,6 +13,22 @@
     "workflowRefs — allowed reusable-workflow refs. GitHub sets the",
     "               `job_workflow_ref` / `workflow_ref` claim to",
     "               `OWNER/REPO/.github/workflows/FILE@REF`.",
+    "manifestTag — OPTIONAL per-repo override for manifest resolution. When set,",
+    "              the ingest resolver fetches `report-manifest.json` from the",
+    "              fixed Release tag `releases/download/<manifestTag>/` instead of",
+    "              `releases/latest/download/`. Needed where `releases/latest` is",
+    "              polluted by unrelated releases: on ccp",
+    "              (claude-code-plugins-plus-skills), per-package npm releases",
+    "              dominate — 100 of the 100 most recent releases are package",
+    "              releases — so the evidence manifest lives on the rolling",
+    "              `evidence-latest` tag instead.",
+    "",
+    "ccp rationale: the repo was renamed to",
+    "`jeremylongshore/claude-code-plugins-plus-skills` (OIDC sub claims carry the",
+    "new name). Its evidence emit lands as a NEW push-main workflow named",
+    "`emit-evidence.yml` (sibling PR builds it); `release.yml` there is",
+    "dispatch-only + GITHUB_TOKEN-suppressed, so tag-based claims",
+    "(`refs/tags/*`) are unsatisfiable — the pin is `refs/heads/main`.",
     "",
     "OPERATOR-CONFIRMABLE: where the exact release-workflow filename or ref could",
     "not be derived from the repo at authoring time, the canonical",
@@ -63,11 +79,12 @@
       "operatorConfirmed": true
     },
     "ccp": {
-      "githubRepo": "jeremylongshore/claude-code-plugins",
-      "subjects": ["repo:jeremylongshore/claude-code-plugins:ref:refs/tags/*"],
+      "githubRepo": "jeremylongshore/claude-code-plugins-plus-skills",
+      "subjects": ["repo:jeremylongshore/claude-code-plugins-plus-skills:ref:refs/heads/main"],
       "workflowRefs": [
-        "jeremylongshore/claude-code-plugins/.github/workflows/release.yml@refs/heads/main"
+        "jeremylongshore/claude-code-plugins-plus-skills/.github/workflows/emit-evidence.yml@refs/heads/main"
       ],
+      "manifestTag": "evidence-latest",
       "operatorConfirmed": false
     }
   }

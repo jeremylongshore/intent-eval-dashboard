@@ -46,11 +46,16 @@ export function parsePinnedSubjects(value: unknown): PinnedSubjects {
     if (!isStringArray(e['workflowRefs'])) {
       throw new Error(`pinned-subjects: repo "${repo}" "workflowRefs" must be string[]`);
     }
+    const manifestTag = e['manifestTag'];
+    if (manifestTag !== undefined && typeof manifestTag !== 'string') {
+      throw new Error(`pinned-subjects: repo "${repo}" "manifestTag" must be a string`);
+    }
     repos[repo] = {
       githubRepo: e['githubRepo'],
       subjects: e['subjects'],
       workflowRefs: e['workflowRefs'],
       operatorConfirmed: e['operatorConfirmed'] === true,
+      ...(manifestTag !== undefined ? { manifestTag } : {}),
     };
   }
   return { issuer: v['issuer'], repos };

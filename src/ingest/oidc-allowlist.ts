@@ -26,6 +26,13 @@ export interface PinnedRepoEntry {
   readonly subjects: readonly string[];
   readonly workflowRefs: readonly string[];
   readonly operatorConfirmed: boolean;
+  /**
+   * Optional fixed Release tag for manifest resolution. When set, the manifest
+   * URL resolver fetches from `releases/download/<manifestTag>/` instead of
+   * `releases/latest/download/` — needed where `releases/latest` is polluted
+   * by unrelated releases (e.g. ccp's per-package npm releases).
+   */
+  readonly manifestTag?: string;
 }
 
 /** The whole pinned allowlist document. */
