@@ -2,7 +2,8 @@
  * Manifest-URL resolver tests.
  *
  * Proves the resolver derives URLs from the pinned allowlist (single source of
- * truth), points iec at intent-eval-core's latest Release asset, and fails
+ * truth), points iec at intent-eval-core's latest Release asset, honors a
+ * pinned `manifestTag` override (ccp's fixed `evidence-latest` tag), and fails
  * closed on an unpinned repo.
  */
 
@@ -12,6 +13,7 @@ import {
   REPORT_MANIFEST_ASSET,
   makeManifestUrlResolver,
   manifestUrlForGithubRepo,
+  manifestUrlForGithubRepoTag,
 } from './manifest-urls.js';
 
 const PINNED: PinnedSubjects = {
@@ -31,6 +33,15 @@ const PINNED: PinnedSubjects = {
       ],
       operatorConfirmed: false,
     },
+    ccp: {
+      githubRepo: 'jeremylongshore/claude-code-plugins-plus-skills',
+      subjects: ['repo:jeremylongshore/claude-code-plugins-plus-skills:ref:refs/heads/main'],
+      workflowRefs: [
+        'jeremylongshore/claude-code-plugins-plus-skills/.github/workflows/emit-evidence.yml@refs/heads/main',
+      ],
+      manifestTag: 'evidence-latest',
+      operatorConfirmed: false,
+    },
   },
 };
 
@@ -39,6 +50,29 @@ describe('manifestUrlForGithubRepo', () => {
     expect(manifestUrlForGithubRepo('jeremylongshore/intent-eval-core')).toBe(
       `https://github.com/jeremylongshore/intent-eval-core/releases/latest/download/${REPORT_MANIFEST_ASSET}`,
     );
+  });
+});
+
+describe('manifestUrlForGithubRepoTag', () => {
+  it('builds the fixed-tag asset URL', () => {
+    expect(
+      manifestUrlForGithubRepoTag(
+        'jeremylongshore/claude-code-plugins-plus-skills',
+        'evidence-latest',
+      ),
+    ).toBe(
+      `https://github.com/jeremylongshore/claude-code-plugins-plus-skills/releases/download/evidence-latest/${REPORT_MANIFEST_ASSET}`,
+    );
+  });
+
+  it('refuses an empty or whitespace tag', () => {
+    expect(() => manifestUrlForGithubRepoTag('owner/repo', '')).toThrow(/empty parts/);
+    expect(() => manifestUrlForGithubRepoTag('owner/repo', '   ')).toThrow(/empty parts/);
+  });
+
+  it('refuses an empty or whitespace githubRepo', () => {
+    expect(() => manifestUrlForGithubRepoTag('', 'evidence-latest')).toThrow(/empty parts/);
+    expect(() => manifestUrlForGithubRepoTag('  ', 'evidence-latest')).toThrow(/empty parts/);
   });
 });
 
@@ -54,6 +88,13 @@ describe('makeManifestUrlResolver', () => {
     const resolve = makeManifestUrlResolver(PINNED);
     expect(resolve('iel')).toBe(
       'https://github.com/jeremylongshore/intent-eval-lab/releases/latest/download/report-manifest.json',
+    );
+  });
+
+  it('resolves a manifestTag-pinned repo to the fixed-tag URL, not releases/latest', () => {
+    const resolve = makeManifestUrlResolver(PINNED);
+    expect(resolve('ccp')).toBe(
+      'https://github.com/jeremylongshore/claude-code-plugins-plus-skills/releases/download/evidence-latest/report-manifest.json',
     );
   });
 

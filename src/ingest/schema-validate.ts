@@ -2,7 +2,7 @@
  * Step 5 — schema validation against the canonical kernel.
  *
  * REAL import + parse: this uses `@intentsolutions/core`'s Zod
- * `EvidenceBundleSchema` (v1 validators, kernel-pinned to ^0.2.0). No local
+ * `EvidenceBundleSchema` (v1 validators, kernel-pinned to ^0.9.0). No local
  * re-implementation of the schema — the kernel is the single source of truth
  * (anti-corruption-layer principle, per repo CLAUDE.md). A bundle that fails
  * the kernel's `.parse()` crashes the worker.

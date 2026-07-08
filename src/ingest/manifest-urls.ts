@@ -13,6 +13,12 @@
  * its `release.yml` emit-evidence job (bead nr75.4) — currently the v0.3.0
  * release asset.
  *
+ * Per-repo override: an entry with a pinned `manifestTag` resolves to the fixed
+ * `releases/download/<manifestTag>/<asset>` URL instead of `releases/latest` —
+ * needed where `releases/latest` is polluted by unrelated releases (ccp's
+ * per-package npm releases), so its evidence manifest lives on a rolling
+ * dedicated tag (`evidence-latest`).
+ *
  * This is the resolver passed to {@link HttpManifestFetcher} when the production
  * ingest pass runs (the run itself is the human-gated / cron VPS step — this
  * module only wires WHERE to fetch, not WHEN).
@@ -29,11 +35,23 @@ export function manifestUrlForGithubRepo(githubRepo: string): string {
   return `https://github.com/${githubRepo}/releases/latest/download/${REPORT_MANIFEST_ASSET}`;
 }
 
+/** Build the fixed-tag manifest URL for a `owner/repo` GitHub slug + Release tag. */
+export function manifestUrlForGithubRepoTag(githubRepo: string, tag: string): string {
+  if (githubRepo.trim() === '' || tag.trim() === '') {
+    throw new Error(
+      `manifest URL: refusing to build a tag URL from empty parts (githubRepo="${githubRepo}", tag="${tag}")`,
+    );
+  }
+  return `https://github.com/${githubRepo}/releases/download/${tag}/${REPORT_MANIFEST_ASSET}`;
+}
+
 /**
  * Build the production {@link ManifestUrlResolver} from the pinned allowlist.
  *
  * Fail-closed: a repo that is not in the pinned-subjects allowlist throws rather
  * than resolving to a guessed URL — the resolver only serves verified sources.
+ * An entry pinning a `manifestTag` resolves to that fixed tag's asset URL;
+ * everything else resolves to `releases/latest`.
  */
 export function makeManifestUrlResolver(pinned: PinnedSubjects): ManifestUrlResolver {
   return (repo: string): string => {
@@ -42,6 +60,9 @@ export function makeManifestUrlResolver(pinned: PinnedSubjects): ManifestUrlReso
       throw new Error(
         `manifest URL: repo "${repo}" is not in the pinned-subjects allowlist — refusing to resolve`,
       );
+    }
+    if (entry.manifestTag !== undefined) {
+      return manifestUrlForGithubRepoTag(entry.githubRepo, entry.manifestTag);
     }
     return manifestUrlForGithubRepo(entry.githubRepo);
   };

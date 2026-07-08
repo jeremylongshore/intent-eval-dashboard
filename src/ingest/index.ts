@@ -85,6 +85,7 @@ export { HttpManifestFetcher, type ManifestUrlResolver } from './fetcher-http.js
 export {
   makeManifestUrlResolver,
   manifestUrlForGithubRepo,
+  manifestUrlForGithubRepoTag,
   REPORT_MANIFEST_ASSET,
 } from './manifest-urls.js';
 
