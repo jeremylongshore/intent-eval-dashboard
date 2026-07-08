@@ -85,7 +85,7 @@
         "jeremylongshore/claude-code-plugins-plus-skills/.github/workflows/emit-evidence.yml@refs/heads/main"
       ],
       "manifestTag": "evidence-latest",
-      "operatorConfirmed": false
+      "operatorConfirmed": true
     }
   }
 }
