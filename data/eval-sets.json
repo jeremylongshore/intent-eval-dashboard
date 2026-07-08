@@ -55,7 +55,7 @@
     {
       "id": "audit-harness-deterministic-gate-set",
       "title": "audit-harness deterministic gate-set",
-      "short_description": "escape-scan, CRAP score, architecture rules, bias count, Gherkin lint. The infrastructure layer underneath every IEP repo.",
+      "short_description": "escape-scan, CRAP score, architecture rules, bias count, Gherkin lint. The infrastructure layer underneath every IEP repo. The gates themselves are shipped and already emit signed gate-result rows (rendered in this site's results browser); what is queued here is the versioned eval-set specification of that gate-set.",
       "upstream": {
         "owner": "jeremylongshore",
         "repo": "intent-audit-harness",
@@ -65,7 +65,7 @@
     {
       "id": "skill-refiner-phase-a0-baseline",
       "title": "Skill Refiner Phase A.0 baseline eval-set",
-      "short_description": "The null-hypothesis spec that gates Skill Refiner Phase A. Pre-registered ahead of the run per DR-028.",
+      "short_description": "The null-hypothesis spec that gated Skill Refiner Phase A, pre-registered ahead of the run per DR-028. The run has since completed — its signed result (Phase A.0 PROCEED, Rekor log index 1689291334) is the first row on the Evidence Bench scorecard; what is queued here is the eval-set spec page itself, pending its documented adversarial audit.",
       "upstream": {
         "owner": "jeremylongshore",
         "repo": "intent-eval-lab",
