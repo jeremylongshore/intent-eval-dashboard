@@ -85,7 +85,8 @@
             column is the load-bearing one: <code>signed</code> means an Evidence Bundle exists,
             is sigstore-signed, and is anchored in the Rekor transparency log at a citable index;
             <code>pending</code> means the measurement exists but the signing pipeline has not yet
-            run against it; <code>measuring</code> means the run itself is in progress. There is
+            run against it; <code>measuring</code> means the run itself is in progress;
+            <code>queued</code> means the measurement is planned but no run is in progress. There is
             deliberately <strong>no composite score column</strong> — composing incommensurable
             findings into one number is the failure mode this platform exists to refuse.
         </p>
