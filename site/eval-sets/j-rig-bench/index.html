@@ -26,6 +26,9 @@
             <a href="/" class="site-header__wordmark">IEP&nbsp;Labs</a>
             <nav class="site-nav" aria-label="Primary">
                 <a href="/eval-sets/">Eval Sets</a>
+                <a href="/results/">Results</a>
+                <a href="/skills/">Skills</a>
+                <a href="/status/">Status</a>
                 <a href="/methodology/">Methodology</a>
                 <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
             </nav>
@@ -106,40 +109,41 @@
                 <tr>
                     <td>gbrain-stack</td>
                     <td>j-rig 7-layer behavioral eval run against the gbrain memory stack on a shared fixture corpus</td>
-                    <td><span style="color:#6b7280;">measuring now</span></td>
-                    <td><span class="badge badge--no-data">measuring</span></td>
+                    <td><span style="color:#6b7280;">queued — run not yet started</span></td>
+                    <td><span class="badge badge--no-data">queued</span></td>
                 </tr>
                 <tr>
                     <td>MemPalace</td>
                     <td>Same j-rig 7-layer run, same corpus — cross-system comparison row</td>
-                    <td><span style="color:#6b7280;">measuring now</span></td>
-                    <td><span class="badge badge--no-data">measuring</span></td>
+                    <td><span style="color:#6b7280;">queued — run not yet started</span></td>
+                    <td><span class="badge badge--no-data">queued</span></td>
                 </tr>
                 <tr>
                     <td>Supermemory</td>
                     <td>Same j-rig 7-layer run, same corpus — cross-system comparison row</td>
-                    <td><span style="color:#6b7280;">measuring now</span></td>
-                    <td><span class="badge badge--no-data">measuring</span></td>
+                    <td><span style="color:#6b7280;">queued — run not yet started</span></td>
+                    <td><span class="badge badge--no-data">queued</span></td>
                 </tr>
                 <tr>
                     <td>ICOS — intentional cognition OS</td>
                     <td>Functional eval surface emitting a signed Evidence Bundle on each eval run</td>
-                    <td><span style="color:#6b7280;">measuring now</span></td>
-                    <td><span class="badge badge--no-data">measuring</span></td>
+                    <td><span style="color:#6b7280;">queued — run not yet started</span></td>
+                    <td><span class="badge badge--no-data">queued</span></td>
                 </tr>
                 <tr>
                     <td>QMD — governed team memory</td>
                     <td>Memory-utility, dedup-catch-rate, and provenance-integrity evaluators emitting signed bundles on each curation cycle</td>
-                    <td><span style="color:#6b7280;">measuring now</span></td>
-                    <td><span class="badge badge--no-data">measuring</span></td>
+                    <td><span style="color:#6b7280;">queued — run not yet started</span></td>
+                    <td><span class="badge badge--no-data">queued</span></td>
                 </tr>
             </tbody>
         </table>
 
         <p style="font-size: 0.85rem; color: #6b7280;">
             Cross-system rows (gbrain-stack, MemPalace, Supermemory) are listed as comparison
-            targets. They are measured by the same harness on the same corpus, published win or
-            lose, and we link to each system's own published numbers rather than restating them.
+            targets. When their runs start, they will be measured by the same harness on the same
+            corpus, published win or lose, and we link to each system's own published numbers
+            rather than restating them.
         </p>
 
         <h2 id="phase-a0">Phase A.0 baseline — both arms, side by side</h2>
@@ -257,8 +261,10 @@
             that this workflow identity signed them at the logged time. It does
             <em>not</em> declare a predicate URI — <code>predicate_uri_set</code> is empty by
             design. The <code>skill-binary-eval/v1</code> predicate stays <strong>reserved</strong>:
-            production-Rekor <em>predicate declaration</em> is gated on a normative SPEC.md plus
-            DNSSEC and CAA clearing for <code>evals.intentsolutions.io</code>, none of which have.
+            production-Rekor <em>predicate declaration</em> was gated on three things — DNSSEC,
+            CAA pinning, and a normative SPEC.md. Two of the three have cleared: DNSSEC validates
+            end-to-end for <code>evals.intentsolutions.io</code> (DS record at the registry) and
+            CAA is pinned. The one gate remaining is the normative SPEC.md.
             And it does <em>not</em> claim the statistics are "correct" — a signature attests
             authenticity, not the truth of the science. The science stands on the pre-registered
             analysis, not on the signature.

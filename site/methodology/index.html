@@ -23,6 +23,9 @@
             <a href="/" class="site-header__wordmark">IEP&nbsp;Labs</a>
             <nav class="site-nav" aria-label="Primary">
                 <a href="/eval-sets/">Eval Sets</a>
+                <a href="/results/">Results</a>
+                <a href="/skills/">Skills</a>
+                <a href="/status/">Status</a>
                 <a href="/methodology/" aria-current="page">Methodology</a>
                 <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
             </nav>
@@ -33,7 +36,7 @@
         <h1>Methodology</h1>
 
         <p class="lead">
-            How the Intent Eval Platform works, what an Evidence Bundle is, why the eval-set browser ships ahead of the results browser, and what this dashboard refuses to do.
+            How the Intent Eval Platform works, what an Evidence Bundle is, why the eval-set browser shipped ahead of the results browser, and what this dashboard refuses to do.
         </p>
 
         <h2>The unification thesis</h2>
@@ -94,14 +97,14 @@
             <code>labs.intentsolutions.io</code> renders <em>about</em> predicate URIs but never declares one. A predicate-URI-typo in any content rendered here is not a new URI claim — it's a documentation bug.
         </p>
 
-        <h2>Why the eval-set ships before the results</h2>
+        <h2>Why the eval-set shipped before the results</h2>
 
         <p>
             The eval-set is the spec. If a public eval dashboard renders results rows ahead of publishing the spec those rows attest against, the dashboard is publishing attestations of conformance to a spec that doesn't exist. The first page a hostile reader clicks should be the spec — the eval-set definition, its version history, its lineage, its adversarial audit pointer — not a number.
         </p>
 
         <p>
-            This sequencing is a Karpathy canonical position adopted into the platform's plan. It changes the engineering order of operations: the <a href="/eval-sets/">eval-set browser</a> ships first; the results browser, the per-repo freshness strip, and the ingest supervision tree are Phase 2 work.
+            This sequencing is a Karpathy canonical position adopted into the platform's plan. It set the engineering order of operations: the <a href="/eval-sets/">eval-set browser</a> shipped first. The surfaces that were sequenced behind it — the <a href="/results/">results browser</a>, the per-repo freshness strip on the <a href="/">landing page</a>, and the ingest supervision tree behind <a href="/status/">/status/</a> — have since shipped and are live. The argument stands; the queue it described has largely drained.
         </p>
 
         <h2>What this dashboard refuses to do</h2>
@@ -119,22 +122,26 @@
             <li><strong>No asymmetric rendering of null-hypothesis results</strong>. Both arms of a comparison render with identical layout, font weight, and chart axes. A null result is rendered identically to a positive result. Information design refuses to bury inconvenient outcomes.</li>
         </ul>
 
-        <h2>What sequences in Phase 2</h2>
+        <h2>Phase 2 — what shipped, what is still queued</h2>
 
         <p>
-            The roadmap, in dependency order:
+            An earlier version of this page listed the Phase 2 roadmap as queued. Most of it has since landed. The original items, in their original dependency order, with honest current state:
         </p>
 
         <ol>
-            <li><strong>Schema evolution</strong> in <code>intent-eval-core</code> to v0.2.0 — adds <code>pre_registration_hash</code>, the <code>retraction/v1</code> predicate type, and the <code>dashboard-render/v1</code> predicate type. The latter is sequenced behind the arrival of a second independent verifier.</li>
-            <li><strong>Ingest supervision tree</strong> — six per-repo workers, each verifying signature, Rekor inclusion, and schema before content-addressing the bundle into local storage.</li>
-            <li><strong>Results browser</strong> — renders <code>gate-result/v1</code> rows with the per-row visibility-tier gating and the four-timestamp staleness surface.</li>
-            <li><strong>Freshness strip + landing-page mandatory chart</strong> — the per-repo decision-mix strip at the top of the landing page.</li>
-            <li><strong>Operator-internal view</strong> — separate tailnet-only hostname, Tailscale identity, all reports regardless of public visibility tags.</li>
-            <li><strong>Retraction protocol</strong> — content-addressed denylist, Caddy-level kill-switch, signed <code>retraction/v1</code> attestations, 4-hour SLO.</li>
-            <li><strong>Ops-lite alerting</strong> — push notifications, public status route, 7-day-silence pager threshold.</li>
-            <li><strong>Phase A.0 pre-registration rendering</strong> — symmetric arms, HTML structural diff CI test, blog-only fallback if symmetry cannot be guaranteed on the timeline.</li>
+            <li><strong>Schema evolution</strong> in <code>intent-eval-core</code> — <em>shipped, and overtaken</em>. The kernel is published at <code>0.9.0</code> (well past the v0.2.0 target this page originally named) and carries <code>pre_registration_hash</code> plus the <code>retraction/v1</code> and <code>dashboard-render/v1</code> schema types.</li>
+            <li><strong>Ingest supervision tree</strong> — <em>shipped</em>. Per-repo workers verify signature, Rekor inclusion, and schema before content-addressing each bundle; its USE-method view is public at <a href="/status/">/status/</a>.</li>
+            <li><strong>Results browser</strong> — <em>shipped</em>. <a href="/results/">/results/</a> renders verified <code>gate-result/v1</code> rows per source repo.</li>
+            <li><strong>Freshness strip + landing-page mandatory chart</strong> — <em>shipped</em>. The per-repo decision-mix strip is live at the top of the <a href="/">landing page</a>; an hour of silence renders as loudly as a failure.</li>
+            <li><strong>Operator-internal view</strong> — <em>shipped</em>. It lives on a tailnet-only hostname, which is why there is nothing to link here.</li>
+            <li><strong>Retraction machinery</strong> — <em>shipped in this repo</em>: content-addressed denylist and tombstone rendering, with the <code>retraction/v1</code> schema type in the kernel.</li>
+            <li><strong>Ops-lite alerting</strong> — <em>shipped</em>. Public status route at <a href="/status/">/status/</a> plus silence-threshold liveness alerting.</li>
+            <li><strong>Phase A.0 pre-registration rendering</strong> — <em>shipped</em>. Both arms render symmetrically on the <a href="/eval-sets/j-rig-bench/">Evidence Bench scorecard</a>, enforced by an arm-symmetry CI lint.</li>
         </ol>
+
+        <p>
+            <strong>Still queued: the signed <code>dashboard-render/v1</code> attestation</strong> — the site signing its own render. The schema type exists in the kernel; the attestation itself remains sequenced behind the arrival of a second independent verifier. Until that lands, this page says so rather than implying it.
+        </p>
 
         <h2>Reading further</h2>
 
