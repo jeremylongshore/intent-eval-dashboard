@@ -37,6 +37,11 @@ export function manifestUrlForGithubRepo(githubRepo: string): string {
 
 /** Build the fixed-tag manifest URL for a `owner/repo` GitHub slug + Release tag. */
 export function manifestUrlForGithubRepoTag(githubRepo: string, tag: string): string {
+  if (githubRepo.trim() === '' || tag.trim() === '') {
+    throw new Error(
+      `manifest URL: refusing to build a tag URL from empty parts (githubRepo="${githubRepo}", tag="${tag}")`,
+    );
+  }
   return `https://github.com/${githubRepo}/releases/download/${tag}/${REPORT_MANIFEST_ASSET}`;
 }
 

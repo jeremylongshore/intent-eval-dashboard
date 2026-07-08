@@ -417,6 +417,16 @@ describe('parsePinnedSubjects', () => {
       }),
     ).toThrow(/manifestTag/);
   });
+  it('rejects an empty or whitespace-only manifestTag', () => {
+    for (const bad of ['', '   ']) {
+      expect(() =>
+        parsePinnedSubjects({
+          issuer: 'i',
+          repos: { x: { githubRepo: 'g', subjects: [], workflowRefs: [], manifestTag: bad } },
+        }),
+      ).toThrow(/non-empty/);
+    }
+  });
   it('rejects malformed documents', () => {
     expect(() => parsePinnedSubjects(null)).toThrow();
     expect(() => parsePinnedSubjects({})).toThrow(/issuer/);

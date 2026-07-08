@@ -64,6 +64,16 @@ describe('manifestUrlForGithubRepoTag', () => {
       `https://github.com/jeremylongshore/claude-code-plugins-plus-skills/releases/download/evidence-latest/${REPORT_MANIFEST_ASSET}`,
     );
   });
+
+  it('refuses an empty or whitespace tag', () => {
+    expect(() => manifestUrlForGithubRepoTag('owner/repo', '')).toThrow(/empty parts/);
+    expect(() => manifestUrlForGithubRepoTag('owner/repo', '   ')).toThrow(/empty parts/);
+  });
+
+  it('refuses an empty or whitespace githubRepo', () => {
+    expect(() => manifestUrlForGithubRepoTag('', 'evidence-latest')).toThrow(/empty parts/);
+    expect(() => manifestUrlForGithubRepoTag('  ', 'evidence-latest')).toThrow(/empty parts/);
+  });
 });
 
 describe('makeManifestUrlResolver', () => {
