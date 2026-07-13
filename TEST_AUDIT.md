@@ -83,7 +83,7 @@ render/verify logic is in-tree.
 - L6 Gherkin acceptance pending (attack-scenario E2E already online).
 - CRAP gate degraded: add `complexity-report` as a devDep so the CRAP scorer runs
   instead of silently reporting `pass:true`.
-- `bias` gate is mis-targeted at the near-empty `tests/` dir; the real tests are
+- `bias` gate is aimed at the near-empty `tests/` dir; the real tests are
   colocated `*.test.ts` under `src/` — point the bias/arch config at `src/` or accept
   it as n/a for the colocated layout.
 - Stale review-bot references in CI comments (`codeql.yml` cites `.coderabbit.yaml`;
