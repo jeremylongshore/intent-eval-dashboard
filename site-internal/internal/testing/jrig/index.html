@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Testing: jrig — Intent Eval Platform (internal)</title>
+    <meta name="description" content="Internal testing dashboard for jrig — coverage, mutation, CRAP, architecture, escape-scan, taught.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="/style.css">
+
+    <meta name="iep-view" content="internal-testing">
+    <meta name="iep-surface" content="basicauth-gated">
+    <meta name="iep-source-repo" content="github.com/jeremylongshore/intent-eval-dashboard">
+    <meta name="iep-dashboard-version" content="0.1.0">
+</head>
+<body>
+    <header class="site-header site-header--internal">
+        <div class="site-header__inner">
+            <a href="/internal/testing/" class="site-header__wordmark">IEP&nbsp;Labs · <span class="badge badge--internal">TESTING</span></a>
+            <nav class="site-nav" aria-label="Primary">
+                <a href="/internal/testing/">Testing dashboard</a>
+                <a href="/results/">Public results</a>
+                <a href="/status/">Status</a>
+                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <p><a href="/internal/testing/">← All repos</a></p>
+        <h1>Testing: <code>jrig</code> <span class="badge badge--stale">stale since 2026-07-16T22:39:18.870Z</span></h1>
+        <div class="operator-banner">
+            <p style="margin:0;"><strong>Internal testing dashboard (gated).</strong> This surface renders our own testing results — coverage, mutation, CRAP, architecture, and escape-scan gates — for every platform repo, each one <em>taught</em>: what the gate is, how we run it, what good looks like, our number, the verdict, and exactly what to fix. Every row traces back to a signed, Rekor-anchored <code>gate-result/v1</code> attestation re-verified at ingest. It is served behind a password at <code>internal.intentsolutions.io</code>; it is never indexed and never part of the public site.</p>
+        </div>
+        <div class="meta-block as-of">
+            <p style="margin:0;"><strong>As of:</strong> <time datetime="2026-07-16T22:39:16.701Z">2026-07-16T22:39:16.701Z</time> — the oldest ingest across all sources in this view (<code>min(ingested_at)</code>).</p>
+        </div>
+        <div class="no-data-panel">
+            <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results for <code>jrig</code></p>
+            <p>This source has not yet published a verified, signed Evidence Bundle to this dashboard. <strong>No data is not a pass.</strong> It is rendered with the same prominence as a failure so an empty source can never be mistaken for a clean one.</p>
+        </div>
+    </main>
+    <footer class="site-footer">
+        <div class="site-footer__inner">
+            <div>
+                <strong>labs.intentsolutions.io</strong> · dashboard <code>v0.1.0</code> · <a href="/status/" class="footer__commitment">best-effort, single-operator, see /status for liveness</a><br>
+                Intent Solutions — <a href="https://intentsolutions.io">intentsolutions.io</a>
+            </div>
+            <div>
+                <a href="/methodology/">Methodology</a> ·
+                <a href="/eval-sets/">Eval Sets</a> ·
+                <a href="/results/">Results</a> ·
+                <a href="/skills/">Skills</a> ·
+                <a href="/status/">Status</a> ·
+                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
