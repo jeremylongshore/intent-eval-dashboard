@@ -469,13 +469,16 @@ describe('parsePinnedSubjects', () => {
     expect(pinned.repos['icos']).toBeUndefined();
     // iec is operator-confirmed; the others carry the operator-confirmable flag.
     expect(pinned.repos['iec']?.operatorConfirmed).toBe(true);
-    // jrig + qmd are pinned BEFORE their emitters' first run (the ccp #51→#52
+    // jrig was pinned BEFORE its emitter's first run (the ccp #51→#52
     // sequence): operatorConfirmed stays false until the first live manifest
-    // verifies, and both resolve manifests off the rolling evidence-latest tag.
+    // verifies. Both new repos resolve manifests off the rolling
+    // evidence-latest tag.
     expect(pinned.repos['jrig']?.operatorConfirmed).toBe(false);
     expect(pinned.repos['jrig']?.manifestTag).toBe('evidence-latest');
     expect(pinned.repos['jrig']?.githubRepo).toBe('jeremylongshore/j-rig-skill-binary-eval');
-    expect(pinned.repos['qmd']?.operatorConfirmed).toBe(false);
+    // qmd's first live manifest verified on 2026-07-16 (emit run 29540093954,
+    // ingest run 29540142152) — confirmed per the ccp #52 pattern.
+    expect(pinned.repos['qmd']?.operatorConfirmed).toBe(true);
     expect(pinned.repos['qmd']?.manifestTag).toBe('evidence-latest');
     expect(pinned.repos['qmd']?.githubRepo).toBe('jeremylongshore/qmd-team-intent-kb');
   });
