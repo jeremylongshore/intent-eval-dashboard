@@ -2,7 +2,7 @@
  * Freshness + decision-mix bucket model (amber-lighthouse Epic 2.4 / puxu.7).
  *
  * This is the pure, deterministic core of the top-of-landing FRESHNESS STRIP:
- * one row per source repo (the 6 ingest repos), 24 columns = the last 24 hourly
+ * one row per source repo (the 8 ingest repos), 24 columns = the last 24 hourly
  * buckets (a rolling 24h window ending at `nowIso`). Each bucket carries the
  * DECISION MIX of the verified gate-result rows whose `evaluated_at` falls in
  * that hour: counts of `{ pass, fail, advisory, error }` plus a derived
@@ -203,7 +203,7 @@ function buildRepoRow(
 /**
  * Build the full freshness-strip view: one 24-bucket row per repo.
  *
- * @param repos     the source repos, in render order (the 6 ingest repos).
+ * @param repos     the source repos, in render order (the 8 ingest repos).
  * @param rows      verified gate-result rows across all repos (any that fall
  *                  outside the 24h window are ignored).
  * @param nowIso    the render's "now" (RFC-3339). The window is the 24 hours

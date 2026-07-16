@@ -190,7 +190,7 @@ export function mintManifest(repo: string, githubRepo: string, rowCount = 1): Re
   };
 }
 
-/** The 6 ingest repos mapped to their GitHub repo paths (matches pinned-subjects). */
+/** The 8 ingest repos mapped to their GitHub repo paths (matches pinned-subjects). */
 export const REPO_GITHUB: Readonly<Record<string, string>> = {
   iec: 'jeremylongshore/intent-eval-core',
   iel: 'jeremylongshore/intent-eval-lab',
@@ -198,4 +198,8 @@ export const REPO_GITHUB: Readonly<Record<string, string>> = {
   iaj: 'jeremylongshore/j-rig-skill-binary-eval',
   iar: 'jeremylongshore/intent-rollout-gate',
   ccp: 'jeremylongshore/claude-code-plugins-plus-skills',
+  // jrig = the SECOND ingest channel on j-rig-skill-binary-eval (nightly
+  // skill-eval roster); iaj covers the same repo's tag-based release channel.
+  jrig: 'jeremylongshore/j-rig-skill-binary-eval',
+  qmd: 'jeremylongshore/qmd-team-intent-kb',
 };

@@ -6,7 +6,7 @@
  * gate-result rows the worker persisted for that bundle key (in `gateResults`).
  * Together they reconstruct renderable rows from purely verified material.
  *
- * Visibility is assigned per source repo from the DR-035 C2 policy: the six
+ * Visibility is assigned per source repo from the DR-035 C2 policy: the eight
  * IS-internal platform repos are Tier-1 (eventually-public), so their rows render
  * on the public surface; an unrecognised repo fails closed to Tier-2 (absent
  * from public output until consent).
@@ -18,8 +18,17 @@ import { type GateRowProjection, type GateRowSource } from './bundle-resolver.js
 import { type GateDecisionView } from './row-model.js';
 import { type RowVisibility } from './visibility.js';
 
-/** The six IS-internal platform repos (Tier-1 per DR-035 C2). */
-const IS_TIER1_REPOS: ReadonlySet<string> = new Set(['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp']);
+/** The eight IS-internal platform repos (Tier-1 per DR-035 C2). */
+const IS_TIER1_REPOS: ReadonlySet<string> = new Set([
+  'iec',
+  'iel',
+  'iah',
+  'iaj',
+  'iar',
+  'ccp',
+  'jrig',
+  'qmd',
+]);
 
 /** Per-repo render visibility. Unknown repo → Tier-2 (fail-closed, not public). */
 export function repoVisibility(repo: string): RowVisibility {

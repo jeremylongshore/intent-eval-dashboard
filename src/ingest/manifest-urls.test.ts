@@ -42,6 +42,24 @@ const PINNED: PinnedSubjects = {
       manifestTag: 'evidence-latest',
       operatorConfirmed: false,
     },
+    jrig: {
+      githubRepo: 'jeremylongshore/j-rig-skill-binary-eval',
+      subjects: ['repo:jeremylongshore/j-rig-skill-binary-eval:ref:refs/heads/main'],
+      workflowRefs: [
+        'jeremylongshore/j-rig-skill-binary-eval/.github/workflows/nightly-skill-evals.yml@refs/heads/main',
+      ],
+      manifestTag: 'evidence-latest',
+      operatorConfirmed: false,
+    },
+    qmd: {
+      githubRepo: 'jeremylongshore/qmd-team-intent-kb',
+      subjects: ['repo:jeremylongshore/qmd-team-intent-kb:ref:refs/heads/main'],
+      workflowRefs: [
+        'jeremylongshore/qmd-team-intent-kb/.github/workflows/emit-evidence.yml@refs/heads/main',
+      ],
+      manifestTag: 'evidence-latest',
+      operatorConfirmed: false,
+    },
   },
 };
 
@@ -95,6 +113,20 @@ describe('makeManifestUrlResolver', () => {
     const resolve = makeManifestUrlResolver(PINNED);
     expect(resolve('ccp')).toBe(
       'https://github.com/jeremylongshore/claude-code-plugins-plus-skills/releases/download/evidence-latest/report-manifest.json',
+    );
+  });
+
+  it('resolves jrig (second channel on j-rig-skill-binary-eval) to its fixed evidence-latest tag', () => {
+    const resolve = makeManifestUrlResolver(PINNED);
+    expect(resolve('jrig')).toBe(
+      'https://github.com/jeremylongshore/j-rig-skill-binary-eval/releases/download/evidence-latest/report-manifest.json',
+    );
+  });
+
+  it('resolves qmd (a repo that cuts no Releases) to its fixed evidence-latest tag', () => {
+    const resolve = makeManifestUrlResolver(PINNED);
+    expect(resolve('qmd')).toBe(
+      'https://github.com/jeremylongshore/qmd-team-intent-kb/releases/download/evidence-latest/report-manifest.json',
     );
   });
 

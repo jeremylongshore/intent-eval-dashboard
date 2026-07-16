@@ -45,7 +45,7 @@ import {
 import { loadExplainers } from '../dist/internal-testing/explainers.js';
 import { generateAndWrite as generateStatus } from '../dist/freshness/generate.js';
 
-const INGEST_REPOS = ['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp'];
+const INGEST_REPOS = ['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp', 'jrig', 'qmd'];
 
 function arg(argv, flag, dflt) {
   const i = argv.indexOf(flag);

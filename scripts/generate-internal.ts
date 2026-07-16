@@ -19,7 +19,7 @@
  * the VPS, Caddy, or any deploy workflow — that wiring is the documented
  * human-gated follow-up.
  *
- * CURRENT STATE (2026-06): emit-evidence across the 6 source repos is
+ * CURRENT STATE (2026-06): emit-evidence across the 8 source repos is
  * incomplete, so almost every repo has NO verified bundles yet. This generator
  * renders that no-data state correctly (loud, equal-weight-with-fail) without
  * crashing — identical to the public generator's honest current picture.
@@ -47,8 +47,8 @@ import {
   writeInternalSite,
 } from '../dist/results/generate-internal.js';
 
-/** The 6 ingest repos (matches src/ingest/tree.ts INGEST_REPOS + fixtures). */
-const INGEST_REPOS = ['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp'] as const;
+/** The 8 ingest repos (matches src/ingest/tree.ts INGEST_REPOS + fixtures). */
+const INGEST_REPOS = ['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp', 'jrig', 'qmd'] as const;
 
 /**
  * The honest current-state RenderInput: every repo present, none with a

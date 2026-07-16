@@ -69,7 +69,7 @@ export interface BundleResolver {
 
 /** A renderable results row, carrying the full 4-timestamp surface. */
 export interface ResultsRow {
-  /** Repo key (one of the 6 ingest repos). */
+  /** Repo key (one of the 8 ingest repos). */
   readonly repo: string;
   /** Content-addressed bundle key (stable deep-link identity). */
   readonly bundleKey: string;

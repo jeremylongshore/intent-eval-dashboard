@@ -7,7 +7,7 @@
  * resolve content-addressed bundles to gate-result rows → apply the public
  * visibility-tier filter → emit self-contained HTML under `site/results/`.
  *
- * CURRENT STATE (2026-06): the emit-evidence work across the 6 source repos is
+ * CURRENT STATE (2026-06): the emit-evidence work across the 8 source repos is
  * incomplete, so almost every repo has NO verified gate-result bundles yet. This
  * generator renders that no-data state correctly (loud, equal-weight-with-fail)
  * without crashing. As repos start emitting signed bundles, the ingest workers
@@ -40,8 +40,8 @@ import {
   writeResultsSite,
 } from '../dist/results/generate.js';
 
-/** The 6 ingest repos (matches src/ingest/tree.ts INGEST_REPOS + fixtures). */
-const INGEST_REPOS = ['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp'] as const;
+/** The 8 ingest repos (matches src/ingest/tree.ts INGEST_REPOS + fixtures). */
+const INGEST_REPOS = ['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp', 'jrig', 'qmd'] as const;
 
 /**
  * The honest current-state RenderInput: every repo present, none with a

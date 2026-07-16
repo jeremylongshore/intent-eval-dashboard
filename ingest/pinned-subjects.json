@@ -35,8 +35,26 @@
     "`release.yml@refs/heads/main` form is used as a placeholder and flagged",
     "`operatorConfirmed: false`. Confirm against each repo's actual",
     ".github/workflows/ before first production ingest, then flip to true.",
+    "",
+    "jrig rationale: a SECOND ingest channel on j-rig-skill-binary-eval (iaj",
+    "covers its tag-based release channel). The emitter is a nightly cron",
+    "(`nightly-skill-evals.yml`, PR j-rig-skill-binary-eval#215) running j-rig",
+    "eval over an 8-skill marketplace roster; scheduled runs execute on the",
+    "default branch, so the OIDC ref is `refs/heads/main`. Rolling",
+    "`evidence-latest` tag because per-package npm releases pollute",
+    "`releases/latest` (same pollution as ccp). Pinned BEFORE the emitter's",
+    "first run (the ccp #51→#52 sequence): `operatorConfirmed: false` until the",
+    "first live manifest verifies.",
+    "",
+    "qmd rationale: push-to-main workflow (`emit-evidence.yml`) attesting the",
+    "governed brain's provenance-integrity + govern-decision + retrieval-ratchet",
+    "CI evals. The repo cuts NO Releases at all, so the rolling `evidence-latest`",
+    "tag is the only manifest home. Pinned before first emit;",
+    "`operatorConfirmed: false` until the first live manifest verifies.",
+    "",
     "ICOS is intentionally ABSENT — struck from the supervision tree per the",
-    "cross-tier policy (DR-035). 6 repos exactly: iec, iel, iah, iaj, iar, ccp."
+    "cross-tier policy (DR-035). 8 repos exactly: iec, iel, iah, iaj, iar, ccp,",
+    "jrig, qmd."
   ],
   "issuer": "https://token.actions.githubusercontent.com",
   "repos": {
@@ -86,6 +104,24 @@
       ],
       "manifestTag": "evidence-latest",
       "operatorConfirmed": true
+    },
+    "jrig": {
+      "githubRepo": "jeremylongshore/j-rig-skill-binary-eval",
+      "subjects": ["repo:jeremylongshore/j-rig-skill-binary-eval:ref:refs/heads/main"],
+      "workflowRefs": [
+        "jeremylongshore/j-rig-skill-binary-eval/.github/workflows/nightly-skill-evals.yml@refs/heads/main"
+      ],
+      "manifestTag": "evidence-latest",
+      "operatorConfirmed": false
+    },
+    "qmd": {
+      "githubRepo": "jeremylongshore/qmd-team-intent-kb",
+      "subjects": ["repo:jeremylongshore/qmd-team-intent-kb:ref:refs/heads/main"],
+      "workflowRefs": [
+        "jeremylongshore/qmd-team-intent-kb/.github/workflows/emit-evidence.yml@refs/heads/main"
+      ],
+      "manifestTag": "evidence-latest",
+      "operatorConfirmed": false
     }
   }
 }

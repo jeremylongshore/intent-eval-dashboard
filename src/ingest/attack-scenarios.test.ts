@@ -5,7 +5,7 @@
  * refusal): a tampered/compromised input genuinely crashes the worker, the
  * staging snapshot is NOT replaced with unverified data, content-addressed
  * bundles survive a source SHA deletion, and one worker's crash does not affect
- * the other 5.
+ * the other 7.
  *
  * Verification is the offline REAL-crypto verifier — the "compromise" really
  * breaks cryptography / the allowlist, not a flag.
@@ -203,10 +203,10 @@ describe('Scenario 2 — force-pushed / deleted source SHA', () => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Scenario 3 — network timeout on ONE worker; the other 5 unaffected
+// Scenario 3 — network timeout on ONE worker; the other 7 unaffected
 // ─────────────────────────────────────────────────────────────────────────────
 describe('Scenario 3 — network timeout on one worker (transient isolation)', () => {
-  it('the timed-out worker crashes + supervisor retries it; the other 5 are unaffected', async () => {
+  it('the timed-out worker crashes + supervisor retries it; the other 7 are unaffected', async () => {
     const snapshotStore = new MemorySnapshotStore();
     const contentStore = new MemoryContentStore();
 
@@ -222,7 +222,7 @@ describe('Scenario 3 — network timeout on one worker (transient isolation)', (
     };
     const iahPrior = await runIngestWorker('iah', priorDeps);
 
-    // Build manifests for all 6 repos — but iah's fetch TIMES OUT.
+    // Build manifests for all 8 repos — but iah's fetch TIMES OUT.
     const manifests: Record<string, ReportManifest | Error> = {};
     for (const [repo, gh] of Object.entries(REPO_GITHUB)) {
       manifests[repo] = mintManifest(repo, gh);
@@ -244,21 +244,21 @@ describe('Scenario 3 — network timeout on one worker (transient isolation)', (
 
     const result = await runDeployPass(deps, renderer, publisher, '/tmp/out');
 
-    // iah crashed (timeout); the other 5 produced fresh snapshots.
+    // iah crashed (timeout); the other 7 produced fresh snapshots.
     const iah = result.ingest.find((o) => o.repo === 'iah');
     expect(iah?.fresh).toBe(false);
     expect(iah?.failure?.step).toBe('fetch_manifest');
-    for (const repo of ['iec', 'iel', 'iaj', 'iar', 'ccp']) {
+    for (const repo of ['iec', 'iel', 'iaj', 'iar', 'ccp', 'jrig', 'qmd']) {
       const outcome = result.ingest.find((o) => o.repo === repo);
       expect(outcome?.fresh).toBe(true);
     }
 
-    // The renderer serves the 5 fresh snapshots + iah's PRIOR snapshot (stale).
+    // The renderer serves the 7 fresh snapshots + iah's PRIOR snapshot (stale).
     const rendered = last();
     const iahRow = rendered?.repos.find((r) => r.repo === 'iah');
     expect(iahRow?.snapshot).toEqual(iahPrior);
     expect(iahRow?.staleSince).toBe('2026-05-28T00:00:00.000Z');
-    for (const repo of ['iec', 'iel', 'iaj', 'iar', 'ccp']) {
+    for (const repo of ['iec', 'iel', 'iaj', 'iar', 'ccp', 'jrig', 'qmd']) {
       const row = rendered?.repos.find((r) => r.repo === repo);
       expect(row?.snapshot?.lastKnownGoodIngestedAt).toBe('2026-05-30T00:00:00.000Z');
       expect(row?.staleSince).toBeUndefined();

@@ -452,14 +452,32 @@ describe('parsePinnedSubjects', () => {
     expect(defaultPinnedSubjectsPath().endsWith('ingest/pinned-subjects.json')).toBe(true);
   });
 
-  it('loadPinnedSubjects loads the shipped allowlist with exactly the 6 ingest repos', async () => {
+  it('loadPinnedSubjects loads the shipped allowlist with exactly the 8 ingest repos', async () => {
     const pinned = await loadPinnedSubjects();
     expect(pinned.issuer).toBe('https://token.actions.githubusercontent.com');
-    expect(Object.keys(pinned.repos).sort()).toEqual(['ccp', 'iah', 'iaj', 'iar', 'iec', 'iel']);
+    expect(Object.keys(pinned.repos).sort()).toEqual([
+      'ccp',
+      'iah',
+      'iaj',
+      'iar',
+      'iec',
+      'iel',
+      'jrig',
+      'qmd',
+    ]);
     // ICOS must NOT be in the shipped allowlist (struck from the tree).
     expect(pinned.repos['icos']).toBeUndefined();
     // iec is operator-confirmed; the others carry the operator-confirmable flag.
     expect(pinned.repos['iec']?.operatorConfirmed).toBe(true);
+    // jrig + qmd are pinned BEFORE their emitters' first run (the ccp #51→#52
+    // sequence): operatorConfirmed stays false until the first live manifest
+    // verifies, and both resolve manifests off the rolling evidence-latest tag.
+    expect(pinned.repos['jrig']?.operatorConfirmed).toBe(false);
+    expect(pinned.repos['jrig']?.manifestTag).toBe('evidence-latest');
+    expect(pinned.repos['jrig']?.githubRepo).toBe('jeremylongshore/j-rig-skill-binary-eval');
+    expect(pinned.repos['qmd']?.operatorConfirmed).toBe(false);
+    expect(pinned.repos['qmd']?.manifestTag).toBe('evidence-latest');
+    expect(pinned.repos['qmd']?.githubRepo).toBe('jeremylongshore/qmd-team-intent-kb');
   });
 });
 
@@ -502,16 +520,16 @@ const PINNED_FOR_DEPLOY: PinnedSubjects = {
 };
 
 describe('tree spec builders', () => {
-  it('INGEST_REPOS is exactly the 6 repos (ICOS struck)', () => {
-    expect([...INGEST_REPOS]).toEqual(['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp']);
+  it('INGEST_REPOS is exactly the 8 repos (ICOS struck)', () => {
+    expect([...INGEST_REPOS]).toEqual(['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp', 'jrig', 'qmd']);
     expect(INGEST_REPOS).not.toContain('icos');
   });
 
-  it('buildIngestSupervisorSpec yields one_for_one with 6 transient workers', () => {
+  it('buildIngestSupervisorSpec yields one_for_one with 8 transient workers', () => {
     const spec = buildIngestSupervisorSpec(() => Promise.resolve());
     expect(spec.id).toBe('ingest_supervisor');
     expect(spec.strategy).toBe('one_for_one');
-    expect(spec.children).toHaveLength(6);
+    expect(spec.children).toHaveLength(8);
     expect(spec.children.every((c) => c.restart === 'transient')).toBe(true);
     expect(spec.children.map((c) => c.id)).toEqual([
       'ingest_worker:iec',
@@ -520,6 +538,8 @@ describe('tree spec builders', () => {
       'ingest_worker:iaj',
       'ingest_worker:iar',
       'ingest_worker:ccp',
+      'ingest_worker:jrig',
+      'ingest_worker:qmd',
     ]);
     expect(spec.budget).toEqual(DEFAULT_INGEST_BUDGET);
   });

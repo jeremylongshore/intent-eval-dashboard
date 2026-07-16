@@ -33,14 +33,14 @@ import { scanForAggregatePass } from '../results/c3-scan.js';
 const HERE = dirname(fileURLToPath(import.meta.url));
 const LANDING_FIXTURE = join(HERE, '__fixtures__', 'landing-fixture.html');
 
-const REPOS = ['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp'] as const;
+const REPOS = ['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp', 'jrig', 'qmd'] as const;
 const NOW = '2026-06-04T12:30:00.000Z';
 const HOUR_MS = 60 * 60 * 1000;
 const hoursAgo = (h: number): string => new Date(Date.parse(NOW) - h * HOUR_MS).toISOString();
 
 const PRESSURE: SupervisionPressure = {
   restartCount: 0,
-  restartBudget: 18,
+  restartBudget: 24,
   escalatedChildIds: [],
 };
 
