@@ -15,14 +15,14 @@ import { computeIngestUse, type RepoLiveness, type SupervisionPressure } from '.
 import { renderFreshnessStrip, renderStatusPage } from './render-strip.js';
 import { scanForAggregatePass } from '../results/c3-scan.js';
 
-const REPOS = ['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp'] as const;
+const REPOS = ['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp', 'jrig', 'qmd'] as const;
 const NOW = '2026-06-04T12:30:00.000Z';
 const HOUR_MS = 60 * 60 * 1000;
 const hoursAgo = (h: number): string => new Date(Date.parse(NOW) - h * HOUR_MS).toISOString();
 
 const PRESSURE: SupervisionPressure = {
   restartCount: 0,
-  restartBudget: 18,
+  restartBudget: 24,
   escalatedChildIds: [],
 };
 
@@ -30,10 +30,10 @@ describe('renderFreshnessStrip — no-data is loud (equal to fail)', () => {
   it('empty (current state) renders every cell with the loud bucket--no-data class', () => {
     const view = buildFreshnessStrip(REPOS, [], NOW);
     const html = renderFreshnessStrip(view);
-    // 6 repos × 24 buckets = 144 no-data table cells, all loud. Count only the
+    // 8 repos × 24 buckets = 192 no-data table cells, all loud. Count only the
     // <td> cells (the legend swatch also uses the no-data class but is a <span>).
     const noDataCells = html.match(/<td class="bucket bucket--no-data"/g) ?? [];
-    expect(noDataCells.length).toBe(6 * 24);
+    expect(noDataCells.length).toBe(8 * 24);
     // The loud no-data badge for fully-silent rows appears too.
     expect(html).toContain('badge badge--no-data');
     // The honest-state note is present (we render silence loudly, never fill it).
@@ -106,6 +106,8 @@ describe('renderStatusPage — USE method', () => {
     },
     { repo: 'iar', fresh: false },
     { repo: 'ccp', fresh: false },
+    { repo: 'jrig', fresh: false },
+    { repo: 'qmd', fresh: false },
   ];
 
   it('renders a valid self-contained page with U/S/E and the strip', () => {
@@ -118,9 +120,9 @@ describe('renderStatusPage — USE method', () => {
     expect(html).toContain('</html>');
     expect(html).toContain('<link rel="stylesheet" href="/style.css">');
 
-    // Utilization: 2/6 fresh
+    // Utilization: 2/8 fresh
     expect(html).toContain('Utilization');
-    expect(html).toMatch(/<strong>2<\/strong>\s*\/\s*6 workers/);
+    expect(html).toMatch(/<strong>2<\/strong>\s*\/\s*8 workers/);
     // Saturation card
     expect(html).toContain('Saturation');
     // Errors: 1 crash with structured reason
@@ -142,7 +144,7 @@ describe('renderStatusPage — USE method', () => {
     const strip = buildFreshnessStrip(REPOS, [], NOW);
     const use = computeIngestUse(
       liveness,
-      { restartCount: 3, restartBudget: 18, escalatedChildIds: ['ingest_worker:iaj'] },
+      { restartCount: 3, restartBudget: 24, escalatedChildIds: ['ingest_worker:iaj'] },
       strip,
       NOW,
     );

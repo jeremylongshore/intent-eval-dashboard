@@ -3,13 +3,13 @@
  *
  * Brendan Gregg's USE method (Utilization / Saturation / Errors) applied not to
  * the per-repo evaluation results (that is the decision-mix strip in
- * `bucket-model.ts`) but to the 6-worker ingest pipeline as a SYSTEM. This is
+ * `bucket-model.ts`) but to the 8-worker ingest pipeline as a SYSTEM. This is
  * the data behind the `/status` route: "is the machine that produces the
  * dashboard healthy?", distinct from "what do the evals say?".
  *
  * The three USE analogues for the ingest supervision tree:
  *
- *   U — Utilization: the fraction of the 6 ingest workers that produced a FRESH
+ *   U — Utilization: the fraction of the 8 ingest workers that produced a FRESH
  *       verified snapshot this pass. `freshWorkers / totalWorkers`. A worker
  *       serving only a prior-good (stale) snapshot is NOT counted as utilized —
  *       it is doing no useful new work this pass.

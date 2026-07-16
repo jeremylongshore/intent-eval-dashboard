@@ -8,15 +8,17 @@
  *   │   ├── ingest_worker:iah  transient
  *   │   ├── ingest_worker:iaj  transient
  *   │   ├── ingest_worker:iar  transient
- *   │   └── ingest_worker:ccp  transient
+ *   │   ├── ingest_worker:ccp  transient
+ *   │   ├── ingest_worker:jrig transient
+ *   │   └── ingest_worker:qmd  transient
  *   ├── renderer               rest_for_one (downstream of ingest snapshot)
  *   └── publisher (rsync+caddy) rest_for_one (downstream of renderer)
  *
- * ICOS is STRUCK from the tree (cross-tier policy). 6 workers exactly.
+ * ICOS is STRUCK from the tree (cross-tier policy). 8 workers exactly.
  *
  * This module builds the SUPERVISOR SPECS with the correct strategies +
  * restart types, and provides a deploy-pass orchestrator that:
- *   1. runs the ingest_supervisor (6 transient workers, one_for_one isolation);
+ *   1. runs the ingest_supervisor (8 transient workers, one_for_one isolation);
  *   2. records which repos produced fresh snapshots vs crashed;
  *   3. feeds the per-repo outcomes to the renderer (which serves prior-good
  *      snapshots for crashed repos with a stale badge);
@@ -37,8 +39,8 @@ import { type Publisher } from './publisher.js';
 import { type Renderer, type RepoPassOutcome } from './renderer.js';
 import { runIngestWorker, type IngestWorkerDeps } from './worker.js';
 
-/** The 6 ingest repos. ICOS struck per cross-tier policy. */
-export const INGEST_REPOS = ['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp'] as const;
+/** The 8 ingest repos. ICOS struck per cross-tier policy. */
+export const INGEST_REPOS = ['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp', 'jrig', 'qmd'] as const;
 export type IngestRepo = (typeof INGEST_REPOS)[number];
 
 /** Default per-repo restart budget: N restarts per hour (OTP intensity/period). */
@@ -48,7 +50,7 @@ export const DEFAULT_INGEST_BUDGET: RestartBudget = {
 };
 
 /**
- * Build the `ingest_supervisor` spec: 6 transient workers, one_for_one.
+ * Build the `ingest_supervisor` spec: 8 transient workers, one_for_one.
  *
  * `runWorker` is the (injected) per-repo ingest pass. Each child wraps it so a
  * crash surfaces as an abnormal exit carrying the structured reason; a clean

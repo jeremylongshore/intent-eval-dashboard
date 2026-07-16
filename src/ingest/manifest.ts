@@ -46,7 +46,7 @@ export interface ManifestRow {
 
 /** A fetched + parsed report manifest. */
 export interface ReportManifest {
-  /** Repo key (one of the 6 ingest repos). */
+  /** Repo key (one of the 8 ingest repos). */
   readonly repo: string;
   /** OIDC claims asserted by the producing CI run. */
   readonly signing: ManifestSigningClaims;

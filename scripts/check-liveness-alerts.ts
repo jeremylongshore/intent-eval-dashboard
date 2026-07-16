@@ -57,13 +57,13 @@ import {
   type SourceLiveness,
 } from '../dist/alerting/index.js';
 
-/** The 6 ingest repos (matches src/ingest/tree.ts INGEST_REPOS). ICOS struck. */
-const INGEST_REPOS = ['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp'] as const;
+/** The 8 ingest repos (matches src/ingest/tree.ts INGEST_REPOS). ICOS struck. */
+const INGEST_REPOS = ['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp', 'jrig', 'qmd'] as const;
 
 /**
  * Load the CURRENT per-source liveness.
  *
- * CURRENT STATE (2026-06): emit-evidence across the 6 source repos is
+ * CURRENT STATE (2026-06): emit-evidence across the 8 source repos is
  * incomplete, so the honest default is that NO source has a successful verified
  * ingest on record — every repo is "never seen", which is > 7 days silent by
  * definition. With the no-op transport this surfaces in the log without paging

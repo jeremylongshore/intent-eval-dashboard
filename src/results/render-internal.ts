@@ -242,7 +242,7 @@ ${OPERATOR_BANNER}
         </p>
 ${asOfBanner(view)}
         <h2>Ingest pipeline status (USE method)</h2>
-        <p>System health of the 6-worker ingest pipeline itself — the same USE-method view the public <a href="/status/">/status</a> page carries.</p>
+        <p>System health of the ${use.utilization.totalWorkers}-worker ingest pipeline itself — the same USE-method view the public <a href="/status/">/status</a> page carries.</p>
 ${renderUseCards(use)}
         <h2>Per-repo results (all tiers)</h2>
 ${repoSections}

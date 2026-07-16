@@ -291,7 +291,7 @@ ${STATUS_HEADER}
         <p><a href="/">← Home</a></p>
         <h1>Ingest pipeline status</h1>
         <p class="lead">
-            USE-method observability — <strong>U</strong>tilization, <strong>S</strong>aturation, <strong>E</strong>rrors — of the 6-worker ingest pipeline <em>itself</em> (Brendan Gregg's method). This is the health of the machine that produces this dashboard, distinct from what the evals say. As of <time datetime="${esc(use.nowIso)}">${esc(use.nowIso)}</time>.
+            USE-method observability — <strong>U</strong>tilization, <strong>S</strong>aturation, <strong>E</strong>rrors — of the ${use.utilization.totalWorkers}-worker ingest pipeline <em>itself</em> (Brendan Gregg's method). This is the health of the machine that produces this dashboard, distinct from what the evals say. As of <time datetime="${esc(use.nowIso)}">${esc(use.nowIso)}</time>.
         </p>
         <p>This is a rendered status view, not a pager. Alerting lives elsewhere; here we just show the current pipeline state honestly.</p>
 ${silent}

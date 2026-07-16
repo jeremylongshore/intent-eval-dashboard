@@ -152,7 +152,7 @@ export async function runSupervisor(
   //  - one_for_one  → children are INDEPENDENT, so they boot CONCURRENTLY. An
   //    independent child's crash + restart must not block or affect its
   //    siblings' initial run (isolation). This is the ingest_supervisor case:
-  //    6 workers ingest in parallel; one crashing does not touch the others.
+  //    8 workers ingest in parallel; one crashing does not touch the others.
   //
   //  - rest_for_one → children form an ORDERED PIPELINE (ingest → renderer →
   //    publisher), so they boot SEQUENTIALLY in start order. A crash mid-boot

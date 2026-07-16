@@ -9,8 +9,8 @@ import { coerceDecision, repoVisibility, StoreGateRowSource } from './store-gate
 const KEY = 'sha256:' + 'a'.repeat(64);
 
 describe('repoVisibility', () => {
-  it('maps the six IS repos to Tier-1', () => {
-    for (const r of ['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp']) {
+  it('maps the eight IS repos to Tier-1', () => {
+    for (const r of ['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp', 'jrig', 'qmd']) {
       expect(repoVisibility(r)).toEqual({ tier: 'tier-1' });
     }
   });

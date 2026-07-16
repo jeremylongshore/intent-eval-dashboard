@@ -45,7 +45,7 @@ export const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
  * error never flips the gate (asserted in evaluate.test.ts only-trigger cases).
  */
 export interface SourceLiveness {
-  /** The source repo key (e.g. `iec`, `iel`, `iah`, `iaj`, `iar`, `ccp`). */
+  /** The source repo key (e.g. `iec`, `iel`, `iah`, `iaj`, `iar`, `ccp`, `jrig`, `qmd`). */
   readonly repo: string;
   /**
    * RFC-3339 timestamp of this source's most recent SUCCESSFUL verified ingest,

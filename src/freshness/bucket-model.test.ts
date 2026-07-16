@@ -6,7 +6,7 @@
  * kind across the recent bucket(s) — proving the "never silently filled" binding
  * holds (NOT carried forward from the >24h-old data, NOT blank).
  *
- * Plus: the strip is exactly 6 rows × 24 buckets; bucket color = the correct
+ * Plus: the strip is exactly 8 rows × 24 buckets; bucket color = the correct
  * decision-mix kind; out-of-window + unparseable rows are dropped (holes, not
  * passes); the most-severe-decision coloring rule.
  */
@@ -14,7 +14,7 @@
 import { describe, expect, it } from 'vitest';
 import { BUCKET_COUNT, buildFreshnessStrip, type FreshnessRowInput } from './bucket-model.js';
 
-const REPOS = ['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp'] as const;
+const REPOS = ['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp', 'jrig', 'qmd'] as const;
 const NOW = '2026-06-04T12:30:00.000Z';
 const HOUR_MS = 60 * 60 * 1000;
 
@@ -24,9 +24,9 @@ function hoursAgo(h: number): string {
 }
 
 describe('buildFreshnessStrip — shape', () => {
-  it('renders exactly 6 rows × 24 buckets', () => {
+  it('renders exactly 8 rows × 24 buckets', () => {
     const view = buildFreshnessStrip(REPOS, [], NOW);
-    expect(view.rows).toHaveLength(6);
+    expect(view.rows).toHaveLength(8);
     for (const row of view.rows) {
       expect(row.buckets).toHaveLength(BUCKET_COUNT);
     }

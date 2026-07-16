@@ -7,10 +7,10 @@
  * pressure → build the 24-bucket strip + the USE-method view → inject the strip
  * into the landing page and write `site/status/index.html`.
  *
- * CURRENT STATE (2026-06): emit-evidence across the 6 source repos is
+ * CURRENT STATE (2026-06): emit-evidence across the 8 source repos is
  * incomplete, so the honest default has ZERO verified rows and ALL workers
  * silent. The strip therefore renders almost entirely `no-data` (loud red) and
- * /status shows 0/6 utilization. This is the truthful current picture and
+ * /status shows 0/8 utilization. This is the truthful current picture and
  * exactly what the DR-035 C4 binding exists to surface — absence shown loudly,
  * never silently filled.
  *
@@ -33,15 +33,15 @@ import { type FreshnessInputs, generateAndWrite } from '../dist/freshness/genera
 import { type FreshnessRowInput } from '../dist/freshness/bucket-model.js';
 import { type RepoLiveness, type SupervisionPressure } from '../dist/freshness/use-model.js';
 
-/** The 6 ingest repos (matches src/ingest/tree.ts INGEST_REPOS). ICOS struck. */
-const INGEST_REPOS = ['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp'] as const;
+/** The 8 ingest repos (matches src/ingest/tree.ts INGEST_REPOS). ICOS struck. */
+const INGEST_REPOS = ['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp', 'jrig', 'qmd'] as const;
 
 /** Default per-repo restart budget × worker count (matches DEFAULT_INGEST_BUDGET). */
 const RESTART_BUDGET = 3 * INGEST_REPOS.length;
 
 /**
  * The honest current-state inputs: every repo present, none fresh, none with a
- * verified row in the window. Every bucket → no-data; utilization 0/6.
+ * verified row in the window. Every bucket → no-data; utilization 0/8.
  */
 function emptyCurrentStateInputs(nowIso: string): FreshnessInputs {
   const rows: FreshnessRowInput[] = [];

@@ -12,14 +12,14 @@ import { describe, expect, it } from 'vitest';
 import { buildFreshnessStrip, type FreshnessRowInput } from './bucket-model.js';
 import { computeIngestUse, type RepoLiveness, type SupervisionPressure } from './use-model.js';
 
-const REPOS = ['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp'] as const;
+const REPOS = ['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp', 'jrig', 'qmd'] as const;
 const NOW = '2026-06-04T12:30:00.000Z';
 const HOUR_MS = 60 * 60 * 1000;
 const hoursAgo = (h: number): string => new Date(Date.parse(NOW) - h * HOUR_MS).toISOString();
 
 const NO_PRESSURE: SupervisionPressure = {
   restartCount: 0,
-  restartBudget: 18,
+  restartBudget: 24,
   escalatedChildIds: [],
 };
 
@@ -32,16 +32,18 @@ describe('computeIngestUse — Utilization', () => {
       { repo: 'iaj', fresh: false },
       { repo: 'iar', fresh: false },
       { repo: 'ccp', fresh: false },
+      { repo: 'jrig', fresh: false },
+      { repo: 'qmd', fresh: false },
     ];
     const strip = buildFreshnessStrip(REPOS, [], NOW);
     const use = computeIngestUse(liveness, NO_PRESSURE, strip, NOW);
     expect(use.utilization.freshWorkers).toBe(2);
-    expect(use.utilization.totalWorkers).toBe(6);
-    expect(use.utilization.ratio).toBeCloseTo(2 / 6);
+    expect(use.utilization.totalWorkers).toBe(8);
+    expect(use.utilization.ratio).toBeCloseTo(2 / 8);
     expect(use.utilization.staleRepos).toEqual(['iah']);
   });
 
-  it('all-silent current state ⇒ 0/6 utilization', () => {
+  it('all-silent current state ⇒ 0/8 utilization', () => {
     const liveness: RepoLiveness[] = REPOS.map((repo) => ({ repo, fresh: false }));
     const strip = buildFreshnessStrip(REPOS, [], NOW);
     const use = computeIngestUse(liveness, NO_PRESSURE, strip, NOW);
@@ -61,12 +63,12 @@ describe('computeIngestUse — Saturation', () => {
     const liveness: RepoLiveness[] = REPOS.map((repo) => ({ repo, fresh: true }));
     const strip = buildFreshnessStrip(REPOS, [], NOW);
     const pressure: SupervisionPressure = {
-      restartCount: 9,
-      restartBudget: 18,
+      restartCount: 12,
+      restartBudget: 24,
       escalatedChildIds: [],
     };
     const use = computeIngestUse(liveness, pressure, strip, NOW);
-    expect(use.saturation.restartCount).toBe(9);
+    expect(use.saturation.restartCount).toBe(12);
     expect(use.saturation.pressureRatio).toBeCloseTo(0.5);
     expect(use.saturation.escalated).toBe(false);
   });
@@ -75,7 +77,7 @@ describe('computeIngestUse — Saturation', () => {
     const strip = buildFreshnessStrip(REPOS, [], NOW);
     const use = computeIngestUse(
       [],
-      { restartCount: 30, restartBudget: 18, escalatedChildIds: [] },
+      { restartCount: 30, restartBudget: 24, escalatedChildIds: [] },
       strip,
       NOW,
     );
@@ -86,7 +88,7 @@ describe('computeIngestUse — Saturation', () => {
     const strip = buildFreshnessStrip(REPOS, [], NOW);
     const use = computeIngestUse(
       [],
-      { restartCount: 3, restartBudget: 18, escalatedChildIds: ['ingest_worker:iaj'] },
+      { restartCount: 3, restartBudget: 24, escalatedChildIds: ['ingest_worker:iaj'] },
       strip,
       NOW,
     );
@@ -149,7 +151,7 @@ describe('computeIngestUse — fully-silent repos (from the 24h strip)', () => {
     const liveness: RepoLiveness[] = REPOS.map((repo) => ({ repo, fresh: repo === 'iec' }));
     const strip = buildFreshnessStrip(REPOS, rows, NOW);
     const use = computeIngestUse(liveness, NO_PRESSURE, strip, NOW);
-    expect(use.fullySilentRepos).toEqual(['iel', 'iah', 'iaj', 'iar', 'ccp']);
+    expect(use.fullySilentRepos).toEqual(['iel', 'iah', 'iaj', 'iar', 'ccp', 'jrig', 'qmd']);
     expect(use.fullySilentRepos).not.toContain('iec');
   });
 });

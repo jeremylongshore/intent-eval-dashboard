@@ -15,7 +15,7 @@
  * render, inject) are exported so tests assert structure + the C3 scanner can
  * run against the strings without touching disk.
  *
- * CURRENT STATE: the emit-evidence work across the 6 source repos is incomplete,
+ * CURRENT STATE: the emit-evidence work across the 8 source repos is incomplete,
  * so the honest default has zero verified rows ⇒ every bucket is `no-data` ⇒ the
  * strip is (correctly) almost entirely loud-red. That is exactly the truth the
  * DR-035 C4 binding exists to surface.
@@ -48,7 +48,7 @@ export interface FreshnessGeneratedFile {
 
 /** All inputs needed to build both surfaces for one render. */
 export interface FreshnessInputs {
-  /** Source repos in render order (the 6 ingest repos). */
+  /** Source repos in render order (the 8 ingest repos). */
   readonly repos: readonly string[];
   /** Verified gate-result rows across all repos (outside-window rows ignored). */
   readonly rows: readonly FreshnessRowInput[];

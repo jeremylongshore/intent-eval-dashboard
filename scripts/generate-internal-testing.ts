@@ -45,7 +45,7 @@ import {
 } from '../dist/internal-testing/index.js';
 
 /** The ingest repos (matches src/ingest/tree.ts INGEST_REPOS + the results lane). */
-const INGEST_REPOS = ['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp'] as const;
+const INGEST_REPOS = ['iec', 'iel', 'iah', 'iaj', 'iar', 'ccp', 'jrig', 'qmd'] as const;
 
 /**
  * The honest current-state RenderInput: every repo present, none with a verified
