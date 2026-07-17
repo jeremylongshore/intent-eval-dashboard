@@ -112,7 +112,7 @@
         "jeremylongshore/j-rig-skill-binary-eval/.github/workflows/nightly-skill-evals.yml@refs/heads/main"
       ],
       "manifestTag": "evidence-latest",
-      "operatorConfirmed": false
+      "operatorConfirmed": true
     },
     "qmd": {
       "githubRepo": "jeremylongshore/qmd-team-intent-kb",
