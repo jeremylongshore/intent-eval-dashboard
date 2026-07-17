@@ -32,14 +32,101 @@
     </header>
     <main>
         <p><a href="/results/">← All results</a></p>
-        <h1>Results: <code>jrig</code> <span class="badge badge--stale">stale since 2026-07-16T22:39:18.870Z</span></h1>
+        <h1>Results: <code>jrig</code></h1>
         <div class="meta-block as-of">
-            <p style="margin:0;"><strong>As of:</strong> <time datetime="2026-07-16T22:39:16.701Z">2026-07-16T22:39:16.701Z</time> — the oldest ingest across all sources in this view (<code>min(ingested_at)</code>). Sources verified more recently may be fresher.</p>
+            <p style="margin:0;"><strong>As of:</strong> <time datetime="2026-07-17T00:47:20.544Z">2026-07-17T00:47:20.544Z</time> — the oldest ingest across all sources in this view (<code>min(ingested_at)</code>). Sources verified more recently may be fresher.</p>
         </div>
-        <div class="no-data-panel">
-            <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results for <code>jrig</code></p>
-            <p>This source has not yet published a verified, signed Evidence Bundle to this dashboard. <strong>No data is not a pass.</strong> It is rendered with the same prominence as a failure so an empty source can never be mistaken for a clean one.</p>
-        </div>
+        <p class="predicate-note">Decision counts are shown <em>per predicate URI</em> only. We never composite a pass-rate across heterogeneous predicates — that is metric laundering.</p>
+        <ul class="predicate-breakdown">
+            <li><code>https://evals.intentsolutions.io/gate-result/v1</code> — pass: 1 · fail: 2 · advisory: 5</li>
+        </ul>
+        <table class="results-table">
+            <thead>
+                <tr>
+                    <th>Gate</th>
+                    <th>Decision</th>
+                    <th>Predicate URI</th>
+                    <th>Evaluated at</th>
+                    <th>Bundle created at</th>
+                    <th>Rekor anchor</th>
+                    <th>Ingested at</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><a href="/results/jrig/sha256-9afd63eba2f778389778515c90a516fc38a27bf5b7ff5c407d1513e79cc31863/"><code>coreweave-gpu-node-forensics</code></a></td>
+                    <td><span class="badge badge--result-fail">fail</span></td>
+                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
+                    <td><time datetime="2026-07-17T00:45:34.061Z">2026-07-17T00:45:34.061Z</time></td>
+                    <td><time datetime="2026-07-17T00:45:34.061Z">2026-07-17T00:45:34.061Z</time></td>
+                    <td><code>—</code></td>
+                    <td><time datetime="2026-07-17T00:47:22.987Z">2026-07-17T00:47:22.987Z</time></td>
+                </tr>
+                <tr>
+                    <td><a href="/results/jrig/sha256-8962cc1d7e62e935d92378eb290e7152988d35516760f794573317a5044b848f/"><code>coreweave-gpu-cost-leak-hunter</code></a></td>
+                    <td><span class="badge badge--result-advisory">advisory</span></td>
+                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
+                    <td><time datetime="2026-07-17T00:45:34.061Z">2026-07-17T00:45:34.061Z</time></td>
+                    <td><time datetime="2026-07-17T00:45:34.061Z">2026-07-17T00:45:34.061Z</time></td>
+                    <td><code>—</code></td>
+                    <td><time datetime="2026-07-17T00:47:22.987Z">2026-07-17T00:47:22.987Z</time></td>
+                </tr>
+                <tr>
+                    <td><a href="/results/jrig/sha256-8deab1e1a0793b1ebed25cf215fc6e0f81706d8f7ac2a8c7421e48d5ff5669ac/"><code>coreweave-fabric-diagnostics</code></a></td>
+                    <td><span class="badge badge--result-fail">fail</span></td>
+                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
+                    <td><time datetime="2026-07-17T00:45:34.061Z">2026-07-17T00:45:34.061Z</time></td>
+                    <td><time datetime="2026-07-17T00:45:34.061Z">2026-07-17T00:45:34.061Z</time></td>
+                    <td><code>—</code></td>
+                    <td><time datetime="2026-07-17T00:47:22.987Z">2026-07-17T00:47:22.987Z</time></td>
+                </tr>
+                <tr>
+                    <td><a href="/results/jrig/sha256-33461c1e9193b3e104d288a080c867b8f61c10d2ade0805883bec7314b899fae/"><code>databricks-bundle-medic</code></a></td>
+                    <td><span class="badge badge--result-pass">pass</span></td>
+                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
+                    <td><time datetime="2026-07-17T00:45:34.061Z">2026-07-17T00:45:34.061Z</time></td>
+                    <td><time datetime="2026-07-17T00:45:34.061Z">2026-07-17T00:45:34.061Z</time></td>
+                    <td><code>—</code></td>
+                    <td><time datetime="2026-07-17T00:47:22.987Z">2026-07-17T00:47:22.987Z</time></td>
+                </tr>
+                <tr>
+                    <td><a href="/results/jrig/sha256-56cb4d4ffb65d066a2751b26de913a7cb2dc9bbbdd68ae082a8fc95a85c6bebf/"><code>databricks-cluster-forensics</code></a></td>
+                    <td><span class="badge badge--result-advisory">advisory</span></td>
+                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
+                    <td><time datetime="2026-07-17T00:45:34.061Z">2026-07-17T00:45:34.061Z</time></td>
+                    <td><time datetime="2026-07-17T00:45:34.061Z">2026-07-17T00:45:34.061Z</time></td>
+                    <td><code>—</code></td>
+                    <td><time datetime="2026-07-17T00:47:22.987Z">2026-07-17T00:47:22.987Z</time></td>
+                </tr>
+                <tr>
+                    <td><a href="/results/jrig/sha256-760d3b6e7fab2472ae82d6d27fd1d311633d666bc0c5ec47b0a95c0a3b5e53b2/"><code>databricks-cost-leak-hunter</code></a></td>
+                    <td><span class="badge badge--result-advisory">advisory</span></td>
+                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
+                    <td><time datetime="2026-07-17T00:45:34.061Z">2026-07-17T00:45:34.061Z</time></td>
+                    <td><time datetime="2026-07-17T00:45:34.061Z">2026-07-17T00:45:34.061Z</time></td>
+                    <td><code>—</code></td>
+                    <td><time datetime="2026-07-17T00:47:22.987Z">2026-07-17T00:47:22.987Z</time></td>
+                </tr>
+                <tr>
+                    <td><a href="/results/jrig/sha256-9a0beb3e43f1c3af7ef0d5711359f367c755bcc954f0aaf4c49814bdc2242190/"><code>databricks-streaming-guardian</code></a></td>
+                    <td><span class="badge badge--result-advisory">advisory</span></td>
+                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
+                    <td><time datetime="2026-07-17T00:45:34.061Z">2026-07-17T00:45:34.061Z</time></td>
+                    <td><time datetime="2026-07-17T00:45:34.061Z">2026-07-17T00:45:34.061Z</time></td>
+                    <td><code>—</code></td>
+                    <td><time datetime="2026-07-17T00:47:22.987Z">2026-07-17T00:47:22.987Z</time></td>
+                </tr>
+                <tr>
+                    <td><a href="/results/jrig/sha256-6d38d543c2febf24cfb33c2dd9de3785c505e6cb5e0ba344468fdad7d51ca122/"><code>databricks-uc-migration-pilot</code></a></td>
+                    <td><span class="badge badge--result-advisory">advisory</span></td>
+                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
+                    <td><time datetime="2026-07-17T00:45:34.061Z">2026-07-17T00:45:34.061Z</time></td>
+                    <td><time datetime="2026-07-17T00:45:34.061Z">2026-07-17T00:45:34.061Z</time></td>
+                    <td><code>—</code></td>
+                    <td><time datetime="2026-07-17T00:47:22.987Z">2026-07-17T00:47:22.987Z</time></td>
+                </tr>
+            </tbody>
+        </table>
     </main>
     <footer class="site-footer">
         <div class="site-footer__inner">
