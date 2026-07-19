@@ -52,10 +52,14 @@ const PINNED: PinnedSubjects = {
       operatorConfirmed: false,
     },
     qmd: {
-      githubRepo: 'jeremylongshore/qmd-team-intent-kb',
-      subjects: ['repo:jeremylongshore/qmd-team-intent-kb:ref:refs/heads/main'],
+      githubRepo: 'jeremylongshore/bobs-big-brain-registrar',
+      subjects: [
+        'repo:jeremylongshore/qmd-team-intent-kb:ref:refs/heads/main',
+        'repo:jeremylongshore/bobs-big-brain-registrar:ref:refs/heads/main',
+      ],
       workflowRefs: [
         'jeremylongshore/qmd-team-intent-kb/.github/workflows/emit-evidence.yml@refs/heads/main',
+        'jeremylongshore/bobs-big-brain-registrar/.github/workflows/emit-evidence.yml@refs/heads/main',
       ],
       manifestTag: 'evidence-latest',
       operatorConfirmed: false,
@@ -126,7 +130,7 @@ describe('makeManifestUrlResolver', () => {
   it('resolves qmd (a repo that cuts no Releases) to its fixed evidence-latest tag', () => {
     const resolve = makeManifestUrlResolver(PINNED);
     expect(resolve('qmd')).toBe(
-      'https://github.com/jeremylongshore/qmd-team-intent-kb/releases/download/evidence-latest/report-manifest.json',
+      'https://github.com/jeremylongshore/bobs-big-brain-registrar/releases/download/evidence-latest/report-manifest.json',
     );
   });
 
