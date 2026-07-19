@@ -478,17 +478,15 @@ describe('parsePinnedSubjects', () => {
     expect(pinned.repos['jrig']?.githubRepo).toBe('jeremylongshore/j-rig-skill-binary-eval');
     // qmd's first live manifest verified on 2026-07-16 (emit run 29540093954,
     // ingest run 29540142152) — confirmed per the ccp #52 pattern. The repo
-    // renamed to bobs-big-brain-registrar on 2026-07-19; both slugs stay
-    // pinned until the first new-name manifest verifies.
+    // renamed to bobs-big-brain-registrar on 2026-07-19; the transitional
+    // old-slug pins were dropped after the first new-name manifest verified
+    // (emit run 29703739648 → ingest run 29703779626).
     expect(pinned.repos['qmd']?.operatorConfirmed).toBe(true);
     expect(pinned.repos['qmd']?.manifestTag).toBe('evidence-latest');
     expect(pinned.repos['qmd']?.githubRepo).toBe('jeremylongshore/bobs-big-brain-registrar');
-    expect(pinned.repos['qmd']?.subjects).toContain(
-      'repo:jeremylongshore/qmd-team-intent-kb:ref:refs/heads/main',
-    );
-    expect(pinned.repos['qmd']?.subjects).toContain(
+    expect(pinned.repos['qmd']?.subjects).toEqual([
       'repo:jeremylongshore/bobs-big-brain-registrar:ref:refs/heads/main',
-    );
+    ]);
   });
 });
 
