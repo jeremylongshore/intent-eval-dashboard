@@ -1,56 +1,160 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>validation-result/v1 — evals.intentsolutions.io</title>
-<style>:root { --fg:#1a202c; --muted:#6b7280; --accent:#2c5282; --border:#e2e8f0; --bg:#ffffff; }
-* { box-sizing:border-box; }
-body { margin:0; font-family:ui-sans-serif,system-ui,-apple-system,sans-serif; color:var(--fg); background:var(--bg); line-height:1.6; }
-main { max-width:46rem; margin:0 auto; padding:2rem 1.25rem 4rem; }
-h1 { font-size:1.5rem; line-height:1.3; }
-h2 { font-size:1.15rem; margin-top:2rem; }
-code { background:#f1f5f9; padding:0.1em 0.35em; border-radius:4px; font-size:0.9em; }
-a { color:var(--accent); }
-.status { display:inline-block; font-size:0.75rem; font-weight:700; padding:0.15em 0.6em; border-radius:999px; border:1px solid; margin-left:0.5rem; vertical-align:middle; }
-.status--NORMATIVE { background:#dcfce7; color:#14532d; border-color:#86efac; }
-.status--DRAFT { background:#fef9c3; color:#713f12; border-color:#fde047; }
-.status--RESERVED { background:#e2e8f0; color:#1e293b; border-color:#94a3b8; }
-table { border-collapse:collapse; width:100%; font-size:0.95rem; }
-td,th { text-align:left; padding:0.5rem 0.75rem; border-bottom:1px solid var(--border); vertical-align:top; }
-footer { max-width:46rem; margin:0 auto; padding:1rem 1.25rem 3rem; color:var(--muted); font-size:0.85rem; border-top:1px solid var(--border); }
-.crumb { font-size:0.85rem; color:var(--muted); margin-bottom:1.5rem; }</style>
-</head>
-<body>
-<main>
-<p class="crumb"><a href="/">evals.intentsolutions.io</a> / validation-result / v1</p>
-<h1><code>validation-result/v1</code><span class="status status--RESERVED">RESERVED</span></h1>
-<p><strong>Predicate URI:</strong> <code>https://evals.intentsolutions.io/validation-result/v1</code></p>
-<h2>What this predicate asserts</h2>
-<p>Reserved for structured validator output (e.g. SKILL.md spec validation) as a signed predicate.</p>
-<h2>Where it is used</h2>
-<p>Not yet emitted; the URI is reserved by the contracts kernel.</p>
-<h2>Machine-readable definition</h2>
-<p>The canonical JSON Schema (plus matching Zod and Pydantic validators) is version-pinned in the
-contracts kernel: <em>no schema published yet</em>. The kernel package is
-<a href="https://www.npmjs.com/package/@intentsolutions/core"><code>@intentsolutions/core</code></a> on npm.</p>
-<h2>How to verify a statement carrying this predicate</h2>
-<p>Statements are in-toto v1 Statements, DSSE-signed keyless via sigstore against the public
-production Rekor transparency log. Given a bundle file and its sigstore bundle:</p>
-<p><code>cosign verify-blob --new-bundle-format --bundle &lt;file&gt;.sigstore.json
---certificate-identity &lt;the emitting workflow's identity&gt;
---certificate-oidc-issuer https://token.actions.githubusercontent.com &lt;file&gt;</code></p>
-<p>Live, verifiable examples: <a href="https://labs.intentsolutions.io/results/">the results
-browser</a> re-verifies every row before rendering and links each bundle's evidence.</p>
-
-</main>
-<footer>
-<p>Predicate URIs are identifiers bound to this host by the contracts kernel
-(<a href="https://github.com/jeremylongshore/intent-eval-core">@intentsolutions/core</a>) under an ISEDC council binding: they live here and
-only here — never at labs.*. This host serves the human-readable definition each URI identifies;
-the machine-readable schemas live version-pinned in the kernel. Results live at
-<a href="https://labs.intentsolutions.io/">labs.intentsolutions.io</a>. Best-effort,
-single-operator service.</p>
-</footer>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>validation-result/v1 — evals.intentsolutions.io</title>
+    <style>
+      :root {
+        --fg: #1a202c;
+        --muted: #6b7280;
+        --accent: #2c5282;
+        --border: #e2e8f0;
+        --bg: #ffffff;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          sans-serif;
+        color: var(--fg);
+        background: var(--bg);
+        line-height: 1.6;
+      }
+      main {
+        max-width: 46rem;
+        margin: 0 auto;
+        padding: 2rem 1.25rem 4rem;
+      }
+      h1 {
+        font-size: 1.5rem;
+        line-height: 1.3;
+      }
+      h2 {
+        font-size: 1.15rem;
+        margin-top: 2rem;
+      }
+      code {
+        background: #f1f5f9;
+        padding: 0.1em 0.35em;
+        border-radius: 4px;
+        font-size: 0.9em;
+      }
+      a {
+        color: var(--accent);
+      }
+      .status {
+        display: inline-block;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 0.15em 0.6em;
+        border-radius: 999px;
+        border: 1px solid;
+        margin-left: 0.5rem;
+        vertical-align: middle;
+      }
+      .status--NORMATIVE {
+        background: #dcfce7;
+        color: #14532d;
+        border-color: #86efac;
+      }
+      .status--DRAFT {
+        background: #fef9c3;
+        color: #713f12;
+        border-color: #fde047;
+      }
+      .status--RESERVED {
+        background: #e2e8f0;
+        color: #1e293b;
+        border-color: #94a3b8;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 0.95rem;
+      }
+      td,
+      th {
+        text-align: left;
+        padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+      footer {
+        max-width: 46rem;
+        margin: 0 auto;
+        padding: 1rem 1.25rem 3rem;
+        color: var(--muted);
+        font-size: 0.85rem;
+        border-top: 1px solid var(--border);
+      }
+      .crumb {
+        font-size: 0.85rem;
+        color: var(--muted);
+        margin-bottom: 1.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p class="crumb"><a href="/">evals.intentsolutions.io</a> / validation-result / v1</p>
+      <h1>
+        <code>validation-result/v1</code><span class="status status--RESERVED">RESERVED</span>
+      </h1>
+      <p>
+        <strong>Predicate URI:</strong>
+        <code>https://evals.intentsolutions.io/validation-result/v1</code>
+      </p>
+      <h2>What this predicate asserts</h2>
+      <p>
+        Reserved for structured validator output (e.g. SKILL.md spec validation) as a signed
+        predicate.
+      </p>
+      <h2>Where it is used</h2>
+      <p>Not yet emitted; the URI is reserved by the contracts kernel.</p>
+      <h2>Machine-readable definition</h2>
+      <p>
+        The canonical JSON Schema (plus matching Zod and Pydantic validators) is version-pinned in
+        the contracts kernel: <em>no schema published yet</em>. The kernel package is
+        <a href="https://www.npmjs.com/package/@intentsolutions/core"
+          ><code>@intentsolutions/core</code></a
+        >
+        on npm.
+      </p>
+      <h2>How to verify a statement carrying this predicate</h2>
+      <p>
+        Statements are in-toto v1 Statements, DSSE-signed keyless via sigstore against the public
+        production Rekor transparency log. Given a bundle file and its sigstore bundle:
+      </p>
+      <p>
+        <code
+          >cosign verify-blob --new-bundle-format --bundle &lt;file&gt;.sigstore.json
+          --certificate-identity &lt;the emitting workflow's identity&gt; --certificate-oidc-issuer
+          https://token.actions.githubusercontent.com &lt;file&gt;</code
+        >
+      </p>
+      <p>
+        Live, verifiable examples:
+        <a href="https://labs.intentsolutions.io/results/">the results browser</a> re-verifies every
+        row before rendering and links each bundle's evidence.
+      </p>
+    </main>
+    <footer>
+      <p>
+        Predicate URIs are identifiers bound to this host by the contracts kernel (<a
+          href="https://github.com/jeremylongshore/intent-eval-core"
+          >@intentsolutions/core</a
+        >) under an ISEDC council binding: they live here and only here — never at labs.*. This host
+        serves the human-readable definition each URI identifies; the machine-readable schemas live
+        version-pinned in the kernel. Results live at
+        <a href="https://labs.intentsolutions.io/">labs.intentsolutions.io</a>. Best-effort,
+        single-operator service.
+      </p>
+    </footer>
+  </body>
 </html>
