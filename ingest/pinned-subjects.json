@@ -51,10 +51,10 @@
     "CI evals. The repo cuts NO Releases at all, so the rolling `evidence-latest`",
     "tag is the only manifest home. Pinned before first emit;",
     "`operatorConfirmed: false` until the first live manifest verifies.",
-    "Renamed 2026-07-19 to `jeremylongshore/bobs-big-brain-registrar` — OIDC",
-    "claims carry the NEW slug after the rename, so both old- and new-slug",
-    "subjects/workflowRefs are pinned during the transition (additive; the",
-    "old-slug entries are dropped once the first new-name manifest verifies).",
+    "Renamed 2026-07-19 to `jeremylongshore/bobs-big-brain-registrar`. Both",
+    "slugs were dual-pinned during the transition; the old-slug entries were",
+    "dropped after the first new-name manifest verified end-to-end (emit run",
+    "29703739648 -> ingest run 29703779626, both green).",
     "",
     "ICOS is intentionally ABSENT — struck from the supervision tree per the",
     "cross-tier policy (DR-035). 8 repos exactly: iec, iel, iah, iaj, iar, ccp,",
@@ -120,12 +120,8 @@
     },
     "qmd": {
       "githubRepo": "jeremylongshore/bobs-big-brain-registrar",
-      "subjects": [
-        "repo:jeremylongshore/qmd-team-intent-kb:ref:refs/heads/main",
-        "repo:jeremylongshore/bobs-big-brain-registrar:ref:refs/heads/main"
-      ],
+      "subjects": ["repo:jeremylongshore/bobs-big-brain-registrar:ref:refs/heads/main"],
       "workflowRefs": [
-        "jeremylongshore/qmd-team-intent-kb/.github/workflows/emit-evidence.yml@refs/heads/main",
         "jeremylongshore/bobs-big-brain-registrar/.github/workflows/emit-evidence.yml@refs/heads/main"
       ],
       "manifestTag": "evidence-latest",

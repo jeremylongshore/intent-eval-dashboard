@@ -53,12 +53,8 @@ const PINNED: PinnedSubjects = {
     },
     qmd: {
       githubRepo: 'jeremylongshore/bobs-big-brain-registrar',
-      subjects: [
-        'repo:jeremylongshore/qmd-team-intent-kb:ref:refs/heads/main',
-        'repo:jeremylongshore/bobs-big-brain-registrar:ref:refs/heads/main',
-      ],
+      subjects: ['repo:jeremylongshore/bobs-big-brain-registrar:ref:refs/heads/main'],
       workflowRefs: [
-        'jeremylongshore/qmd-team-intent-kb/.github/workflows/emit-evidence.yml@refs/heads/main',
         'jeremylongshore/bobs-big-brain-registrar/.github/workflows/emit-evidence.yml@refs/heads/main',
       ],
       manifestTag: 'evidence-latest',
