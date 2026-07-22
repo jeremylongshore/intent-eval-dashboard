@@ -52,6 +52,21 @@
     "tag is the only manifest home. Pinned before first emit;",
     "`operatorConfirmed: false` until the first live manifest verifies.",
     "",
+    "qmd RENAME (2026-07-22): the source repo was renamed",
+    "`jeremylongshore/qmd-team-intent-kb` -> `jeremylongshore/bobs-big-brain-registrar`",
+    "(bobs-big-brain-registrar#285, 2026-07-19). The emitter correctly repointed its",
+    "own OIDC claims at the rename; this pin did not, so every post-rename emit",
+    "presented `repo:jeremylongshore/bobs-big-brain-registrar:...` against a pin",
+    "still naming the old repo -> subject mismatch -> fail-closed crash and a dark",
+    "public row. Verified against the live manifest at",
+    "`bobs-big-brain-registrar/releases/download/evidence-latest/report-manifest.json`",
+    "(emit run 29800184253, 2026-07-21): `signing.subject` and `signing.workflowRef`",
+    "carry exactly the coordinates pinned here. The ROW ID stays `qmd` on purpose --",
+    "it is hard-coded in the 8-element REPOS arrays across src/freshness/*.test.ts,",
+    "src/results/store-gate-row-source.test.ts, and src/ingest/units.test.ts; renaming",
+    "the id is a separate, larger change. Back to `operatorConfirmed: false` until the",
+    "first post-rename ingest verifies, then flipped true (the #55 -> #56 two-step).",
+    "",
     "ICOS is intentionally ABSENT — struck from the supervision tree per the",
     "cross-tier policy (DR-035). 8 repos exactly: iec, iel, iah, iaj, iar, ccp,",
     "jrig, qmd."
@@ -115,13 +130,13 @@
       "operatorConfirmed": true
     },
     "qmd": {
-      "githubRepo": "jeremylongshore/qmd-team-intent-kb",
-      "subjects": ["repo:jeremylongshore/qmd-team-intent-kb:ref:refs/heads/main"],
+      "githubRepo": "jeremylongshore/bobs-big-brain-registrar",
+      "subjects": ["repo:jeremylongshore/bobs-big-brain-registrar:ref:refs/heads/main"],
       "workflowRefs": [
-        "jeremylongshore/qmd-team-intent-kb/.github/workflows/emit-evidence.yml@refs/heads/main"
+        "jeremylongshore/bobs-big-brain-registrar/.github/workflows/emit-evidence.yml@refs/heads/main"
       ],
       "manifestTag": "evidence-latest",
-      "operatorConfirmed": true
+      "operatorConfirmed": false
     }
   }
 }

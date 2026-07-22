@@ -201,5 +201,5 @@ export const REPO_GITHUB: Readonly<Record<string, string>> = {
   // jrig = the SECOND ingest channel on j-rig-skill-binary-eval (nightly
   // skill-eval roster); iaj covers the same repo's tag-based release channel.
   jrig: 'jeremylongshore/j-rig-skill-binary-eval',
-  qmd: 'jeremylongshore/qmd-team-intent-kb',
+  qmd: 'jeremylongshore/bobs-big-brain-registrar',
 };

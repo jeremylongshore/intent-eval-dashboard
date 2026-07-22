@@ -477,10 +477,15 @@ describe('parsePinnedSubjects', () => {
     expect(pinned.repos['jrig']?.manifestTag).toBe('evidence-latest');
     expect(pinned.repos['jrig']?.githubRepo).toBe('jeremylongshore/j-rig-skill-binary-eval');
     // qmd's first live manifest verified on 2026-07-16 (emit run 29540093954,
-    // ingest run 29540142152) — confirmed per the ccp #52 pattern.
-    expect(pinned.repos['qmd']?.operatorConfirmed).toBe(true);
+    // ingest run 29540142152) — confirmed per the ccp #52 pattern. Then the
+    // source repo was RENAMED (qmd-team-intent-kb → bobs-big-brain-registrar,
+    // bobs-big-brain-registrar#285, 2026-07-19), so the pin was repointed and
+    // dropped back to operatorConfirmed:false pending the first post-rename
+    // ingest verification — the same #55 → #56 two-step. The row id stays `qmd`
+    // (it is hard-coded in the 8-element REPOS arrays across this suite).
+    expect(pinned.repos['qmd']?.operatorConfirmed).toBe(false);
     expect(pinned.repos['qmd']?.manifestTag).toBe('evidence-latest');
-    expect(pinned.repos['qmd']?.githubRepo).toBe('jeremylongshore/qmd-team-intent-kb');
+    expect(pinned.repos['qmd']?.githubRepo).toBe('jeremylongshore/bobs-big-brain-registrar');
   });
 });
 
