@@ -5,7 +5,14 @@
   "fixWithAI": true,
   "statusCheck": false,
   "updateExistingSummaryComment": true,
-  "excludeAuthors": ["dependabot[bot]", "github-actions[bot]", "renovate[bot]", "release-please[bot]", "semantic-release-bot", "renovate-bot"],
+  "excludeAuthors": [
+    "dependabot[bot]",
+    "github-actions[bot]",
+    "renovate[bot]",
+    "release-please[bot]",
+    "semantic-release-bot",
+    "renovate-bot"
+  ],
   "excludeBranches": ["dependabot/**", "renovate/**", "release-please--branches--**"],
   "disabledLabels": ["dependencies", "automated", "generated", "stats", "sync", "skip-greptile"],
   "ignoreKeywords": "chore(deps)\nchore(deps-dev)\nbuild(deps)\nbuild(deps-dev)\n[skip greptile]\n[greptile skip]",
