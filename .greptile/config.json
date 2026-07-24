@@ -1,12 +1,24 @@
 {
   "strictness": 3,
   "commentTypes": ["logic", "syntax"],
-  "triggerOnUpdates": true,
+  "triggerOnUpdates": false,
   "fixWithAI": true,
   "statusCheck": false,
-  "ignorePatterns": "node_modules/\ndist/\n.astro/\nsite/**/dist/\nsite-internal/dist/\ncoverage/\npnpm-lock.yaml\n.audit-harness/\n**/*.snap",
+  "updateExistingSummaryComment": true,
+  "excludeAuthors": [
+    "dependabot[bot]",
+    "github-actions[bot]",
+    "renovate[bot]",
+    "release-please[bot]",
+    "semantic-release-bot",
+    "renovate-bot"
+  ],
+  "excludeBranches": ["dependabot/**", "renovate/**", "release-please--branches--**"],
+  "disabledLabels": ["dependencies", "automated", "generated", "stats", "sync", "skip-greptile"],
+  "ignoreKeywords": "chore(deps)\nchore(deps-dev)\nbuild(deps)\nbuild(deps-dev)\n[skip greptile]\n[greptile skip]",
+  "ignorePatterns": "node_modules/\ndist/\nbuild/\n.astro/\nsite/**/dist/\nsite-internal/dist/\ncoverage/\n.beads/\n.audit-harness/\npnpm-lock.yaml\npackage-lock.json\nyarn.lock\nbun.lock\nbun.lockb\n**/*.min.js\n**/*.map\n**/*.snap",
   "confidenceScoreSection": { "included": true },
-  "sequenceDiagramSection": { "included": true },
+  "sequenceDiagramSection": { "included": false },
   "rules": [
     {
       "id": "no-gate-weakening",
