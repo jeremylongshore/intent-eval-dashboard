@@ -82,6 +82,11 @@ results browser. Architecture is locked by DR-035 (ISEDC Session 8, ratified
   so a partial fetch miss no longer regresses already-rendered rows.
 - **HTML structural-diff CI gate for Phase A.0 arm symmetry** (puxu.12, #29) — CI gate that
   structurally diffs the rendered HTML to enforce symmetric Phase A.0 arms.
+- **Tailnet-only J-Rig unified-report consumer** (IEP-EVAL-EVOLUTION-001,
+  `bd_000-projects-htjt.5`) — validates J-Rig's `j-rig/unified-report/v1` JSON,
+  renders explicit cell-level metrics with Wilson uncertainty and Raw Run lineage,
+  makes no-data loud, and refuses to write the unsigned local projection into
+  the public `site/` origin. Operator command: `pnpm run generate:eval-report`.
 
 ### Changed
 

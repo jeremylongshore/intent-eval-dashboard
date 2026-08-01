@@ -551,6 +551,180 @@ table code {
 .use-card--alarm h3 { color: #7f1d1d; }
 .use-card__detail--alarm { color: #7f1d1d; font-weight: 600; }
 
+/* --- J-Rig unified evaluation report (tailnet-only, data-dense) --- */
+/*
+ * This lane is intentionally scoped. The public dashboard keeps its compact
+ * publication layout; the operator report needs a wider table for explicit
+ * Task × Config × Model cells and raw-run lineage. No external font or JS is
+ * introduced: the existing system + monospace stacks keep the page inspectable
+ * and usable on the tailnet.
+ */
+.eval-report-main {
+    max-width: 1180px;
+}
+
+.site-header--internal {
+    background: #f8fafc;
+    border-bottom-color: #bfdbfe;
+}
+
+.site-header--internal .badge--internal {
+    background: #dbeafe;
+    color: #1e3a8a;
+    border-color: #93c5fd;
+}
+
+.eval-report-banner {
+    background: #fffbeb;
+    border: 1px solid #f59e0b;
+    border-left: 4px solid #d97706;
+    border-radius: 4px;
+    color: #78350f;
+    font-size: 0.9rem;
+    padding: 0.9rem 1.1rem;
+}
+
+.eval-report-banner p { margin: 0; }
+
+.eval-report-lead { margin-top: 2rem; }
+.eval-report-eyebrow {
+    color: #1e40af;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    margin: 0 0 0.5rem;
+    text-transform: uppercase;
+}
+
+.eval-report-meta { border-left: 3px solid #1e40af; }
+
+.eval-report-summary {
+    display: grid;
+    gap: 0.8rem;
+    grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+    margin-top: 1.25rem;
+}
+
+.eval-report-card {
+    background: #f8fafc;
+    border: 1px solid #dbeafe;
+    border-top: 3px solid #3b82f6;
+    border-radius: 4px;
+    min-height: 7.5rem;
+    padding: 0.85rem 1rem;
+}
+
+.eval-report-card h3 {
+    color: #1e3a8a;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-size: 0.82rem;
+    margin: 0;
+}
+
+.eval-report-card__value {
+    color: #0f172a;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-size: 1.65rem;
+    font-weight: 700;
+    line-height: 1.1;
+    margin: 0.65rem 0 0;
+}
+
+.eval-report-card__note,
+.eval-report-section-note {
+    color: #4b5563;
+    font-size: 0.82rem;
+}
+
+.eval-report-card__note { margin: 0.5rem 0 0; }
+.eval-report-section-note { margin: 0.5rem 0 0; }
+
+.eval-report-no-data {
+    background: #fef2f2;
+    border: 1px solid #f87171;
+    border-left: 4px solid #dc2626;
+    border-radius: 4px;
+    color: #7f1d1d;
+    margin-top: 1.5rem;
+    padding: 1rem 1.25rem;
+}
+
+.eval-report-no-data h2 { color: #7f1d1d; margin: 0; }
+.eval-report-no-data p { margin-bottom: 0; }
+
+.eval-report-table-wrap {
+    margin-top: 1rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.eval-report-table {
+    font-size: 0.8rem;
+    margin-top: 0;
+    min-width: 980px;
+}
+
+.eval-report-table th,
+.eval-report-table td {
+    padding: 0.5rem 0.6rem;
+    vertical-align: top;
+}
+
+.eval-report-table th {
+    background: #eff6ff;
+    color: #1e3a8a;
+    white-space: nowrap;
+}
+
+.eval-report-table td code { white-space: nowrap; }
+.eval-report-empty { color: #6b7280; text-align: center; }
+.eval-report-muted { color: #6b7280; }
+
+.eval-report-status {
+    border: 1px solid #d1d5db;
+    border-radius: 999px;
+    display: inline-block;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-size: 0.75rem;
+    padding: 0.12rem 0.5rem;
+    white-space: nowrap;
+}
+
+.eval-report-status--completed {
+    background: #dcfce7;
+    border-color: #86efac;
+    color: #14532d;
+}
+
+.eval-report-status--active {
+    background: #dbeafe;
+    border-color: #93c5fd;
+    color: #1e3a8a;
+}
+
+.eval-report-status--harness-error {
+    background: #fee2e2;
+    border-color: #f87171;
+    color: #7f1d1d;
+    font-weight: 700;
+}
+
+.eval-report-main a:focus-visible {
+    outline: 3px solid #f59e0b;
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .eval-report-main *,
+    .eval-report-main *::before,
+    .eval-report-main *::after {
+        animation: none !important;
+        scroll-behavior: auto !important;
+        transition: none !important;
+    }
+}
+
 /* --- Responsive --- */
 @media (max-width: 600px) {
     html { font-size: 16px; }
@@ -559,6 +733,11 @@ table code {
     .meta-block dl { grid-template-columns: 1fr; gap: 0.15rem; }
     .meta-block dt { font-size: 0.8rem; }
     .meta-block dd { margin-bottom: 0.5rem; }
+}
+
+@media (max-width: 720px) {
+    .eval-report-main { padding-left: 1rem; padding-right: 1rem; }
+    .eval-report-summary { grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); }
 }
 
 /* --- Print --- */
