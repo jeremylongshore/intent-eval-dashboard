@@ -27,13 +27,18 @@ async function generate(reportPath: string, internalSiteRoot: string): Promise<s
 }
 
 async function main(argv: readonly string[]): Promise<number> {
-  const reportPath = argv[0];
+  // `pnpm run <script> -- ...` is the documented invocation, but pnpm
+  // versions differ on whether the separator is stripped before the script
+  // receives argv. Accept both forms so the operator-facing command remains
+  // reproducible across supported package-manager versions.
+  const args = argv[0] === '--' ? argv.slice(1) : argv;
+  const reportPath = args[0];
   if (reportPath === undefined) {
     console.error('Usage: pnpm run generate:eval-report -- <unified-report.json> [site-internal]');
     return 2;
   }
 
-  const requestedRoot = argv[1] ?? 'site-internal';
+  const requestedRoot = args[1] ?? 'site-internal';
   if (basename(resolve(process.cwd(), requestedRoot)) === 'site') {
     console.error(
       'generate-eval-report: refusing to write tailnet-only output into the public origin "site/". ' +
