@@ -93,6 +93,10 @@ results browser. Architecture is locked by DR-035 (ISEDC Session 8, ratified
 
 ### Changed
 
+- **Documented report CLI separator compatibility** (`bd_000-projects-htjt.4.2`, #69) —
+  `generate:eval-report` now accepts the literal `--` passed by some pnpm versions,
+  while retaining direct invocation compatibility and the public-site refusal.
+
 - **Site format: Astro → single-file HTML** for v0.1.0 — replaced the original plan-rank
   Astro choice with Claude-generated self-contained HTML + one shared `/style.css` (zero
   build step; deploy is rsync of `.html` files). Astro is adopted at Phase 2 when interactive
