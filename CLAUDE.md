@@ -57,7 +57,7 @@ Full catalog: DR-035 § 8.
 
 ## Built on top of the baseline (shipped)
 
-The dashboard now consumes `@intentsolutions/core@^0.9.0` (bumped from `^0.2.0` for the wave-2 `UsageEvent` + `HumanReview` entities) and the following are **built and committed** — see the per-feature sections below for the module maps:
+The dashboard now consumes `@intentsolutions/core@0.10.0` (bumped from `^0.2.0` for the wave-2 `UsageEvent` + `HumanReview` entities) and the following are **built and committed** — see the per-feature sections below for the module maps:
 
 - 6-worker verify-before-render ingest supervision tree (iec, iel, iah, iaj, iar, ccp — ICOS struck per cross-tier policy) + live ingest→render pipeline in the daily cron
 - Results browser with per-row visibility-tier gating (puxu.6)
@@ -115,7 +115,7 @@ The public results browser renders `gate-result/v1` rows from the VERIFIED inges
 
 ## Per-skill signals (`/skills/`, ig4h.6 — wave-2, built)
 
-The public per-skill surface renders the wave-2 adoption + human-trust + authoring-quality signals **per skill, per dimension, side by side — never rolled.** It is a SIBLING of `src/results/` (mirrors the same verify-before-render seam), not a parallel ingest path. It consumes the new `@intentsolutions/core@^0.9.0` entities (`UsageEvent` — the 15th kernel entity — and `HumanReview`) through a clean `SkillSignalResolver` seam. The adoption-score values are produced upstream by j-rig (`UsageEvent` ingest + the `HumanReview` capture verb, DR-103 Items 1/2/4/5, built in parallel); this repo is a **pure consumer**.
+The public per-skill surface renders the wave-2 adoption + human-trust + authoring-quality signals **per skill, per dimension, side by side — never rolled.** It is a SIBLING of `src/results/` (mirrors the same verify-before-render seam), not a parallel ingest path. It consumes the new `@intentsolutions/core@0.10.0` entities (`UsageEvent` — the 15th kernel entity — and `HumanReview`) through a clean `SkillSignalResolver` seam. The adoption-score values are produced upstream by j-rig (`UsageEvent` ingest + the `HumanReview` capture verb, DR-103 Items 1/2/4/5, built in parallel); this repo is a **pure consumer**.
 
 | Piece                      | Location                                                            | Role                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | -------------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

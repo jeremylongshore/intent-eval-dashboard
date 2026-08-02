@@ -17,6 +17,9 @@ results browser. Architecture is locked by DR-035 (ISEDC Session 8, ratified
 
 ### Added
 
+- Align the dashboard's kernel consumer with exact `@intentsolutions/core@0.10.0`
+  so verified ingest and report rendering use the current canonical schemas.
+
 - **Repository scaffolding** per DR-035 — README, CLAUDE.md, governance docs, license,
   contributor docs, `tests/TESTING.md` skeleton per the IS Testing SOP, vendored
   `@intentsolutions/audit-harness` dev dependency, and reserved directories `site/`
