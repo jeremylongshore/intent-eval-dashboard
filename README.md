@@ -28,6 +28,7 @@ Ratified by ISEDC Session 8 — see [DR-035](https://github.com/jeremylongshore/
 - **Eval-set browser** at `labs.intentsolutions.io/eval-sets/` — versioned, lineage-tracked spec rendering
 - **Public anonymous root** — methodology docs, freshness strip (stub at v0.1.0), end-to-end signed example
 - **Operator-internal view** — separate tailnet-only hostname, Tailscale identity, all reports regardless of public visibility tags
+- **J-Rig unified report surface** — explicit cell metrics + Raw Run lineage under `site-internal/`, clearly labeled as an unsigned local projection
 
 **Site format:** single-file HTML per page at v0.1.0 (zero build step; pure rsync deploy). Astro adopted at Phase 2 when interactive surfaces arrive. Acting-head decision 2026-05-30 — see plan file for reasoning.
 
@@ -70,9 +71,33 @@ pnpm run lint:c3:internal       # C3 gate over the internal output
 
 The tailnet-only **hostname** (e.g. `labs-internal.<tailnet>`), the **Tailscale-identity-gated Caddy block** that serves `site-internal/`, and the DNS/port wiring are a **human-gated VPS ops step** — they are intentionally **not** implemented here. This change builds the generator + its output only. Per the puxu.9 bead and the VP DevRel binding (DR-035 § 8): **no basicauth on this hostname — Tailscale identity is the gate.** It matches the existing tailnet-only infra pattern (Netdata at `intentsolutions:19999`, ntfy at `intentsolutions:8080`). Until that ops step is done, there is **no route** to this output.
 
+## J-Rig unified evaluation report (tailnet-only)
+
+The dashboard has a narrow consumer lane for the versioned JSON emitted by
+J-Rig's `report --unified --json` command. It renders the selected immutable
+Grader snapshot, explicit Task × Config × Model cell metrics, Wilson uncertainty,
+and Raw Run lifecycle lineage at:
+
+```text
+site-internal/internal/eval-reports/j-rig/index.html
+```
+
+Generate it only when an operator supplies a concrete report file:
+
+```bash
+pnpm run build
+pnpm run generate:eval-report -- /path/to/unified-report.json site-internal
+```
+
+This page is `noindex, nofollow`, tailnet-only, and explicitly **not** a signed
+Evidence Bundle or rollout decision. The parser fails closed on malformed input,
+the writer refuses `site/`, and no-data is rendered loudly. The upstream wire
+contract is documented in J-Rig's `034-AT-SPEC-unified-report-json-markdown`
+document; the dashboard is only a defensive consumer and renderer.
+
 ## Beyond the v0.1.0 baseline (shipped)
 
-The dashboard now consumes `@intentsolutions/core@^0.9.0` (`pre_registration_hash`, `retraction/v1`, `dashboard-render/v1`, and the `UsageEvent`/`HumanReview` entities behind the per-skill signals surface) and the following are **built and committed** on top of the original v0.1.0 methodology-first cut: the 6-worker verify-before-render ingest supervision tree, the results browser, the retraction protocol with its Caddy 410 kill-switch, ops-lite alerting, the Phase A.0 symmetric-render HTML structural-diff gate (puxu.12), the internal teaching-dashboard testing lane (`site-internal/internal/testing/`), and the public per-skill adoption + human-trust signals surface (`site/skills/`). See `CLAUDE.md` for the per-feature module map.
+The dashboard now consumes `@intentsolutions/core@0.10.0` (`pre_registration_hash`, `retraction/v1`, `dashboard-render/v1`, and the `UsageEvent`/`HumanReview` entities behind the per-skill signals surface) and the following are **built and committed** on top of the original v0.1.0 methodology-first cut: the 6-worker verify-before-render ingest supervision tree, the results browser, the retraction protocol with its Caddy 410 kill-switch, ops-lite alerting, the Phase A.0 symmetric-render HTML structural-diff gate (puxu.12), the internal teaching-dashboard testing lane (`site-internal/internal/testing/`), and the public per-skill adoption + human-trust signals surface (`site/skills/`). See `CLAUDE.md` for the per-feature module map.
 
 Still genuinely deferred: the Astro migration (the site remains single-file HTML) and the tailnet/basicauth VPS deploy wiring for the operator-internal surfaces (a documented human-gated ops step).
 

@@ -57,7 +57,7 @@ Full catalog: DR-035 § 8.
 
 ## Built on top of the baseline (shipped)
 
-The dashboard now consumes `@intentsolutions/core@^0.9.0` (bumped from `^0.2.0` for the wave-2 `UsageEvent` + `HumanReview` entities) and the following are **built and committed** — see the per-feature sections below for the module maps:
+The dashboard now consumes `@intentsolutions/core@0.10.0` (bumped from `^0.2.0` for the wave-2 `UsageEvent` + `HumanReview` entities) and the following are **built and committed** — see the per-feature sections below for the module maps:
 
 - 6-worker verify-before-render ingest supervision tree (iec, iel, iah, iaj, iar, ccp — ICOS struck per cross-tier policy) + live ingest→render pipeline in the daily cron
 - Results browser with per-row visibility-tier gating (puxu.6)
@@ -65,6 +65,7 @@ The dashboard now consumes `@intentsolutions/core@^0.9.0` (bumped from `^0.2.0` 
 - Freshness + decision-mix strip + `/status` USE-method view (puxu.7)
 - Operator-internal view (puxu.9), retraction protocol + Caddy 410 kill-switch (puxu.10), ops-lite ntfy alerting (puxu.11)
 - Phase A.0 symmetric-render HTML structural-diff gate (puxu.12)
+- Tailnet-only J-Rig unified-report consumer (IEP-EVAL-EVOLUTION-001 / umbrella bead `bd_000-projects-htjt.5`)
 
 Still genuinely deferred: the Astro migration (the site remains single-file HTML), the `cmd/labs-tui/` Go TUI (v0.2.0+ reservation, validated-demand-gated), and the tailnet/basicauth VPS deploy wiring for the operator-internal surfaces (documented human-gated ops step).
 
@@ -114,7 +115,7 @@ The public results browser renders `gate-result/v1` rows from the VERIFIED inges
 
 ## Per-skill signals (`/skills/`, ig4h.6 — wave-2, built)
 
-The public per-skill surface renders the wave-2 adoption + human-trust + authoring-quality signals **per skill, per dimension, side by side — never rolled.** It is a SIBLING of `src/results/` (mirrors the same verify-before-render seam), not a parallel ingest path. It consumes the new `@intentsolutions/core@^0.9.0` entities (`UsageEvent` — the 15th kernel entity — and `HumanReview`) through a clean `SkillSignalResolver` seam. The adoption-score values are produced upstream by j-rig (`UsageEvent` ingest + the `HumanReview` capture verb, DR-103 Items 1/2/4/5, built in parallel); this repo is a **pure consumer**.
+The public per-skill surface renders the wave-2 adoption + human-trust + authoring-quality signals **per skill, per dimension, side by side — never rolled.** It is a SIBLING of `src/results/` (mirrors the same verify-before-render seam), not a parallel ingest path. It consumes the new `@intentsolutions/core@0.10.0` entities (`UsageEvent` — the 15th kernel entity — and `HumanReview`) through a clean `SkillSignalResolver` seam. The adoption-score values are produced upstream by j-rig (`UsageEvent` ingest + the `HumanReview` capture verb, DR-103 Items 1/2/4/5, built in parallel); this repo is a **pure consumer**.
 
 | Piece                      | Location                                                            | Role                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | -------------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -153,6 +154,28 @@ The **inverse of the public results browser.** The public `/results/` generator 
 **Strict separation (load-bearing):** internal output goes to `site-internal/` — NEVER `site/`. The public Caddy block serves `site/` only; the public `deploy.yml` triggers on `paths: ['site/**']` and its smoke/C3/predicate scans all target `site` — so `site-internal/` is never wired into the public origin. The generated HTML IS committed (so the VPS `git reset --hard` checkout has it for the future tailnet block); only `site-internal/dist|.astro` are gitignored, mirroring `site/`. **The inverse-of-public test** (`generate-internal.test.ts`) proves it: a mixed-tier fixture (Tier-2-no-consent + embargoed Tier-1 + Tier-3 + public) → the public generator omits the three non-public bundles; the internal generator includes all four (keys + deep-link pages present).
 
 **Deploy is a human-gated follow-up — NOT in this repo's automation.** The tailnet-only hostname, the Tailscale-identity-gated Caddy block serving `site-internal/`, and DNS/port wiring are a manual VPS ops step. Per VP DevRel binding (DR-035 § 8): **no basicauth on the operator hostname — Tailscale identity is the gate.** Matches existing tailnet-only infra (Netdata `intentsolutions:19999`, ntfy `intentsolutions:8080`). Until that step is done there is no route to `site-internal/`. Do NOT touch the VPS/Caddy/Tailscale to wire it without explicit human go-ahead.
+
+## J-Rig unified report surface (`site-internal/internal/eval-reports/j-rig/`)
+
+The dashboard consumes J-Rig's versioned `j-rig/unified-report/v1` JSON as a
+defensive, operator-only projection. J-Rig owns the report contract and
+arithmetic; this repo validates the wire shape, renders the explicit
+Task × Config × Model cells plus Raw Run lifecycle lineage, and preserves
+uncertainty and ungraded states.
+
+| Piece | Location | Role |
+|---|---|---|
+| Wire validator | `src/eval-reports/unified-report.ts` | Defensive Zod boundary for J-Rig's report JSON; malformed input fails closed |
+| Static renderer | `src/eval-reports/unified-report.ts` | Data-dense no-JS HTML with grader identity, cell metrics, Wilson interval, and Raw Run table |
+| Generator + CLI | `src/eval-reports/unified-report.ts` + `scripts/generate-eval-report.ts` | `pnpm run generate:eval-report -- <report.json> [site-internal]`; refuses a root named `site` |
+| Contract specification | `000-docs/003-AT-SPEC-j-rig-unified-report-tailnet-surface-2026-08-01.md` | Trust boundary, operator flow, and follow-on publication requirements |
+
+**Trust boundary:** this is **not** a signed Evidence Bundle, does not carry
+DSSE/Rekor provenance, and is not a rollout decision. The page is marked
+`noindex, nofollow`, `iep-surface=tailnet-only`, and
+`iep-report-trust=unsigned-local-projection`. It is never written to `site/`.
+The default `pnpm run check` remains no-input-safe; an operator must provide an
+actual J-Rig JSON file to generate this lane.
 
 ## Internal testing dashboard (`site-internal/internal/testing/`, nr75 — built)
 
