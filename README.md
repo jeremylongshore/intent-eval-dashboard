@@ -6,6 +6,8 @@ Part of the **[Intent Eval Platform](https://github.com/intent-solutions-io/inte
 
 The 6th member of the Intent Eval Platform. Renders eval-set methodology + signed Evidence Bundles + gate results from the 5 platform repos and selected external consumers. Methodology-first surface — the eval-set browser ships before any results browser.
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/U5S225PTME)
+
 ## Where this fits
 
 | Repo | Role |
