@@ -101,10 +101,10 @@
       "operatorConfirmed": true
     },
     "ccp": {
-      "githubRepo": "jeremylongshore/claude-code-plugins-plus-skills",
-      "subjects": ["repo:jeremylongshore/claude-code-plugins-plus-skills:ref:refs/heads/main"],
+      "githubRepo": "jeremylongshore/tons-of-skills-marketplace",
+      "subjects": ["repo:jeremylongshore/tons-of-skills-marketplace:ref:refs/heads/main"],
       "workflowRefs": [
-        "jeremylongshore/claude-code-plugins-plus-skills/.github/workflows/emit-evidence.yml@refs/heads/main"
+        "jeremylongshore/tons-of-skills-marketplace/.github/workflows/emit-evidence.yml@refs/heads/main"
       ],
       "manifestTag": "evidence-latest",
       "operatorConfirmed": true

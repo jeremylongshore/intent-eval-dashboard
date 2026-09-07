@@ -102,6 +102,15 @@ results browser. Architecture is locked by DR-035 (ISEDC Session 8, ratified
 
 ### Fixed
 
+- **Marketplace ingest pin follows the source repo rename** (`ingest/pinned-subjects.json`, `ccp`):
+  `jeremylongshore/claude-code-plugins-plus-skills` became `jeremylongshore/tons-of-skills-marketplace`
+  on GitHub, so every new certificate's OIDC subject and `workflow_ref` carried the new slug and
+  the pin rejected every nightly manifest as `oidc_subject_mismatch` from 2026-08-26 to 2026-09-06
+  (twelve nights of `ccp: no-data`, last-known-good rendered behind a stale badge). Pin repointed;
+  `pinConsistencyIssues()` added to `pinned-loader.ts` and
+  `pinned-subjects.consistency.test.ts` asserts every shipped pin names its own repo, with a
+  negative test proving the pre-rename shape is caught. Found by the 2026-09 conference audit
+  (intent-os `000-docs/215-PP-PLAN-intent-conference-strategy-2026.md`).
 - **Raw Rekor API links on the scorecard** (#4) — switched the scorecard to raw Rekor API
   links because `search.sigstore.dev` deep-links were returning 403 / flaking.
 - **Guard the cron against transient manifest-fetch blackouts** (#26) — the regenerator no
