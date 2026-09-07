@@ -70,6 +70,14 @@ describe('renderResultsIndex', () => {
     expect(html).toContain('<link rel="stylesheet" href="/style.css">');
   });
 
+  it('keeps generated pages inside the Intent Solutions site network', () => {
+    const html = renderResultsIndex({ asOf: 'x', repos: [repo()] });
+    expect(html).toContain('aria-label="Intent Solutions network"');
+    expect(html).toContain('https://evals.intentsolutions.io/');
+    expect(html).toContain('https://learn.intentsolutions.io/');
+    expect(html).toContain('href="/start/"');
+  });
+
   it('renders the as-of banner = min(ingested_at)', () => {
     const view: ResultsView = { asOf: '2026-05-30T09:00:00.000Z', repos: [repo()] };
     const html = renderResultsIndex(view);

@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Intent Eval Platform — we grade AI skills. Every grade is signed.</title>
-    <meta name="description" content="Public reports surface for the Intent Eval Platform. Eval-set specs, signed scorecards, a verified results browser, per-skill signals, and pipeline status — every number traces to a sigstore-signed Evidence Bundle.">
+    <title>Your agent says it is done. Now prove it. | Intent Labs</title>
+    <meta name="description" content="Intent Labs tests agentic systems in public. See the method, inspect real results, and verify the signed evidence behind every published decision.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://labs.intentsolutions.io/">
     <link rel="stylesheet" href="/style.css">
 
     <!-- Open Graph -->
-    <meta property="og:title" content="Intent Eval Platform — labs.intentsolutions.io">
-    <meta property="og:description" content="Methodology-first public surface for the Intent Eval Platform. Eval-set specs, signed scorecards, and a verified results browser — every number traces to a signed Evidence Bundle.">
+    <meta property="og:title" content="Your agent says it is done. Now prove it. | Intent Labs">
+    <meta property="og:description" content="See how Intent Solutions tests agentic systems, publishes the result, and makes the evidence independently verifiable.">
     <meta property="og:url" content="https://labs.intentsolutions.io/">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="IEP Labs">
@@ -20,36 +20,105 @@
     <meta name="iep-source-repo" content="github.com/jeremylongshore/intent-eval-dashboard">
     <meta name="iep-dashboard-version" content="0.1.0">
 </head>
-<body>
+<body class="home">
     <header class="site-header">
+        <div class="network-bar" aria-label="Intent Solutions network">
+            <div class="network-bar__inner">
+                <a href="https://intentsolutions.io/" class="network-bar__brand">Intent Solutions</a>
+                <nav class="network-bar__links" aria-label="Intent Solutions properties">
+                    <a href="https://labs.intentsolutions.io/" aria-current="page">Labs</a>
+                    <a href="https://evals.intentsolutions.io/">Evals</a>
+                    <a href="https://learn.intentsolutions.io/">Learn</a>
+                </nav>
+            </div>
+        </div>
         <div class="site-header__inner">
-            <a href="/" class="site-header__wordmark">IEP&nbsp;Labs</a>
+            <a href="/" class="site-header__wordmark">Intent&nbsp;Labs</a>
             <nav class="site-nav" aria-label="Primary">
-                <a href="/eval-sets/">Eval Sets</a>
                 <a href="/results/">Results</a>
-                <a href="/skills/">Skills</a>
-                <a href="/status/">Status</a>
-                <a href="/methodology/">Methodology</a>
-                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
+                <a href="/eval-sets/">What we test</a>
+                <a href="/methodology/">How it works</a>
+                <a href="/start/">Start here</a>
+                <a href="/status/">Lab status</a>
             </nav>
         </div>
     </header>
 
     <main>
-        <h1>We grade AI skills. Every grade is signed and verifiable.</h1>
+        <section class="lab-hero" aria-labelledby="lab-hero-title">
+            <p class="eyebrow">Evaluation infrastructure for agentic systems</p>
+            <h1 id="lab-hero-title">Your agent says it is done.<br><em>Now prove it.</em></h1>
+            <p class="lead">
+                Intent Labs tests real agentic systems and publishes what happened, including the
+                failures. Every decision leads to the test that produced it and the signed evidence
+                behind it.
+            </p>
+            <div class="hero-actions" aria-label="Start exploring Intent Labs">
+                <a class="button button--primary" href="/eval-sets/iep-self-eval-dogfood/">Inspect a real evaluation</a>
+                <a class="button" href="/start/">Learn the evaluation path</a>
+            </div>
+            <p class="hero-note">No blended pass rate. No hidden fail rows. No need to take our word for it.</p>
+        </section>
 
-        <p class="lead">
-            Every night we run real, published AI skills through a behavioral eval harness and
-            publish the grades — pass, fail, or "the judge couldn't decide" — win or lose. Each
-            grade is cryptographically signed and anchored in a public transparency log, so you
-            never have to take our word for it.
-        </p>
+        <section class="evidence-path" aria-labelledby="evidence-path-title">
+            <div class="section-heading">
+                <p class="eyebrow">One claim. Three checkpoints.</p>
+                <h2 id="evidence-path-title">Follow the evidence, not the confidence.</h2>
+            </div>
+            <ol class="evidence-path__rail">
+                <li>
+                    <span class="evidence-path__step">01</span>
+                    <strong>Define the claim</strong>
+                    <p><a href="https://evals.intentsolutions.io/">Evals</a> gives each kind of result a stable, versioned meaning.</p>
+                </li>
+                <li>
+                    <span class="evidence-path__step">02</span>
+                    <strong>Run the test</strong>
+                    <p>A published eval set states the cases, policy, and stopping conditions before the result exists.</p>
+                </li>
+                <li>
+                    <span class="evidence-path__step">03</span>
+                    <strong>Inspect the receipt</strong>
+                    <p>Labs re-verifies the signature and public log entry before it shows the decision.</p>
+                </li>
+            </ol>
+        </section>
 
-        <p class="lead" style="font-weight: 600;">
-            <a href="/results/">See the results</a> &nbsp;·&nbsp;
-            <a href="/methodology/">How it works</a> &nbsp;·&nbsp;
-            <a href="/eval-sets/iep-self-eval-dogfood/">Verify one yourself</a>
-        </p>
+        <section class="entry-points" aria-labelledby="entry-points-title">
+            <div class="section-heading">
+                <p class="eyebrow">Choose your depth</p>
+                <h2 id="entry-points-title">You do not need to understand the platform first.</h2>
+            </div>
+            <div class="entry-points__grid">
+                <a class="entry-card" href="/results/">
+                    <span class="entry-card__label">I want the answer</span>
+                    <strong>See current results</strong>
+                    <span>Passes, failures, advisories, and missing evidence.</span>
+                </a>
+                <a class="entry-card" href="/start/">
+                    <span class="entry-card__label">I want to understand</span>
+                    <strong>Learn how an eval works</strong>
+                    <span>Plain language first, contracts and schemas when you need them.</span>
+                </a>
+                <a class="entry-card" href="/eval-sets/">
+                    <span class="entry-card__label">I want the method</span>
+                    <strong>Inspect what we test</strong>
+                    <span>Versioned specifications, cases, policies, and lineage.</span>
+                </a>
+            </div>
+        </section>
+
+        <aside class="learn-bridge">
+            <p class="eyebrow">Intent Solutions Learn</p>
+            <p><strong>Learning the wider practice?</strong> Learn is the separate education room for building and operating agentic systems. The evaluation lessons taught there point back to the live methods and receipts in this lab.</p>
+            <a href="https://learn.intentsolutions.io/">Visit Intent Solutions Learn</a>
+        </aside>
+
+        <details class="operations-panel">
+            <summary>
+                <span><strong>Live lab operations</strong> <small>Source freshness and decision mix for the last 24 hours</small></span>
+                <span class="operations-panel__action">Open monitor</span>
+            </summary>
 
         <!-- FRESHNESS-STRIP:START (generated by src/freshness) -->
         <section class="freshness-strip-grid" aria-labelledby="freshness-strip-h">
@@ -105,6 +174,10 @@
             <p class="strip__statuslink"><a href="/status/">Ingest pipeline status (USE method) →</a></p>
         </section>
         <!-- FRESHNESS-STRIP:END -->
+        </details>
+
+        <details class="technical-notes">
+            <summary><strong>Technical notes and governance constraints</strong></summary>
 
         <p>
             The eval-set is the spec. Browse it, criticise it, fork the methodology. When you see a number, it will trace back through a content-addressed Evidence Bundle, signed via sigstore and anchored in the Rekor transparency log, to one of the eval-sets listed below. We refuse to publish an aggregate "PASS%" across heterogeneous predicates — that is metric laundering.
@@ -201,18 +274,20 @@
             <li><a href="https://github.com/jeremylongshore/intent-eval-core">intent-eval-core — Canonical contracts kernel</a></li>
             <li><a href="https://github.com/jeremylongshore/intent-eval-lab">intent-eval-lab — Methodology + Decision Records</a></li>
         </ul>
+        </details>
     </main>
 
     <footer class="site-footer">
         <div class="site-footer__inner">
             <div>
                 <strong>labs.intentsolutions.io</strong> · dashboard <code>v0.1.0</code> · <a href="/status/" class="footer__commitment">best-effort, single-operator, see /status for liveness</a><br>
-                Intent Solutions — <a href="https://intentsolutions.io">intentsolutions.io</a>
+                Part of <a href="https://intentsolutions.io">Intent Solutions</a>
             </div>
             <div>
-                <a href="/methodology/">Methodology</a> ·
-                <a href="/eval-sets/">Eval Sets</a> ·
                 <a href="/results/">Results</a> ·
+                <a href="/start/">Start here</a> ·
+                <a href="https://evals.intentsolutions.io/">Evals</a> ·
+                <a href="https://learn.intentsolutions.io/">Learn</a> ·
                 <a href="/status/">Status</a> ·
                 <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
             </div>

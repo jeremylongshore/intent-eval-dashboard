@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://evals.intentsolutions.io/</loc></url>
+  <url><loc>https://evals.intentsolutions.io/gate-result/v1</loc></url>
+  <url><loc>https://evals.intentsolutions.io/retraction/v1</loc></url>
+  <url><loc>https://evals.intentsolutions.io/skill-refiner-pass/v1</loc></url>
+  <url><loc>https://evals.intentsolutions.io/dashboard-render/v1</loc></url>
+  <url><loc>https://evals.intentsolutions.io/human-review/v1</loc></url>
+  <url><loc>https://evals.intentsolutions.io/validation-result/v1</loc></url>
+  <url><loc>https://evals.intentsolutions.io/skill-snapshot/v1</loc></url>
+  <url><loc>https://evals.intentsolutions.io/runtime-receipt/v1</loc></url>
+  <url><loc>https://evals.intentsolutions.io/regression-pack/v1</loc></url>
+  <url><loc>https://evals.intentsolutions.io/eval-verdict/v1</loc></url>
+</urlset>
