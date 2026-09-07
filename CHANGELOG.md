@@ -9,6 +9,7 @@ This repository is **pre-release** (`0.1.0-pre`, no tagged versions yet). Everyt
 built toward the first `0.1.0` cut is recorded below under `[Unreleased]`.
 
 ## [Unreleased]
+
 The public reports dashboard for the Intent Eval Platform at `labs.intentsolutions.io`
 — the 6th platform repo. Methodology-first: the eval-set browser ships before any
 results browser. Architecture is locked by DR-035 (ISEDC Session 8, ratified
