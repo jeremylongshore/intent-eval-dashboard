@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Start here: how an agent evaluation works | Intent Labs</title>
+    <meta name="description" content="A plain-language guide to how Intent Labs defines a claim, runs an evaluation, publishes a decision, and verifies the evidence.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://labs.intentsolutions.io/start/">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="network-bar" aria-label="Intent Solutions network">
+            <div class="network-bar__inner">
+                <a href="https://intentsolutions.io/" class="network-bar__brand">Intent Solutions</a>
+                <nav class="network-bar__links" aria-label="Intent Solutions properties">
+                    <a href="https://labs.intentsolutions.io/" aria-current="page">Labs</a>
+                    <a href="https://evals.intentsolutions.io/">Evals</a>
+                    <a href="https://learn.intentsolutions.io/">Learn</a>
+                </nav>
+            </div>
+        </div>
+        <div class="site-header__inner">
+            <a href="/" class="site-header__wordmark">Intent&nbsp;Labs</a>
+            <nav class="site-nav" aria-label="Primary">
+                <a href="/results/">Results</a>
+                <a href="/eval-sets/">What we test</a>
+                <a href="/methodology/">How it works</a>
+                <a href="/start/" aria-current="page">Start here</a>
+                <a href="/status/">Lab status</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <p class="eyebrow">Start here</p>
+        <h1>How do you prove an agent did the job?</h1>
+        <p class="lead">
+            Start with one claim you can test. Not “is this agent good?” Try “does this skill find
+            the documented failure and return the required evidence?” A useful evaluation makes the
+            claim, conditions, decision rule, and receipt inspectable.
+        </p>
+
+        <h2>The evaluation path</h2>
+        <ol class="guide-steps">
+            <li>
+                <strong>State the claim.</strong>
+                <p>Name the behavior that must be demonstrated and the conditions that count as success.</p>
+            </li>
+            <li>
+                <strong>Publish the test before the answer.</strong>
+                <p>An <a href="/eval-sets/">eval set</a> records the cases, policy, and stopping conditions. This keeps the result tied to a visible method.</p>
+            </li>
+            <li>
+                <strong>Run the system.</strong>
+                <p>Deterministic checks and behavioral judges evaluate the work. A judge that cannot decide produces an advisory or error, not a quiet pass.</p>
+            </li>
+            <li>
+                <strong>Publish the decision and its evidence.</strong>
+                <p>The result points to a content-addressed Evidence Bundle. The bundle records what ran, what it saw, and why it reached that decision.</p>
+            </li>
+            <li>
+                <strong>Verify before display.</strong>
+                <p>Labs checks the signature, expected publishing identity, and public transparency-log entry before a result appears here.</p>
+            </li>
+        </ol>
+
+        <section class="plain-language" aria-labelledby="plain-language-title">
+            <h2 id="plain-language-title">Four things that used to sound like one thing</h2>
+            <dl>
+                <dt>Eval set</dt>
+                <dd>The test specification. It says what will be measured.</dd>
+                <dt>Predicate</dt>
+                <dd>The stable meaning of a signed statement. <a href="https://evals.intentsolutions.io/">Evals</a> is the authority for those definitions.</dd>
+                <dt>Result</dt>
+                <dd>The decision from one run: pass, fail, advisory, or error.</dd>
+                <dt>Evidence Bundle</dt>
+                <dd>The receipt that connects the decision to the exact inputs, policy, and execution.</dd>
+            </dl>
+        </section>
+
+        <section class="try-path" aria-labelledby="try-path-title">
+            <p class="eyebrow">See it before you build it</p>
+            <h2 id="try-path-title">Inspect the failure we published about our own work.</h2>
+            <p>
+                The dogfood scorecard applies the same method to Intent Solutions skills. It shows a
+                ship decision and a block decision with the same visual weight, plus the commands and
+                public log entries needed to verify them.
+            </p>
+            <p><a class="button button--primary" href="/eval-sets/iep-self-eval-dogfood/">Open the dogfood scorecard</a></p>
+        </section>
+
+        <h2>Run J-Rig in your repository</h2>
+        <p>J-Rig is the command-line runner behind the skill evaluation path. Pin it per repository, then run an eval against a published spec.</p>
+        <pre><code>pnpm add -D @intentsolutions/jrig-cli
+pnpm exec j-rig check ./my-skill
+pnpm exec j-rig eval ./my-skill --spec ./eval-spec.yaml
+pnpm exec j-rig report</code></pre>
+        <p class="predicate-note">The judge provider is selected for the constraint. The evaluation contract and evidence format stay stable.</p>
+
+        <aside class="learn-bridge">
+            <p class="eyebrow">The wider practice</p>
+            <p><strong>Evaluation is one part of operating an agentic system.</strong> Intent Solutions Learn covers framing, building, review, governance, and production operations. Labs remains the public place to inspect the evaluation method and proof.</p>
+            <a href="https://learn.intentsolutions.io/">Continue in Intent Solutions Learn</a>
+        </aside>
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-footer__inner">
+            <div><strong>Intent Labs</strong><br>Part of <a href="https://intentsolutions.io/">Intent Solutions</a></div>
+            <div>
+                <a href="/results/">Results</a> ·
+                <a href="/methodology/">Methodology</a> ·
+                <a href="https://evals.intentsolutions.io/">Evals</a> ·
+                <a href="https://learn.intentsolutions.io/">Learn</a> ·
+                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

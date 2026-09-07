@@ -242,12 +242,24 @@ LISTING_TEMPLATE = """<!DOCTYPE html>
 </head>
 <body>
     <header class="site-header">
+        <div class="network-bar" aria-label="Intent Solutions network">
+            <div class="network-bar__inner">
+                <a href="https://intentsolutions.io/" class="network-bar__brand">Intent Solutions</a>
+                <nav class="network-bar__links" aria-label="Intent Solutions properties">
+                    <a href="https://labs.intentsolutions.io/" aria-current="page">Labs</a>
+                    <a href="https://evals.intentsolutions.io/">Evals</a>
+                    <a href="https://learn.intentsolutions.io/">Learn</a>
+                </nav>
+            </div>
+        </div>
         <div class="site-header__inner">
-            <a href="/" class="site-header__wordmark">IEP&nbsp;Labs</a>
+            <a href="/" class="site-header__wordmark">Intent&nbsp;Labs</a>
             <nav class="site-nav" aria-label="Primary">
-                <a href="/eval-sets/" aria-current="page">Eval Sets</a>
-                <a href="/methodology/">Methodology</a>
-                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
+                <a href="/results/">Results</a>
+                <a href="/eval-sets/" aria-current="page">What we test</a>
+                <a href="/methodology/">How it works</a>
+                <a href="/start/">Start here</a>
+                <a href="/status/">Lab status</a>
             </nav>
         </div>
     </header>
@@ -314,11 +326,13 @@ LISTING_TEMPLATE = """<!DOCTYPE html>
         <div class="site-footer__inner">
             <div>
                 <strong>labs.intentsolutions.io</strong> · dashboard <code>v0.1.0</code> · cron last ran <code>{cron_last_run_utc}</code><br>
-                Intent Solutions — <a href="https://intentsolutions.io">intentsolutions.io</a>
+                Part of <a href="https://intentsolutions.io">Intent Solutions</a>
             </div>
             <div>
-                <a href="/methodology/">Methodology</a> ·
-                <a href="/eval-sets/">Eval Sets</a> ·
+                <a href="/results/">Results</a> ·
+                <a href="/start/">Start here</a> ·
+                <a href="https://evals.intentsolutions.io/">Evals</a> ·
+                <a href="https://learn.intentsolutions.io/">Learn</a> ·
                 <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
             </div>
         </div>

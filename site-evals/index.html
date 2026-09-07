@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>evals.intentsolutions.io — predicate authority</title>
+    <title>The definitions behind Intent Labs | Intent Evals</title>
     <style>
       :root {
         --fg: #1a202c;
@@ -98,25 +98,147 @@
         color: var(--muted);
         margin-bottom: 1.5rem;
       }
+      .network {
+        color: #dbe6ff;
+        background: #0b182b;
+        font-size: 0.76rem;
+        letter-spacing: 0.04em;
+      }
+      .network__inner {
+        max-width: 68rem;
+        margin: 0 auto;
+        padding: 0.55rem 1.25rem;
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .network a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .network__brand {
+        font-weight: 750;
+        text-transform: uppercase;
+      }
+      .network__links {
+        display: flex;
+        gap: 1rem;
+      }
+      .network__links a {
+        color: #aebbd1;
+      }
+      .network__links a[aria-current='page'] {
+        color: #ffffff;
+      }
+      .network__links a[aria-current='page']::before {
+        content: '●';
+        color: #f08a4b;
+        margin-right: 0.4rem;
+      }
+      .hero {
+        padding: 2rem 0 1.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .eyebrow {
+        margin: 0 0 0.5rem;
+        color: var(--accent);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .hero h1 {
+        max-width: 36rem;
+        margin: 0;
+        font-size: clamp(2rem, 6vw, 3.7rem);
+        line-height: 1.03;
+        letter-spacing: -0.045em;
+      }
+      .hero__lead {
+        max-width: 40rem;
+        color: #4b5563;
+        font-size: 1.08rem;
+      }
+      .relationship {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 1rem;
+        align-items: stretch;
+        margin-top: 1.5rem;
+      }
+      .relationship__item {
+        padding: 1rem;
+        border: 1px solid var(--border);
+        background: #f8fafc;
+      }
+      .relationship__item strong {
+        display: block;
+        margin-bottom: 0.25rem;
+        color: #0b182b;
+      }
+      .relationship__arrow {
+        align-self: center;
+        color: #d95c22;
+        font-weight: 800;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 1.25rem;
+      }
+      .actions a {
+        font-weight: 700;
+      }
+      @media (max-width: 560px) {
+        .relationship {
+          grid-template-columns: 1fr;
+        }
+        .relationship__arrow {
+          transform: rotate(90deg);
+          justify-self: center;
+        }
+      }
     </style>
   </head>
   <body>
+    <header class="network" aria-label="Intent Solutions network">
+      <div class="network__inner">
+        <a class="network__brand" href="https://intentsolutions.io/">Intent Solutions</a>
+        <nav class="network__links" aria-label="Intent Solutions properties">
+          <a href="https://labs.intentsolutions.io/">Labs</a>
+          <a href="https://evals.intentsolutions.io/" aria-current="page">Evals</a>
+          <a href="https://learn.intentsolutions.io/">Learn</a>
+        </nav>
+      </div>
+    </header>
     <main>
-      <h1>evals.intentsolutions.io — the predicate authority</h1>
+      <section class="hero">
+        <p class="eyebrow">Intent Evals</p>
+        <h1>The definitions behind every result in Intent Labs.</h1>
+        <p class="hero__lead">
+          Labs shows what happened. Evals defines exactly what each signed statement means, so the
+          definition stays stable even as tools, models, and runtimes change.
+        </p>
+        <div class="relationship" aria-label="Relationship between Intent Labs and Intent Evals">
+          <div class="relationship__item">
+            <strong>Intent Labs</strong>Tests systems and publishes results you can inspect.
+          </div>
+          <span class="relationship__arrow" aria-hidden="true">↔</span>
+          <div class="relationship__item">
+            <strong>Intent Evals</strong>Maintains the versioned definitions those results use.
+          </div>
+        </div>
+        <div class="actions">
+          <a href="https://labs.intentsolutions.io/results/">See current results</a>
+          <a href="https://labs.intentsolutions.io/start/">Learn how an evaluation works</a>
+        </div>
+      </section>
+      <h2>Versioned result definitions</h2>
       <p>
-        This host is the canonical home of the Intent Eval Platform's
-        <strong>predicate URIs</strong> — the identifiers inside every signed attestation the
-        platform publishes. When a signed statement says its predicate is
-        <code>https://evals.intentsolutions.io/gate-result/v1</code>, this is the page that URI
-        identifies: what the statement asserts, where its machine-readable schema lives, and how to
-        verify it.
+        These technical identifiers are for systems that produce or verify evidence. If you only
+        want to understand a result, start in <a href="https://labs.intentsolutions.io/">Labs</a>.
       </p>
-      <p>
-        Looking for results? They live at
-        <a href="https://labs.intentsolutions.io/">labs.intentsolutions.io</a> — graded nightly,
-        signed, and re-verified before rendering. This host defines; that host shows.
-      </p>
-      <h2>Predicates</h2>
       <table>
         <thead>
           <tr>
@@ -179,7 +301,7 @@
               <a href="/validation-result/v1"><code>validation-result/v1</code></a>
             </td>
             <td><span class="status status--RESERVED">RESERVED</span></td>
-            <td>Reserved for structured validator output (e.</td>
+            <td>Reserved for future structured validator output. Its body is not yet specified.</td>
           </tr>
           <tr>
             <td>
@@ -222,11 +344,11 @@
           </tr>
         </tbody>
       </table>
-      <h2>Integrity properties of this host</h2>
+      <h2>Why this host stays separate</h2>
       <p>
-        DNSSEC-signed zone; CAA-pinned to Let's Encrypt; predicate URIs never move hosts (ISEDC CISO
-        binding). A predicate page may gain clarifications; the meaning a URI identifies is
-        immutable — breaking changes mint a new version segment, never rewrite an old one.
+        A result definition cannot drift whenever the dashboard changes. Predicate URIs stay on this
+        host. Clarifications may be added, but a breaking change creates a new version instead of
+        rewriting the old meaning. The zone is DNSSEC-signed and CAA-pinned to Let's Encrypt.
       </p>
     </main>
     <footer>
@@ -236,9 +358,10 @@
           >@intentsolutions/core</a
         >) under an ISEDC council binding: they live here and only here — never at labs.*. This host
         serves the human-readable definition each URI identifies; the machine-readable schemas live
-        version-pinned in the kernel. Results live at
-        <a href="https://labs.intentsolutions.io/">labs.intentsolutions.io</a>. Best-effort,
-        single-operator service.
+        version-pinned in the kernel.
+        <a href="https://labs.intentsolutions.io/">Intent Labs</a> publishes results and teaching
+        material. <a href="https://learn.intentsolutions.io/">Intent Solutions Learn</a> teaches the
+        wider implementation practice. Best-effort, single-operator service.
       </p>
     </footer>
   </body>
