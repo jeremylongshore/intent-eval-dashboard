@@ -21,7 +21,9 @@ describe('pinned-subjects consistency', () => {
     const ccp = doc.repos['ccp'];
     expect(ccp).toBeDefined();
     expect(ccp?.githubRepo).toBe('jeremylongshore/tons-of-skills-marketplace');
-    expect(ccp?.subjects).toEqual(['repo:jeremylongshore/tons-of-skills-marketplace:ref:refs/heads/main']);
+    expect(ccp?.subjects).toEqual([
+      'repo:jeremylongshore/tons-of-skills-marketplace:ref:refs/heads/main',
+    ]);
     expect(ccp?.workflowRefs).toEqual([
       'jeremylongshore/tons-of-skills-marketplace/.github/workflows/emit-evidence.yml@refs/heads/main',
     ]);
