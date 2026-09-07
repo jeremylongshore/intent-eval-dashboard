@@ -25,6 +25,18 @@ export interface StoredGateRows {
   readonly repo: string;
   /** The gate-result/v1 predicate bodies (snake_case, as emitted). */
   readonly bodies: readonly unknown[];
+  /**
+   * Rekor log indices read off the row's ALREADY-VERIFIED sigstore bundle.
+   *
+   * The signed `EvidenceBundle.rekor_log_indices` cannot carry the anchor (the
+   * bundle bytes are the signed blob, so the index post-dates them), so the
+   * transparency-log position travels here instead — written only by the live
+   * pass, only after the ingest worker verified the whole manifest.
+   *
+   * Optional: rows persisted before this field existed read back `undefined`,
+   * which renders as "no anchor recorded" — never as a fabricated index.
+   */
+  readonly rekorLogIndices?: readonly number[];
 }
 
 /** Persist + retrieve gate-result bodies by their bundle's content key. */

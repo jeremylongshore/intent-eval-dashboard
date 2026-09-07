@@ -58,6 +58,9 @@ export class StoreGateRowSource implements GateRowSource {
         gateName: typeof body['gate_name'] === 'string' ? body['gate_name'] : 'unknown',
         evaluatedAt: typeof body['evaluated_at'] === 'string' ? body['evaluated_at'] : '',
         visibility,
+        ...(stored.rekorLogIndices !== undefined
+          ? { rekorLogIndices: stored.rekorLogIndices }
+          : {}),
       };
     });
     return rows.length > 0 ? rows : null;

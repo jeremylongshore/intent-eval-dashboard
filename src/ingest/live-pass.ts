@@ -17,6 +17,7 @@
  */
 
 import { canonicalJsonBytes, sha256Key } from './content-address.js';
+import { verifiedRekorLogIndices } from './rekor-anchor.js';
 import { type GateRowStore } from './gate-row-store.js';
 import {
   type ContentStore,
@@ -67,6 +68,8 @@ export interface LivePassResult {
 interface ManifestRowWithBodies {
   readonly bundle: unknown;
   readonly gateResults?: readonly unknown[];
+  /** The sigstore bundle the worker just verified (carries the Rekor anchor). */
+  readonly sigstoreBundle?: unknown;
 }
 
 /**
@@ -95,7 +98,15 @@ export async function runLivePass(
           const bodies = row.gateResults ?? [];
           if (bodies.length === 0) continue;
           const bundleKey = sha256Key(canonicalJsonBytes(row.bundle));
-          await deps.gateRowStore.put(bundleKey, { repo, bodies });
+          // The Rekor anchor is read off the row's sigstore bundle, NOT off the
+          // signed EvidenceBundle (whose `rekor_log_indices` cannot hold an
+          // index that only exists after its own bytes were signed). Reading it
+          // here is safe under verify-before-render: `runIngestWorker` above
+          // resolved, which means every row of this manifest passed the Rekor
+          // inclusion proof + DSSE signature + identity checks. An unreadable
+          // index yields `[]` — a loud no-anchor cell, never a guess.
+          const rekorLogIndices = verifiedRekorLogIndices(row.sigstoreBundle);
+          await deps.gateRowStore.put(bundleKey, { repo, bodies, rekorLogIndices });
         }
       }
       outcomes.push({ repo, fresh: true });
