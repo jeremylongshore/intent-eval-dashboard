@@ -83,7 +83,13 @@ describe('runLivePass — verified repo', () => {
     expect(outcomes).toEqual([{ repo: 'iec', fresh: true }]);
     // gate-rows persisted under the row's bundle content key
     const key = sha256Key(canonicalJsonBytes(BUNDLE));
-    expect(await d.gateRowStore.get(key)).toEqual({ repo: 'iec', bodies: [BODY] });
+    // `sigstoreBundle: {}` in this fixture carries no transparency-log entry, so
+    // the recorded Rekor anchor is honestly EMPTY — not fabricated.
+    expect(await d.gateRowStore.get(key)).toEqual({
+      repo: 'iec',
+      bodies: [BODY],
+      rekorLogIndices: [],
+    });
     // render input has a non-stale iec snapshot
     const iec = input.repos.find((r) => r.repo === 'iec');
     expect(iec?.snapshot?.bundleKeys).toContain(key);

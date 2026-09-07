@@ -50,6 +50,13 @@ export interface GateRowProjection {
   /** RFC-3339 `evaluated_at` from the gate-result/v1 body. */
   readonly evaluatedAt: string;
   readonly visibility: RowVisibility;
+  /**
+   * Rekor indices read off the row's already-verified sigstore bundle at ingest.
+   * Used only when the signed bundle's own `rekor_log_indices` is empty (which
+   * it always is for `cosign sign-blob` evidence — the index post-dates the
+   * signed bytes). Absent → no anchor is rendered.
+   */
+  readonly rekorLogIndices?: readonly number[];
 }
 
 /**
@@ -95,7 +102,13 @@ export class ContentStoreBundleResolver implements BundleResolver {
         gateName: p.gateName,
         evaluatedAt: p.evaluatedAt,
         bundleCreatedAt: bundle.created_at,
-        rekorLogIndices: bundle.rekor_log_indices,
+        // The signed bundle's own field wins when the producer managed to fill
+        // it; otherwise fall back to the anchor recorded from the verified
+        // sigstore bundle at ingest. Empty in both → an honest no-anchor cell.
+        rekorLogIndices:
+          bundle.rekor_log_indices.length > 0
+            ? bundle.rekor_log_indices
+            : (p.rekorLogIndices ?? []),
         visibility: p.visibility,
       });
     }
