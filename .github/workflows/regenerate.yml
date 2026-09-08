@@ -143,12 +143,26 @@ jobs:
           run_ingest() {
             node --experimental-strip-types scripts/ingest-render.ts --root .ingest-store 2>&1 | tee /tmp/ingest.log
           }
-          run_ingest || true
+          if ! run_ingest; then
+            echo "::error::ingest-render failed before its completion signal — refusing to commit or deploy"
+            exit 1
+          fi
+          if ! grep -q '^✓ ingest-render complete ' /tmp/ingest.log; then
+            echo "::error::ingest-render exited without its completion signal — refusing to commit or deploy"
+            exit 1
+          fi
           verified=$(grep -c ': VERIFIED' /tmp/ingest.log || true)
           if [ "${verified:-0}" -eq 0 ]; then
             echo "::warning::ingest verified 0 repos — likely a transient manifest-fetch blackout; retrying once after 45s backoff (last-known-good store preserved)"
             sleep 45
-            run_ingest || true
+            if ! run_ingest; then
+              echo "::error::ingest-render retry failed — refusing to commit or deploy"
+              exit 1
+            fi
+            if ! grep -q '^✓ ingest-render complete ' /tmp/ingest.log; then
+              echo "::error::ingest-render retry exited without its completion signal — refusing to commit or deploy"
+              exit 1
+            fi
             verified=$(grep -c ': VERIFIED' /tmp/ingest.log || true)
           fi
           echo "verified=${verified:-0}" >> "$GITHUB_OUTPUT"
@@ -176,10 +190,10 @@ jobs:
         id: diff
         run: |
           if git diff --quiet; then
-            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "::notice::no diff — nothing to commit"
           else
-            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "changed=true" >> "$GITHUB_OUTPUT"
             echo "::notice::diff detected — will commit"
             git diff --stat
           fi

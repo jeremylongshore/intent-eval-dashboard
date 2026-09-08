@@ -33,21 +33,18 @@ import { FsGateRowStore } from './gate-row-store.js';
 import { type ManifestFetcher, type SigstoreVerifier } from './interfaces.js';
 import { type PinnedSubjects } from './oidc-allowlist.js';
 import { type ReportManifest } from './manifest.js';
-import { validEvidenceBundle } from './__fixtures__/bundle-fixtures.js';
+import { validEvidenceBundle, validGateResult } from './__fixtures__/bundle-fixtures.js';
 
 import { StoreTestingResolver } from '../internal-testing/store-testing-resolver.js';
 import { buildTestingView } from '../internal-testing/testing-row.js';
 
-const BUNDLE = validEvidenceBundle();
 const BODY = {
-  gate_name: 'coverage',
-  gate_decision: 'pass',
-  evaluated_at: '2026-06-08T00:00:00.000Z',
+  ...validGateResult(),
   gate_id: 'iec:ci:coverage',
-  gate_version: '1.0.0',
-  gate_reasons: [],
+  gate_name: 'coverage',
   coverage: { dimensions_evaluated: ['lines'], dimensions_skipped: [] },
 };
+const BUNDLE = validEvidenceBundle(BODY);
 
 const PINNED: PinnedSubjects = {
   issuer: 'https://token.actions.githubusercontent.com',
@@ -76,7 +73,7 @@ function iecManifest(): ReportManifest {
         sigstoreBundle: {},
         sourceSha: 'a'.repeat(40),
         gateResults: [BODY],
-      } as never,
+      },
     ],
   };
 }

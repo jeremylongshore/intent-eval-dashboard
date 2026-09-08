@@ -42,6 +42,8 @@ import {
   type IngestStep,
 } from './reason.js';
 import { validateEvidenceBundle } from './schema-validate.js';
+import { checkGateResultBinding } from './gate-result-binding.js';
+import { type GateRowStore } from './gate-row-store.js';
 
 /** Everything a worker needs, all behind interfaces (deterministically testable). */
 export interface IngestWorkerDeps {
@@ -49,6 +51,11 @@ export interface IngestWorkerDeps {
   readonly verifier: SigstoreVerifier;
   readonly contentStore: ContentStore;
   readonly snapshotStore: SnapshotStore;
+  /**
+   * Production predicate-body sink. When supplied, verified bodies are written
+   * before the snapshot that makes those rows renderable is committed.
+   */
+  readonly gateRowStore?: GateRowStore;
   readonly clock: IngestClock;
   /** The loaded pinned allowlist (`ingest/pinned-subjects.json`). */
   readonly pinned: PinnedSubjects;
@@ -144,6 +151,10 @@ export async function runIngestWorker(
   // Verify each row through steps 3, 4, 5, 6. Accumulate content keys; emit only
   // after ALL rows clear (verify-before-render — no partial snapshot on failure).
   const bundleKeys: string[] = [];
+  const verifiedGateRows: {
+    readonly bundleKey: string;
+    readonly bodies: readonly unknown[];
+  }[] = [];
 
   for (let i = 0; i < manifest.rows.length; i++) {
     const row = manifest.rows[i];
@@ -181,6 +192,15 @@ export async function runIngestWorker(
       return crash(repo, 'validate_schema', 'schema_invalid', schema.detail, i);
     }
 
+    // The signature covers the strict EvidenceBundle metadata, while the
+    // predicate body is an adjacent manifest field. Prove the body's canonical
+    // hash, identity, input digest, count, and predicate URI match the signed
+    // metadata before accepting either object.
+    const binding = checkGateResultBinding(row.bundle, row.gateResults);
+    if (!binding.ok) {
+      return crash(repo, 'validate_schema', 'predicate_binding_invalid', binding.detail, i);
+    }
+
     // --- Step 6: content-address by sha256 ---
     let key: string;
     try {
@@ -195,9 +215,28 @@ export async function runIngestWorker(
       );
     }
     bundleKeys.push(key);
+    verifiedGateRows.push({ bundleKey: key, bodies: binding.bodies });
   }
 
-  // --- Step 7: emit snapshot + set last_known_good_ingested_at ---
+  // --- Step 7: persist bound rows, then emit the snapshot that references them ---
+  // A failed sidecar write may leave an unreferenced object/sidecar, but the
+  // prior-good snapshot remains authoritative and no incomplete new snapshot
+  // can become renderable.
+  if (deps.gateRowStore !== undefined) {
+    try {
+      for (const row of verifiedGateRows) {
+        await deps.gateRowStore.put(row.bundleKey, { repo, bodies: row.bodies });
+      }
+    } catch (err: unknown) {
+      return crash(
+        repo,
+        'emit_snapshot',
+        'gate_row_emit_failed',
+        err instanceof Error ? err.message : String(err),
+      );
+    }
+  }
+
   const snapshot: IngestSnapshot = {
     repo,
     lastKnownGoodIngestedAt: deps.clock.nowIso(),

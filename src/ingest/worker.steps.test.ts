@@ -238,6 +238,46 @@ describe('step 5 — kernel schema validation (real @intentsolutions/core Zod)',
     const snapshot = await runIngestWorker('iec', depsFor(manifest));
     expect(snapshot.bundleKeys).toHaveLength(1);
   });
+
+  it('crashes when an unsigned gate decision is mutated after bundle signing', async () => {
+    const minted = mintRow('iec', REPO_GITHUB['iec']!);
+    const original = minted.row.gateResults?.[0] as Record<string, unknown>;
+    const manifest: ReportManifest = {
+      repo: 'iec',
+      signing: signingClaimsFor('iec', REPO_GITHUB['iec']!),
+      rows: [
+        {
+          ...minted.row,
+          gateResults: [{ ...original, gate_decision: 'fail', gate_reasons: ['tampered'] }],
+        },
+      ],
+    };
+    const reason = await expectCrash(runIngestWorker('iec', depsFor(manifest)));
+    expect(reason.step).toBe('validate_schema');
+    expect(reason.reasonCode).toBe('predicate_binding_invalid');
+    expect(reason.rowIndex).toBe(0);
+  });
+
+  it.each([
+    ['missing', undefined],
+    ['empty', []],
+    ['extra', [{}, {}]],
+    ['malformed', [{}]],
+  ])('crashes when gateResults are %s', async (_label, gateResults) => {
+    const minted = mintRow('iec', REPO_GITHUB['iec']!);
+    const { gateResults: _discarded, ...rowWithoutGateResults } = minted.row;
+    const manifest: ReportManifest = {
+      repo: 'iec',
+      signing: signingClaimsFor('iec', REPO_GITHUB['iec']!),
+      rows: [
+        gateResults === undefined
+          ? rowWithoutGateResults
+          : { ...rowWithoutGateResults, gateResults },
+      ],
+    };
+    const reason = await expectCrash(runIngestWorker('iec', depsFor(manifest)));
+    expect(reason.reasonCode).toBe('predicate_binding_invalid');
+  });
 });
 
 describe('step 6 — content addressing', () => {

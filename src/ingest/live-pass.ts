@@ -16,7 +16,6 @@
  * no-data state. Verify-before-render holds throughout.
  */
 
-import { canonicalJsonBytes, sha256Key } from './content-address.js';
 import { type GateRowStore } from './gate-row-store.js';
 import {
   type ContentStore,
@@ -64,17 +63,11 @@ export interface LivePassResult {
 }
 
 /** A manifest row carries the additive `gateResults` bodies (emit-side field). */
-interface ManifestRowWithBodies {
-  readonly bundle: unknown;
-  readonly gateResults?: readonly unknown[];
-}
-
 /**
  * Run one ingest pass over `repos`, returning the RenderInput + outcomes.
  *
- * For each repo: run the verified worker; on success, persist the verified
- * manifest's per-row gate-result bodies into the gate-row store keyed by the
- * row's bundle content key (the same sha256 the worker content-addressed).
+ * For each repo, the worker verifies every row, persists each bound predicate
+ * body, and only then commits the snapshot that makes those rows renderable.
  */
 export async function runLivePass(
   deps: LivePassDeps,
@@ -87,17 +80,6 @@ export async function runLivePass(
   for (const repo of repos) {
     try {
       await runIngestWorker(repo, workerDeps);
-      // Verified: persist the gate-result bodies for each row under its bundle key.
-      const manifest = fetcher.cached(repo);
-      /* v8 ignore next -- worker success implies the fetch cached a manifest */
-      if (manifest !== undefined) {
-        for (const row of manifest.rows as readonly ManifestRowWithBodies[]) {
-          const bodies = row.gateResults ?? [];
-          if (bodies.length === 0) continue;
-          const bundleKey = sha256Key(canonicalJsonBytes(row.bundle));
-          await deps.gateRowStore.put(bundleKey, { repo, bodies });
-        }
-      }
       outcomes.push({ repo, fresh: true });
     } catch (err: unknown) {
       // A worker crash is the verify-before-render fail-closed path: record

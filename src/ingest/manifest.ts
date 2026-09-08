@@ -42,6 +42,12 @@ export interface ManifestRow {
   readonly sigstoreBundle: unknown;
   /** Source git SHA the bundle was produced at (provenance only). */
   readonly sourceSha: string;
+  /**
+   * Predicate bodies committed to by the signed bundle metadata. The worker
+   * validates their kernel schema and cryptographic/content-address binding
+   * before any body can be persisted or rendered.
+   */
+  readonly gateResults?: readonly unknown[];
 }
 
 /** A fetched + parsed report manifest. */

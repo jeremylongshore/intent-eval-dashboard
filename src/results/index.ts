@@ -35,7 +35,7 @@ export {
   type GateRowProjection,
   type GateRowSource,
 } from './bundle-resolver.js';
-export { StoreGateRowSource, coerceDecision, repoVisibility } from './store-gate-row-source.js';
+export { StoreGateRowSource, repoVisibility } from './store-gate-row-source.js';
 
 // --- HTML rendering (public) ---
 export {

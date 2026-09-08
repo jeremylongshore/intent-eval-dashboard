@@ -31,7 +31,9 @@ export type IngestReasonCode =
   | 'rekor_inclusion_invalid'
   | 'dsse_signature_invalid'
   | 'schema_invalid'
+  | 'predicate_binding_invalid'
   | 'content_address_failed'
+  | 'gate_row_emit_failed'
   | 'snapshot_emit_failed';
 
 /** The structured reason object carried by every ingest crash. */
