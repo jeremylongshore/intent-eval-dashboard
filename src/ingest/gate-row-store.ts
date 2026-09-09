@@ -9,14 +9,12 @@
  * must be persisted separately, keyed by the SAME bundle content key, so the
  * render-time resolvers can pair each verified bundle with its rows.
  *
- * This store is written ONLY for rows the worker already verified (steps 3-6),
- * so a body can only be persisted after its enclosing bundle's signature +
- * Rekor inclusion + schema all passed. Verify-before-render is preserved: the
- * store never holds a body whose bundle was not verified.
+ * The production writer stores rows only after verification. The store itself
+ * is not a trust boundary: every production reader re-validates a stored body
+ * against its signed bundle before rendering it.
  */
 
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
 /** The gate-result bodies for one verified bundle, plus the source repo. */
@@ -45,7 +43,13 @@ export class MemoryGateRowStore implements GateRowStore {
   }
 }
 
-/** Filesystem store — sibling of FsContentStore/FsSnapshotStore for the VPS. */
+/**
+ * Filesystem store — sibling of FsContentStore/FsSnapshotStore for the VPS.
+ *
+ * Existing cached rows stay in the stable namespace across rollout. They are
+ * safe to reuse only because both render paths now bind every body back to its
+ * signed EvidenceBundle; a pre-fix row that was altered fails closed to no-data.
+ */
 export class FsGateRowStore implements GateRowStore {
   constructor(private readonly root: string) {}
 
@@ -62,7 +66,37 @@ export class FsGateRowStore implements GateRowStore {
 
   async get(bundleKey: string): Promise<StoredGateRows | null> {
     const path = this.path(bundleKey);
-    if (!existsSync(path)) return null;
-    return JSON.parse(await readFile(path, 'utf8')) as StoredGateRows;
+    let text: string;
+    try {
+      text = await readFile(path, 'utf8');
+    } catch (error: unknown) {
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'code' in error &&
+        error.code === 'ENOENT'
+      ) {
+        return null;
+      }
+      throw error;
+    }
+
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(text);
+    } catch {
+      return null;
+    }
+    if (
+      typeof parsed !== 'object' ||
+      parsed === null ||
+      !('repo' in parsed) ||
+      typeof parsed.repo !== 'string' ||
+      !('bodies' in parsed) ||
+      !Array.isArray(parsed.bodies)
+    ) {
+      return null;
+    }
+    return { repo: parsed.repo, bodies: parsed.bodies };
   }
 }
