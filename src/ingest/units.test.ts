@@ -17,6 +17,7 @@ import { MemoryContentStore, MemorySnapshotStore } from './storage-memory.js';
 import { Publisher } from './publisher.js';
 import { NoopPublisherTransport } from './publisher-transport-noop.js';
 import { type IngestWorkerDeps } from './worker.js';
+import { MemoryGateRowStore } from './gate-row-store.js';
 import { canonicalJsonBytes, sha256Key, stableStringify } from './content-address.js';
 import { isReportManifestShape } from './manifest.js';
 import { Renderer, buildRenderInput, type RenderInput, type RenderSink } from './renderer.js';
@@ -35,6 +36,7 @@ import {
   DEFAULT_INGEST_BUDGET,
 } from './tree.js';
 import { type IngestSnapshot } from './interfaces.js';
+import { mintManifest } from './__fixtures__/bundle-fixtures.js';
 
 describe('matchesPinnedPattern', () => {
   it('exact match', () => {
@@ -490,7 +492,36 @@ describe('parsePinnedSubjects', () => {
   });
 });
 
-describe('runDeployPass — a raw (non-IngestCrash) rejection still fails closed', () => {
+describe('runDeployPass — worker failures remain fail closed', () => {
+  it('does not mark an ingest fresh when an unsafe caller omits the required gate-row store', async () => {
+    const snapshotStore = new MemorySnapshotStore();
+    const deps = {
+      fetcher: {
+        fetch: () => Promise.resolve(mintManifest('iec', 'jeremylongshore/intent-eval-core')),
+      },
+      verifier: new OfflineRowVerifier(),
+      contentStore: new MemoryContentStore(),
+      snapshotStore,
+      gateRowStore: undefined,
+      clock: { nowIso: () => '2026-05-30T00:00:00.000Z', nowMs: () => 0 },
+      pinned: PINNED_FOR_DEPLOY,
+    } as unknown as IngestWorkerDeps;
+    const sink: RenderSink = { render: (_: RenderInput) => Promise.resolve() };
+    const renderer = new Renderer(snapshotStore, sink);
+    const publisher = new Publisher(new NoopPublisherTransport({ info: () => {} }));
+
+    const result = await runDeployPass(deps, renderer, publisher, '/tmp/out', ['iec']);
+
+    expect(result.ingest).toEqual([
+      {
+        repo: 'iec',
+        fresh: false,
+        failure: { step: 'emit_snapshot', reasonCode: 'gate_row_emit_failed' },
+      },
+    ]);
+    expect(await snapshotStore.get('iec')).toBeNull();
+  });
+
   it('a fetcher rejecting with a non-Error value crashes the repo (no pass-through)', async () => {
     const store = new MemoryContentStore();
     const sink: RenderSink = { render: (_: RenderInput) => Promise.resolve() };
@@ -504,6 +535,7 @@ describe('runDeployPass — a raw (non-IngestCrash) rejection still fails closed
       verifier: new OfflineRowVerifier(),
       contentStore: store,
       snapshotStore,
+      gateRowStore: new MemoryGateRowStore(),
       clock: { nowIso: () => '2026-05-30T00:00:00.000Z', nowMs: () => 0 },
       pinned: PINNED_FOR_DEPLOY,
     };

@@ -52,10 +52,10 @@ export interface IngestWorkerDeps {
   readonly contentStore: ContentStore;
   readonly snapshotStore: SnapshotStore;
   /**
-   * Production predicate-body sink. When supplied, verified bodies are written
-   * before the snapshot that makes those rows renderable is committed.
+   * Predicate-body sink. Verified bodies MUST be written before the snapshot
+   * that makes those rows renderable is committed.
    */
-  readonly gateRowStore?: GateRowStore;
+  readonly gateRowStore: GateRowStore;
   readonly clock: IngestClock;
   /** The loaded pinned allowlist (`ingest/pinned-subjects.json`). */
   readonly pinned: PinnedSubjects;
@@ -222,19 +222,28 @@ export async function runIngestWorker(
   // A failed sidecar write may leave an unreferenced object/sidecar, but the
   // prior-good snapshot remains authoritative and no incomplete new snapshot
   // can become renderable.
-  if (deps.gateRowStore !== undefined) {
-    try {
-      for (const row of verifiedGateRows) {
-        await deps.gateRowStore.put(row.bundleKey, { repo, bodies: row.bodies });
-      }
-    } catch (err: unknown) {
-      return crash(
-        repo,
-        'emit_snapshot',
-        'gate_row_emit_failed',
-        err instanceof Error ? err.message : String(err),
-      );
+  // The interface makes this mandatory for TypeScript callers. Keep the
+  // runtime guard so plain JavaScript and unsafe casts also fail closed.
+  const gateRowStore = (deps as Partial<IngestWorkerDeps>).gateRowStore;
+  if (gateRowStore === undefined) {
+    return crash(
+      repo,
+      'emit_snapshot',
+      'gate_row_emit_failed',
+      'gate row store is required before snapshot commit',
+    );
+  }
+  try {
+    for (const row of verifiedGateRows) {
+      await gateRowStore.put(row.bundleKey, { repo, bodies: row.bodies });
     }
+  } catch (err: unknown) {
+    return crash(
+      repo,
+      'emit_snapshot',
+      'gate_row_emit_failed',
+      err instanceof Error ? err.message : String(err),
+    );
   }
 
   const snapshot: IngestSnapshot = {

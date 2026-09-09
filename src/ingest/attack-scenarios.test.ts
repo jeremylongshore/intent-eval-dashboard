@@ -26,6 +26,7 @@ import { canonicalJsonBytes, sha256Key } from './content-address.js';
 import { type ManifestFetcher, type IngestClock } from './interfaces.js';
 import { type ReportManifest } from './manifest.js';
 import { type PinnedSubjects } from './oidc-allowlist.js';
+import { MemoryGateRowStore } from './gate-row-store.js';
 import {
   REPO_GITHUB,
   mintManifest,
@@ -91,6 +92,7 @@ describe('Scenario 1 — malicious manifest with wrong workflow_ref', () => {
       verifier: new OfflineRowVerifier(),
       contentStore,
       snapshotStore,
+      gateRowStore: new MemoryGateRowStore(),
       clock: { nowIso: () => '2026-05-29T00:00:00.000Z', nowMs: () => 0 },
       pinned: PINNED,
     };
@@ -171,6 +173,7 @@ describe('Scenario 2 — force-pushed / deleted source SHA', () => {
       verifier: new OfflineRowVerifier(),
       contentStore,
       snapshotStore,
+      gateRowStore: new MemoryGateRowStore(),
       clock,
       pinned: PINNED,
     };
@@ -217,6 +220,7 @@ describe('Scenario 3 — network timeout on one worker (transient isolation)', (
       verifier: new OfflineRowVerifier(),
       contentStore,
       snapshotStore,
+      gateRowStore: new MemoryGateRowStore(),
       clock: { nowIso: () => '2026-05-28T00:00:00.000Z', nowMs: () => 0 },
       pinned: PINNED,
     };
@@ -234,6 +238,7 @@ describe('Scenario 3 — network timeout on one worker (transient isolation)', (
       verifier: new OfflineRowVerifier(),
       contentStore,
       snapshotStore,
+      gateRowStore: new MemoryGateRowStore(),
       clock,
       pinned: PINNED,
     };
