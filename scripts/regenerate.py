@@ -258,11 +258,15 @@ LISTING_TEMPLATE = """<!DOCTYPE html>
         <h1>What we test</h1>
 
         <p class="lead">
-            Before we run an evaluation, we write down the test and what counts as success. Read the rules here, then open the results and inspect what happened.
+            Intent Labs is not tied to one model or provider. We test the behavior of the whole system, whether it uses a commercial model, an open model, tools, or a mix.
         </p>
 
         <p>
-            We keep the test separate from the result so the rules cannot be quietly changed after a run. Each test keeps its version history, source, and earlier versions.
+            Before we run an evaluation, we write down the test and what counts as success. We keep the test separate from the result so the rules cannot be quietly changed after a run.
+        </p>
+
+        <p>
+            Today's published example uses a Claude skill. It shows one test, not a limit on the models or providers Labs can evaluate.
         </p>
 
         <h2>Test definitions</h2>
