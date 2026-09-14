@@ -41,6 +41,10 @@
             the documented failure and return the required evidence?” A useful evaluation makes the
             claim, conditions, decision rule, and receipt inspectable.
         </p>
+        <p>
+            Models and providers may change from one system to another. The claim, decision rule,
+            and evidence stay explicit.
+        </p>
 
         <h2>The evaluation path</h2>
         <ol class="guide-steps">
@@ -92,12 +96,12 @@
         </section>
 
         <h2>Run J-Rig in your repository</h2>
-        <p>J-Rig is the command-line runner behind the skill evaluation path. Pin it per repository, then run an eval against a published spec.</p>
+        <p>J-Rig is the command-line runner behind our current skill example. That example uses a Claude skill. It demonstrates the proof approach; it does not make Intent Labs a Claude-only lab.</p>
         <pre><code>pnpm add -D @intentsolutions/jrig-cli
 pnpm exec j-rig check ./my-skill
 pnpm exec j-rig eval ./my-skill --spec ./eval-spec.yaml
 pnpm exec j-rig report</code></pre>
-        <p class="predicate-note">The judge provider is selected for the constraint. The evaluation contract and evidence format stay stable.</p>
+        <p class="predicate-note">Choose the model or judge that fits the job. The evaluation contract and evidence format stay stable.</p>
 
         <aside class="learn-bridge">
             <p class="eyebrow">The wider practice</p>

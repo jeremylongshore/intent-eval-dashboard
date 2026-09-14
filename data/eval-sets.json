@@ -3,8 +3,8 @@
   "eval_sets": [
     {
       "id": "j-rig-binary-eval-7-layer",
-      "title": "Seven checks for Claude skills",
-      "short_description": "A Claude skill is a reusable set of instructions for an AI assistant. We check whether it is complete, starts at the right time, does its job, keeps working, is more useful than giving no extra instructions, gives consistent results across models, and is safe to release. Every check has a yes-or-no answer.",
+      "title": "Current example: seven checks for a Claude skill",
+      "short_description": "This published example tests a Claude skill, which is a reusable set of instructions for an AI assistant. We check whether it is complete, starts at the right time, does its job, keeps working, is more useful than giving no extra instructions, gives consistent results, and is safe to release. Every check has a yes-or-no answer.",
       "status": "active",
       "predicate_uri": "evals.intentsolutions.io/skill-binary-eval/v1",
       "predicate_uri_reserved": true,
