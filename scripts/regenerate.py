@@ -144,7 +144,7 @@ def render_listing(manifest: dict, live_state: dict[str, dict]) -> str:
         version = state.get("version", "unknown")
         last_changed = state.get("last_changed_at", "unknown")
         upstream = eval_set["upstream"]
-        upstream_label = f'{upstream["owner"]}/{upstream["repo"]}@{upstream.get("branch", "main")}'
+        upstream_url = f'https://github.com/{upstream["owner"]}/{upstream["repo"]}/tree/{upstream.get("branch", "main")}'
         page_url = eval_set["page_path"]
         rows.append(
             f"""            <li class="eval-list__item">
@@ -155,7 +155,7 @@ def render_listing(manifest: dict, live_state: dict[str, dict]) -> str:
                     <span class="badge badge--{eval_set["status"]}" style="margin-left: 0.5rem;">{eval_set["status"]}</span>
                 </h3>
                 <p class="eval-list__meta">
-                    version <code data-auto="version">{version}</code> · last changed <code data-auto="last_changed_at">{last_changed}</code> · source <code>{upstream_label}</code>
+                    Updated <code data-auto="last_changed_at">{last_changed}</code> · test version <code data-auto="version">{version}</code> · <a href="{upstream_url}">source on GitHub</a>
                 </p>
                 <p class="eval-list__desc">
                     {eval_set["short_description"]}
@@ -176,14 +176,14 @@ def render_listing(manifest: dict, live_state: dict[str, dict]) -> str:
         last_changed = state.get("last_changed_at", "")
         meta_bits = []
         if version:
-            meta_bits.append(f'version <code data-auto="version">{version}</code>')
+            meta_bits.append(f'test version <code data-auto="version">{version}</code>')
         if last_changed:
             meta_bits.append(
-                f'last changed <code data-auto="last_changed_at">{last_changed}</code>'
+                f'updated <code data-auto="last_changed_at">{last_changed}</code>'
             )
         attestation = sc.get("attestation_status", "")
         if attestation:
-            meta_bits.append(f"attestation <code>{attestation}</code>")
+            meta_bits.append(f"evidence <code>{attestation}</code>")
         meta_line = " · ".join(meta_bits)
         scorecard_rows.append(
             f"""            <li class="eval-list__item">
@@ -203,19 +203,9 @@ def render_listing(manifest: dict, live_state: dict[str, dict]) -> str:
         )
     scorecards_block = "\n".join(scorecard_rows)
 
-    queued_items = []
-    for q in manifest.get("queued_for_v0_2_0", []):
-        upstream = q["upstream"]
-        upstream_label = f'{upstream["owner"]}/{upstream["repo"]}'
-        queued_items.append(
-            f'            <li><strong>{q["title"]}</strong> ({upstream_label}) — {q["short_description"]}</li>'
-        )
-    queued_block = "\n".join(queued_items)
-
     return LISTING_TEMPLATE.format(
         eval_list=eval_list_block,
         scorecards_list=scorecards_block,
-        queued_list=queued_block,
         cron_last_run_utc=datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
     )
 
@@ -225,14 +215,14 @@ LISTING_TEMPLATE = """<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Eval Sets — Intent Eval Platform</title>
-    <meta name="description" content="Versioned, lineage-tracked specifications of what the Intent Eval Platform measures. The eval-set is the spec.">
+    <title>What We Test — Intent Labs</title>
+    <meta name="description" content="Read the tests Intent Labs runs, then inspect the results and signed evidence behind each decision.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://labs.intentsolutions.io/eval-sets/">
     <link rel="stylesheet" href="/style.css">
 
-    <meta property="og:title" content="Eval Sets — Intent Eval Platform">
-    <meta property="og:description" content="Versioned specifications of what we measure. The eval-set is the spec.">
+    <meta property="og:title" content="What We Test — Intent Labs">
+    <meta property="og:description" content="Read the test first. Then inspect what happened and verify the evidence.">
     <meta property="og:url" content="https://labs.intentsolutions.io/eval-sets/">
     <meta property="og:type" content="website">
 
@@ -265,60 +255,40 @@ LISTING_TEMPLATE = """<!DOCTYPE html>
     </header>
 
     <main>
-        <h1>Eval Sets</h1>
+        <h1>What we test</h1>
 
         <p class="lead">
-            Versioned, lineage-tracked specifications of what the Intent Eval Platform measures. The eval-set is the spec — every signed Evidence Bundle is an attestation about conformance to one of these.
+            Before we run an evaluation, we write down the test and what counts as success. Read the rules here, then open the results and inspect what happened.
         </p>
 
         <p>
-            Each eval-set is a complete document: its definition, its version history, its lineage to any predecessor, a pointer to an adversarial audit (when one exists), and the full list of tests it includes. Lineage is content-addressed so a hash mismatch breaks renderings of older runs against newer eval-sets.
+            We keep the test separate from the result so the rules cannot be quietly changed after a run. Each test keeps its version history, source, and earlier versions.
         </p>
 
-        <h2>How to read this page</h2>
+        <h2>Test definitions</h2>
 
         <p>
-            An eval-set tagged <span class="badge badge--active">active</span> is the currently authoritative version. A <span class="badge badge--draft">draft</span> tag means the methodology is open for review and the predicate URI it would attest against is reserved but not yet declared. A <span class="badge badge--deprecated">deprecated</span> tag means a successor eval-set has replaced it; renderings of old runs against deprecated eval-sets are preserved for the audit trail but marked.
+            A test definition lists every check and the rule for deciding the outcome. <span class="badge badge--active">active</span> means it is the version we use now. <span class="badge badge--draft">draft</span> means it is open for review. <span class="badge badge--deprecated">deprecated</span> means a newer version replaced it.
         </p>
-
-        <h2>Current eval-sets</h2>
 
         <ul class="eval-list">
 {eval_list}
         </ul>
 
-        <h2>Scorecards</h2>
+        <h2>Results you can inspect</h2>
 
         <p>
-            A scorecard is a <em>result</em>, not a spec. Each row is a measurement of one
-            system against an eval-set, built to ship as a signed, Rekor-anchored Evidence
-            Bundle. The eval-set above defines <em>what</em> is measured; a scorecard records
-            <em>what happened</em> when something was measured against it. We keep them separate
-            so a result is never mistaken for the specification it was measured against.
+            These pages show real test runs. You can see what passed, what failed, how the decision was made, and the evidence behind it. A digital signature lets you check that the record has not been changed. We publish failures too.
         </p>
 
         <ul class="eval-list">
 {scorecards_list}
         </ul>
 
-        <h2>Coming next</h2>
+        <h2>Found a problem?</h2>
 
         <p>
-            These eval-sets are queued for v0.2.0 publication once their authoring lands upstream:
-        </p>
-
-        <ul>
-{queued_list}
-        </ul>
-
-        <p>
-            Neither will be published here until its specification is complete, its lineage is recorded, and an adversarial audit has been documented. We refuse to publish demo or skeleton eval-sets that would become the canonical example of a predicate URI before the methodology is sound.
-        </p>
-
-        <h2>How to contribute</h2>
-
-        <p>
-            Eval-sets are authored upstream in the repo they measure. Open an issue or pull request against the source repos linked above. When a new eval-set is ratified, it lands here automatically on the next daily cron refresh.
+            Every test links to its source on GitHub. Open an issue or pull request there if a rule is unclear, incomplete, or wrong. Approved changes appear here during the next daily refresh.
         </p>
     </main>
 
