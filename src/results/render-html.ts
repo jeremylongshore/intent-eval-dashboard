@@ -90,46 +90,35 @@ const PAGE_HEAD = (
     <meta name="iep-dashboard-version" content="0.1.0">
 </head>`;
 
-export const SITE_HEADER = `    <header class="site-header">
-        <div class="network-bar" aria-label="Intent Solutions network">
-            <div class="network-bar__inner">
-                <a href="https://intentsolutions.io/" class="network-bar__brand">Intent Solutions</a>
-                <nav class="network-bar__links" aria-label="Intent Solutions properties">
-                    <a href="https://labs.intentsolutions.io/" aria-current="page">Labs</a>
-                    <a href="https://evals.intentsolutions.io/">Evals</a>
-                    <a href="https://learn.intentsolutions.io/">Learn</a>
-                </nav>
-            </div>
-        </div>
-        <div class="site-header__inner">
-            <a href="/" class="site-header__wordmark">Intent&nbsp;Labs</a>
-            <nav class="site-nav" aria-label="Primary">
-                <a href="/results/">Results</a>
-                <a href="/eval-sets/">What we test</a>
-                <a href="/skills/">Skills</a>
-                <a href="/methodology/">How it works</a>
-                <a href="/start/">Start here</a>
-                <a href="/status/">Lab status</a>
-            </nav>
-        </div>
-    </header>`;
+export const SITE_HEADER = `<header class="site-header">
+    <div class="network-bar" aria-label="Intent Solutions network"><div class="network-bar__inner">
+      <a href="https://intentsolutions.io/" class="network-bar__brand">Intent Solutions</a>
+      <nav class="network-bar__links" aria-label="Intent Solutions properties">
+        <a href="https://labs.intentsolutions.io/" aria-current="page">Labs</a>
+        <a href="https://demos.intentsolutions.io/">Demos</a>
+        <a href="https://learn.intentsolutions.io/">Learn</a>
+        <a href="https://evals.intentsolutions.io/">Evals</a>
+      </nav>
+    </div></div>
+    <div class="site-header__inner">
+      <a href="/" class="site-header__wordmark">Intent&nbsp;Labs</a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/eval-sets/">What we test</a>
+        <a href="/how-it-works/">How it works</a>
+        <a href="/examples/">Examples</a>
+        <a href="/start/">Start here</a>
+      </nav>
+    </div>
+  </header>`;
 
-export const SITE_FOOTER = `    <footer class="site-footer">
-        <div class="site-footer__inner">
-            <div>
-                <strong>labs.intentsolutions.io</strong> · dashboard <code>v0.1.0</code> · <a href="/status/" class="footer__commitment">best-effort, single-operator, see /status for liveness</a><br>
-                Part of <a href="https://intentsolutions.io">Intent Solutions</a>
-            </div>
-            <div>
-                <a href="/results/">Results</a> ·
-                <a href="/start/">Start here</a> ·
-                <a href="https://evals.intentsolutions.io/">Evals</a> ·
-                <a href="https://learn.intentsolutions.io/">Learn</a> ·
-                <a href="/status/">Status</a> ·
-                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
-            </div>
-        </div>
-    </footer>
+export const SITE_FOOTER = `<footer class="site-footer"><div class="site-footer__inner">
+    <div><strong>Intent Labs</strong><br>Part of <a href="https://intentsolutions.io/">Intent Solutions</a></div>
+    <div><a href="/results/">All results</a> · <a href="/methodology/">Technical guide</a> ·
+      <a href="https://evals.intentsolutions.io/">Result definitions</a> · <a href="/skills/">Skill signals</a> ·
+      <a href="/status/">Lab status</a><br>
+      <a href="/status/" class="footer__commitment">best-effort, single-operator, see /status for liveness</a>
+    </div>
+  </div></footer>
 </body>
 </html>
 `;
@@ -253,7 +242,7 @@ export function noDataPanel(repo: string): string {
 
 /** The 4-timestamp results table for one repo (header + rows). */
 function resultsTable(rows: readonly ResultsRow[]): string {
-  return `        <table class="results-table">
+  return `        <div class="table-scroll" role="region" aria-label="Detailed test results" tabindex="0"><table class="results-table">
             <thead>
                 <tr>
                     <th>Gate</th>
@@ -268,7 +257,7 @@ function resultsTable(rows: readonly ResultsRow[]): string {
             <tbody>
 ${rows.map(rowTr).join('\n')}
             </tbody>
-        </table>`;
+        </table></div>`;
 }
 
 /** Render the `/results/` index page. */
@@ -301,14 +290,17 @@ ${SITE_HEADER}
     <main>
         <h1>Results</h1>
         <p class="lead">
-            Each row below traces back through a content-addressed Evidence Bundle — signed via sigstore, anchored in the Rekor transparency log, re-verified at ingest — to a <code>gate-result/v1</code> attestation. We render the spec of what we measure on the <a href="/eval-sets/">eval-sets</a> page; here we render <em>what happened</em>.
+            These are the detailed records behind our published tests. Start with <a href="/examples/">a plain-language example</a> if you want to understand what a result means before inspecting the data.
         </p>
         <p>
-            We do not publish an aggregate "PASS%" across heterogeneous predicates. <code>no-data</code> is not a pass; <code>advisory</code> is not a pass. Counts are only ever shown within a single predicate URI.
+            <strong>Pass</strong> means the tested requirements were met. <strong>Fail</strong> means a requirement was missed. <strong>Advisory</strong> needs attention; <strong>error</strong> means a check could not finish. <strong>No data</strong> means no verified result is available. None of these is a blanket approval of a system.
+        </p>
+        <p>
+            Each record uses a versioned definition and a verified signed evidence bundle. Counts stay within one kind of test, never a blended score across different tests. <a href="/methodology/#evidence">How to read the technical evidence</a>.
         </p>
 ${asOfBanner(view)}
 ${freshnessStrip(view)}
-        <h2>Per-repo results</h2>
+        <h2>Results by project</h2>
 ${repoSections}
     </main>
 ${SITE_FOOTER}`;

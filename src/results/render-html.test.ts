@@ -62,6 +62,16 @@ describe('helpers', () => {
 });
 
 describe('renderResultsIndex', () => {
+  it('wraps each wide result table in a closed keyboard-accessible scroll region', () => {
+    const html = renderResultsIndex({ asOf: 'x', repos: [repo(), repo({ repo: 'iel' })] });
+    const wrappers =
+      html.match(
+        /<div class="table-scroll" role="region" aria-label="Detailed test results" tabindex="0"><table class="results-table">[\s\S]*?<\/table><\/div>/g,
+      ) ?? [];
+    expect(wrappers).toHaveLength(2);
+    expect((html.match(/<div(?:\s|>)/g) ?? []).length).toBe((html.match(/<\/div>/g) ?? []).length);
+  });
+
   it('emits a valid self-contained page (DOCTYPE + close + stylesheet)', () => {
     const view: ResultsView = { asOf: '2026-05-30T12:00:05.000Z', repos: [repo()] };
     const html = renderResultsIndex(view);

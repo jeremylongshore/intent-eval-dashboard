@@ -24,7 +24,7 @@
  * We keep it that way on purpose.
  */
 
-import { esc } from '../results/render-html.js';
+import { esc, SITE_HEADER, SITE_FOOTER } from '../results/render-html.js';
 import {
   type BucketKind,
   type DecisionBucket,
@@ -168,47 +168,9 @@ const STATUS_HEAD = (): string => `<!DOCTYPE html>
     <meta name="iep-dashboard-version" content="0.1.0">
 </head>`;
 
-const STATUS_HEADER = `    <header class="site-header">
-        <div class="network-bar" aria-label="Intent Solutions network">
-            <div class="network-bar__inner">
-                <a href="https://intentsolutions.io/" class="network-bar__brand">Intent Solutions</a>
-                <nav class="network-bar__links" aria-label="Intent Solutions properties">
-                    <a href="https://labs.intentsolutions.io/" aria-current="page">Labs</a>
-                    <a href="https://evals.intentsolutions.io/">Evals</a>
-                    <a href="https://learn.intentsolutions.io/">Learn</a>
-                </nav>
-            </div>
-        </div>
-        <div class="site-header__inner">
-            <a href="/" class="site-header__wordmark">Intent&nbsp;Labs</a>
-            <nav class="site-nav" aria-label="Primary">
-                <a href="/results/">Results</a>
-                <a href="/eval-sets/">What we test</a>
-                <a href="/methodology/">How it works</a>
-                <a href="/start/">Start here</a>
-                <a href="/status/">Lab status</a>
-            </nav>
-        </div>
-    </header>`;
+const STATUS_HEADER = SITE_HEADER;
 
-const STATUS_FOOTER = `    <footer class="site-footer">
-        <div class="site-footer__inner">
-            <div>
-                <strong>labs.intentsolutions.io</strong> · dashboard <code>v0.1.0</code> · <a href="/status/" class="footer__commitment">best-effort, single-operator, see /status for liveness</a><br>
-                Part of <a href="https://intentsolutions.io">Intent Solutions</a>
-            </div>
-            <div>
-                <a href="/results/">Results</a> ·
-                <a href="/start/">Start here</a> ·
-                <a href="https://evals.intentsolutions.io/">Evals</a> ·
-                <a href="https://learn.intentsolutions.io/">Learn</a> ·
-                <a href="/status/">Status</a>
-            </div>
-        </div>
-    </footer>
-</body>
-</html>
-`;
+const STATUS_FOOTER = SITE_FOOTER;
 
 /** A 0..1 ratio as a whole-number percent string (for the system-health gauges). */
 function pct(ratio: number): string {

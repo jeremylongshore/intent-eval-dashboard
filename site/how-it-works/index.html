@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How testing works | Intent Labs</title>
+  <meta name="description" content="A simple way to test AI work: define the job, run realistic cases, then use the results to decide what to change.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://labs.intentsolutions.io/how-it-works/">
+  <link rel="stylesheet" href="/style.css">
+  <meta property="og:title" content="How testing works | Intent Labs">
+  <meta property="og:description" content="A simple way to test AI work: define the job, run realistic cases, then use the results to decide what to change.">
+  <meta property="og:url" content="https://labs.intentsolutions.io/how-it-works/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Intent Labs">
+  <meta name="iep-source-repo" content="github.com/jeremylongshore/intent-eval-dashboard">
+  <meta name="iep-dashboard-version" content="0.1.0">
+</head>
+<body>
+  <header class="site-header">
+    <div class="network-bar" aria-label="Intent Solutions network"><div class="network-bar__inner">
+      <a href="https://intentsolutions.io/" class="network-bar__brand">Intent Solutions</a>
+      <nav class="network-bar__links" aria-label="Intent Solutions properties">
+        <a href="https://labs.intentsolutions.io/" aria-current="page">Labs</a>
+        <a href="https://demos.intentsolutions.io/">Demos</a>
+        <a href="https://learn.intentsolutions.io/">Learn</a>
+        <a href="https://evals.intentsolutions.io/">Evals</a>
+      </nav>
+    </div></div>
+    <div class="site-header__inner">
+      <a href="/" class="site-header__wordmark">Intent&nbsp;Labs</a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/eval-sets/">What we test</a>
+        <a href="/how-it-works/">How it works</a>
+        <a href="/examples/">Examples</a>
+        <a href="/start/">Start here</a>
+      </nav>
+    </div>
+  </header>
+  <main>
+
+    <h1>Give AI a job.<br>Check the work.</h1>
+    <p class="lead">An evaluation is a test of whether an AI system does what you need.
+      It can cover one answer, a repeating agent loop or a complete workflow.</p>
+    <ol class="guide-steps">
+      <li><strong>Agree on what good looks like.</strong><p>Choose a real task. Write down the required result, what must never happen,
+        and the limits on time, spend and access.</p></li>
+      <li><strong>Try the situations that matter.</strong><p>Run normal tasks, awkward cases and failures.
+        For a workflow, record the tool calls, retries and handoffs as well as the final answer.</p></li>
+      <li><strong>Decide what to change.</strong><p>See which requirements passed, which failed and which were not tested.
+        Fix the problem, repeat the test, and compare like with like before expanding use.</p></li>
+    </ol>
+    <h2>What that looks like in practice</h2>
+    <p><strong>Example task:</strong> an agent prepares an invoice for review. The test checks that it copies the right amounts,
+      spots missing information and stops before payment approval. A convincing final message is not enough
+      if it skipped a required check. This is an illustrative example, not a published result.</p>
+    <h2>Check the cost of a completed job</h2>
+    <p>Record model spend, elapsed time and retries where the runtime exposes them.
+      Add human review and rework when comparing the workflow with your current process.
+      Missing measurements stay marked as missing. A test result is evidence for a business decision, not an ROI guarantee.</p>
+    <h2>Use the model that fits the task</h2>
+    <p>The method is not tied to one provider. Compare models, instructions or workflows using the same tasks and rules.
+      Each result should name the setup used and what the test can and cannot establish.</p>
+    <div class="hero-actions"><a class="button button--primary" href="/start/">Plan an evaluation</a>
+      <a class="button" href="/examples/">Read a real example</a></div>
+    <p class="technical-link"><a href="/methodology/">Technical guide: runners, checks and evidence</a></p>
+
+  </main>
+  <footer class="site-footer"><div class="site-footer__inner">
+    <div><strong>Intent Labs</strong><br>Part of <a href="https://intentsolutions.io/">Intent Solutions</a></div>
+    <div><a href="/results/">All results</a> · <a href="/methodology/">Technical guide</a> ·
+      <a href="https://evals.intentsolutions.io/">Result definitions</a> · <a href="/skills/">Skill signals</a> ·
+      <a href="/status/">Lab status</a><br>
+      <a href="/status/" class="footer__commitment">best-effort, single-operator, see /status for liveness</a>
+    </div>
+  </div></footer>
+</body>
+</html>

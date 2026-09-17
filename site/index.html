@@ -1,131 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Your agent says it is done. Now prove it. | Intent Labs</title>
-    <meta name="description" content="Intent Labs tests agentic systems in public. See the method, inspect real results, and verify the signed evidence behind every published decision.">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://labs.intentsolutions.io/">
-    <link rel="stylesheet" href="/style.css">
-
-    <!-- Open Graph -->
-    <meta property="og:title" content="Your agent says it is done. Now prove it. | Intent Labs">
-    <meta property="og:description" content="See how Intent Solutions tests agentic systems, publishes the result, and makes the evidence independently verifiable.">
-    <meta property="og:url" content="https://labs.intentsolutions.io/">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="IEP Labs">
-
-    <!-- Dashboard provenance — for B3 sign-your-own-homework at Phase 2 -->
-    <meta name="iep-source-repo" content="github.com/jeremylongshore/intent-eval-dashboard">
-    <meta name="iep-dashboard-version" content="0.1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Know what your AI is worth trusting | Intent Labs</title>
+  <meta name="description" content="Test AI agents, loops, skills and workflows. Understand what works, what fails and what to measure before you expand a rollout.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://labs.intentsolutions.io/">
+  <link rel="stylesheet" href="/style.css">
+  <meta property="og:title" content="Know what your AI is worth trusting | Intent Labs">
+  <meta property="og:description" content="Test AI agents, loops, skills and workflows. Understand what works, what fails and what to measure before you expand a rollout.">
+  <meta property="og:url" content="https://labs.intentsolutions.io/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Intent Labs">
+  <meta name="iep-source-repo" content="github.com/jeremylongshore/intent-eval-dashboard">
+  <meta name="iep-dashboard-version" content="0.1.0">
 </head>
 <body class="home">
-    <header class="site-header">
-        <div class="network-bar" aria-label="Intent Solutions network">
-            <div class="network-bar__inner">
-                <a href="https://intentsolutions.io/" class="network-bar__brand">Intent Solutions</a>
-                <nav class="network-bar__links" aria-label="Intent Solutions properties">
-                    <a href="https://labs.intentsolutions.io/" aria-current="page">Labs</a>
-                    <a href="https://evals.intentsolutions.io/">Evals</a>
-                    <a href="https://learn.intentsolutions.io/">Learn</a>
-                </nav>
-            </div>
-        </div>
-        <div class="site-header__inner">
-            <a href="/" class="site-header__wordmark">Intent&nbsp;Labs</a>
-            <nav class="site-nav" aria-label="Primary">
-                <a href="/results/">Results</a>
-                <a href="/eval-sets/">What we test</a>
-                <a href="/methodology/">How it works</a>
-                <a href="/start/">Start here</a>
-                <a href="/status/">Lab status</a>
-            </nav>
-        </div>
-    </header>
+  <header class="site-header">
+    <div class="network-bar" aria-label="Intent Solutions network"><div class="network-bar__inner">
+      <a href="https://intentsolutions.io/" class="network-bar__brand">Intent Solutions</a>
+      <nav class="network-bar__links" aria-label="Intent Solutions properties">
+        <a href="https://labs.intentsolutions.io/" aria-current="page">Labs</a>
+        <a href="https://demos.intentsolutions.io/">Demos</a>
+        <a href="https://learn.intentsolutions.io/">Learn</a>
+        <a href="https://evals.intentsolutions.io/">Evals</a>
+      </nav>
+    </div></div>
+    <div class="site-header__inner">
+      <a href="/" class="site-header__wordmark">Intent&nbsp;Labs</a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/eval-sets/">What we test</a>
+        <a href="/how-it-works/">How it works</a>
+        <a href="/examples/">Examples</a>
+        <a href="/start/">Start here</a>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <section class="lab-hero" aria-labelledby="lab-hero-title">
+      <h1 id="lab-hero-title">Before you scale AI,<br><em>know what works.</em></h1>
+      <p class="lead">Intent Labs tests AI agents, loops, skills and workflows against real tasks.
+        Find out what finishes the job, where it breaks and what needs human review.</p>
+      <p>Make a better decision about what to fund, fix or stop.</p>
+      <div class="hero-actions">
+        <a class="button button--primary" href="/start/">Plan an evaluation</a>
+        <a class="button" href="/examples/">See a real example</a>
+      </div>
+      <p class="hero-note">Built by Intent Solutions. The test follows your task, not a model brand.</p>
+    </section>
 
-    <main>
-        <section class="lab-hero" aria-labelledby="lab-hero-title">
-            <p class="eyebrow">Evaluation infrastructure for agentic systems</p>
-            <h1 id="lab-hero-title">Your agent says it is done.<br><em>Now prove it.</em></h1>
-            <p class="lead">
-                Intent Labs tests real agentic systems and publishes what happened, including the
-                failures. Every decision leads to the test that produced it and the signed evidence
-                behind it.
-            </p>
-            <p>
-                Models, tools, and providers are components. Labs tests the behavior of the whole
-                system and the evidence it produces, whether it uses a commercial model, an open
-                model, or a mix.
-            </p>
-            <div class="hero-actions" aria-label="Start exploring Intent Labs">
-                <a class="button button--primary" href="/eval-sets/iep-self-eval-dogfood/">Inspect a real evaluation</a>
-                <a class="button" href="/start/">Learn the evaluation path</a>
-            </div>
-            <p class="hero-note">No blended pass rate. No hidden fail rows. No need to take our word for it.</p>
-        </section>
+    <section class="business-questions" aria-labelledby="decision-title">
+      <h2 id="decision-title">Three questions before the next investment.</h2>
+      <dl class="decision-list">
+        <div><dt>Does it do the job?</dt><dd>Check the finished work against your rules, including the cases that should fail.</dd></div>
+        <div><dt>What does success cost?</dt><dd>Measure time, model spend and retries. Include human rework when judging the business case.</dd></div>
+        <div><dt>Where does it need a person?</dt><dd>Test permissions, stopping points and handoffs before expanding access.</dd></div>
+      </dl>
+    </section>
 
-        <section class="evidence-path" aria-labelledby="evidence-path-title">
-            <div class="section-heading">
-                <p class="eyebrow">One claim. Three checkpoints.</p>
-                <h2 id="evidence-path-title">Follow the evidence, not the confidence.</h2>
-            </div>
-            <ol class="evidence-path__rail">
-                <li>
-                    <span class="evidence-path__step">01</span>
-                    <strong>Define the claim</strong>
-                    <p><a href="https://evals.intentsolutions.io/">Evals</a> gives each kind of result a stable, versioned meaning.</p>
-                </li>
-                <li>
-                    <span class="evidence-path__step">02</span>
-                    <strong>Run the test</strong>
-                    <p>A published eval set states the cases, policy, and stopping conditions before the result exists.</p>
-                </li>
-                <li>
-                    <span class="evidence-path__step">03</span>
-                    <strong>Inspect the receipt</strong>
-                    <p>Labs re-verifies the signature and public log entry before it shows the decision.</p>
-                </li>
-            </ol>
-        </section>
+    <section class="scope-summary" aria-labelledby="scope-title">
+      <h2 id="scope-title">From one skill to the whole workflow.</h2>
+      <p>A skill following instructions. An agent retrying a task. A workflow using tools or handing work to another agent.
+        We design tests around the job and the steps that matter.</p>
+      <p><a href="/eval-sets/">Explore what we test</a> · <a href="/how-it-works/">See how testing works</a></p>
+    </section>
 
-        <section class="entry-points" aria-labelledby="entry-points-title">
-            <div class="section-heading">
-                <p class="eyebrow">Choose your depth</p>
-                <h2 id="entry-points-title">You do not need to understand the platform first.</h2>
-            </div>
-            <div class="entry-points__grid">
-                <a class="entry-card" href="/results/">
-                    <span class="entry-card__label">I want the answer</span>
-                    <strong>See current results</strong>
-                    <span>Passes, failures, advisories, and missing evidence.</span>
-                </a>
-                <a class="entry-card" href="/start/">
-                    <span class="entry-card__label">I want to understand</span>
-                    <strong>Learn how an eval works</strong>
-                    <span>Plain language first, contracts and schemas when you need them.</span>
-                </a>
-                <a class="entry-card" href="/eval-sets/">
-                    <span class="entry-card__label">I want the method</span>
-                    <strong>Inspect what we test</strong>
-                    <span>Versioned specifications, cases, policies, and lineage.</span>
-                </a>
-            </div>
-        </section>
+    <section class="published-example" aria-labelledby="example-title">
+      <h2 id="example-title">A useful test can tell you to stop.</h2>
+      <p>We tested two of our own troubleshooting skills. One cleared the release checks used in that test.
+        The other was blocked because it could not produce the required report. We published both.</p>
+      <a href="/examples/">Read the example and its limits</a>
+    </section>
 
-        <aside class="learn-bridge">
-            <p class="eyebrow">Intent Solutions Learn</p>
-            <p><strong>Learning the wider practice?</strong> Learn is the separate education room for building and operating agentic systems. The evaluation lessons taught there point back to the live methods and receipts in this lab.</p>
-            <a href="https://learn.intentsolutions.io/">Visit Intent Solutions Learn</a>
-        </aside>
+    <aside class="network-paths" aria-labelledby="network-title">
+      <h2 id="network-title">See the work. Learn the practice.</h2>
+      <p><a href="https://demos.intentsolutions.io/">Demos</a> shows systems we build.
+        <a href="https://learn.intentsolutions.io/">Learn</a> teaches how to build and evaluate them.
+        Labs is where we test and share results.</p>
+    </aside>
 
-        <details class="operations-panel">
-            <summary>
-                <span><strong>Live lab operations</strong> <small>Source freshness and decision mix for the last 24 hours</small></span>
-                <span class="operations-panel__action">Open monitor</span>
-            </summary>
-
-        <!-- FRESHNESS-STRIP:START (generated by src/freshness) -->
+    <details class="operations-panel">
+      <summary><span><strong>Lab activity</strong><small>Published results and collection status</small></span><span class="operations-panel__action">View activity</span></summary>
+      <!-- FRESHNESS-STRIP:START (generated by src/freshness) -->
         <section class="freshness-strip-grid" aria-labelledby="freshness-strip-h">
             <h2 id="freshness-strip-h">Published test results by hour</h2>
             <p class="strip__lead">One row per source, one cell per hour, over the last 24 hours. Colored cells show published test outcomes; gray dots mean no verified result was published. <strong>No result is not a failed test.</strong> An empty hour is not automatically overdue: tests may run daily or only when something changes.</p>
@@ -179,124 +136,16 @@
             <p class="strip__statuslink"><a href="/status/">View data collection status →</a></p>
         </section>
         <!-- FRESHNESS-STRIP:END -->
-        </details>
-
-        <details class="technical-notes">
-            <summary><strong>Technical notes and governance constraints</strong></summary>
-
-        <p>
-            The eval-set is the spec. Browse it, criticise it, fork the methodology. When you see a number, it will trace back through a content-addressed Evidence Bundle, signed via sigstore and anchored in the Rekor transparency log, to one of the eval-sets listed below. We refuse to publish an aggregate "PASS%" across heterogeneous predicates — that is metric laundering.
-        </p>
-
-        <div class="meta-block" style="border-left: 3px solid #2c5282;">
-            <p class="freshness-stub__title" style="margin-bottom: 0.5rem;">Live now — nightly grades, our own memory system, and a failing grade we gave ourselves</p>
-            <p style="margin: 0 0 0.5rem 0;">
-                <a href="/results/jrig/"><strong>The nightly skill roster</strong></a> grades 8 real
-                marketplace skills every night (03:30 UTC) — recent nights produced passes, honest
-                fails, and unresolved-judge advisories, all published. <a href="/results/qmd/"><strong>The
-                governed brain</strong></a> — our own production team-memory system — emits signed
-                results for its retrieval-quality, governance-decision, and provenance evals on every
-                change. Both are re-verified here (pinned CI identity, signature, and transparency-log
-                inclusion, row by row) before anything renders.
-            </p>
-            <p style="margin: 0;">
-                The <a href="/eval-sets/iep-self-eval-dogfood/"><strong>dogfood scorecard</strong></a> runs
-                our own 7-layer methodology against our own published CoreWeave skills. It produced one
-                <strong>SHIP</strong> — <code>coreweave-gpu-node-forensics</code>
-                (<a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=2085904207">Rekor log index <code>2085904207</code></a>)
-                — and one <strong>BLOCK</strong> — <code>coreweave-gpu-cost-leak-hunter</code>
-                (<a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=2091983416">Rekor log index <code>2091983416</code></a>),
-                an honest failing grade of our own skill, published only after noise-robust majority
-                judging made the verdict reproduce 7 out of 7 runs, with the per-vote record inside the
-                signed evidence. The <a href="/eval-sets/j-rig-bench/"><strong>Evidence Bench
-                scorecard</strong></a> carries the first signed row of all: the Skill Refiner Phase A.0
-                baseline (PROCEED),
-                <a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=1689291334">Rekor log index <code>1689291334</code></a>.
-                All three Evidence Bundles are signed keyless against the <strong>public production
-                sigstore transparency log</strong> — verify any of them with the
-                <code>cosign verify-blob</code> command published on its scorecard.
-                This is reproducibility via <em>signature</em>, not just transparency: the layer
-                a memory-eval leaderboard like
-                <a href="https://github.com/garrytan/gbrain-evals">gbrain-evals</a> does not have.
-            </p>
-        </div>
-
-        <h2>What's here at v0.1.0</h2>
-
-        <ul>
-            <li><a href="/eval-sets/">Eval-set browser</a> — versioned, lineage-tracked specifications of what we measure. The brand asset of this site.</li>
-            <li><a href="/eval-sets/j-rig-bench/">Evidence Bench scorecard</a> — the first signed result row (Phase A.0 PROCEED), anchored in the public Rekor log. A scorecard is a <em>result</em>; an eval-set is the <em>spec</em>.</li>
-            <li><a href="/eval-sets/iep-self-eval-dogfood/">Dogfood scorecard</a> — the platform's own methodology run against our own shipped skills: one SHIP, one BLOCK, both keyless-signed and Rekor-anchored.</li>
-            <li><a href="/results/">Results browser</a> — verified gate-result rows per source repo, re-verified at ingest (pinned OIDC subject + DSSE signature + Rekor inclusion proof, row by row).</li>
-            <li><a href="/skills/">Skill signals</a> — adoption, human-trust, and authoring-quality signals per skill, rendered per dimension, never rolled into a single score.</li>
-            <li><a href="/status/">Status</a> — USE-method view of the ingest pipeline itself; an hour of silence renders as loudly as a failure.</li>
-            <li><a href="/methodology/">Methodology</a> — how the Evidence Bundle predicate spec works, where the schema authority lives, and why we sequence the eval-set ahead of the results.</li>
-        </ul>
-
-        <p>
-            The per-repo freshness + decision-mix strip (above) and the <a href="/results/">results browser</a> are live. The signed dashboard-render attestation is <strong>Phase 2 work</strong> still in progress. See <a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/035-AT-DECR-isedc-council-session-8-labs-dashboard-2026-05-29.md">DR-035</a> for the full architectural decision record.
-        </p>
-
-        <h2>What this site refuses to do</h2>
-
-        <p>
-            From the seven adversarial seats of the ratification council, all preserved verbatim in the <a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/035-AT-DECR-isedc-council-session-8-labs-dashboard-2026-05-29.md">decision record</a>:
-        </p>
-
-        <table>
-            <thead>
-                <tr><th>Refusal</th><th>Rationale</th></tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>No predicate URIs declared here</td>
-                    <td>Predicate URIs live at <code>evals.intentsolutions.io</code> exclusively. This site renders <em>about</em> them; it does not <em>declare</em> them.</td>
-                </tr>
-                <tr>
-                    <td>No aggregate PASS% across mixed predicate semantics</td>
-                    <td><code>NOT_APPLICABLE</code> is not <code>PASS</code>. <code>ADVISORY</code> is not <code>PASS</code>. Compositing them into a single percentage is metric laundering.</td>
-                </tr>
-                <tr>
-                    <td>No basicauth on the public origin for operator views</td>
-                    <td>The operator-internal view lives on a tailnet-only hostname. Anonymity-first on this origin.</td>
-                </tr>
-                <tr>
-                    <td>No rendering from upstream manifests without re-verification</td>
-                    <td>Pinned OIDC subject and <code>workflow_ref</code> claim per source repo, with Rekor inclusion proof checked row-by-row at ingest.</td>
-                </tr>
-                <tr>
-                    <td>No asymmetric rendering of Phase A.0 null-hypothesis results</td>
-                    <td>Both arms render with identical layout, font weight, and chart axes. A null result is rendered identically to a positive result. If we cannot guarantee that symmetry, we publish in a blog post instead.</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <h2>Source &amp; references</h2>
-
-        <ul>
-            <li><a href="https://github.com/jeremylongshore/intent-eval-dashboard">Source code for this site</a></li>
-            <li><a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/035-AT-DECR-isedc-council-session-8-labs-dashboard-2026-05-29.md">DR-035 — Architectural decision record for this dashboard</a></li>
-            <li><a href="https://github.com/jeremylongshore/intent-eval-core">intent-eval-core — Canonical contracts kernel</a></li>
-            <li><a href="https://github.com/jeremylongshore/intent-eval-lab">intent-eval-lab — Methodology + Decision Records</a></li>
-        </ul>
-        </details>
-    </main>
-
-    <footer class="site-footer">
-        <div class="site-footer__inner">
-            <div>
-                <strong>labs.intentsolutions.io</strong> · dashboard <code>v0.1.0</code> · <a href="/status/" class="footer__commitment">best-effort, single-operator, see /status for liveness</a><br>
-                Part of <a href="https://intentsolutions.io">Intent Solutions</a>
-            </div>
-            <div>
-                <a href="/results/">Results</a> ·
-                <a href="/start/">Start here</a> ·
-                <a href="https://evals.intentsolutions.io/">Evals</a> ·
-                <a href="https://learn.intentsolutions.io/">Learn</a> ·
-                <a href="/status/">Status</a> ·
-                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
-            </div>
-        </div>
-    </footer>
+    </details>
+    <p class="technical-link"><a href="/methodology/">For engineers: tooling, test coverage and evidence</a></p>
+  </main>
+  <footer class="site-footer"><div class="site-footer__inner">
+    <div><strong>Intent Labs</strong><br>Part of <a href="https://intentsolutions.io/">Intent Solutions</a></div>
+    <div><a href="/results/">All results</a> · <a href="/methodology/">Technical guide</a> ·
+      <a href="https://evals.intentsolutions.io/">Result definitions</a> · <a href="/skills/">Skill signals</a> ·
+      <a href="/status/">Lab status</a><br>
+      <a href="/status/" class="footer__commitment">best-effort, single-operator, see /status for liveness</a>
+    </div>
+  </div></footer>
 </body>
 </html>

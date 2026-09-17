@@ -3,8 +3,8 @@
   "eval_sets": [
     {
       "id": "j-rig-binary-eval-7-layer",
-      "title": "Current example: seven checks for a Claude skill",
-      "short_description": "This published example tests a Claude skill, which is a reusable set of instructions for an AI assistant. We check whether it is complete, starts at the right time, does its job, keeps working, is more useful than giving no extra instructions, gives consistent results, and is safe to release. Every check has a yes-or-no answer.",
+      "title": "Agent skills: the seven-check framework",
+      "short_description": "Checks for structure, activation, task completion, repeatability and release readiness. The current Jrig command runs five checks by default; two more are opt-in. Read each run's coverage before interpreting its result.",
       "status": "active",
       "predicate_uri": "evals.intentsolutions.io/skill-binary-eval/v1",
       "predicate_uri_reserved": true,
@@ -37,7 +37,7 @@
     {
       "id": "iep-self-eval-dogfood",
       "title": "We test our own published skills",
-      "short_description": "We ran the same seven checks on two AI troubleshooting guides we published for CoreWeave users. One passed and one failed. Both results and the evidence behind them are public.",
+      "short_description": "Two AI troubleshooting guides, two different release decisions. One passed; the other was blocked after it missed a required report. The study records its checks, skipped judging and limitations alongside the results.",
       "status": "draft",
       "attestation_status": "2 of 2 signed",
       "predicate_uri": "evals.intentsolutions.io/skill-binary-eval/v1",
