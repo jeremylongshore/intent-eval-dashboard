@@ -14,8 +14,8 @@
  *     `X% pass`. The renderer literally has no code path that sums decisions
  *     across predicate URIs. (CTO + CMO + VP DevRel triple-refusal, C3.)
  *   - **`no-data` carries equal visual weight with `fail`.** A repo with no
- *     verified rows renders a loud `no-data` panel (red-tinted badge, same
- *     prominence as a failure) — never a neutral/pass-looking blank. (CMO C4.)
+ *     verified rows renders an explicit `no-data` panel (outlined unknown
+ *     state, distinct from failure) — never a pass-looking blank. (CMO C4.)
  *   - **Visible `stale_since` badge per source** when serving a prior-good
  *     snapshot. (Gregg + Armstrong.)
  *   - **4-timestamp surface per row** — evaluated_at + bundle created_at + Rekor
@@ -134,7 +134,7 @@ export const SITE_FOOTER = `    <footer class="site-footer">
 </html>
 `;
 
-/** Decision → badge CSS modifier. `no-data` shares the loud fail-equal style. */
+/** Decision → badge CSS modifier. Missing evidence has its own unknown style. */
 export function decisionBadge(decision: string): string {
   return `<span class="badge badge--result-${esc(decision)}">${esc(decision)}</span>`;
 }

@@ -17,8 +17,8 @@
  *
  * CURRENT STATE: the emit-evidence work across the 8 source repos is incomplete,
  * so the honest default has zero verified rows ⇒ every bucket is `no-data` ⇒ the
- * strip is (correctly) almost entirely loud-red. That is exactly the truth the
- * DR-035 C4 binding exists to surface.
+ * strip explicitly shows unknown outcomes, not failures or invented passes.
+ * DR-035 C4 requires visible absence in a distinct color, not failure red.
  */
 
 import { readFile, writeFile, mkdir } from 'node:fs/promises';

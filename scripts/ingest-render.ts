@@ -131,7 +131,12 @@ async function main(argv) {
       repos: INGEST_REPOS,
       rows,
       liveness,
-      pressure: { restartCount: 0, restartBudget: 3 * INGEST_REPOS.length, escalatedChildIds: [] },
+      pressure: {
+        measured: false, // This entrypoint runs one live pass, not the instrumented supervisor.
+        restartCount: 0,
+        restartBudget: 3 * INGEST_REPOS.length,
+        escalatedChildIds: [],
+      },
       nowIso,
     },
     siteRoot,
