@@ -6,8 +6,8 @@
  *
  *   1. `renderFreshnessStrip(view)` — the strip FRAGMENT injected at the TOP of
  *      the landing page (`site/index.html`). One row per source repo, 24 hourly
- *      bucket cells. Each cell's color = its decision-mix kind. `no-data` shares
- *      the LOUD fail-equal treatment (CMO C4) — never blank, never neutral.
+ *      bucket cells. Each cell's color = its decision-mix kind. `no-data` is
+ *      explicitly labeled and visually distinct from failure (DR-035 C4).
  *
  *   2. `renderStatusPage(use, strip)` — the `/status` route, a USE-method view
  *      of the INGEST PIPELINE itself (Utilization / Saturation / Errors), plus
@@ -33,7 +33,7 @@ import {
 } from './bucket-model.js';
 import { type IngestUseView } from './use-model.js';
 
-/** CSS modifier for a bucket cell, by kind. `no-data` reuses the loud style. */
+/** CSS modifier for a bucket cell; absence and failure remain separate states. */
 function bucketClass(kind: BucketKind): string {
   return `bucket bucket--${kind}`;
 }
@@ -47,7 +47,7 @@ function bucketClass(kind: BucketKind): string {
  */
 function bucketTitle(b: DecisionBucket): string {
   if (b.total === 0) {
-    return `${b.hourStartIso} — no verified data this hour (no-data; shown as loudly as a failure, never filled)`;
+    return `${b.hourStartIso}: No verified result published this hour. The test outcome is unknown, not a pass or a failure.`;
   }
   const order: (keyof DecisionBucket['counts'])[] = ['pass', 'fail', 'advisory', 'error'];
   const parts = order
@@ -78,13 +78,13 @@ function repoRowHtml(row: RepoFreshnessRow): string {
   const cells = row.buckets
     .map(
       (b) =>
-        `<td class="${bucketClass(b.kind)}" title="${esc(bucketTitle(b))}"><span class="bucket__glyph" aria-hidden="true">${bucketGlyph(b.kind)}</span><span class="sr-only">${esc(b.kind)}</span></td>`,
+        `<td class="${bucketClass(b.kind)}" title="${esc(bucketTitle(b))}"><span class="bucket__glyph" aria-hidden="true">${bucketGlyph(b.kind)}</span><span class="sr-only">${esc(bucketTitle(b))}</span></td>`,
     )
     .join('');
   const rowFlag = row.allNoData
-    ? ` <span class="badge badge--no-data">no-data — silent ${esc(String(row.buckets.length))}h</span>`
+    ? ` <span class="badge badge--no-data">No results in this window</span>`
     : row.lastSeenInWindowIso !== undefined
-      ? ` <span class="badge badge--stale" title="most recent hour is no-data">last verified ${esc(row.lastSeenInWindowIso)}</span>`
+      ? ` <span class="strip__last-result">Last result: <time datetime="${esc(row.lastSeenInWindowIso)}">${esc(row.lastSeenInWindowIso)}</time></span>`
       : '';
   return `                <tr>
                     <th scope="row" class="strip__repo"><a href="/results/${esc(row.repo)}/"><code>${esc(row.repo)}</code></a>${rowFlag}</th>
@@ -103,18 +103,18 @@ export function renderFreshnessStrip(view: FreshnessStripView): string {
   const rows = view.rows.map(repoRowHtml).join('\n');
   const anySilent = view.rows.some((r) => r.allNoData);
   const honestNote = anySilent
-    ? `            <p class="strip__note strip__note--silent">Sources showing <span class="badge badge--no-data">no-data</span> across the whole window have published no verified, signed Evidence Bundle in the last 24 hours. <strong>This is the honest current state</strong> — emit-evidence is still rolling out upstream. We render the silence loudly rather than fill it.</p>`
+    ? `            <p class="strip__note strip__note--silent"><strong>Some sources have no verified results in this window.</strong> Their test outcomes are unknown. This does not tell us whether a test was expected or why no result was published. We never fill a gap with an older pass.</p>`
     : '';
   return `        <section class="freshness-strip-grid" aria-labelledby="freshness-strip-h">
-            <h2 id="freshness-strip-h">Per-repo freshness — last 24 hours</h2>
-            <p class="strip__lead">One row per source repo. Each cell is one hour; its color is the decision mix of verified gate-result rows in that hour. <code>no-data</code> is colored as loudly as a failure — an hour we heard nothing verified is never blank, never neutral, and never back-filled with a prior value.</p>
-            <div class="strip__scroll">
+            <h2 id="freshness-strip-h">Published test results by hour</h2>
+            <p class="strip__lead">One row per source, one cell per hour, over the last 24 hours. Colored cells show published test outcomes; gray dots mean no verified result was published. <strong>No result is not a failed test.</strong> An empty hour is not automatically overdue: tests may run daily or only when something changes.</p>
+            <div class="strip__scroll" role="region" aria-label="Hourly test results. Scroll horizontally to see all hours." tabindex="0">
             <table class="freshness-strip-grid__table">
-                <caption class="sr-only">Per-repo hourly decision mix over the last 24 hours. Rows are source repos; columns are hours, oldest on the left.</caption>
+                <caption class="sr-only">Published test outcomes over the last 24 hours. Rows are source repos; columns are hours in UTC, oldest on the left. A cell shows the most severe outcome in that hour; its description lists all outcome counts.</caption>
                 <thead>
                     <tr>
                         <th scope="col">Source</th>
-                        <th scope="col" colspan="${view.rows[0]?.buckets.length ?? 24}">← older &nbsp;·&nbsp; ${esc(view.windowStartIso)} → ${esc(view.nowIso)} &nbsp;·&nbsp; newer →</th>
+                        <th scope="col" colspan="${view.rows[0]?.buckets.length ?? 24}">← older &nbsp;·&nbsp; ${esc(view.windowStartIso)} → ${esc(view.nowIso)} &nbsp;·&nbsp; newer → (UTC)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -124,18 +124,18 @@ ${rows}
             </div>
 ${legendHtml()}
 ${honestNote}
-            <p class="strip__statuslink"><a href="/status/">Ingest pipeline status (USE method) →</a></p>
+            <p class="strip__statuslink"><a href="/status/">View data collection status →</a></p>
         </section>`;
 }
 
 /** A compact color legend so the cells are legible without hovering. */
 function legendHtml(): string {
   const items: { kind: BucketKind; label: string }[] = [
-    { kind: 'pass', label: 'pass' },
-    { kind: 'advisory', label: 'advisory' },
-    { kind: 'error', label: 'error' },
-    { kind: 'fail', label: 'fail' },
-    { kind: 'no-data', label: 'no-data (loud, equal to fail)' },
+    { kind: 'pass', label: 'Passed' },
+    { kind: 'advisory', label: 'Advisory' },
+    { kind: 'error', label: 'Could not evaluate' },
+    { kind: 'fail', label: 'Failed' },
+    { kind: 'no-data', label: 'No result (unknown)' },
   ];
   const lis = items
     .map(
@@ -153,14 +153,14 @@ const STATUS_HEAD = (): string => `<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Ingest status (USE method) — Intent Eval Platform</title>
-    <meta name="description" content="USE-method observability (Utilization / Saturation / Errors) of the Intent Eval Platform ingest pipeline, plus the per-repo freshness strip.">
+    <title>Lab status | Intent Labs</title>
+    <meta name="description" content="Check how the lab collected its latest data, then inspect published test outcomes. Missing results are shown separately from failures.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://labs.intentsolutions.io/status/">
     <link rel="stylesheet" href="/style.css">
 
-    <meta property="og:title" content="Ingest status (USE method) — Intent Eval Platform">
-    <meta property="og:description" content="Utilization / Saturation / Errors of the ingest pipeline, plus per-repo freshness.">
+    <meta property="og:title" content="Lab status | Intent Labs">
+    <meta property="og:description" content="Data collection status and published test outcomes, with missing results clearly labeled.">
     <meta property="og:url" content="https://labs.intentsolutions.io/status/">
     <meta property="og:type" content="website">
 
@@ -226,9 +226,9 @@ function utilizationCard(use: IngestUseView): string {
       ? `<p class="use-card__detail">Serving prior-good (stale) snapshot: ${u.staleRepos.map((r) => `<code>${esc(r)}</code>`).join(', ')} — not counted as utilized.</p>`
       : '';
   return `        <section class="use-card">
-            <h3>Utilization</h3>
-            <p class="use-card__metric"><strong>${esc(String(u.freshWorkers))}</strong> / ${esc(String(u.totalWorkers))} workers produced a fresh verified snapshot this pass <span class="use-card__pct">(${esc(pct(u.ratio))})</span></p>
-            <p class="use-card__what">U — fraction of the ${esc(String(u.totalWorkers))}-worker ingest pool doing useful new work this pass. A worker serving only a prior-good snapshot is <em>not</em> utilized.</p>
+            <h3>Source checks</h3>
+            <p class="use-card__metric"><strong>${esc(String(u.freshWorkers))}</strong> / ${esc(String(u.totalWorkers))} workers returned a fresh verified snapshot at this update <span class="use-card__pct">(${esc(pct(u.ratio))})</span></p>
+            <p class="use-card__what">Utilization: successful source checks, not passed tests. A verified snapshot can contain failed tests or no test results.</p>
 ${stale}
         </section>`;
 }
@@ -240,10 +240,16 @@ function saturationCard(use: IngestUseView): string {
   const escalations = s.escalated
     ? `<p class="use-card__detail use-card__detail--alarm">Escalated (supervisor gave up): ${s.escalatedChildIds.map((c) => `<code>${esc(c)}</code>`).join(', ')}.</p>`
     : '';
+  const metric = s.measured
+    ? `<strong>${esc(String(s.restartCount))}</strong> restart${s.restartCount === 1 ? '' : 's'} in window <span class="use-card__pct">(${esc(pct(s.pressureRatio))} of budget ${esc(String(s.restartBudget))})</span>`
+    : '<strong>Not recorded</strong>';
+  const explanation = s.measured
+    ? 'Saturation: how often collection workers restarted in the recorded window. An escalation means the collector stopped retrying.'
+    : 'This collector does not report worker restarts. No retry count is available for this update.';
   return `        <section class="use-card${escMod}">
-            <h3>Saturation</h3>
-            <p class="use-card__metric"><strong>${esc(String(s.restartCount))}</strong> restart${s.restartCount === 1 ? '' : 's'} in window <span class="use-card__pct">(${esc(pct(s.pressureRatio))} of budget ${esc(String(s.restartBudget))})</span></p>
-            <p class="use-card__what">S — restart / back-off pressure on the supervision tree. Restarts are the queue-depth analogue: work backing up against the OTP restart budget. An escalation is maximal saturation.</p>
+            <h3>Collection retries</h3>
+            <p class="use-card__metric">${metric}</p>
+            <p class="use-card__what">${explanation}</p>
 ${escalations}
         </section>`;
 }
@@ -262,9 +268,9 @@ function errorsCard(use: IngestUseView): string {
           .join('')}</ul>`
       : `<p class="use-card__detail">No verification or crash failures this pass.</p>`;
   return `        <section class="use-card${errMod}">
-            <h3>Errors</h3>
+            <h3>Collection failures</h3>
             <p class="use-card__metric"><strong>${esc(String(e.crashCount))}</strong> worker crash${e.crashCount === 1 ? '' : 'es'} (verification / abnormal exit) this pass</p>
-            <p class="use-card__what">E — workers that failed OIDC / Rekor / DSSE / schema verification or otherwise exited abnormally. Structured reasons preserved.</p>
+            <p class="use-card__what">Errors: source data could not be verified or a collection worker crashed. These are collection failures, separate from a skill failing a test.</p>
 ${detail}
         </section>`;
 }
@@ -283,6 +289,35 @@ ${errorsCard(use)}
         </div>`;
 }
 
+/** Snapshot collection state only; never inferred from test-result buckets. */
+function collectionSummary(use: IngestUseView): string {
+  let kind: 'complete' | 'warning' | 'error' | 'unknown';
+  let title: string;
+  if (use.errors.crashCount > 0 || use.saturation.escalated) {
+    kind = 'error';
+    title = 'Data collection needs attention';
+  } else if (use.utilization.totalWorkers === 0 || Number.isNaN(Date.parse(use.nowIso))) {
+    kind = 'unknown';
+    title = 'No collection status available';
+  } else if (
+    use.utilization.freshWorkers < use.utilization.totalWorkers ||
+    use.utilization.staleRepos.length > 0
+  ) {
+    kind = 'warning';
+    title = 'Some source checks need attention';
+  } else if (use.saturation.measured && use.saturation.restartCount > 0) {
+    kind = 'warning';
+    title = 'Data collection completed with retries';
+  } else {
+    kind = 'complete';
+    title = 'Data collection completed';
+  }
+  return `        <section class="collection-summary collection-summary--${kind}" aria-labelledby="collection-summary-h">
+            <h2 id="collection-summary-h">${title}</h2>
+            <p>This describes data collection at the recorded update, not whether the tested skills passed. Test outcomes are shown separately below.</p>
+        </section>`;
+}
+
 /**
  * Render the full `/status/` page: USE cards for the ingest pipeline + the
  * freshness strip. `strip` is the same view the landing page embeds.
@@ -290,26 +325,26 @@ ${errorsCard(use)}
 export function renderStatusPage(use: IngestUseView, strip: FreshnessStripView): string {
   const silent =
     use.fullySilentRepos.length > 0
-      ? `        <div class="meta-block as-of--none">
-            <p style="margin:0;"><strong>Fully silent sources (24h):</strong> ${use.fullySilentRepos.map((r) => `<code>${esc(r)}</code>`).join(', ')} — the dashboard has heard <em>nothing verified</em> from these in the window. Rendered loudly; never inferred.</p>
+      ? `        <div class="meta-block collection-note">
+            <p style="margin:0;"><strong>No verified test results in this window:</strong> ${use.fullySilentRepos.map((r) => `<code>${esc(r)}</code>`).join(', ')}. These sources may still have been checked successfully. Missing test results do not establish a collection failure.</p>
         </div>`
       : `        <div class="meta-block as-of">
-            <p style="margin:0;">No fully-silent sources in the last 24 hours.</p>
+            <p style="margin:0;">Every source has at least one verified test result in this window.</p>
         </div>`;
   return `${STATUS_HEAD()}
 <body>
 ${STATUS_HEADER}
     <main>
         <p><a href="/">← Home</a></p>
-        <h1>Ingest pipeline status</h1>
+        <h1>Lab status</h1>
         <p class="lead">
-            USE-method observability — <strong>U</strong>tilization, <strong>S</strong>aturation, <strong>E</strong>rrors — of the ${use.utilization.totalWorkers}-worker ingest pipeline <em>itself</em> (Brendan Gregg's method). This is the health of the machine that produces this dashboard, distinct from what the evals say. As of <time datetime="${esc(use.nowIso)}">${esc(use.nowIso)}</time>.
+            Did the lab collect its data, and what did the tests find? These are two different questions.
         </p>
-        <p>This is a rendered status view, not a pager. Alerting lives elsewhere; here we just show the current pipeline state honestly.</p>
-${silent}
+        <p class="status-updated">Snapshot from <time datetime="${esc(use.nowIso)}">${esc(use.nowIso)}</time> (UTC). This page records the last update, not live monitoring.</p>
+${collectionSummary(use)}
 ${renderUseCards(use)}
-        <h2>What the sources are reporting</h2>
-        <p>The same per-repo decision-mix strip the home page carries — system health (above) and result mix (below) side by side.</p>
+        <p class="status-method">Collection metrics follow Brendan Gregg's USE method: utilization, saturation, and errors. They do not measure skill quality.</p>
+${silent}
 ${renderFreshnessStrip(strip)}
     </main>
 ${STATUS_FOOTER}`;

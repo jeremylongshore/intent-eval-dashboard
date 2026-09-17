@@ -169,6 +169,7 @@ main {
 }
 
 .site-footer a { color: #6b7280; }
+.site-footer code { color: #475569; }
 
 /* --- Page lead --- */
 .lead {
@@ -222,23 +223,24 @@ main {
 .badge--draft { background: #fef3c7; color: #78350f; border-color: #fcd34d; }
 .badge--deprecated { background: #f3f4f6; color: #4b5563; border-color: #d1d5db; }
 
-/* --- Results decision badges (CMO C4: no-data == fail in visual weight) --- */
+/* --- Results decision badges: missing evidence is distinct from failure. --- */
 /* pass — calm green; it is the only "everything is fine" state. */
 .badge--result-pass { background: #dcfce7; color: #14532d; border-color: #86efac; }
 /* advisory — amber; explicitly NOT a pass. */
 .badge--result-advisory { background: #fef3c7; color: #78350f; border-color: #fcd34d; }
-/* error — slate; a gate could not decide. */
-.badge--result-error { background: #e2e8f0; color: #1e293b; border-color: #94a3b8; }
-/*
- * fail AND no-data share the SAME loud red treatment by design. A source with
- * no verified data must NOT look like a pass or a neutral blank — it is as
- * prominent as a failure (CMO C4 addendum).
- */
-.badge--result-fail,
-.badge--no-data {
+/* error — orange warning; a gate could not decide. */
+.badge--result-error { background: #ffedd5; color: #7c2d12; border-color: #fb923c; }
+/* Confirmed failure only. Absence stays equally explicit, not failure-colored. */
+.badge--result-fail {
     background: #fee2e2;
     color: #7f1d1d;
     border-color: #f87171;
+    font-weight: 700;
+}
+.badge--no-data {
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px dashed #64748b;
     font-weight: 700;
 }
 /* stale_since badge (Gregg + Armstrong) — visible amber-on-source flag. */
@@ -251,20 +253,19 @@ main {
 /* a source that DID ingest rows this pass — quiet confirmation. */
 .badge--fresh { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
 
-/* --- No-data panel: equal visual weight with a failure --- */
+/* --- Missing evidence: explicit unknown state, never a synthetic pass. --- */
 .no-data-panel {
-    background: #fef2f2;
-    border: 1px solid #f87171;
-    border-left: 4px solid #dc2626;
+    background: #f1f5f9;
+    border: 1px dashed #64748b;
     border-radius: 4px;
     padding: 1rem 1.25rem;
     margin-top: 1.5rem;
     font-size: 0.92rem;
-    color: #7f1d1d;
+    color: #334155;
 }
 .no-data-panel__title {
     font-weight: 700;
-    color: #7f1d1d;
+    color: #334155;
     margin-bottom: 0.4rem;
 }
 
@@ -287,7 +288,7 @@ main {
     border-left: 3px solid #2c5282;
     font-size: 0.9rem;
 }
-.as-of--none { border-left-color: #dc2626; background: #fef2f2; color: #7f1d1d; }
+.as-of--none { border: 1px dashed #64748b; background: #f1f5f9; color: #334155; }
 
 .predicate-note { font-size: 0.85rem; color: #6b7280; margin-top: 0.75rem; }
 .predicate-breakdown { font-size: 0.88rem; margin-top: 0.5rem; }
@@ -421,8 +422,8 @@ table code {
  *
  * One row per source repo; one cell per hour over the last 24h. The cell COLOR
  * is the hour's decision-mix kind. The load-bearing binding (DR-035 C4 / CMO):
- * `no-data` carries EQUAL visual weight with `fail` — both are loud red. An
- * empty hour is NEVER blank, neutral, or back-filled.
+ * `no-data` uses a distinct outlined unknown state, never failure red or pass
+ * green. Every gap remains visible and labeled; nothing is back-filled.
  */
 .freshness-strip-grid {
     margin-top: 1.75rem;
@@ -433,7 +434,8 @@ table code {
 }
 .freshness-strip-grid h2 { margin-top: 0; }
 .strip__lead { font-size: 0.9rem; color: #374151; margin-bottom: 1rem; }
-.strip__scroll { overflow-x: auto; }
+.strip__scroll { overflow-x: auto; position: relative; }
+.strip__scroll:focus-visible { outline: 2px solid #2c5282; outline-offset: 3px; }
 
 .freshness-strip-grid__table {
     border-collapse: separate;
@@ -456,7 +458,16 @@ table code {
     white-space: nowrap;
     padding-right: 0.75rem !important;
 }
-.strip__repo code { font-size: 0.85rem; }
+.strip__repo code { font-size: 0.85rem; color: #334155; }
+.strip__last-result {
+    display: block;
+    max-width: 25ch;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    color: #475569;
+    font-weight: 400;
+    margin-top: 0.25rem;
+}
 
 /* A single hour cell. Square-ish, color-coded, glyph for color-blind safety. */
 .bucket {
@@ -478,16 +489,17 @@ table code {
 /* Cell colors mirror the result-badge palette EXACTLY. */
 .bucket--pass     { background: #dcfce7; border-color: #86efac; color: #14532d; }
 .bucket--advisory { background: #fef3c7; border-color: #fcd34d; color: #78350f; }
-.bucket--error    { background: #e2e8f0; border-color: #94a3b8; color: #1e293b; }
-/*
- * fail AND no-data share the SAME loud red. A no-data hour must NOT look like a
- * pass or a neutral blank — it is as prominent as a failure (DR-035 C4 / CMO).
- */
-.bucket--fail,
-.bucket--no-data {
+.bucket--error    { background: #ffedd5; border-color: #fb923c; color: #7c2d12; }
+.bucket--fail {
     background: #fee2e2;
     border-color: #f87171;
     color: #7f1d1d;
+    font-weight: 700;
+}
+.bucket--no-data {
+    background: #f1f5f9;
+    border: 1px dashed #64748b;
+    color: #334155;
     font-weight: 700;
 }
 
@@ -513,9 +525,9 @@ table code {
 
 .strip__note { font-size: 0.85rem; margin-top: 1rem; }
 .strip__note--silent {
-    background: #fef2f2;
-    border-left: 3px solid #dc2626;
-    color: #7f1d1d;
+    background: #f1f5f9;
+    border: 1px dashed #64748b;
+    color: #334155;
     padding: 0.75rem 1rem;
     border-radius: 4px;
 }
@@ -717,6 +729,22 @@ a:focus-visible,
 summary:focus-visible { outline: 3px solid #f08a4b; outline-offset: 3px; }
 
 /* --- /status USE-method cards (Utilization / Saturation / Errors) --- */
+.status-updated, .status-method { font-size: 0.88rem; color: #475569; }
+.status-updated time { overflow-wrap: anywhere; }
+.collection-summary {
+    border: 1px solid #64748b;
+    border-radius: 4px;
+    background: #f1f5f9;
+    color: #334155;
+    padding: 1rem 1.25rem;
+    margin-top: 1.5rem;
+}
+.collection-summary h2 { color: inherit; margin: 0; font-size: 1.2rem; }
+.collection-summary p { margin: 0.5rem 0 0; max-width: 70ch; }
+.collection-summary--complete { border-color: #86efac; background: #f0fdf4; color: #14532d; }
+.collection-summary--warning { border-color: #fcd34d; background: #fffbeb; color: #78350f; }
+.collection-summary--error { border-color: #f87171; background: #fef2f2; color: #7f1d1d; }
+.collection-note { border: 1px dashed #64748b; background: #f1f5f9; color: #334155; }
 .use-cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
@@ -725,7 +753,6 @@ summary:focus-visible { outline: 3px solid #f08a4b; outline-offset: 3px; }
 }
 .use-card {
     border: 1px solid #e5e7eb;
-    border-left: 4px solid #2c5282;
     border-radius: 4px;
     padding: 1rem 1.25rem;
     background: #fdfdfb;

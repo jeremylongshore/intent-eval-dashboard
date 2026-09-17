@@ -16,7 +16,7 @@
  *     inside the verified bundle, not synthesised here.
  *   - **`no-data` carries fail-equal visual weight.** A skill / dimension with no
  *     verified signal renders the loud `no-data` panel (reusing the shared
- *     `badge--no-data` == `badge--fail` weight), never a neutral blank. (DR-035
+ *     explicitly labeled `badge--no-data` state), never a pass-looking blank. (DR-035
  *     C4 — absence is loud, never back-filled.)
  *   - **No predicate URI declared at labs.*** — predicate URIs are only ever
  *     RENDERED (as the surface a dimension attests against, pointed at evals.*).
