@@ -33,13 +33,13 @@ jobs:
     name: pre-deploy gate
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: HTML sanity checks
         run: |
           set -euo pipefail
           FAILED=0
-          for f in $(find site -name "*.html"); do
+          while IFS= read -r -d '' f; do
             if ! grep -q "<!DOCTYPE html>" "$f"; then
               echo "::error file=$f::missing DOCTYPE"
               FAILED=1
@@ -52,7 +52,7 @@ jobs:
               echo "::error file=$f::missing stylesheet link"
               FAILED=1
             fi
-          done
+          done < <(find site -name "*.html" -print0)
           [ "$FAILED" -eq 0 ] && echo "✓ all HTML files pass DOCTYPE + closing tag + stylesheet checks"
           exit $FAILED
 
@@ -71,9 +71,10 @@ jobs:
       # pipefail`, or the non-zero exit is masked (the intent-eval-core
       # boundary-check.yml bug). The script's exit code IS the step's exit code.
       - name: Set up Node (for the C3 scanner)
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
+          package-manager-cache: false
       - name: C3 aggregate-PASS% gate (whole site)
         run: node --experimental-strip-types scripts/lint-no-aggregate-pass.ts site
       - name: C3 scanner self-check (synthetic violation MUST fail)
