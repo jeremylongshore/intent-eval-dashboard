@@ -30,6 +30,7 @@ describe('plain-language public journey', () => {
     }
     expect(front).toContain('href="/start/"');
     expect(front).toContain('href="/examples/"');
+    expect(front).toContain('Loops and workflows need a custom test setup.');
   });
 
   it('uses one navigation across public pages and retains all network destinations', () => {
