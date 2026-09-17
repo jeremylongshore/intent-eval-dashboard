@@ -215,102 +215,72 @@ LISTING_TEMPLATE = """<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>What We Test — Intent Labs</title>
-    <meta name="description" content="Read the tests Intent Labs runs, then inspect the results and signed evidence behind each decision.">
-    <meta name="robots" content="index, follow">
+    <title>What we test | Intent Labs</title>
+    <meta name="description" content="Test AI skills, agent loops, workflows and the systems around them. Understand the job, the limits and the evidence before expanding use.">
     <link rel="canonical" href="https://labs.intentsolutions.io/eval-sets/">
     <link rel="stylesheet" href="/style.css">
-
-    <meta property="og:title" content="What We Test — Intent Labs">
-    <meta property="og:description" content="Read the test first. Then inspect what happened and verify the evidence.">
-    <meta property="og:url" content="https://labs.intentsolutions.io/eval-sets/">
-    <meta property="og:type" content="website">
-
     <meta name="iep-source-repo" content="github.com/jeremylongshore/intent-eval-dashboard">
     <meta name="iep-dashboard-version" content="0.1.0">
     <meta name="iep-cron-last-run" content="{cron_last_run_utc}">
 </head>
 <body>
-    <header class="site-header">
-        <div class="network-bar" aria-label="Intent Solutions network">
-            <div class="network-bar__inner">
-                <a href="https://intentsolutions.io/" class="network-bar__brand">Intent Solutions</a>
-                <nav class="network-bar__links" aria-label="Intent Solutions properties">
-                    <a href="https://labs.intentsolutions.io/" aria-current="page">Labs</a>
-                    <a href="https://evals.intentsolutions.io/">Evals</a>
-                    <a href="https://learn.intentsolutions.io/">Learn</a>
-                </nav>
-            </div>
-        </div>
-        <div class="site-header__inner">
-            <a href="/" class="site-header__wordmark">Intent&nbsp;Labs</a>
-            <nav class="site-nav" aria-label="Primary">
-                <a href="/results/">Results</a>
-                <a href="/eval-sets/" aria-current="page">What we test</a>
-                <a href="/methodology/">How it works</a>
-                <a href="/start/">Start here</a>
-                <a href="/status/">Lab status</a>
-            </nav>
-        </div>
-    </header>
-
+<header class="site-header">
+    <div class="network-bar" aria-label="Intent Solutions network"><div class="network-bar__inner">
+      <a href="https://intentsolutions.io/" class="network-bar__brand">Intent Solutions</a>
+      <nav class="network-bar__links" aria-label="Intent Solutions properties">
+        <a href="https://labs.intentsolutions.io/" aria-current="page">Labs</a>
+        <a href="https://demos.intentsolutions.io/">Demos</a>
+        <a href="https://learn.intentsolutions.io/">Learn</a>
+        <a href="https://evals.intentsolutions.io/">Evals</a>
+      </nav>
+    </div></div>
+    <div class="site-header__inner">
+      <a href="/" class="site-header__wordmark">Intent&nbsp;Labs</a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/eval-sets/">What we test</a>
+        <a href="/how-it-works/">How it works</a>
+        <a href="/examples/">Examples</a>
+        <a href="/start/">Start here</a>
+      </nav>
+    </div>
+  </header>
     <main>
-        <h1>What we test</h1>
-
-        <p class="lead">
-            Intent Labs is not tied to one model or provider. We test the behavior of the whole system, whether it uses a commercial model, an open model, tools, or a mix.
-        </p>
-
-        <p>
-            Before we run an evaluation, we write down the test and what counts as success. We keep the test separate from the result so the rules cannot be quietly changed after a run.
-        </p>
-
-        <p>
-            Today's published example uses a Claude skill. It shows one test, not a limit on the models or providers Labs can evaluate.
-        </p>
-
-        <h2>Test definitions</h2>
-
-        <p>
-            A test definition lists every check and the rule for deciding the outcome. <span class="badge badge--active">active</span> means it is the version we use now. <span class="badge badge--draft">draft</span> means it is open for review. <span class="badge badge--deprecated">deprecated</span> means a newer version replaced it.
-        </p>
-
-        <ul class="eval-list">
-{eval_list}
-        </ul>
-
-        <h2>Results you can inspect</h2>
-
-        <p>
-            These pages show real test runs. You can see what passed, what failed, how the decision was made, and the evidence behind it. A digital signature lets you check that the record has not been changed. We publish failures too.
-        </p>
-
+        <h1>From one skill to the whole workflow.</h1>
+        <p class="lead">Test whether AI gets the job done, stays within its limits and knows when to stop.
+            The task sets the rules, not the model brand.</p>
+        <dl class="scope-list">
+            <div><dt>Skills and instructions</dt><dd>Does the agent follow the instructions, produce the required work and handle unusual requests?</dd></div>
+            <div><dt>Agent loops</dt><dd>Does it make progress, recover from errors and stop instead of repeating or spending without a limit?</dd></div>
+            <div><dt>Workflows and teams of agents</dt><dd>Do tool calls and handoffs produce the right result while respecting permissions and human review?</dd></div>
+            <div><dt>The system around the agent</dt><dd>Do required checks run, records stay intact and release rules stop work that is not ready?</dd></div>
+        </dl>
+        <p>Published examples currently focus on skills and the platform's own checks.
+            Testing your workflow means connecting its runner and recording the steps you want checked.
+            <a href="/methodology/#tooling">See current tooling and integration limits</a>.</p>
+        <div class="hero-actions"><a class="button button--primary" href="/start/">Plan an evaluation</a>
+            <a class="button" href="/how-it-works/">How testing works</a></div>
+        <h2>Real results, explained</h2>
+        <p>Read <a href="/examples/">the short version</a>, or inspect these published studies.
+            A result applies to the setup and checks described, not every possible use of the system.</p>
         <ul class="eval-list">
 {scorecards_list}
         </ul>
-
-        <h2>Found a problem?</h2>
-
-        <p>
-            Every test links to its source on GitHub. Open an issue or pull request there if a rule is unclear, incomplete, or wrong. Approved changes appear here during the next daily refresh.
-        </p>
+        <h2>Detailed test definitions</h2>
+        <p>These pages describe the checks behind the studies. Active means the test is in use;
+            draft means it is under review. A definition's status is not a test outcome.</p>
+        <ul class="eval-list">
+{eval_list}
+        </ul>
+        <p>Found an unclear rule? Each definition links to its source on GitHub so you can raise an issue.</p>
     </main>
-
-    <footer class="site-footer">
-        <div class="site-footer__inner">
-            <div>
-                <strong>labs.intentsolutions.io</strong> · dashboard <code>v0.1.0</code> · cron last ran <code>{cron_last_run_utc}</code><br>
-                Part of <a href="https://intentsolutions.io">Intent Solutions</a>
-            </div>
-            <div>
-                <a href="/results/">Results</a> ·
-                <a href="/start/">Start here</a> ·
-                <a href="https://evals.intentsolutions.io/">Evals</a> ·
-                <a href="https://learn.intentsolutions.io/">Learn</a> ·
-                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
-            </div>
-        </div>
-    </footer>
+<footer class="site-footer"><div class="site-footer__inner">
+    <div><strong>Intent Labs</strong><br>Part of <a href="https://intentsolutions.io/">Intent Solutions</a></div>
+    <div><a href="/results/">All results</a> · <a href="/methodology/">Technical guide</a> ·
+      <a href="https://evals.intentsolutions.io/">Result definitions</a> · <a href="/skills/">Skill signals</a> ·
+      <a href="/status/">Lab status</a><br>
+      <a href="/status/" class="footer__commitment">best-effort, single-operator, see /status for liveness</a>
+    </div>
+  </div></footer>
 </body>
 </html>
 """

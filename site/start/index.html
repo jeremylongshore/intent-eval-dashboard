@@ -1,126 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Start here: how an agent evaluation works | Intent Labs</title>
-    <meta name="description" content="A plain-language guide to how Intent Labs defines a claim, runs an evaluation, publishes a decision, and verifies the evidence.">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://labs.intentsolutions.io/start/">
-    <link rel="stylesheet" href="/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Start with one task | Intent Labs</title>
+  <meta name="description" content="Plan an evaluation for an AI skill, agent loop or workflow. Define the result, limits and examples before choosing the tools.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://labs.intentsolutions.io/start/">
+  <link rel="stylesheet" href="/style.css">
+  <meta property="og:title" content="Start with one task | Intent Labs">
+  <meta property="og:description" content="Plan an evaluation for an AI skill, agent loop or workflow. Define the result, limits and examples before choosing the tools.">
+  <meta property="og:url" content="https://labs.intentsolutions.io/start/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Intent Labs">
+  <meta name="iep-source-repo" content="github.com/jeremylongshore/intent-eval-dashboard">
+  <meta name="iep-dashboard-version" content="0.1.0">
 </head>
 <body>
-    <header class="site-header">
-        <div class="network-bar" aria-label="Intent Solutions network">
-            <div class="network-bar__inner">
-                <a href="https://intentsolutions.io/" class="network-bar__brand">Intent Solutions</a>
-                <nav class="network-bar__links" aria-label="Intent Solutions properties">
-                    <a href="https://labs.intentsolutions.io/" aria-current="page">Labs</a>
-                    <a href="https://evals.intentsolutions.io/">Evals</a>
-                    <a href="https://learn.intentsolutions.io/">Learn</a>
-                </nav>
-            </div>
-        </div>
-        <div class="site-header__inner">
-            <a href="/" class="site-header__wordmark">Intent&nbsp;Labs</a>
-            <nav class="site-nav" aria-label="Primary">
-                <a href="/results/">Results</a>
-                <a href="/eval-sets/">What we test</a>
-                <a href="/methodology/">How it works</a>
-                <a href="/start/" aria-current="page">Start here</a>
-                <a href="/status/">Lab status</a>
-            </nav>
-        </div>
-    </header>
+  <header class="site-header">
+    <div class="network-bar" aria-label="Intent Solutions network"><div class="network-bar__inner">
+      <a href="https://intentsolutions.io/" class="network-bar__brand">Intent Solutions</a>
+      <nav class="network-bar__links" aria-label="Intent Solutions properties">
+        <a href="https://labs.intentsolutions.io/" aria-current="page">Labs</a>
+        <a href="https://demos.intentsolutions.io/">Demos</a>
+        <a href="https://learn.intentsolutions.io/">Learn</a>
+        <a href="https://evals.intentsolutions.io/">Evals</a>
+      </nav>
+    </div></div>
+    <div class="site-header__inner">
+      <a href="/" class="site-header__wordmark">Intent&nbsp;Labs</a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/eval-sets/">What we test</a>
+        <a href="/how-it-works/">How it works</a>
+        <a href="/examples/">Examples</a>
+        <a href="/start/">Start here</a>
+      </nav>
+    </div>
+  </header>
+  <main>
 
-    <main>
-        <p class="eyebrow">Start here</p>
-        <h1>How do you prove an agent did the job?</h1>
-        <p class="lead">
-            Start with one claim you can test. Not “is this agent good?” Try “does this skill find
-            the documented failure and return the required evidence?” A useful evaluation makes the
-            claim, conditions, decision rule, and receipt inspectable.
-        </p>
-        <p>
-            Models and providers may change from one system to another. The claim, decision rule,
-            and evidence stay explicit.
-        </p>
+    <h1>Start with one task that matters.</h1>
+    <p class="lead">Choose work you want an AI system to do. We help turn “does it work?” into a test you can use to make a decision.</p>
+    <h2>Bring these four things</h2>
+    <ol class="guide-steps">
+      <li><strong>The job.</strong><p>What should the system finish? A report, a resolved request, a checked change or another concrete result.</p></li>
+      <li><strong>A few examples.</strong><p>Show normal inputs and cases that are difficult, incomplete or unsafe to act on. Start with sample or redacted data.</p></li>
+      <li><strong>Your limits.</strong><p>Set the budget, time limit, allowed actions and the point where a person must take over.</p></li>
+      <li><strong>The decision.</strong><p>Are you choosing a model, fixing a workflow, checking a change or deciding whether to expand its use?</p></li>
+    </ol>
+    <section class="next-step" aria-labelledby="team-start">
+      <h2 id="team-start">Working through a business decision?</h2>
+      <p>You do not need to choose an evaluation tool first. Start with the task, what failure would cost and what evidence your team needs.</p>
+      <a class="button button--primary" href="https://intentsolutions.io/contact/?door=outcome">Talk through your workflow</a>
+    </section>
+    <section class="next-step" aria-labelledby="builder-start">
+      <h2 id="builder-start">Building the test yourself?</h2>
+      <p>Skills can be checked locally with J-Rig. Agent loops and workflows need a runner that captures the steps you want to inspect.
+        Tests run in your own environment; this site is not a file-upload service.</p>
+      <p><a href="/methodology/#tooling">See current tools and setup paths</a> ·
+        <a href="/eval-sets/">Explore test types</a></p>
+    </section>
+    <aside class="network-paths">
+      <h2>Want to see or learn the practice first?</h2>
+      <p><a href="https://demos.intentsolutions.io/">Explore systems in Demos</a>,
+        <a href="/examples/">read a test result</a>, or
+        <a href="https://learn.intentsolutions.io/">learn to build and evaluate with the team</a>.</p>
+    </aside>
 
-        <h2>The evaluation path</h2>
-        <ol class="guide-steps">
-            <li>
-                <strong>State the claim.</strong>
-                <p>Name the behavior that must be demonstrated and the conditions that count as success.</p>
-            </li>
-            <li>
-                <strong>Publish the test before the answer.</strong>
-                <p>An <a href="/eval-sets/">eval set</a> records the cases, policy, and stopping conditions. This keeps the result tied to a visible method.</p>
-            </li>
-            <li>
-                <strong>Run the system.</strong>
-                <p>Deterministic checks and behavioral judges evaluate the work. A judge that cannot decide produces an advisory or error, not a quiet pass.</p>
-            </li>
-            <li>
-                <strong>Publish the decision and its evidence.</strong>
-                <p>The result points to a content-addressed Evidence Bundle. The bundle records what ran, what it saw, and why it reached that decision.</p>
-            </li>
-            <li>
-                <strong>Verify before display.</strong>
-                <p>Labs checks the signature, expected publishing identity, and public transparency-log entry before a result appears here.</p>
-            </li>
-        </ol>
-
-        <section class="plain-language" aria-labelledby="plain-language-title">
-            <h2 id="plain-language-title">Four things that used to sound like one thing</h2>
-            <dl>
-                <dt>Eval set</dt>
-                <dd>The test specification. It says what will be measured.</dd>
-                <dt>Predicate</dt>
-                <dd>The stable meaning of a signed statement. <a href="https://evals.intentsolutions.io/">Evals</a> is the authority for those definitions.</dd>
-                <dt>Result</dt>
-                <dd>The decision from one run: pass, fail, advisory, or error.</dd>
-                <dt>Evidence Bundle</dt>
-                <dd>The receipt that connects the decision to the exact inputs, policy, and execution.</dd>
-            </dl>
-        </section>
-
-        <section class="try-path" aria-labelledby="try-path-title">
-            <p class="eyebrow">See it before you build it</p>
-            <h2 id="try-path-title">Inspect the failure we published about our own work.</h2>
-            <p>
-                The dogfood scorecard applies the same method to Intent Solutions skills. It shows a
-                ship decision and a block decision with the same visual weight, plus the commands and
-                public log entries needed to verify them.
-            </p>
-            <p><a class="button button--primary" href="/eval-sets/iep-self-eval-dogfood/">Open the dogfood scorecard</a></p>
-        </section>
-
-        <h2>Run J-Rig in your repository</h2>
-        <p>J-Rig is the command-line runner behind our current skill example. That example uses a Claude skill. It demonstrates the proof approach; it does not make Intent Labs a Claude-only lab.</p>
-        <pre><code>pnpm add -D @intentsolutions/jrig-cli
-pnpm exec j-rig check ./my-skill
-pnpm exec j-rig eval ./my-skill --spec ./eval-spec.yaml
-pnpm exec j-rig report</code></pre>
-        <p class="predicate-note">Choose the model or judge that fits the job. The evaluation contract and evidence format stay stable.</p>
-
-        <aside class="learn-bridge">
-            <p class="eyebrow">The wider practice</p>
-            <p><strong>Evaluation is one part of operating an agentic system.</strong> Intent Solutions Learn covers framing, building, review, governance, and production operations. Labs remains the public place to inspect the evaluation method and proof.</p>
-            <a href="https://learn.intentsolutions.io/">Continue in Intent Solutions Learn</a>
-        </aside>
-    </main>
-
-    <footer class="site-footer">
-        <div class="site-footer__inner">
-            <div><strong>Intent Labs</strong><br>Part of <a href="https://intentsolutions.io/">Intent Solutions</a></div>
-            <div>
-                <a href="/results/">Results</a> ·
-                <a href="/methodology/">Methodology</a> ·
-                <a href="https://evals.intentsolutions.io/">Evals</a> ·
-                <a href="https://learn.intentsolutions.io/">Learn</a> ·
-                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
-            </div>
-        </div>
-    </footer>
+  </main>
+  <footer class="site-footer"><div class="site-footer__inner">
+    <div><strong>Intent Labs</strong><br>Part of <a href="https://intentsolutions.io/">Intent Solutions</a></div>
+    <div><a href="/results/">All results</a> · <a href="/methodology/">Technical guide</a> ·
+      <a href="https://evals.intentsolutions.io/">Result definitions</a> · <a href="/skills/">Skill signals</a> ·
+      <a href="/status/">Lab status</a><br>
+      <a href="/status/" class="footer__commitment">best-effort, single-operator, see /status for liveness</a>
+    </div>
+  </div></footer>
 </body>
 </html>

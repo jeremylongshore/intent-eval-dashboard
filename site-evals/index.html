@@ -4,6 +4,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>The definitions behind Intent Labs | Intent Evals</title>
+    <meta
+      name="description"
+      content="Understand what an AI test result means. Intent Evals keeps the definitions stable; Intent Labs tests the work and explains the results."
+    />
+    <link rel="canonical" href="https://evals.intentsolutions.io/" />
     <style>
       :root {
         --fg: #1a202c;
@@ -109,6 +114,7 @@
         margin: 0 auto;
         padding: 0.55rem 1.25rem;
         display: flex;
+        flex-wrap: wrap;
         justify-content: space-between;
         gap: 1rem;
       }
@@ -122,6 +128,7 @@
       }
       .network__links {
         display: flex;
+        flex-wrap: wrap;
         gap: 1rem;
       }
       .network__links a {
@@ -190,6 +197,21 @@
       .actions a {
         font-weight: 700;
       }
+      .table-scroll {
+        overflow-x: auto;
+        max-width: 100%;
+      }
+      .table-scroll table {
+        min-width: 640px;
+      }
+      .table-scroll:focus-visible,
+      a:focus-visible {
+        outline: 3px solid var(--accent);
+        outline-offset: 3px;
+      }
+      td code {
+        overflow-wrap: anywhere;
+      }
       @media (max-width: 560px) {
         .relationship {
           grid-template-columns: 1fr;
@@ -207,6 +229,7 @@
         <a class="network__brand" href="https://intentsolutions.io/">Intent Solutions</a>
         <nav class="network__links" aria-label="Intent Solutions properties">
           <a href="https://labs.intentsolutions.io/">Labs</a>
+          <a href="https://demos.intentsolutions.io/">Demos</a>
           <a href="https://evals.intentsolutions.io/" aria-current="page">Evals</a>
           <a href="https://learn.intentsolutions.io/">Learn</a>
         </nav>
@@ -214,11 +237,16 @@
     </header>
     <main>
       <section class="hero">
-        <p class="eyebrow">Intent Evals</p>
-        <h1>The definitions behind every result in Intent Labs.</h1>
+        <h1>Know what a test result actually means.</h1>
         <p class="hero__lead">
-          Labs shows what happened. Evals defines exactly what each signed statement means, so the
-          definition stays stable even as tools, models, and runtimes change.
+          A passing test is only useful if you know what was checked. Intent Evals keeps the
+          definitions behind the results clear and versioned. Intent Labs runs the tests and
+          explains what happened.
+        </p>
+        <p>
+          The approach covers AI skills, agent loops and complete workflows. It is not tied to one
+          model provider. Each result still applies only to the setup and checks recorded in that
+          run.
         </p>
         <div class="relationship" aria-label="Relationship between Intent Labs and Intent Evals">
           <div class="relationship__item">
@@ -230,8 +258,9 @@
           </div>
         </div>
         <div class="actions">
-          <a href="https://labs.intentsolutions.io/results/">See current results</a>
-          <a href="https://labs.intentsolutions.io/start/">Learn how an evaluation works</a>
+          <a href="https://labs.intentsolutions.io/examples/">Read a real example</a>
+          <a href="https://labs.intentsolutions.io/how-it-works/">How testing works</a>
+          <a href="https://labs.intentsolutions.io/start/">Plan an evaluation</a>
         </div>
       </section>
       <h2>Versioned result definitions</h2>
@@ -239,111 +268,125 @@
         These technical identifiers are for systems that produce or verify evidence. If you only
         want to understand a result, start in <a href="https://labs.intentsolutions.io/">Labs</a>.
       </p>
-      <table>
-        <thead>
-          <tr>
-            <th>Predicate</th>
-            <th>Status</th>
-            <th>Asserts</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <a href="/gate-result/v1"><code>gate-result/v1</code></a>
-            </td>
-            <td><span class="status status--NORMATIVE">NORMATIVE</span></td>
-            <td>
-              One deterministic or behavioral gate's outcome for one subject: the gate's identity
-              and version, a four-state decision (pass / fail / advisory / error), the reasons, the
-              policy the gate ran under (hash-pinned), and the exact inputs it saw.
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <a href="/retraction/v1"><code>retraction/v1</code></a>
-            </td>
-            <td><span class="status status--NORMATIVE">NORMATIVE</span></td>
-            <td>
-              An append-only, signed record that a previously published attestation has been
-              retracted, with a closed-set reason class.
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <a href="/skill-refiner-pass/v1"><code>skill-refiner-pass/v1</code></a>
-            </td>
-            <td><span class="status status--NORMATIVE">NORMATIVE</span></td>
-            <td>One Skill Refiner improvement pass over a SKILL.</td>
-          </tr>
-          <tr>
-            <td>
-              <a href="/dashboard-render/v1"><code>dashboard-render/v1</code></a>
-            </td>
-            <td><span class="status status--DRAFT">DRAFT</span></td>
-            <td>
-              An attestation that a specific dashboard render was produced from specific verified
-              inputs — the sign-your-own-homework layer for the labs reports hub.
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <a href="/human-review/v1"><code>human-review/v1</code></a>
-            </td>
-            <td><span class="status status--DRAFT">DRAFT</span></td>
-            <td>
-              A curated human verdict about a skill (thumbs, score text, annotation) captured as a
-              first-class signal, kept separate from automated grades and never folded into them.
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <a href="/validation-result/v1"><code>validation-result/v1</code></a>
-            </td>
-            <td><span class="status status--RESERVED">RESERVED</span></td>
-            <td>Reserved for future structured validator output. Its body is not yet specified.</td>
-          </tr>
-          <tr>
-            <td>
-              <a href="/skill-snapshot/v1"><code>skill-snapshot/v1</code></a>
-            </td>
-            <td><span class="status status--DRAFT">DRAFT</span></td>
-            <td>
-              A content-addressed snapshot of a skill artifact at a point in time — the immutable
-              subject other predicates reference.
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <a href="/runtime-receipt/v1"><code>runtime-receipt/v1</code></a>
-            </td>
-            <td><span class="status status--DRAFT">DRAFT</span></td>
-            <td>
-              A receipt that a specific runtime execution happened with specific inputs and outputs,
-              for replay-fidelity claims.
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <a href="/regression-pack/v1"><code>regression-pack/v1</code></a>
-            </td>
-            <td><span class="status status--DRAFT">DRAFT</span></td>
-            <td>
-              A versioned bundle of sacred regression cases a skill must keep passing; a regression
-              on a sacred case blocks release regardless of average improvement.
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <a href="/eval-verdict/v1"><code>eval-verdict/v1</code></a>
-            </td>
-            <td><span class="status status--RESERVED">RESERVED</span></td>
-            <td>
-              Reserved for a single judged criterion verdict as a standalone signed predicate.
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <p>
+        <strong>Normative</strong> means the definition is adopted. <strong>Draft</strong> means it
+        is still being developed. <strong>Reserved</strong> means the name is held for future use.
+        These labels describe the definitions, not whether a system passed its tests.
+      </p>
+      <div
+        class="table-scroll"
+        role="region"
+        aria-label="Versioned result definitions"
+        tabindex="0"
+      >
+        <table>
+          <thead>
+            <tr>
+              <th>Predicate</th>
+              <th>Status</th>
+              <th>Asserts</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <a href="/gate-result/v1"><code>gate-result/v1</code></a>
+              </td>
+              <td><span class="status status--NORMATIVE">NORMATIVE</span></td>
+              <td>
+                One deterministic or behavioral gate's outcome for one subject: the gate's identity
+                and version, a four-state decision (pass / fail / advisory / error), the reasons,
+                the policy the gate ran under (hash-pinned), and the exact inputs it saw.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <a href="/retraction/v1"><code>retraction/v1</code></a>
+              </td>
+              <td><span class="status status--NORMATIVE">NORMATIVE</span></td>
+              <td>
+                An append-only, signed record that a previously published attestation has been
+                retracted, with a closed-set reason class.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <a href="/skill-refiner-pass/v1"><code>skill-refiner-pass/v1</code></a>
+              </td>
+              <td><span class="status status--NORMATIVE">NORMATIVE</span></td>
+              <td>One Skill Refiner improvement pass over a SKILL.</td>
+            </tr>
+            <tr>
+              <td>
+                <a href="/dashboard-render/v1"><code>dashboard-render/v1</code></a>
+              </td>
+              <td><span class="status status--DRAFT">DRAFT</span></td>
+              <td>
+                An attestation that a specific dashboard render was produced from specific verified
+                inputs — the sign-your-own-homework layer for the labs reports hub.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <a href="/human-review/v1"><code>human-review/v1</code></a>
+              </td>
+              <td><span class="status status--DRAFT">DRAFT</span></td>
+              <td>
+                A curated human verdict about a skill (thumbs, score text, annotation) captured as a
+                first-class signal, kept separate from automated grades and never folded into them.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <a href="/validation-result/v1"><code>validation-result/v1</code></a>
+              </td>
+              <td><span class="status status--RESERVED">RESERVED</span></td>
+              <td>
+                Reserved for future structured validator output. Its body is not yet specified.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <a href="/skill-snapshot/v1"><code>skill-snapshot/v1</code></a>
+              </td>
+              <td><span class="status status--DRAFT">DRAFT</span></td>
+              <td>
+                A content-addressed snapshot of a skill artifact at a point in time — the immutable
+                subject other predicates reference.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <a href="/runtime-receipt/v1"><code>runtime-receipt/v1</code></a>
+              </td>
+              <td><span class="status status--DRAFT">DRAFT</span></td>
+              <td>
+                A receipt that a specific runtime execution happened with specific inputs and
+                outputs, for replay-fidelity claims.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <a href="/regression-pack/v1"><code>regression-pack/v1</code></a>
+              </td>
+              <td><span class="status status--DRAFT">DRAFT</span></td>
+              <td>
+                A versioned bundle of sacred regression cases a skill must keep passing; a
+                regression on a sacred case blocks release regardless of average improvement.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <a href="/eval-verdict/v1"><code>eval-verdict/v1</code></a>
+              </td>
+              <td><span class="status status--RESERVED">RESERVED</span></td>
+              <td>
+                Reserved for a single judged criterion verdict as a standalone signed predicate.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <h2>Why this host stays separate</h2>
       <p>
         A result definition cannot drift whenever the dashboard changes. Predicate URIs stay on this
@@ -358,10 +401,11 @@
           >@intentsolutions/core</a
         >) under an ISEDC council binding: they live here and only here — never at labs.*. This host
         serves the human-readable definition each URI identifies; the machine-readable schemas live
-        version-pinned in the kernel.
-        <a href="https://labs.intentsolutions.io/">Intent Labs</a> publishes results and teaching
-        material. <a href="https://learn.intentsolutions.io/">Intent Solutions Learn</a> teaches the
-        wider implementation practice. Best-effort, single-operator service.
+        version-pinned in the kernel. <a href="https://labs.intentsolutions.io/">Labs</a> tests the
+        work. <a href="https://demos.intentsolutions.io/">Demos</a> shows the systems.
+        <a href="https://learn.intentsolutions.io/">Learn</a> teaches the practice. Part of
+        <a href="https://intentsolutions.io/">Intent Solutions</a>. Best-effort, single-operator
+        service.
       </p>
     </footer>
   </body>
