@@ -6,10 +6,11 @@ import { describe, expect, it } from 'vitest';
 import { MemoryContentStore } from '../ingest/storage-memory.js';
 import { canonicalJsonBytes } from '../ingest/content-address.js';
 import { MemoryGateRowStore } from '../ingest/gate-row-store.js';
-import { validEvidenceBundle } from '../ingest/__fixtures__/bundle-fixtures.js';
+import { validEvidenceBundle, validGateResult } from '../ingest/__fixtures__/bundle-fixtures.js';
 import { StoreTestingResolver } from './store-testing-resolver.js';
 
 const BODY = {
+  ...validGateResult(),
   gate_id: 'iec:ci:coverage',
   gate_name: 'coverage',
   gate_version: '1.0.0',
@@ -24,7 +25,12 @@ const BODY = {
 async function setup(bodies: unknown[] = [BODY]) {
   const content = new MemoryContentStore();
   const gateRows = new MemoryGateRowStore();
-  const key = await content.put(canonicalJsonBytes(validEvidenceBundle()));
+  const firstBody = bodies[0];
+  const bundle =
+    firstBody !== null && typeof firstBody === 'object' && !Array.isArray(firstBody)
+      ? validEvidenceBundle(firstBody as Record<string, unknown>)
+      : validEvidenceBundle();
+  const key = await content.put(canonicalJsonBytes(bundle));
   await gateRows.put(key, { repo: 'iec', bodies });
   return { content, gateRows, key };
 }
@@ -50,15 +56,35 @@ describe('StoreTestingResolver', () => {
     expect(rows?.[0]?.rekorLogIndices).toEqual([1689291334]);
   });
 
-  it('omits failureMode/advisorySeverity when absent or invalid', async () => {
-    const { content, gateRows, key } = await setup([
-      { gate_name: 'arch', gate_decision: 'pass', advisory_severity: 'bogus' },
-    ]);
+  it('omits optional failureMode/advisorySeverity when absent', async () => {
+    const { content, gateRows, key } = await setup([{ ...validGateResult(), gate_name: 'arch' }]);
     const rows = await new StoreTestingResolver(content, gateRows).resolve(key);
     expect(rows?.[0]?.failureMode).toBeUndefined();
     expect(rows?.[0]?.advisorySeverity).toBeUndefined();
     expect(rows?.[0]?.decision).toBe('pass');
-    expect(rows?.[0]?.coverage).toEqual({ dimensionsEvaluated: [], dimensionsSkipped: [] });
+    expect(rows?.[0]?.coverage).toEqual({
+      dimensionsEvaluated: ['seven-layer'],
+      dimensionsSkipped: [],
+    });
+  });
+
+  it('returns null when a persisted body is changed after verification', async () => {
+    const { content, gateRows, key } = await setup();
+    const stored = await gateRows.get(key);
+    expect(stored).not.toBeNull();
+    await gateRows.put(key, {
+      repo: stored!.repo,
+      bodies: [{ ...BODY, gate_decision: 'pass', gate_reasons: ['tampered'] }],
+    });
+
+    expect(await new StoreTestingResolver(content, gateRows).resolve(key)).toBeNull();
+  });
+
+  it('returns null rather than coercing a malformed persisted body', async () => {
+    const { content, gateRows, key } = await setup();
+    await gateRows.put(key, { repo: 'iec', bodies: [{ ...BODY, gate_decision: 'bogus' }] });
+
+    expect(await new StoreTestingResolver(content, gateRows).resolve(key)).toBeNull();
   });
 
   it('returns null for an unknown content key', async () => {

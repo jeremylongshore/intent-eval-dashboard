@@ -128,6 +128,7 @@ hr {
 
 .site-nav {
     display: flex;
+    flex-wrap: wrap;
     gap: 1.25rem;
     font-size: 0.9rem;
 }
@@ -169,6 +170,7 @@ main {
 }
 
 .site-footer a { color: #6b7280; }
+.site-footer code { color: #475569; }
 
 /* --- Page lead --- */
 .lead {
@@ -222,23 +224,24 @@ main {
 .badge--draft { background: #fef3c7; color: #78350f; border-color: #fcd34d; }
 .badge--deprecated { background: #f3f4f6; color: #4b5563; border-color: #d1d5db; }
 
-/* --- Results decision badges (CMO C4: no-data == fail in visual weight) --- */
+/* --- Results decision badges: missing evidence is distinct from failure. --- */
 /* pass — calm green; it is the only "everything is fine" state. */
 .badge--result-pass { background: #dcfce7; color: #14532d; border-color: #86efac; }
 /* advisory — amber; explicitly NOT a pass. */
 .badge--result-advisory { background: #fef3c7; color: #78350f; border-color: #fcd34d; }
-/* error — slate; a gate could not decide. */
-.badge--result-error { background: #e2e8f0; color: #1e293b; border-color: #94a3b8; }
-/*
- * fail AND no-data share the SAME loud red treatment by design. A source with
- * no verified data must NOT look like a pass or a neutral blank — it is as
- * prominent as a failure (CMO C4 addendum).
- */
-.badge--result-fail,
-.badge--no-data {
+/* error — orange warning; a gate could not decide. */
+.badge--result-error { background: #ffedd5; color: #7c2d12; border-color: #fb923c; }
+/* Confirmed failure only. Absence stays equally explicit, not failure-colored. */
+.badge--result-fail {
     background: #fee2e2;
     color: #7f1d1d;
     border-color: #f87171;
+    font-weight: 700;
+}
+.badge--no-data {
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px dashed #64748b;
     font-weight: 700;
 }
 /* stale_since badge (Gregg + Armstrong) — visible amber-on-source flag. */
@@ -251,20 +254,19 @@ main {
 /* a source that DID ingest rows this pass — quiet confirmation. */
 .badge--fresh { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
 
-/* --- No-data panel: equal visual weight with a failure --- */
+/* --- Missing evidence: explicit unknown state, never a synthetic pass. --- */
 .no-data-panel {
-    background: #fef2f2;
-    border: 1px solid #f87171;
-    border-left: 4px solid #dc2626;
+    background: #f1f5f9;
+    border: 1px dashed #64748b;
     border-radius: 4px;
     padding: 1rem 1.25rem;
     margin-top: 1.5rem;
     font-size: 0.92rem;
-    color: #7f1d1d;
+    color: #334155;
 }
 .no-data-panel__title {
     font-weight: 700;
-    color: #7f1d1d;
+    color: #334155;
     margin-bottom: 0.4rem;
 }
 
@@ -287,7 +289,7 @@ main {
     border-left: 3px solid #2c5282;
     font-size: 0.9rem;
 }
-.as-of--none { border-left-color: #dc2626; background: #fef2f2; color: #7f1d1d; }
+.as-of--none { border: 1px dashed #64748b; background: #f1f5f9; color: #334155; }
 
 .predicate-note { font-size: 0.85rem; color: #6b7280; margin-top: 0.75rem; }
 .predicate-breakdown { font-size: 0.88rem; margin-top: 0.5rem; }
@@ -421,8 +423,8 @@ table code {
  *
  * One row per source repo; one cell per hour over the last 24h. The cell COLOR
  * is the hour's decision-mix kind. The load-bearing binding (DR-035 C4 / CMO):
- * `no-data` carries EQUAL visual weight with `fail` — both are loud red. An
- * empty hour is NEVER blank, neutral, or back-filled.
+ * `no-data` uses a distinct outlined unknown state, never failure red or pass
+ * green. Every gap remains visible and labeled; nothing is back-filled.
  */
 .freshness-strip-grid {
     margin-top: 1.75rem;
@@ -433,7 +435,8 @@ table code {
 }
 .freshness-strip-grid h2 { margin-top: 0; }
 .strip__lead { font-size: 0.9rem; color: #374151; margin-bottom: 1rem; }
-.strip__scroll { overflow-x: auto; }
+.strip__scroll { overflow-x: auto; position: relative; }
+.strip__scroll:focus-visible { outline: 2px solid #2c5282; outline-offset: 3px; }
 
 .freshness-strip-grid__table {
     border-collapse: separate;
@@ -456,7 +459,16 @@ table code {
     white-space: nowrap;
     padding-right: 0.75rem !important;
 }
-.strip__repo code { font-size: 0.85rem; }
+.strip__repo code { font-size: 0.85rem; color: #334155; }
+.strip__last-result {
+    display: block;
+    max-width: 25ch;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    color: #475569;
+    font-weight: 400;
+    margin-top: 0.25rem;
+}
 
 /* A single hour cell. Square-ish, color-coded, glyph for color-blind safety. */
 .bucket {
@@ -478,16 +490,17 @@ table code {
 /* Cell colors mirror the result-badge palette EXACTLY. */
 .bucket--pass     { background: #dcfce7; border-color: #86efac; color: #14532d; }
 .bucket--advisory { background: #fef3c7; border-color: #fcd34d; color: #78350f; }
-.bucket--error    { background: #e2e8f0; border-color: #94a3b8; color: #1e293b; }
-/*
- * fail AND no-data share the SAME loud red. A no-data hour must NOT look like a
- * pass or a neutral blank — it is as prominent as a failure (DR-035 C4 / CMO).
- */
-.bucket--fail,
-.bucket--no-data {
+.bucket--error    { background: #ffedd5; border-color: #fb923c; color: #7c2d12; }
+.bucket--fail {
     background: #fee2e2;
     border-color: #f87171;
     color: #7f1d1d;
+    font-weight: 700;
+}
+.bucket--no-data {
+    background: #f1f5f9;
+    border: 1px dashed #64748b;
+    color: #334155;
     font-weight: 700;
 }
 
@@ -513,15 +526,227 @@ table code {
 
 .strip__note { font-size: 0.85rem; margin-top: 1rem; }
 .strip__note--silent {
-    background: #fef2f2;
-    border-left: 3px solid #dc2626;
-    color: #7f1d1d;
+    background: #f1f5f9;
+    border: 1px dashed #64748b;
+    color: #334155;
     padding: 0.75rem 1rem;
     border-radius: 4px;
 }
 .strip__statuslink { margin-top: 1rem; font-size: 0.9rem; }
 
+/* --- Intent Solutions network + Labs front door --- */
+.network-bar {
+    color: #dbe6ff;
+    background: #0b182b;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 0.76rem;
+    letter-spacing: 0.04em;
+}
+.network-bar__inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0.55rem 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+.network-bar a { color: inherit; text-decoration: none; }
+.network-bar__brand { font-weight: 750; text-transform: uppercase; }
+.network-bar__links { display: flex; flex-wrap: wrap; gap: 1rem; }
+.network-bar__links a { color: #aebbd1; }
+.network-bar__links a:hover,
+.network-bar__links a[aria-current="page"] { color: #ffffff; }
+.network-bar__links a[aria-current="page"]::before {
+    content: "●";
+    color: #f08a4b;
+    font-size: 0.6em;
+    margin-right: 0.4rem;
+    vertical-align: 0.15em;
+}
+
+.home main,
+.home .site-header__inner,
+.home .site-footer__inner { max-width: 1080px; }
+
+.lab-hero {
+    padding: clamp(2.5rem, 7vw, 5.5rem) 0 3.5rem;
+    border-bottom: 1px solid #d7dce5;
+}
+.eyebrow {
+    margin: 0 0 0.75rem;
+    color: #2c5282;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+}
+.lab-hero h1 {
+    max-width: 900px;
+    font-size: clamp(2.65rem, 7vw, 5.75rem);
+    line-height: 0.98;
+    letter-spacing: -0.055em;
+}
+.lab-hero h1 em { color: #d95c22; font-style: normal; }
+.lab-hero .lead { max-width: 700px; font-size: clamp(1.08rem, 2vw, 1.35rem); }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.75rem; }
+.button {
+    display: inline-flex;
+    align-items: center;
+    min-height: 46px;
+    padding: 0.7rem 1rem;
+    border: 1px solid #9aa7bb;
+    border-radius: 3px;
+    color: #0b182b;
+    background: transparent;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+.button:hover { border-color: #2c5282; text-decoration: none; }
+.button--primary { color: #ffffff; background: #2453e6; border-color: #2453e6; }
+.button--primary:hover { background: #173eb9; border-color: #173eb9; }
+.hero-note { color: #6b7280; font-size: 0.84rem; font-family: ui-monospace, monospace; }
+
+.evidence-path,
+.entry-points { padding: 3.5rem 0; border-bottom: 1px solid #d7dce5; }
+.section-heading { max-width: 700px; }
+.section-heading h2 { margin-top: 0; font-size: clamp(1.75rem, 4vw, 2.65rem); letter-spacing: -0.035em; }
+.evidence-path__rail {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    border-top: 2px solid #0b182b;
+}
+.evidence-path__rail::after {
+    content: "SIGNED RECEIPT";
+    position: absolute;
+    top: -0.9rem;
+    right: 0;
+    padding: 0.18rem 0.5rem;
+    color: #ffffff;
+    background: #d95c22;
+    transform: rotate(-2deg);
+    font-family: ui-monospace, monospace;
+    font-size: 0.67rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+.evidence-path__rail li { padding: 1.5rem 1.5rem 0 0; }
+.evidence-path__rail li + li { padding-left: 1.5rem; border-left: 1px solid #d7dce5; }
+.evidence-path__step { display: block; color: #d95c22; font: 700 0.72rem ui-monospace, monospace; margin-bottom: 0.6rem; }
+.evidence-path__rail strong { display: block; color: #0b182b; font-size: 1.12rem; }
+.evidence-path__rail p { color: #4b5563; font-size: 0.92rem; }
+
+.entry-points__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2rem; }
+.entry-card {
+    display: flex;
+    min-height: 190px;
+    flex-direction: column;
+    padding: 1.25rem;
+    border: 1px solid #cdd4df;
+    color: #374151;
+    background: #ffffff;
+    text-decoration: none;
+    transition: transform 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+}
+.entry-card:hover { transform: translateY(-3px); border-color: #2453e6; box-shadow: 0 10px 24px rgba(11, 24, 43, 0.08); text-decoration: none; }
+.entry-card__label { margin-bottom: auto; color: #6b7280; font: 700 0.7rem ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.07em; }
+.entry-card strong { display: block; margin: 1.5rem 0 0.4rem; color: #0b182b; font-size: 1.15rem; }
+
+.learn-bridge {
+    margin: 3.5rem 0 0;
+    padding: 1.5rem 1.75rem;
+    border-left: 4px solid #2453e6;
+    background: #eef3ff;
+}
+.learn-bridge p { max-width: 800px; }
+.learn-bridge > a { display: inline-block; margin-top: 0.8rem; font-weight: 700; }
+
+.operations-panel,
+.technical-notes { margin-top: 2rem; border: 1px solid #d7dce5; background: #ffffff; }
+.operations-panel > summary,
+.technical-notes > summary {
+    display: flex;
+    cursor: pointer;
+    list-style: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.1rem 1.25rem;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+}
+.operations-panel > summary::-webkit-details-marker,
+.technical-notes > summary::-webkit-details-marker { display: none; }
+.operations-panel summary small { display: block; margin-top: 0.15rem; color: #6b7280; font-size: 0.78rem; }
+.operations-panel__action { color: #2453e6; font-size: 0.78rem; font-weight: 700; white-space: nowrap; }
+.operations-panel[open] .operations-panel__action::after { content: " / Close"; }
+.operations-panel .freshness-strip-grid { margin: 0; border-width: 1px 0 0; border-radius: 0; }
+.technical-notes { margin-bottom: 1rem; padding: 0 1.25rem 1.5rem; }
+.technical-notes > summary { margin: 0 -1.25rem; }
+.technical-notes[open] > summary { border-bottom: 1px solid #d7dce5; }
+
+.guide-steps {
+    list-style: none;
+    padding: 0;
+    margin: 1.75rem 0 0;
+    counter-reset: guide;
+    border-top: 1px solid #d7dce5;
+}
+.guide-steps li {
+    position: relative;
+    counter-increment: guide;
+    padding: 1.25rem 0 1.25rem 3.25rem;
+    border-bottom: 1px solid #d7dce5;
+}
+.guide-steps li::before {
+    content: counter(guide, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 1.4rem;
+    color: #d95c22;
+    font: 800 0.75rem ui-monospace, monospace;
+}
+.guide-steps strong { color: #0b182b; font-size: 1.05rem; }
+.guide-steps p { margin-top: 0.25rem; color: #4b5563; }
+.plain-language,
+.try-path { margin-top: 3rem; padding: 1.5rem; border: 1px solid #d7dce5; background: #ffffff; }
+.plain-language h2,
+.try-path h2 { margin-top: 0; }
+.plain-language dl { display: grid; grid-template-columns: minmax(110px, 0.35fr) 1fr; gap: 0; margin-top: 1.25rem; }
+.plain-language dt,
+.plain-language dd { padding: 0.75rem 0; border-top: 1px solid #e5e7eb; }
+.plain-language dt { color: #0b182b; font-weight: 700; }
+.plain-language dd { color: #4b5563; }
+.try-path { border-left: 4px solid #d95c22; }
+
+a:focus-visible,
+summary:focus-visible { outline: 3px solid #f08a4b; outline-offset: 3px; }
+
 /* --- /status USE-method cards (Utilization / Saturation / Errors) --- */
+.status-updated, .status-method { font-size: 0.88rem; color: #475569; }
+.status-updated time { overflow-wrap: anywhere; }
+.collection-summary {
+    border: 1px solid #64748b;
+    border-radius: 4px;
+    background: #f1f5f9;
+    color: #334155;
+    padding: 1rem 1.25rem;
+    margin-top: 1.5rem;
+}
+.collection-summary h2 { color: inherit; margin: 0; font-size: 1.2rem; }
+.collection-summary p { margin: 0.5rem 0 0; max-width: 70ch; }
+.collection-summary--complete { border-color: #86efac; background: #f0fdf4; color: #14532d; }
+.collection-summary--warning { border-color: #fcd34d; background: #fffbeb; color: #78350f; }
+.collection-summary--error { border-color: #f87171; background: #fef2f2; color: #7f1d1d; }
+.collection-note { border: 1px dashed #64748b; background: #f1f5f9; color: #334155; }
 .use-cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
@@ -530,7 +755,6 @@ table code {
 }
 .use-card {
     border: 1px solid #e5e7eb;
-    border-left: 4px solid #2c5282;
     border-radius: 4px;
     padding: 1rem 1.25rem;
     background: #fdfdfb;
@@ -726,6 +950,47 @@ table code {
 }
 
 /* --- Responsive --- */
+.business-questions,
+.scope-summary,
+.published-example,
+.network-paths {
+    padding: clamp(2rem, 5vw, 3.5rem) 0;
+    border-bottom: 1px solid #d7dce5;
+}
+.business-questions h2,
+.scope-summary h2,
+.published-example h2,
+.network-paths h2 { margin-top: 0; }
+.decision-list { margin-top: 1.5rem; }
+.decision-list > div,
+.scope-list > div,
+.tooling-list > div,
+.component-list > div {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    gap: 1.25rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+.decision-list dt, .scope-list dt, .tooling-list dt, .component-list dt {
+    color: #0f172a;
+    font-weight: 600;
+}
+.decision-list dd, .scope-list dd, .tooling-list dd, .component-list dd {
+    color: #374151;
+    max-width: 65ch;
+}
+.home main > section p { max-width: 70ch; }
+.scope-list, .tooling-list, .component-list { margin-top: 1.5rem; }
+.example-story { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid #d7dce5; }
+.example-story h2 { margin-top: 0; }
+.next-step { margin-top: 2.5rem; padding: 1.5rem; border-left: 3px solid #2c5282; background: #f3f6fb; }
+.next-step h2 { margin-top: 0; }
+.technical-link { margin-top: 2rem; font-size: 0.9rem; }
+.table-scroll { max-width: 100%; overflow-x: auto; margin-top: 1.5rem; }
+.table-scroll > table { margin-top: 0; }
+.table-scroll:focus-visible { outline: 3px solid #2c5282; outline-offset: 3px; }
+main code, main a { overflow-wrap: anywhere; }
 @media (max-width: 600px) {
     html { font-size: 16px; }
     h1 { font-size: 1.7rem; }
@@ -733,6 +998,29 @@ table code {
     .meta-block dl { grid-template-columns: 1fr; gap: 0.15rem; }
     .meta-block dt { font-size: 0.8rem; }
     .meta-block dd { margin-bottom: 0.5rem; }
+    .network-bar__inner { padding-inline: 1rem; }
+    .site-header__inner { align-items: flex-start; }
+    .site-nav { width: 100%; gap: 0.6rem 1rem; flex-wrap: wrap; }
+    .lab-hero { padding-top: 2.5rem; }
+    .lab-hero h1 { font-size: 2.65rem; }
+    .evidence-path__rail,
+    .entry-points__grid { grid-template-columns: 1fr; }
+    .evidence-path__rail { border-top: 0; border-left: 2px solid #0b182b; }
+    .evidence-path__rail::after { top: auto; bottom: -0.5rem; }
+    .evidence-path__rail li { padding: 0 0 1.5rem 1.25rem; }
+    .evidence-path__rail li + li { padding-left: 1.25rem; border-left: 0; }
+    .entry-card { min-height: 150px; }
+    .operations-panel > summary { align-items: flex-start; }
+    .plain-language dl { grid-template-columns: 1fr; }
+    .plain-language dd { padding-top: 0.1rem; border-top: 0; }
+    .decision-list > div, .scope-list > div, .tooling-list > div, .component-list > div {
+        grid-template-columns: 1fr;
+        gap: 0.25rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .entry-card { transition: none; }
 }
 
 @media (max-width: 720px) {

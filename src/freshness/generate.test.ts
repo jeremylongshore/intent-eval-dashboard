@@ -143,7 +143,7 @@ describe('generateAndWrite — disk round-trip', () => {
       expect(iajRow).not.toContain('bucket--pass');
 
       const status = await readFile(join(dir, 'status', 'index.html'), 'utf8');
-      expect(status).toContain('Fully silent sources');
+      expect(status).toContain('No verified test results in this window');
       expect(status).toContain('iaj');
     } finally {
       await rm(dir, { recursive: true, force: true });

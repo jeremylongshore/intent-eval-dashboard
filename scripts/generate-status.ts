@@ -9,7 +9,7 @@
  *
  * CURRENT STATE (2026-06): emit-evidence across the 8 source repos is
  * incomplete, so the honest default has ZERO verified rows and ALL workers
- * silent. The strip therefore renders almost entirely `no-data` (loud red) and
+ * silent. The strip therefore renders almost entirely `no-data` (unknown) and
  * /status shows 0/8 utilization. This is the truthful current picture and
  * exactly what the DR-035 C4 binding exists to surface — absence shown loudly,
  * never silently filled.
@@ -47,6 +47,7 @@ function emptyCurrentStateInputs(nowIso: string): FreshnessInputs {
   const rows: FreshnessRowInput[] = [];
   const liveness: RepoLiveness[] = INGEST_REPOS.map((repo) => ({ repo, fresh: false }));
   const pressure: SupervisionPressure = {
+    measured: false,
     restartCount: 0,
     restartBudget: RESTART_BUDGET,
     escalatedChildIds: [],
