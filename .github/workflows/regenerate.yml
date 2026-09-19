@@ -65,7 +65,7 @@ jobs:
   regenerate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           # Need full history to push back. token defaults to GITHUB_TOKEN
           # which has contents:write per permissions block above.
@@ -73,7 +73,7 @@ jobs:
 
       # ── Node toolchain for the live ingest-render pass (Track #5) ──
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: Setup Node
         uses: actions/setup-node@v7
@@ -107,7 +107,7 @@ jobs:
       # that fail to fetch render honest no-data until their first verify — the
       # correct floor, never a synthetic pass.
       - name: Restore last-known-good ingest store (nr75.17)
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: .ingest-store
           key: ingest-store-${{ github.run_id }}-${{ github.run_attempt }}
@@ -181,7 +181,7 @@ jobs:
       # (cold cache + total fetch failure → nothing to persist).
       - name: Save last-known-good ingest store (nr75.17)
         if: always() && hashFiles('.ingest-store/**') != ''
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: .ingest-store
           key: ingest-store-${{ github.run_id }}-${{ github.run_attempt }}
