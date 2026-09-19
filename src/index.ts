@@ -23,3 +23,4 @@ export * from './skills/index.js';
 export * from './freshness/index.js';
 export * from './retraction/index.js';
 export * from './alerting/index.js';
+export * from './eval-reports/index.js';

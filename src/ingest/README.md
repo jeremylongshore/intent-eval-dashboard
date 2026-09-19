@@ -68,7 +68,7 @@ Each `ingest_worker:<repo>` runs `runIngestWorker(repo, deps)` which executes,
    comparison; wrong issuer/subject/ref → crash).
 3. **Verify the Rekor inclusion proof** for each bundle row (`SigstoreVerifier`).
 4. **Verify the DSSE signature** for each bundle row (`SigstoreVerifier`).
-5. **Validate each bundle's schema** against `@intentsolutions/core@^0.2.0`'s Zod
+5. **Validate each bundle's schema** against `@intentsolutions/core@0.10.0`'s Zod
    `EvidenceBundleSchema` (`validateEvidenceBundle`, REAL kernel import + parse).
 6. **Content-address** each verified bundle into local object storage by sha256
    (`ContentStore`). Content-addressing is what makes a deep link **survive** a
