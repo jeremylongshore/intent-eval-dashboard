@@ -16,6 +16,12 @@
     "MD041": false, // first line need not be H1 (frontmatter or banner first)
     "MD007": { "indent": 2 }, // unordered list indent
     "MD026": { "punctuation": ".,;:!?" }, // trailing punctuation in headings — allow ?
+    // MD060 (table-column-style) — OFF. markdownlint v0.40.0 added this rule, and it
+    // arrives with markdownlint-cli2-action v23, the lowest major off the node20
+    // Actions runtime. It polices pipe spacing in tables, which Prettier already
+    // formats, so enforcing it means fighting the formatter on every table. Pure
+    // cosmetics, same class as MD013; disabled estate-wide (lab, j-rig, harness).
+    "MD060": false,
   },
   "globs": ["**/*.md"],
   "ignores": ["node_modules/**", "dist/**", "coverage/**"],
