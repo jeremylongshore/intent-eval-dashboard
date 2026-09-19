@@ -36,7 +36,8 @@
  * Exit codes: 0 on success, 2 on IO/usage error.
  */
 
-import { resolve, basename } from 'node:path';
+import { resolve } from 'node:path';
+import { assertOperatorInternalRoot } from '../dist/lib/operator-internal-root.js';
 import { fileURLToPath } from 'node:url';
 import { type RenderInput } from '../dist/ingest/renderer.js';
 import { type BundleResolver } from '../dist/results/row-model.js';
@@ -91,14 +92,16 @@ async function main(argv: readonly string[]): Promise<number> {
   const requested = argv[0] ?? 'site-internal';
   // Refuse to write the operator-internal output into the PUBLIC origin. The
   // strict site/ vs site-internal/ separation is the load-bearing binding.
-  if (basename(requested) === 'site') {
-    console.error(
-      'generate-internal: refusing to write operator-internal output into the public origin "site/". ' +
-        'Use the default "site-internal" (this output is tailnet-only and must never be served publicly).',
+  let internalSiteRoot: string;
+  try {
+    internalSiteRoot = await assertOperatorInternalRoot(
+      resolve(process.cwd(), requested),
+      'generate-internal',
     );
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : String(error));
     return 2;
   }
-  const internalSiteRoot = resolve(process.cwd(), requested);
   const written = await generate(internalSiteRoot);
   console.log(`✓ generated ${written.length} operator-internal file(s) under ${internalSiteRoot}`);
   console.log(

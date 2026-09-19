@@ -64,7 +64,7 @@ pnpm run lint:c3:internal       # C3 gate over the internal output
 
 - The public Caddy block serves `/srv/intent-eval-dashboard/site/` only.
 - The public `deploy.yml` triggers on `paths: ['site/**']` (a change to `site-internal/**` does **not** redeploy the public site), and its smoke-file checks, C3 scan, and predicate-URI scan all target `site` only.
-- `generate-internal.ts` **refuses** to write into `site/` (exits non-zero if the target basename is `site`).
+- Every operator-internal writer **refuses** to write into the public origin: the target may not be `site/`, anywhere inside it (`site/sub`), or a symlink that resolves into it. The check is one shared guard, `src/lib/operator-internal-root.ts`, enforced inside the library writers so scripts and the live ingest-render path all inherit it; the scripts exit 2.
 - The internal pages are `noindex, nofollow` with no public `canonical`, and self-identify via `<meta name="iep-surface" content="tailnet-only">`.
 
 `site-internal/`'s generated HTML *is* committed (so the VPS `git reset --hard` checkout has it on disk for the future tailnet block); only build artifacts under it are gitignored, mirroring `site/`.
