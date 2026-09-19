@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { mkdtemp, readdir, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -170,9 +170,20 @@ describe('unified report output', () => {
   it('refuses the public site root before creating output', async () => {
     const root = await mkdtemp(join(tmpdir(), 'iep-dashboard-public-refusal-'));
     try {
-      await expect(
-        writeUnifiedReportSite(generateUnifiedReportFiles(report()), join(root, 'site')),
-      ).rejects.toThrow('refusing to write tailnet-only output');
+      // The exact root, and every path nested inside it: a basename-only check
+      // accepted `site/sub`, which is still the publicly deployed tree.
+      for (const bad of [
+        join(root, 'site'),
+        join(root, 'site', 'sub'),
+        join(root, 'site', 'sub', 'deeper'),
+        join(root, 'site-internal', '..', 'site', 'x'),
+      ]) {
+        await expect(
+          writeUnifiedReportSite(generateUnifiedReportFiles(report()), bad),
+          bad,
+        ).rejects.toThrow('refusing to write operator-internal output into the public origin');
+      }
+      await expect(readdir(root)).resolves.toEqual([]);
     } finally {
       await rm(root, { recursive: true, force: true });
     }

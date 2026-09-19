@@ -53,7 +53,7 @@ Rekor proof, or rollout-gate decision. The generated page therefore:
 - writes only below `site-internal/internal/eval-reports/j-rig/`;
 - is marked `noindex, nofollow` and `iep-surface=tailnet-only`;
 - labels itself as an unsigned local projection;
-- refuses a destination whose basename is `site`; and
+- refuses a destination that is the public origin `site/`, lies anywhere inside it, or is a symlink resolving into it (shared guard `src/lib/operator-internal-root.ts`); and
 - renders no-data with the same visual weight as failure.
 
 The existing signed Evidence Bundle ingest/results lane remains the public
