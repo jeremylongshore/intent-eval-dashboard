@@ -7,8 +7,9 @@ name: CodeQL
 on:
   push:
     branches: [main]
+  # No `branches:` filter on purpose: with `branches: [main]` a stacked PR whose
+  # base is another feature branch gets no checks at all. Push builds stay on main.
   pull_request:
-    branches: [main]
   schedule:
     - cron: '27 3 * * 1'
 
