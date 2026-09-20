@@ -1,8 +1,9 @@
 name: Doc Quality
 
 on:
+  # No `branches:` filter on purpose: with `branches: [main]` a stacked PR whose
+  # base is another feature branch gets no checks at all. Push builds stay on main.
   pull_request:
-    branches: [main]
   push:
     branches: [main]
     paths:

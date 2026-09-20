@@ -10,8 +10,9 @@ name: Lint (YAML + Actions)
 # lives at the repo root in .yamllint (mirrors the kernel @intentsolutions/core).
 
 on:
+  # No `branches:` filter on purpose: with `branches: [main]` a stacked PR whose
+  # base is another feature branch gets no checks at all. Push builds stay on main.
   pull_request:
-    branches: [main]
   push:
     branches: [main]
     paths:
