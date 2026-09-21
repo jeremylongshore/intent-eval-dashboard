@@ -1,0 +1,97 @@
+/* Intent Solutions estate bar v1.0.0. Canonical source:
+   intent-solutions-landing/estate-bar/. Do not edit a vendored copy; change it
+   there and re-sync. Sizes are px on purpose: consumer sites set different root
+   font sizes (labs 17px, evals 16px), and the bar must not scale with them. */
+@font-face {
+  font-family: "Estate Bar Mono";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/JetBrainsMono-Medium.woff2") format("woff2");
+}
+
+.is-estate-bar {
+  --estate-bar-bg: #050506;
+  --estate-bar-line: rgba(63, 63, 70, 0.52);
+  --estate-bar-fg: #a1a1aa;
+  --estate-bar-fg-strong: #fafafa;
+  --estate-accent: #fb923c;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--estate-bar-bg);
+  border-bottom: 1px solid var(--estate-bar-line);
+}
+
+.is-estate-bar__inner {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0 20px;
+  box-sizing: border-box;
+  width: min(1152px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.is-estate-bar__inner::-webkit-scrollbar { display: none; }
+
+.is-estate-bar__inner a {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  min-height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--estate-bar-fg);
+  font-family: "Estate Bar Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 500;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: 0.09em;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  -webkit-font-smoothing: antialiased;
+  transition: color 160ms ease;
+}
+
+.is-estate-bar__inner a:hover,
+.is-estate-bar__inner a:focus-visible { color: var(--estate-bar-fg-strong); }
+
+.is-estate-bar__inner a:focus-visible {
+  outline: 2px solid var(--estate-accent);
+  outline-offset: -6px;
+}
+
+/* Current property: accent AND underline. Never color alone. */
+.is-estate-bar__inner a[aria-current="page"] {
+  color: var(--estate-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+}
+
+/* On narrow screens the row scrolls sideways; fade the right edge as the cue. */
+@media (max-width: 720px) {
+  .is-estate-bar__inner {
+    width: 100%;
+    padding: 0 16px;
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent);
+  }
+  .is-estate-bar__inner a:last-child { padding-right: 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-estate-bar__inner a { transition: none; }
+}

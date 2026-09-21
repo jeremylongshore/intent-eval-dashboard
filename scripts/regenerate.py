@@ -207,7 +207,19 @@ def render_listing(manifest: dict, live_state: dict[str, dict]) -> str:
         eval_list=eval_list_block,
         scorecards_list=scorecards_block,
         cron_last_run_utc=datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
+        estate_bar=estate_bar(),
     )
+
+
+def estate_bar() -> str:
+    """The canonical network strip, indented exactly as SITE_HEADER emits it.
+
+    Vendored from intent-solutions-landing/estate-bar by scripts/sync-estate-bar.sh.
+    The header test compares every page's header with the TypeScript SITE_HEADER
+    byte for byte, so this must indent the fragment the same way (4 spaces).
+    """
+    fragment = Path(__file__).resolve().parent.parent / "vendor/estate-bar/fragments/estate-bar.labs.html"
+    return "\n".join("    " + line for line in fragment.read_text(encoding="utf-8").strip().splitlines())
 
 
 LISTING_TEMPLATE = """<!DOCTYPE html>
@@ -225,15 +237,7 @@ LISTING_TEMPLATE = """<!DOCTYPE html>
 </head>
 <body>
 <header class="site-header">
-    <div class="network-bar" aria-label="Intent Solutions network"><div class="network-bar__inner">
-      <a href="https://intentsolutions.io/" class="network-bar__brand">Intent Solutions</a>
-      <nav class="network-bar__links" aria-label="Intent Solutions properties">
-        <a href="https://labs.intentsolutions.io/" aria-current="page">Labs</a>
-        <a href="https://demos.intentsolutions.io/">Demos</a>
-        <a href="https://learn.intentsolutions.io/">Learn</a>
-        <a href="https://evals.intentsolutions.io/">Evals</a>
-      </nav>
-    </div></div>
+{estate_bar}
     <div class="site-header__inner">
       <a href="/" class="site-header__wordmark">Intent&nbsp;Labs</a>
       <nav class="site-nav" aria-label="Primary">
