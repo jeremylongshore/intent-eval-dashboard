@@ -1,3 +1,7 @@
+/* The shared Intent Solutions network strip. Imported here so every page gets it
+   through the one stylesheet it already loads. Must stay the first rule. */
+@import url("/estate-bar/estate-bar.css");
+
 /*
  * labs.intentsolutions.io — shared design tokens + base layout
  *
@@ -535,36 +539,9 @@ table code {
 .strip__statuslink { margin-top: 1rem; font-size: 0.9rem; }
 
 /* --- Intent Solutions network + Labs front door --- */
-.network-bar {
-    color: #dbe6ff;
-    background: #0b182b;
-    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size: 0.76rem;
-    letter-spacing: 0.04em;
-}
-.network-bar__inner {
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 0.55rem 1.5rem;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-}
-.network-bar a { color: inherit; text-decoration: none; }
-.network-bar__brand { font-weight: 750; text-transform: uppercase; }
-.network-bar__links { display: flex; flex-wrap: wrap; gap: 1rem; }
-.network-bar__links a { color: #aebbd1; }
-.network-bar__links a:hover,
-.network-bar__links a[aria-current="page"] { color: #ffffff; }
-.network-bar__links a[aria-current="page"]::before {
-    content: "●";
-    color: #f08a4b;
-    font-size: 0.6em;
-    margin-right: 0.4rem;
-    vertical-align: 0.15em;
-}
+/* Accent for the vendored estate bar (site/estate-bar, never edited here).
+   The accent of the current-property link is the one thing a site may set. */
+.is-estate-bar { --estate-accent: #f08a4b; }
 
 .home main,
 .home .site-header__inner,
@@ -998,7 +975,6 @@ main code, main a { overflow-wrap: anywhere; }
     .meta-block dl { grid-template-columns: 1fr; gap: 0.15rem; }
     .meta-block dt { font-size: 0.8rem; }
     .meta-block dd { margin-bottom: 0.5rem; }
-    .network-bar__inner { padding-inline: 1rem; }
     .site-header__inner { align-items: flex-start; }
     .site-nav { width: 100%; gap: 0.6rem 1rem; flex-wrap: wrap; }
     .lab-hero { padding-top: 2.5rem; }

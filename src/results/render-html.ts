@@ -26,6 +26,8 @@
  *     never declares one at labs.* (CISO.)
  */
 
+import { readFileSync } from 'node:fs';
+
 import { type RepoResults, type ResultsRow, type ResultsView } from './row-model.js';
 
 /** HTML-escape a string for safe text/attribute interpolation. */
@@ -90,16 +92,24 @@ const PAGE_HEAD = (
     <meta name="iep-dashboard-version" content="0.1.0">
 </head>`;
 
+/**
+ * The top network strip shared by every Intent Solutions property. Its single
+ * source is intent-solutions-landing/estate-bar, vendored here by
+ * scripts/sync-estate-bar.sh. It is emitted verbatim: the estate bar test runs
+ * the canonical checker over every public page, so a label, href or order that
+ * differs from the canonical strip fails the suite.
+ */
+const ESTATE_BAR = readFileSync(
+  new URL('../../vendor/estate-bar/fragments/estate-bar.labs.html', import.meta.url),
+  'utf8',
+)
+  .trim()
+  .split('\n')
+  .map((line) => `    ${line}`)
+  .join('\n');
+
 export const SITE_HEADER = `<header class="site-header">
-    <div class="network-bar" aria-label="Intent Solutions network"><div class="network-bar__inner">
-      <a href="https://intentsolutions.io/" class="network-bar__brand">Intent Solutions</a>
-      <nav class="network-bar__links" aria-label="Intent Solutions properties">
-        <a href="https://labs.intentsolutions.io/" aria-current="page">Labs</a>
-        <a href="https://demos.intentsolutions.io/">Demos</a>
-        <a href="https://learn.intentsolutions.io/">Learn</a>
-        <a href="https://evals.intentsolutions.io/">Evals</a>
-      </nav>
-    </div></div>
+${ESTATE_BAR}
     <div class="site-header__inner">
       <a href="/" class="site-header__wordmark">Intent&nbsp;Labs</a>
       <nav class="site-nav" aria-label="Primary">
