@@ -21,3 +21,8 @@ data/
 # Hand-authored test fixtures under src/**/__fixtures__/ are NOT ignored here —
 # they are committed-once HTML fixtures asserted against by *.test.ts, so prettier
 # keeps them consistent like any other source file.
+
+# Vendored verbatim from intent-solutions-landing/estate-bar and checked against
+# its manifest; reformatting would break the hash check.
+vendor/
+site-evals/estate-bar/

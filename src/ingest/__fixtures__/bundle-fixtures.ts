@@ -19,7 +19,7 @@
  */
 
 import { generateKeyPairSync, sign as cryptoSign, createHash, randomBytes } from 'node:crypto';
-import { canonicalJsonBytes } from '../content-address.js';
+import { canonicalJsonBytes, sha256Key } from '../content-address.js';
 import { dssePae, merkleLeafHashHex } from '../verifier-offline.js';
 import { type ManifestRow, type ManifestSigningClaims, type ReportManifest } from '../manifest.js';
 import { type OfflineBundle } from '../verifier-offline.js';
@@ -38,8 +38,30 @@ export function signingClaimsFor(_repo: string, githubRepo: string): ManifestSig
   };
 }
 
-/** A valid, kernel-schema-conformant EvidenceBundle payload. */
-export function validEvidenceBundle(): Record<string, unknown> {
+/** A valid kernel gate-result/v1 predicate body. */
+export function validGateResult(): Record<string, unknown> {
+  return {
+    gate_id: 'j-rig:ci:gate-7-layer',
+    gate_name: 'gate-7-layer',
+    gate_version: '1.0.0',
+    gate_decision: 'pass',
+    gate_reasons: ['all layers passed'],
+    coverage: { dimensions_evaluated: ['seven-layer'], dimensions_skipped: [] },
+    policy_ref: `sha256:${'c'.repeat(64)}:policy`,
+    policy_hash: `sha256:${'c'.repeat(64)}`,
+    input_hash: `sha256:${'a'.repeat(64)}`,
+    evaluated_at: '2026-05-30T12:00:00.000Z',
+    runner: 'fixture@1.0.0',
+    commit_sha: 'd'.repeat(40),
+  };
+}
+
+/** A valid, kernel-schema-conformant EvidenceBundle manifest. */
+export function validEvidenceBundle(
+  gateResult: Record<string, unknown> = validGateResult(),
+): Record<string, unknown> {
+  const gateId = String(gateResult['gate_id']);
+  const inputHash = String(gateResult['input_hash']).replace(/^sha256:/, '');
   return {
     // UUIDv7 (version nibble 7, variant 8/9/a/b)
     id: '01890a5d-ac96-774b-bcce-b302099a8057',
@@ -49,11 +71,13 @@ export function validEvidenceBundle(): Record<string, unknown> {
     row_count: 1,
     subject_set: [
       {
-        name: 'j-rig:ci:gate-7-layer',
-        digest: { sha256: 'a'.repeat(64) },
+        name: gateId,
+        digest: { sha256: inputHash },
       },
     ],
-    storage_key: 'sha256:' + 'b'.repeat(64),
+    // Existing producer v1 contract: one body per bundle, with the canonical
+    // body digest committed through the signed storage_key.
+    storage_key: sha256Key(canonicalJsonBytes(gateResult)),
     signing_mode: 'rekor_production',
     rekor_log_indices: [1689291334],
     verification_status: 'verified',
@@ -126,9 +150,21 @@ export function mintRow(
     readonly identityOverride?: { issuer: string; workflowRef: string };
     /** Number of sibling leaves to put in the Merkle tree (>=1). */
     readonly siblingLeaves?: number;
+    /** Adjacent predicate bodies committed to by the bundle metadata. */
+    readonly gateResults?: readonly unknown[];
   } = {},
 ): MintedRow {
-  const bundle = opts.bundle ?? validEvidenceBundle();
+  const gateResults = opts.gateResults ?? [validGateResult()];
+  const firstGateResult = gateResults[0];
+  const bundle =
+    opts.bundle ??
+    validEvidenceBundle(
+      firstGateResult !== null &&
+        typeof firstGateResult === 'object' &&
+        !Array.isArray(firstGateResult)
+        ? (firstGateResult as Record<string, unknown>)
+        : validGateResult(),
+    );
   const payloadBytes = canonicalJsonBytes(bundle);
   const payloadB64 = Buffer.from(payloadBytes).toString('base64');
   const payloadType = 'application/vnd.in-toto+json';
@@ -174,6 +210,7 @@ export function mintRow(
       bundle,
       sigstoreBundle: offline,
       sourceSha: opts.sourceSha ?? 'a'.repeat(40),
+      gateResults,
     },
     publicKeyPem,
     payloadBytes,

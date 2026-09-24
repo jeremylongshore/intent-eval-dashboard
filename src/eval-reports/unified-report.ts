@@ -8,14 +8,16 @@
  * rendered, so a malformed local file fails closed instead of becoming a
  * dashboard assertion.
  *
- * This module never writes to the public `site/` tree. Its writer refuses a
- * destination whose basename is `site`, and emits only below the
+ * This module never writes to the public `site/` tree. Its writer resolves the
+ * destination through the shared `assertOperatorInternalRoot` guard, which
+ * refuses `site/`, anything inside it, and symlinks into it, and emits only below the
  * operator-internal `internal/eval-reports/j-rig/` URL space.
  */
 
 import { mkdir, writeFile } from 'node:fs/promises';
-import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
+import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { z } from 'zod';
+import { assertOperatorInternalRoot } from '../lib/operator-internal-root.js';
 import { esc, SITE_FOOTER } from '../results/render-html.js';
 
 const Sha256DigestSchema = z.string().regex(/^sha256:[a-f0-9]{64}$/);
@@ -375,16 +377,6 @@ export function generateUnifiedReportFiles(report: UnifiedReport): UnifiedReport
   return [{ path: REPORT_PATH, html: renderUnifiedReport(report) }];
 }
 
-function assertSafeOutputRoot(internalSiteRoot: string): string {
-  const root = resolve(internalSiteRoot);
-  if (basename(root) === 'site') {
-    throw new Error(
-      'writeUnifiedReportSite: refusing to write tailnet-only output into the public origin "site/"',
-    );
-  }
-  return root;
-}
-
 function assertSafeOutputPath(root: string, path: string): string {
   const absolute = resolve(root, path);
   const relativePath = relative(root, absolute);
@@ -399,7 +391,7 @@ export async function writeUnifiedReportSite(
   files: readonly UnifiedReportFile[],
   internalSiteRoot: string,
 ): Promise<string[]> {
-  const root = assertSafeOutputRoot(internalSiteRoot);
+  const root = await assertOperatorInternalRoot(internalSiteRoot, 'writeUnifiedReportSite');
   const written: string[] = [];
   for (const file of files) {
     const absolute = assertSafeOutputPath(root, file.path);

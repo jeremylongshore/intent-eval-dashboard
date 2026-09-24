@@ -2,7 +2,7 @@
  * Freshness-strip + /status HTML render tests (puxu.7).
  *
  * Asserts the rendered HTML carries the bindings VISUALLY:
- *   - no-data cells use the loud `bucket--no-data` class (equal weight to fail);
+ *   - no-data cells remain visible and distinct from confirmed failures;
  *   - the 25h-silent worker's recent cells carry `bucket--no-data` in the HTML
  *     (the binding is provable end-to-end, not just in the model);
  *   - the generated output is C3-clean (no cross-predicate aggregate PASS%);
@@ -10,6 +10,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
 import { buildFreshnessStrip, type FreshnessRowInput } from './bucket-model.js';
 import { computeIngestUse, type RepoLiveness, type SupervisionPressure } from './use-model.js';
 import { renderFreshnessStrip, renderStatusPage } from './render-strip.js';
@@ -26,31 +27,67 @@ const PRESSURE: SupervisionPressure = {
   escalatedChildIds: [],
 };
 
-describe('renderFreshnessStrip — no-data is loud (equal to fail)', () => {
-  it('empty (current state) renders every cell with the loud bucket--no-data class', () => {
+describe('renderFreshnessStrip — missing results are explicit, not failures', () => {
+  it('empty state labels all 192 unknown cells without inventing outcomes', () => {
     const view = buildFreshnessStrip(REPOS, [], NOW);
     const html = renderFreshnessStrip(view);
-    // 8 repos × 24 buckets = 192 no-data table cells, all loud. Count only the
+    // 8 repos × 24 buckets = 192 explicit no-data table cells. Count only the
     // <td> cells (the legend swatch also uses the no-data class but is a <span>).
     const noDataCells = html.match(/<td class="bucket bucket--no-data"/g) ?? [];
     expect(noDataCells.length).toBe(8 * 24);
-    // The loud no-data badge for fully-silent rows appears too.
+    // Whole-window absence is clearly labeled too.
     expect(html).toContain('badge badge--no-data');
-    // The honest-state note is present (we render silence loudly, never fill it).
-    expect(html).toContain('honest current state');
+    expect(html).toContain('Their test outcomes are unknown');
+    expect(html).toContain('No result is not a failed test');
+    expect(html).toContain('No result (unknown)');
+    expect(html).not.toContain('equal to fail');
+    expect(html).not.toContain('rolling out upstream');
+    expect(html).not.toMatch(/<td class="bucket bucket--(pass|fail)"/);
   });
 
-  it('no-data and fail share the same CSS class family (no neutral/blank state)', () => {
-    const view = buildFreshnessStrip(REPOS, [], NOW);
-    const html = renderFreshnessStrip(view);
-    // there is no "neutral"/"empty"/"blank" bucket class — only the kinds.
-    expect(html).not.toMatch(/bucket--(neutral|empty|blank|unknown)/);
+  it('missing-result cells, badges and panels have their own outlined non-red CSS', () => {
+    const css = readFileSync(new URL('../../site/style.css', import.meta.url), 'utf8');
+    const rule = (selector: string): string =>
+      new RegExp(`\\.${selector}\\s*\\{([^}]+)\\}`).exec(css)?.[1] ?? '';
+    const background = (selector: string): string =>
+      /background:\s*([^;]+);/.exec(rule(selector))?.[1] ?? '';
+    for (const selector of ['bucket--no-data', 'badge--no-data', 'no-data-panel']) {
+      expect(rule(selector)).toContain('dashed');
+      expect(background(selector)).not.toBe('');
+      expect(background(selector)).not.toBe(background('bucket--fail'));
+      expect(background(selector)).not.toBe(background('bucket--pass'));
+      expect(background(selector)).not.toBe(background('bucket--error'));
+    }
+    expect(rule('bucket--fail')).toContain('#fee2e2');
+    expect(rule('badge--result-fail')).toContain('#fee2e2');
   });
 
   it('a fail hour renders a bucket--fail cell', () => {
     const rows: FreshnessRowInput[] = [{ repo: 'iec', evaluatedAt: hoursAgo(1), decision: 'fail' }];
     const html = renderFreshnessStrip(buildFreshnessStrip(REPOS, rows, NOW));
     expect(html).toContain('bucket bucket--fail');
+  });
+
+  it('screen-reader descriptions include the hour and full outcome counts', () => {
+    const rows: FreshnessRowInput[] = [
+      { repo: 'iec', evaluatedAt: hoursAgo(1), decision: 'pass' },
+      { repo: 'iec', evaluatedAt: hoursAgo(1), decision: 'fail' },
+      { repo: 'iec', evaluatedAt: hoursAgo(1), decision: 'error' },
+    ];
+    const html = renderFreshnessStrip(buildFreshnessStrip(REPOS, rows, NOW));
+    expect(html).toMatch(/class="sr-only">2026-06-04T11:00:00.000Z — pass: 1 · fail: 1 · error: 1/);
+    expect(html).toMatch(
+      /class="sr-only">[^<]+The test outcome is unknown, not a pass or a failure/,
+    );
+  });
+
+  it('a quiet hour reports the last result without implying it is overdue', () => {
+    const rows: FreshnessRowInput[] = [{ repo: 'iec', evaluatedAt: hoursAgo(5), decision: 'pass' }];
+    const html = renderFreshnessStrip(buildFreshnessStrip(REPOS, rows, NOW));
+    expect(html).toContain(`datetime="${hoursAgo(5)}"`);
+    expect(html).toContain('Last result:');
+    expect(html).not.toContain('badge--stale');
+    expect(html).toContain('tests may run daily or only when something changes');
   });
 });
 
@@ -126,7 +163,7 @@ describe('renderStatusPage — USE method', () => {
     // Saturation card
     expect(html).toContain('Saturation');
     // Errors: 1 crash with structured reason
-    expect(html).toContain('Errors');
+    expect(html).toContain('Collection failures');
     expect(html).toContain('verify_rekor');
     expect(html).toContain('no_inclusion_proof');
     // the embedded strip
@@ -156,5 +193,134 @@ describe('renderStatusPage — USE method', () => {
     const strip = buildFreshnessStrip(REPOS, [], NOW);
     const use = computeIngestUse(liveness, PRESSURE, strip, NOW);
     expect(scanForAggregatePass(renderStatusPage(use, strip))).toEqual([]);
+  });
+
+  it.each([
+    {
+      name: 'successful collection with no published tests',
+      liveness: REPOS.map((repo) => ({ repo, fresh: true })),
+      pressure: PRESSURE,
+      now: NOW,
+      state: 'complete',
+      title: 'Data collection completed',
+    },
+    {
+      name: 'no workers reported',
+      liveness: [],
+      pressure: PRESSURE,
+      now: NOW,
+      state: 'unknown',
+      title: 'No collection status available',
+    },
+    {
+      name: 'invalid snapshot clock',
+      liveness: [{ repo: 'iec', fresh: true }],
+      pressure: PRESSURE,
+      now: 'invalid-clock',
+      state: 'unknown',
+      title: 'No collection status available',
+    },
+    {
+      name: 'incomplete source checks',
+      liveness: [{ repo: 'iec', fresh: false }],
+      pressure: PRESSURE,
+      now: NOW,
+      state: 'warning',
+      title: 'Some source checks need attention',
+    },
+    {
+      name: 'stale snapshot',
+      liveness: [{ repo: 'iec', fresh: true, staleSince: hoursAgo(3) }],
+      pressure: PRESSURE,
+      now: NOW,
+      state: 'warning',
+      title: 'Some source checks need attention',
+    },
+    {
+      name: 'successful collection with retries',
+      liveness: [{ repo: 'iec', fresh: true }],
+      pressure: { ...PRESSURE, restartCount: 1 },
+      now: NOW,
+      state: 'warning',
+      title: 'Data collection completed with retries',
+    },
+    {
+      name: 'verification failure',
+      liveness: [
+        {
+          repo: 'iec',
+          fresh: false,
+          failure: { step: 'verify_dsse', reasonCode: 'bad_signature' },
+        },
+      ],
+      pressure: PRESSURE,
+      now: NOW,
+      state: 'error',
+      title: 'Data collection needs attention',
+    },
+    {
+      name: 'supervisor escalation',
+      liveness: [{ repo: 'iec', fresh: true }],
+      pressure: { ...PRESSURE, escalatedChildIds: ['iec'] },
+      now: NOW,
+      state: 'error',
+      title: 'Data collection needs attention',
+    },
+  ])('separates snapshot collection state: $name', ({ liveness, pressure, now, state, title }) => {
+    const strip = buildFreshnessStrip(REPOS, [], now);
+    const use = computeIngestUse(liveness, pressure, strip, now);
+    const html = renderStatusPage(use, strip);
+    expect(html).toContain(`collection-summary--${state}`);
+    expect(html).toContain(title);
+    expect(html).toContain('not whether the tested skills passed');
+    expect(html).toContain('not live monitoring');
+    expect(html).toContain('No verified test results in this window');
+    expect(html).not.toMatch(/<td class="bucket bucket--(pass|fail)"/);
+  });
+
+  it('successful source collection never masks failed or errored evaluations', () => {
+    const rows: FreshnessRowInput[] = [
+      { repo: 'iec', evaluatedAt: hoursAgo(1), decision: 'fail' },
+      { repo: 'iel', evaluatedAt: hoursAgo(1), decision: 'error' },
+    ];
+    const strip = buildFreshnessStrip(REPOS, rows, NOW);
+    const use = computeIngestUse(
+      REPOS.map((repo) => ({ repo, fresh: true })),
+      PRESSURE,
+      strip,
+      NOW,
+    );
+    const html = renderStatusPage(use, strip);
+    expect(html).toContain('collection-summary--complete');
+    expect(html).toMatch(/<td class="bucket bucket--fail"/);
+    expect(html).toMatch(/<td class="bucket bucket--error"/);
+  });
+
+  it('unmeasured retries never render a fabricated zero or a retry warning', () => {
+    const strip = buildFreshnessStrip(REPOS, [], NOW);
+    const use = computeIngestUse(
+      [{ repo: 'iec', fresh: true }],
+      { ...PRESSURE, measured: false, restartCount: 12 },
+      strip,
+      NOW,
+    );
+    const html = renderStatusPage(use, strip);
+    expect(html).toContain('<strong>Not recorded</strong>');
+    expect(html).toContain('No retry count is available');
+    expect(html).not.toContain('12</strong> restarts');
+    expect(html).not.toContain('0</strong> restarts');
+    expect(html).toContain('collection-summary--complete');
+  });
+
+  it('reports all sources with results without a missing-results warning', () => {
+    const strip = buildFreshnessStrip(
+      ['iec'],
+      [{ repo: 'iec', evaluatedAt: hoursAgo(0.2), decision: 'pass' }],
+      NOW,
+    );
+    const use = computeIngestUse([{ repo: 'iec', fresh: true }], PRESSURE, strip, NOW);
+    const html = renderStatusPage(use, strip);
+    expect(html).toContain('Every source has at least one verified test result');
+    expect(html).not.toContain('No verified test results in this window');
   });
 });

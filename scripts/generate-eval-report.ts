@@ -12,7 +12,7 @@
  */
 
 import { readFile } from 'node:fs/promises';
-import { basename, resolve } from 'node:path';
+import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   generateUnifiedReportFiles,
@@ -39,18 +39,21 @@ async function main(argv: readonly string[]): Promise<number> {
   }
 
   const requestedRoot = args[1] ?? 'site-internal';
-  if (basename(resolve(process.cwd(), requestedRoot)) === 'site') {
-    console.error(
-      'generate-eval-report: refusing to write tailnet-only output into the public origin "site/". ' +
-        'Use "site-internal" or another operator-only root.',
-    );
-    return 2;
-  }
 
-  const written = await generate(
-    resolve(process.cwd(), reportPath),
-    resolve(process.cwd(), requestedRoot),
-  );
+  let written: string[];
+  try {
+    written = await generate(
+      resolve(process.cwd(), reportPath),
+      resolve(process.cwd(), requestedRoot),
+    );
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (message.includes('public origin')) {
+      console.error(`generate-eval-report: ${message}`);
+      return 2;
+    }
+    throw error;
+  }
   console.log(`✓ generated ${written.length} J-Rig unified report file(s)`);
   for (const path of written) console.log(`  ${path}`);
   return 0;

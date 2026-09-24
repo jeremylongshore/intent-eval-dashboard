@@ -1,11 +1,10 @@
 {
-  "$schema": "./eval-sets.schema.json",
   "_comment": "Manifest of eval-sets published on labs.intentsolutions.io. Hand-edited for static fields (id, title, description, predicate_uri, predecessor, status). Volatile fields (version, last_changed_at) are refreshed by scripts/regenerate.py on the daily cron from upstream source.",
   "eval_sets": [
     {
       "id": "j-rig-binary-eval-7-layer",
-      "title": "j-rig binary-criteria skill evaluation, 7 layers",
-      "short_description": "Score every Claude skill yes/no across seven layers — package integrity, trigger quality, functional quality, regression protection, baseline value, model variance, rollout safety. Never gradients. The eval-set that gives this platform its name.",
+      "title": "Agent skills: the seven-check framework",
+      "short_description": "Checks for structure, activation, task completion, repeatability and release readiness. The current Jrig command runs five checks by default; two more are opt-in. Read each run's coverage before interpreting its result.",
       "status": "active",
       "predicate_uri": "evals.intentsolutions.io/skill-binary-eval/v1",
       "predicate_uri_reserved": true,
@@ -22,8 +21,8 @@
   "scorecards": [
     {
       "id": "j-rig-bench",
-      "title": "Evidence Bench — j-rig-bench scorecard",
-      "short_description": "Signed, reproducible AI eval results. Each row is built to ship as a sigstore-signed, Rekor-anchored Evidence Bundle — reproducibility via signature, not just transparency. First row: Skill Refiner Phase A.0 (PROCEED). Complements gbrain-evals on an orthogonal dimension; does not restate it.",
+      "title": "A real comparison: quick rewrite vs. structured improvement",
+      "short_description": "We gave the same rewriting task to a quick, single prompt and to our step-by-step Skill Refiner process. See both outputs, why one was chosen, what it cost, and the record behind the result.",
       "status": "draft",
       "attestation_status": "1 of 1 signed",
       "predicate_uri": "evals.intentsolutions.io/skill-binary-eval/v1",
@@ -37,8 +36,8 @@
     },
     {
       "id": "iep-self-eval-dogfood",
-      "title": "Dogfood — the platform evaluates its own shipped skills",
-      "short_description": "The 7-layer skill-binary-eval methodology run against Intent Solutions' own published CoreWeave skills — the harness that gates external skills, gating ours. Both verdicts are keyless-signed and anchored in the public Rekor log: coreweave-gpu-node-forensics (SHIP, index 2085904207) and coreweave-gpu-cost-leak-hunter (BLOCK, index 2091983416) — an honest failing grade of our own skill, promoted from held only after noise-robust 5-sample majority judging made the verdict reproduce 7/7, with the per-vote record inside the signed evidence.",
+      "title": "We test our own published skills",
+      "short_description": "Two AI troubleshooting guides, two different release decisions. One passed; the other was blocked after it missed a required report. The study records its checks, skipped judging and limitations alongside the results.",
       "status": "draft",
       "attestation_status": "2 of 2 signed",
       "predicate_uri": "evals.intentsolutions.io/skill-binary-eval/v1",
@@ -49,28 +48,6 @@
         "branch": "main"
       },
       "page_path": "/eval-sets/iep-self-eval-dogfood/"
-    }
-  ],
-  "queued_for_v0_2_0": [
-    {
-      "id": "audit-harness-deterministic-gate-set",
-      "title": "audit-harness deterministic gate-set",
-      "short_description": "escape-scan, CRAP score, architecture rules, bias count, Gherkin lint. The infrastructure layer underneath every IEP repo. The gates themselves are shipped and already emit signed gate-result rows (rendered in this site's results browser); what is queued here is the versioned eval-set specification of that gate-set.",
-      "upstream": {
-        "owner": "jeremylongshore",
-        "repo": "intent-audit-harness",
-        "branch": "main"
-      }
-    },
-    {
-      "id": "skill-refiner-phase-a0-baseline",
-      "title": "Skill Refiner Phase A.0 baseline eval-set",
-      "short_description": "The null-hypothesis spec that gated Skill Refiner Phase A, pre-registered ahead of the run per DR-028. The run has since completed — its signed result (Phase A.0 PROCEED, Rekor log index 1689291334) is the first row on the Evidence Bench scorecard; what is queued here is the eval-set spec page itself, pending its documented adversarial audit.",
-      "upstream": {
-        "owner": "jeremylongshore",
-        "repo": "intent-eval-lab",
-        "branch": "main"
-      }
     }
   ]
 }

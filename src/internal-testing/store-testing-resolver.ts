@@ -13,23 +13,10 @@
 
 import { EvidenceBundleSchema } from '@intentsolutions/core/validators/v1/evidence-bundle';
 import { GATE_RESULT_V1_URI } from '@intentsolutions/core/validators/v1/gate-result-v1';
+import { checkGateResultBinding } from '../ingest/gate-result-binding.js';
 import { type ContentStore } from '../ingest/interfaces.js';
 import { type GateRowStore } from '../ingest/gate-row-store.js';
-import {
-  type GateDecision,
-  type ResolvedTestingRow,
-  type TestingBundleResolver,
-} from './testing-row.js';
-
-function coerceDecision(value: unknown): GateDecision {
-  return value === 'pass' || value === 'fail' || value === 'advisory' || value === 'error'
-    ? value
-    : 'error';
-}
-
-function asStringArray(value: unknown): string[] {
-  return Array.isArray(value) ? value.map((v) => String(v)) : [];
-}
+import { type ResolvedTestingRow, type TestingBundleResolver } from './testing-row.js';
 
 /** Resolves a bundle key → richer testing rows from the content + gate-row stores. */
 export class StoreTestingResolver implements TestingBundleResolver {
@@ -53,35 +40,28 @@ export class StoreTestingResolver implements TestingBundleResolver {
     const bundle = parsed.data;
 
     const stored = await this.gateRowStore.get(bundleKey);
-    if (stored === null || stored.bodies.length === 0) return null;
+    if (stored === null) return null;
+    const binding = checkGateResultBinding(bundle, stored.bodies);
+    if (!binding.ok) return null;
 
-    const predicateUri = bundle.predicate_uri_set[0] ?? GATE_RESULT_V1_URI;
-    const rows: ResolvedTestingRow[] = stored.bodies.map((b) => {
-      const body = b as Record<string, unknown>;
-      const cov = (
-        typeof body['coverage'] === 'object' && body['coverage'] !== null ? body['coverage'] : {}
-      ) as Record<string, unknown>;
-      const failureMode = body['failure_mode'];
-      const advisorySeverity = body['advisory_severity'];
+    const rows: ResolvedTestingRow[] = binding.bodies.map((body) => {
       return {
-        predicateUri,
-        gateId: typeof body['gate_id'] === 'string' ? body['gate_id'] : '',
-        gateName: typeof body['gate_name'] === 'string' ? body['gate_name'] : 'unknown',
-        gateVersion: typeof body['gate_version'] === 'string' ? body['gate_version'] : '0.0.0',
-        decision: coerceDecision(body['gate_decision']),
-        gateReasons: asStringArray(body['gate_reasons']),
+        predicateUri: GATE_RESULT_V1_URI,
+        gateId: body.gate_id,
+        gateName: body.gate_name,
+        gateVersion: body.gate_version,
+        decision: body.gate_decision,
+        gateReasons: body.gate_reasons,
         coverage: {
-          dimensionsEvaluated: asStringArray(cov['dimensions_evaluated']),
-          dimensionsSkipped: asStringArray(cov['dimensions_skipped']),
+          dimensionsEvaluated: body.coverage.dimensions_evaluated,
+          dimensionsSkipped: body.coverage.dimensions_skipped,
         },
-        evaluatedAt: typeof body['evaluated_at'] === 'string' ? body['evaluated_at'] : '',
+        evaluatedAt: body.evaluated_at,
         bundleCreatedAt: bundle.created_at,
         rekorLogIndices: bundle.rekor_log_indices,
-        ...(typeof failureMode === 'string' ? { failureMode } : {}),
-        ...(advisorySeverity === 'info' ||
-        advisorySeverity === 'warn' ||
-        advisorySeverity === 'error'
-          ? { advisorySeverity }
+        ...(body.failure_mode !== undefined ? { failureMode: body.failure_mode } : {}),
+        ...(body.advisory_severity !== undefined
+          ? { advisorySeverity: body.advisory_severity }
           : {}),
       };
     });

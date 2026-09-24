@@ -14,6 +14,7 @@ import { MemoryContentStore, MemorySnapshotStore } from './storage-memory.js';
 import { type ManifestFetcher, type IngestClock } from './interfaces.js';
 import { type ReportManifest } from './manifest.js';
 import { type PinnedSubjects } from './oidc-allowlist.js';
+import { MemoryGateRowStore } from './gate-row-store.js';
 import {
   REPO_GITHUB,
   mintManifest,
@@ -49,6 +50,7 @@ function depsFor(manifest: ReportManifest): IngestWorkerDeps {
     verifier: new OfflineRowVerifier(),
     contentStore: new MemoryContentStore(),
     snapshotStore: new MemorySnapshotStore(),
+    gateRowStore: new MemoryGateRowStore(),
     clock,
     pinned: PINNED,
   };
@@ -79,6 +81,9 @@ describe('happy path — all 8 steps pass for real', () => {
     // snapshot is retrievable
     const stored = await deps.snapshotStore.get('iec');
     expect(stored?.bundleKeys).toEqual(snapshot.bundleKeys);
+    for (const key of snapshot.bundleKeys) {
+      expect(await deps.gateRowStore.get(key)).not.toBeNull();
+    }
   });
 });
 
@@ -238,6 +243,46 @@ describe('step 5 — kernel schema validation (real @intentsolutions/core Zod)',
     const snapshot = await runIngestWorker('iec', depsFor(manifest));
     expect(snapshot.bundleKeys).toHaveLength(1);
   });
+
+  it('crashes when an unsigned gate decision is mutated after bundle signing', async () => {
+    const minted = mintRow('iec', REPO_GITHUB['iec']!);
+    const original = minted.row.gateResults?.[0] as Record<string, unknown>;
+    const manifest: ReportManifest = {
+      repo: 'iec',
+      signing: signingClaimsFor('iec', REPO_GITHUB['iec']!),
+      rows: [
+        {
+          ...minted.row,
+          gateResults: [{ ...original, gate_decision: 'fail', gate_reasons: ['tampered'] }],
+        },
+      ],
+    };
+    const reason = await expectCrash(runIngestWorker('iec', depsFor(manifest)));
+    expect(reason.step).toBe('validate_schema');
+    expect(reason.reasonCode).toBe('predicate_binding_invalid');
+    expect(reason.rowIndex).toBe(0);
+  });
+
+  it.each([
+    ['missing', undefined],
+    ['empty', []],
+    ['extra', [{}, {}]],
+    ['malformed', [{}]],
+  ])('crashes when gateResults are %s', async (_label, gateResults) => {
+    const minted = mintRow('iec', REPO_GITHUB['iec']!);
+    const { gateResults: _discarded, ...rowWithoutGateResults } = minted.row;
+    const manifest: ReportManifest = {
+      repo: 'iec',
+      signing: signingClaimsFor('iec', REPO_GITHUB['iec']!),
+      rows: [
+        gateResults === undefined
+          ? rowWithoutGateResults
+          : { ...rowWithoutGateResults, gateResults },
+      ],
+    };
+    const reason = await expectCrash(runIngestWorker('iec', depsFor(manifest)));
+    expect(reason.reasonCode).toBe('predicate_binding_invalid');
+  });
 });
 
 describe('step 6 — content addressing', () => {
@@ -274,6 +319,18 @@ describe('step 6 — content addressing', () => {
 });
 
 describe('step 7 — emit snapshot', () => {
+  it('fails closed when an unsafe caller omits the required gate-row store', async () => {
+    const deps = depsFor(mintManifest('iec', REPO_GITHUB['iec']!));
+    const incomplete = { ...deps, gateRowStore: undefined } as unknown as IngestWorkerDeps;
+
+    const reason = await expectCrash(runIngestWorker('iec', incomplete));
+
+    expect(reason.step).toBe('emit_snapshot');
+    expect(reason.reasonCode).toBe('gate_row_emit_failed');
+    expect(reason.detail).toBe('gate row store is required before snapshot commit');
+    expect(await deps.snapshotStore.get('iec')).toBeNull();
+  });
+
   it('crashes snapshot_emit_failed when the snapshot store rejects', async () => {
     const manifest = mintManifest('iec', REPO_GITHUB['iec']!);
     const deps: IngestWorkerDeps = {
