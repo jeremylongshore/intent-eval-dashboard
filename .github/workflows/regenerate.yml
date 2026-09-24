@@ -186,6 +186,9 @@ jobs:
           path: .ingest-store
           key: ingest-store-${{ github.run_id }}-${{ github.run_attempt }}
 
+      - name: Restore public analytics after generation
+        run: pnpm run generate:analytics
+
       - name: Detect changes
         id: diff
         run: |
