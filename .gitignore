@@ -66,3 +66,7 @@ ehthumbs.db
 # --- Local-only scratch (never commit) ---
 /tmp-*
 /scratch/
+
+# Python bytecode (scripts/regenerate.py is run locally)
+__pycache__/
+*.pyc
