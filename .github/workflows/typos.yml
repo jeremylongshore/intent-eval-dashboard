@@ -14,8 +14,9 @@ name: Typos (spell-check)
 on:
   push:
     branches: [main]
+  # No `branches:` filter on purpose: with `branches: [main]` a stacked PR whose
+  # base is another feature branch gets no checks at all. Push builds stay on main.
   pull_request:
-    branches: [main]
 
 permissions:
   contents: read
@@ -31,7 +32,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Run typos
         # Config is auto-discovered from .typos.toml at the repo root.

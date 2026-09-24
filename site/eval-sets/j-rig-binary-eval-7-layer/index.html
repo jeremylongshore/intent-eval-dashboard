@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>j-rig binary-criteria skill evaluation, 7 layers — Eval Set — IEP Labs</title>
-    <meta name="description" content="Score every Claude skill yes/no across seven layers. The eval-set that gives the Intent Eval Platform its name.">
+    <title>Agent skills: the seven-check framework | Intent Labs</title>
+    <meta name="description" content="Read Jrig's skill-testing framework, its default and optional checks, and the limits of each result.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://labs.intentsolutions.io/eval-sets/j-rig-binary-eval-7-layer/">
     <link rel="stylesheet" href="/style.css">
 
-    <meta property="og:title" content="j-rig binary-criteria skill evaluation, 7 layers">
-    <meta property="og:description" content="Score every Claude skill yes/no across seven layers — package integrity, trigger quality, functional quality, regression protection, baseline value, model variance, rollout safety.">
+    <meta property="og:title" content="Agent skills: the seven-check framework">
+    <meta property="og:description" content="A product-specific test inside a model- and provider-neutral evaluation platform.">
     <meta property="og:url" content="https://labs.intentsolutions.io/eval-sets/j-rig-binary-eval-7-layer/">
     <meta property="og:type" content="article">
 
@@ -20,34 +20,52 @@
     <meta name="iep-eval-set-version" content="2.1.0">
     <meta name="iep-eval-set-status" content="active">
     <meta name="iep-eval-set-upstream-source" content="github.com/jeremylongshore/j-rig-skill-binary-eval">
+<script defer src="https://analytics.intentsolutions.io/script.js" data-website-id="3109d0c5-2681-4808-a673-817af56ebc09" data-domains="labs.intentsolutions.io"></script>
 </head>
 <body>
     <header class="site-header">
-        <div class="site-header__inner">
-            <a href="/" class="site-header__wordmark">IEP&nbsp;Labs</a>
-            <nav class="site-nav" aria-label="Primary">
-                <a href="/eval-sets/">Eval Sets</a>
-                <a href="/results/">Results</a>
-                <a href="/skills/">Skills</a>
-                <a href="/status/">Status</a>
-                <a href="/methodology/">Methodology</a>
-                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
-            </nav>
-        </div>
-    </header>
+    <!-- estate-bar:start v1.0.0 site=labs -->
+    <nav class="is-estate-bar" aria-label="Intent Solutions network">
+      <div class="is-estate-bar__inner">
+        <a href="https://intentsolutions.io/">Intent Solutions</a>
+        <a href="https://labs.intentsolutions.io/" aria-current="page">Labs</a>
+        <a href="https://evals.intentsolutions.io/">Evals</a>
+        <a href="https://demos.intentsolutions.io/">Demos</a>
+        <a href="https://learn.intentsolutions.io/">Learn</a>
+        <a href="https://oma.intentsolutions.io/">Omarchy</a>
+        <a href="https://tonsofskills.com/">Tons of Skills</a>
+      </div>
+    </nav>
+    <!-- estate-bar:end -->
+    <div class="site-header__inner">
+      <a href="/" class="site-header__wordmark">Intent&nbsp;Labs</a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/eval-sets/">What we test</a>
+        <a href="/how-it-works/">How it works</a>
+        <a href="/examples/">Examples</a>
+        <a href="/start/">Start here</a>
+      </nav>
+    </div>
+  </header>
 
     <main>
         <p style="font-size: 0.85rem; color: #6b7280; margin: 0;">
             <a href="/eval-sets/" style="color: #6b7280;">← Eval sets</a>
         </p>
 
-        <h1>j-rig binary-criteria skill evaluation, 7 layers
+        <h1>Agent skills: the seven-check framework
             <span class="badge badge--active" style="font-size: 0.65em; vertical-align: middle;">active</span>
         </h1>
 
         <p class="lead">
-            Score every Claude skill yes/no across seven layers — package integrity, trigger quality, functional quality, regression protection, baseline value, model variance, rollout safety. Never gradients. The eval-set that gives the Intent Eval Platform its name.
+            A skill is a set of instructions an agent uses to do a job. This framework describes seven kinds of check,
+            from loading the instructions to deciding whether the tested version is ready to release.
+            It is one part of Labs, not the limit of what an evaluation can cover.
         </p>
+        <p><strong>Check the run's coverage.</strong> The current Jrig command runs five checks by default.
+            Regression checks and comparison without the skill are opt-in. A skipped check is not a pass.
+            See <a href="/methodology/#coverage">current coverage and tooling limits</a> or
+            <a href="/how-it-works/">start with the plain-language method</a>.</p>
 
         <div class="meta-block">
             <dl>
@@ -57,7 +75,7 @@
                 <dt>predicate URI</dt><dd><code>evals.intentsolutions.io/skill-binary-eval/v1</code> <span style="color: #6b7280; font-size: 0.85em;">(reserved; declared at Phase 2)</span></dd>
                 <dt>predecessor</dt><dd>none — initial baseline</dd>
                 <dt>upstream source</dt><dd><a href="https://github.com/jeremylongshore/j-rig-skill-binary-eval">jeremylongshore/j-rig-skill-binary-eval</a></dd>
-                <dt>last changed</dt><dd data-auto="last_changed_at">2026-08-25</dd>
+                <dt>last changed</dt><dd data-auto="last_changed_at">2026-09-20</dd>
                 <dt>adversarial audit</dt><dd>queued — placeholder for puxu.3 follow-up</dd>
             </dl>
         </div>
@@ -104,7 +122,7 @@
                 </tr>
                 <tr>
                     <td><strong>L6 — Model variance</strong></td>
-                    <td>Multi-seed stability — does the skill produce consistent output across model temperature / sampling variation within the declared bound?</td>
+                    <td>Does the result vary under the sampling setup used? Repeated judge votes measure agreement about one output, not repeatability of an entire agent run. Read the run's configuration before making either claim.</td>
                 </tr>
                 <tr>
                     <td><strong>L7 — Rollout safety</strong></td>
@@ -116,7 +134,11 @@
         <h2>What an evaluation produces</h2>
 
         <p>
-            A single skill run produces seven binary findings — one per layer — packaged inside an Evidence Bundle. Each finding is a separate predicate-attestation row, signed via sigstore, anchored in the Rekor transparency log. There is no aggregate "skill score." A consumer reading the bundle sees the seven yes/no findings and decides for themselves which combinations matter for their use.
+            A run records findings for the checks it performed and identifies checks it skipped.
+            Local results are not automatically signed, published or uploaded to Labs.
+            Evidence export is a separate step; published results must pass the dashboard's verification checks.
+            Current exports use <code>gate-result/v1</code> for gate outcomes.
+            The reserved skill identifier above is not evidence that seven signed findings exist for every run.
         </p>
 
         <p>

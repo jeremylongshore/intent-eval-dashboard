@@ -10,8 +10,9 @@ name: Lint (YAML + Actions)
 # lives at the repo root in .yamllint (mirrors the kernel @intentsolutions/core).
 
 on:
+  # No `branches:` filter on purpose: with `branches: [main]` a stacked PR whose
+  # base is another feature branch gets no checks at all. Push builds stay on main.
   pull_request:
-    branches: [main]
   push:
     branches: [main]
     paths:
@@ -32,10 +33,10 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
@@ -54,7 +55,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Run actionlint
         uses: reviewdog/action-actionlint@v1

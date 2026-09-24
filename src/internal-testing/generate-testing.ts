@@ -14,6 +14,7 @@
  */
 
 import { mkdir, writeFile } from 'node:fs/promises';
+import { assertOperatorInternalRoot } from '../lib/operator-internal-root.js';
 import { dirname, join } from 'node:path';
 import { type ExplainerSet } from './explainers.js';
 import {
@@ -71,9 +72,12 @@ export async function writeTestingSite(
   files: readonly TestingGeneratedFile[],
   internalSiteRoot: string,
 ): Promise<string[]> {
+  // Structural, not advisory: every caller (scripts, ingest-render) inherits
+  // the public-origin refusal here rather than re-implementing it.
+  const safeRoot = await assertOperatorInternalRoot(internalSiteRoot, 'writeTestingSite');
   const written: string[] = [];
   for (const file of files) {
-    const abs = join(internalSiteRoot, file.path);
+    const abs = join(safeRoot, file.path);
     await mkdir(dirname(abs), { recursive: true });
     await writeFile(abs, file.html, 'utf8');
     written.push(abs);

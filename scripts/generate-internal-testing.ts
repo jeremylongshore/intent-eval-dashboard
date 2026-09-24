@@ -32,7 +32,8 @@
  * Exit codes: 0 on success, 2 on IO/usage error.
  */
 
-import { resolve, basename } from 'node:path';
+import { resolve } from 'node:path';
+import { assertOperatorInternalRoot } from '../dist/lib/operator-internal-root.js';
 import { fileURLToPath } from 'node:url';
 import { type RenderInput } from '../dist/ingest/renderer.js';
 import {
@@ -88,14 +89,16 @@ async function main(argv: readonly string[]): Promise<number> {
   const requested = argv[0] ?? 'site-internal';
   // Refuse to write the gated testing output into the PUBLIC origin. The strict
   // site/ vs site-internal/ separation is the load-bearing binding.
-  if (basename(requested) === 'site') {
-    console.error(
-      'generate-internal-testing: refusing to write gated testing output into the public origin "site/". ' +
-        'Use the default "site-internal" (this output is served behind basicauth, never from the public origin).',
+  let internalSiteRoot: string;
+  try {
+    internalSiteRoot = await assertOperatorInternalRoot(
+      resolve(process.cwd(), requested),
+      'generate-internal-testing',
     );
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : String(error));
     return 2;
   }
-  const internalSiteRoot = resolve(process.cwd(), requested);
   const written = await generate(internalSiteRoot);
   console.log(
     `✓ generated ${written.length} gated testing-dashboard file(s) under ${internalSiteRoot}`,

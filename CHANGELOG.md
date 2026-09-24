@@ -17,6 +17,9 @@ results browser. Architecture is locked by DR-035 (ISEDC Session 8, ratified
 
 ### Added
 
+- Align the dashboard's kernel consumer with exact `@intentsolutions/core@0.10.0`
+  so verified ingest and report rendering use the current canonical schemas.
+
 - **Repository scaffolding** per DR-035 — README, CLAUDE.md, governance docs, license,
   contributor docs, `tests/TESTING.md` skeleton per the IS Testing SOP, vendored
   `@intentsolutions/audit-harness` dev dependency, and reserved directories `site/`
@@ -82,6 +85,11 @@ results browser. Architecture is locked by DR-035 (ISEDC Session 8, ratified
   so a partial fetch miss no longer regresses already-rendered rows.
 - **HTML structural-diff CI gate for Phase A.0 arm symmetry** (puxu.12, #29) — CI gate that
   structurally diffs the rendered HTML to enforce symmetric Phase A.0 arms.
+- **Tailnet-only J-Rig unified-report consumer** (IEP-EVAL-EVOLUTION-001,
+  `bd_000-projects-htjt.5`) — validates J-Rig's `j-rig/unified-report/v1` JSON,
+  renders explicit cell-level metrics with Wilson uncertainty and Raw Run lineage,
+  makes no-data loud, and refuses to write the unsigned local projection into
+  the public `site/` origin. Operator command: `pnpm run generate:eval-report`.
 
 ### Changed
 
@@ -102,6 +110,15 @@ results browser. Architecture is locked by DR-035 (ISEDC Session 8, ratified
 
 ### Fixed
 
+- **Marketplace ingest pin follows the source repo rename** (`ingest/pinned-subjects.json`, `ccp`):
+  `jeremylongshore/claude-code-plugins-plus-skills` became `jeremylongshore/tons-of-skills-marketplace`
+  on GitHub, so every new certificate's OIDC subject and `workflow_ref` carried the new slug and
+  the pin rejected every nightly manifest as `oidc_subject_mismatch` from 2026-08-26 to 2026-09-06
+  (twelve nights of `ccp: no-data`, last-known-good rendered behind a stale badge). Pin repointed;
+  `pinConsistencyIssues()` added to `pinned-loader.ts` and
+  `pinned-subjects.consistency.test.ts` asserts every shipped pin names its own repo, with a
+  negative test proving the pre-rename shape is caught. Found by the 2026-09 conference audit
+  (intent-os `000-docs/215-PP-PLAN-intent-conference-strategy-2026.md`).
 - **Raw Rekor API links on the scorecard** (#4) — switched the scorecard to raw Rekor API
   links because `search.sigstore.dev` deep-links were returning 403 / flaking.
 - **Guard the cron against transient manifest-fetch blackouts** (#26) — the regenerator no

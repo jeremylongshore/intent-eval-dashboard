@@ -62,12 +62,30 @@ describe('helpers', () => {
 });
 
 describe('renderResultsIndex', () => {
+  it('wraps each wide result table in a closed keyboard-accessible scroll region', () => {
+    const html = renderResultsIndex({ asOf: 'x', repos: [repo(), repo({ repo: 'iel' })] });
+    const wrappers =
+      html.match(
+        /<div class="table-scroll" role="region" aria-label="Detailed test results" tabindex="0"><table class="results-table">[\s\S]*?<\/table><\/div>/g,
+      ) ?? [];
+    expect(wrappers).toHaveLength(2);
+    expect((html.match(/<div(?:\s|>)/g) ?? []).length).toBe((html.match(/<\/div>/g) ?? []).length);
+  });
+
   it('emits a valid self-contained page (DOCTYPE + close + stylesheet)', () => {
     const view: ResultsView = { asOf: '2026-05-30T12:00:05.000Z', repos: [repo()] };
     const html = renderResultsIndex(view);
     expect(html).toContain('<!DOCTYPE html>');
     expect(html).toContain('</html>');
     expect(html).toContain('<link rel="stylesheet" href="/style.css">');
+  });
+
+  it('keeps generated pages inside the Intent Solutions site network', () => {
+    const html = renderResultsIndex({ asOf: 'x', repos: [repo()] });
+    expect(html).toContain('aria-label="Intent Solutions network"');
+    expect(html).toContain('https://evals.intentsolutions.io/');
+    expect(html).toContain('https://learn.intentsolutions.io/');
+    expect(html).toContain('href="/start/"');
   });
 
   it('renders the as-of banner = min(ingested_at)', () => {

@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0",
+  "aria_label": "Intent Solutions network",
+  "links": [
+    { "site": "company", "label": "Intent Solutions", "href": "https://intentsolutions.io/" },
+    { "site": "labs", "label": "Labs", "href": "https://labs.intentsolutions.io/" },
+    { "site": "evals", "label": "Evals", "href": "https://evals.intentsolutions.io/" },
+    { "site": "demos", "label": "Demos", "href": "https://demos.intentsolutions.io/" },
+    { "site": "learn", "label": "Learn", "href": "https://learn.intentsolutions.io/" },
+    { "site": "omarchy", "label": "Omarchy", "href": "https://oma.intentsolutions.io/" },
+    { "site": "tonsofskills", "label": "Tons of Skills", "href": "https://tonsofskills.com/" }
+  ],
+  "carriers": ["company", "labs", "evals", "demos", "learn", "omarchy"]
+}

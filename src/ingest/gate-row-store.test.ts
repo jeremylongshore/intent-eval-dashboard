@@ -2,7 +2,7 @@
  * Gate-row store tests (Memory + Fs).
  */
 
-import { mkdtemp, rm } from 'node:fs/promises';
+import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -30,6 +30,23 @@ describe('FsGateRowStore', () => {
       expect(await s.get(KEY)).toEqual(ROWS);
       // bare-hex key (no sha256: prefix) resolves to the same path
       expect(await s.get('a'.repeat(64))).toEqual(ROWS);
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('returns null for truncated JSON or a malformed stored shape', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'iep-gaterows-malformed-'));
+    try {
+      const s = new FsGateRowStore(dir);
+      await s.put(KEY, ROWS);
+      const path = join(dir, 'gate-rows', `${'a'.repeat(64)}.json`);
+
+      await writeFile(path, '{"repo":"iec","bodies":[');
+      expect(await s.get(KEY)).toBeNull();
+
+      await writeFile(path, JSON.stringify({ repo: 'iec', bodies: 'not-an-array' }));
+      expect(await s.get(KEY)).toBeNull();
     } finally {
       await rm(dir, { recursive: true, force: true });
     }

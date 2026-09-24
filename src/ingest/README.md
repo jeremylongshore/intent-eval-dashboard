@@ -68,7 +68,7 @@ Each `ingest_worker:<repo>` runs `runIngestWorker(repo, deps)` which executes,
    comparison; wrong issuer/subject/ref → crash).
 3. **Verify the Rekor inclusion proof** for each bundle row (`SigstoreVerifier`).
 4. **Verify the DSSE signature** for each bundle row (`SigstoreVerifier`).
-5. **Validate each bundle's schema** against `@intentsolutions/core@^0.2.0`'s Zod
+5. **Validate each bundle's schema** against `@intentsolutions/core@0.10.0`'s Zod
    `EvidenceBundleSchema` (`validateEvidenceBundle`, REAL kernel import + parse).
 6. **Content-address** each verified bundle into local object storage by sha256
    (`ContentStore`). Content-addressing is what makes a deep link **survive** a
@@ -131,6 +131,19 @@ workflow ref could not be derived at authoring time — **confirm against each
 repo's actual `.github/workflows/` before first production ingest**, then flip the
 flag to `true`. The match semantics are exact-or-single-trailing-`*`-prefix
 (no mid-string wildcards).
+
+**A pin must name its own repo, and a GitHub rename breaks that silently.** When a
+source repository is renamed, every new Fulcio certificate carries the new slug in
+its OIDC subject and `workflow_ref`, so a pin that still names the old slug rejects
+every manifest as `verify_oidc/oidc_subject_mismatch` — per repo, while the renderer
+keeps serving the last-known-good snapshot behind a stale badge. That is what the
+marketplace source (`ccp`) did from 2026-08-26 to 2026-09-06 after
+`claude-code-plugins-plus-skills` became `tons-of-skills-marketplace`.
+`pinConsistencyIssues()` in `pinned-loader.ts` checks that every `subjects` entry
+starts with `repo:<githubRepo>:` and every `workflowRefs` entry with `<githubRepo>/`;
+`pinned-subjects.consistency.test.ts` runs it against the shipped file and proves the
+mutant is caught. Renaming a source repo therefore means: update `githubRepo`,
+`subjects`, and `workflowRefs` together in the same commit.
 
 ## Synthetic compromised-CI attack tests (mandatory)
 
