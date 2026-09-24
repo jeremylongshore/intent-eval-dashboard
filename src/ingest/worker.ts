@@ -42,6 +42,9 @@ import {
   type IngestStep,
 } from './reason.js';
 import { validateEvidenceBundle } from './schema-validate.js';
+import { checkGateResultBinding } from './gate-result-binding.js';
+import { verifiedRekorLogIndices } from './rekor-anchor.js';
+import { type GateRowStore } from './gate-row-store.js';
 
 /** Everything a worker needs, all behind interfaces (deterministically testable). */
 export interface IngestWorkerDeps {
@@ -49,6 +52,11 @@ export interface IngestWorkerDeps {
   readonly verifier: SigstoreVerifier;
   readonly contentStore: ContentStore;
   readonly snapshotStore: SnapshotStore;
+  /**
+   * Predicate-body sink. Verified bodies MUST be written before the snapshot
+   * that makes those rows renderable is committed.
+   */
+  readonly gateRowStore: GateRowStore;
   readonly clock: IngestClock;
   /** The loaded pinned allowlist (`ingest/pinned-subjects.json`). */
   readonly pinned: PinnedSubjects;
@@ -144,6 +152,11 @@ export async function runIngestWorker(
   // Verify each row through steps 3, 4, 5, 6. Accumulate content keys; emit only
   // after ALL rows clear (verify-before-render — no partial snapshot on failure).
   const bundleKeys: string[] = [];
+  const verifiedGateRows: {
+    readonly bundleKey: string;
+    readonly bodies: readonly unknown[];
+    readonly rekorLogIndices: readonly number[];
+  }[] = [];
 
   for (let i = 0; i < manifest.rows.length; i++) {
     const row = manifest.rows[i];
@@ -181,6 +194,15 @@ export async function runIngestWorker(
       return crash(repo, 'validate_schema', 'schema_invalid', schema.detail, i);
     }
 
+    // The signature covers the strict EvidenceBundle metadata, while the
+    // predicate body is an adjacent manifest field. Prove the body's canonical
+    // hash, identity, input digest, count, and predicate URI match the signed
+    // metadata before accepting either object.
+    const binding = checkGateResultBinding(row.bundle, row.gateResults);
+    if (!binding.ok) {
+      return crash(repo, 'validate_schema', 'predicate_binding_invalid', binding.detail, i);
+    }
+
     // --- Step 6: content-address by sha256 ---
     let key: string;
     try {
@@ -195,9 +217,51 @@ export async function runIngestWorker(
       );
     }
     bundleKeys.push(key);
+    // The Rekor anchor is read off the row's sigstore bundle, NOT off the signed
+    // EvidenceBundle (whose `rekor_log_indices` cannot hold an index that only
+    // exists after its own bytes were signed). Safe under verify-before-render:
+    // steps 3+4 above already proved this bundle's Rekor inclusion + DSSE
+    // signature + identity. An unreadable index yields `[]` — a loud no-anchor
+    // cell, never a guess.
+    verifiedGateRows.push({
+      bundleKey: key,
+      bodies: binding.bodies,
+      rekorLogIndices: verifiedRekorLogIndices(row.sigstoreBundle),
+    });
   }
 
-  // --- Step 7: emit snapshot + set last_known_good_ingested_at ---
+  // --- Step 7: persist bound rows, then emit the snapshot that references them ---
+  // A failed sidecar write may leave an unreferenced object/sidecar, but the
+  // prior-good snapshot remains authoritative and no incomplete new snapshot
+  // can become renderable.
+  // The interface makes this mandatory for TypeScript callers. Keep the
+  // runtime guard so plain JavaScript and unsafe casts also fail closed.
+  const gateRowStore = (deps as Partial<IngestWorkerDeps>).gateRowStore;
+  if (gateRowStore === undefined) {
+    return crash(
+      repo,
+      'emit_snapshot',
+      'gate_row_emit_failed',
+      'gate row store is required before snapshot commit',
+    );
+  }
+  try {
+    for (const row of verifiedGateRows) {
+      await gateRowStore.put(row.bundleKey, {
+        repo,
+        bodies: row.bodies,
+        rekorLogIndices: row.rekorLogIndices,
+      });
+    }
+  } catch (err: unknown) {
+    return crash(
+      repo,
+      'emit_snapshot',
+      'gate_row_emit_failed',
+      err instanceof Error ? err.message : String(err),
+    );
+  }
+
   const snapshot: IngestSnapshot = {
     repo,
     lastKnownGoodIngestedAt: deps.clock.nowIso(),

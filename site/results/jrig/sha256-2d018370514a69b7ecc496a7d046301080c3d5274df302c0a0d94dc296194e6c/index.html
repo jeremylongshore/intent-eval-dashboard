@@ -16,20 +16,33 @@
 
     <meta name="iep-source-repo" content="github.com/jeremylongshore/intent-eval-dashboard">
     <meta name="iep-dashboard-version" content="0.1.0">
+<script defer src="https://analytics.intentsolutions.io/script.js" data-website-id="3109d0c5-2681-4808-a673-817af56ebc09" data-domains="labs.intentsolutions.io"></script>
 </head>
 <body>
     <header class="site-header">
-        <div class="site-header__inner">
-            <a href="/" class="site-header__wordmark">IEP&nbsp;Labs</a>
-            <nav class="site-nav" aria-label="Primary">
-                <a href="/eval-sets/">Eval Sets</a>
-                <a href="/results/">Results</a>
-                <a href="/skills/">Skills</a>
-                <a href="/methodology/">Methodology</a>
-                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
-            </nav>
-        </div>
-    </header>
+    <!-- estate-bar:start v1.0.0 site=labs -->
+    <nav class="is-estate-bar" aria-label="Intent Solutions network">
+      <div class="is-estate-bar__inner">
+        <a href="https://intentsolutions.io/">Intent Solutions</a>
+        <a href="https://labs.intentsolutions.io/" aria-current="page">Labs</a>
+        <a href="https://evals.intentsolutions.io/">Evals</a>
+        <a href="https://demos.intentsolutions.io/">Demos</a>
+        <a href="https://learn.intentsolutions.io/">Learn</a>
+        <a href="https://oma.intentsolutions.io/">Omarchy</a>
+        <a href="https://tonsofskills.com/">Tons of Skills</a>
+      </div>
+    </nav>
+    <!-- estate-bar:end -->
+    <div class="site-header__inner">
+      <a href="/" class="site-header__wordmark">Intent&nbsp;Labs</a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/eval-sets/">What we test</a>
+        <a href="/how-it-works/">How it works</a>
+        <a href="/examples/">Examples</a>
+        <a href="/start/">Start here</a>
+      </nav>
+    </div>
+  </header>
     <main>
         <p><a href="/results/jrig/">← jrig results</a></p>
         <h1>Bundle</h1>
@@ -44,7 +57,7 @@
         <ul class="predicate-breakdown">
             <li><code>https://evals.intentsolutions.io/gate-result/v1</code> — advisory: 1</li>
         </ul>
-        <table class="results-table">
+        <div class="table-scroll" role="region" aria-label="Detailed test results" tabindex="0"><table class="results-table">
             <thead>
                 <tr>
                     <th>Gate</th>
@@ -67,7 +80,7 @@
                     <td><time datetime="2026-09-04T06:25:31.932Z">2026-09-04T06:25:31.932Z</time></td>
                 </tr>
             </tbody>
-        </table>
+        </table></div>
     </main>
     <footer class="site-footer">
         <div class="site-footer__inner">

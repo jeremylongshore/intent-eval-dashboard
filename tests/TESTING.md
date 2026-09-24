@@ -4,7 +4,7 @@ Per the Intent Solutions Testing SOP. The `@intentsolutions/audit-harness` packa
 
 ## Status
 
-The TS pipeline test suites are online: 40 Vitest files across `ingest/`, `supervision/`, `results/`, `freshness/`, `retraction/`, `alerting/`, and `internal-testing/` (unit, integration, and synthetic compromised-CI attack scenarios). The taxonomy below is populated for the kernel-consumer code paths; L5 (Playwright site-build smoke) and Gherkin acceptance remain pending. This document is updated as the remaining layers come online.
+The TS pipeline test suites are online: 44 Vitest files across `ingest/`, `supervision/`, `results/`, `freshness/`, `retraction/`, `alerting/`, `internal-testing/`, and `eval-reports/` (unit, integration, and synthetic compromised-CI attack scenarios). The taxonomy below is populated for the kernel-consumer code paths; L5 (Playwright site-build smoke) and Gherkin acceptance remain pending. This document is updated as the remaining layers come online.
 
 ## Layer status
 

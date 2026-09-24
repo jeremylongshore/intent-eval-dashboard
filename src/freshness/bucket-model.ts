@@ -15,7 +15,7 @@
  * An hour with no verified rows for a repo is `no-data`. It is NEVER:
  *   - carried forward from a prior hour's value,
  *   - inferred from an adjacent bucket,
- *   - rendered blank / neutral / grey-that-reads-as-ok, or
+ *   - rendered blank or made to look like a known success, or
  *   - treated as a pass.
  *
  * This is realised structurally: a bucket's `kind` is `no-data` IFF its row
@@ -25,7 +25,7 @@
  *
  * A repo with no verified snapshot at all (the realistic CURRENT state of the
  * platform — emit-evidence is incomplete upstream) therefore yields 24 `no-data`
- * buckets: the honest truth, rendered as loudly as 24 failures.
+ * buckets: explicit unknown outcomes, visually distinct from failures.
  *
  * This module is pure data + arithmetic — no I/O, no `Date.now()`. The clock is
  * injected as `nowIso` so the 24h window is deterministic in tests.
@@ -54,7 +54,7 @@ export interface DecisionBucket {
   readonly total: number;
   /**
    * The bucket's dominant visual kind, which drives its color:
-   *   - `no-data` when `total === 0` (LOUD — equal weight with fail);
+   *   - `no-data` when `total === 0` (explicit unknown outcome);
    *   - otherwise the most-severe present decision by the precedence
    *     fail > error > advisory > pass (a single fail in an hour colors the
    *     hour as a failure — we never let a pass mask a fail).

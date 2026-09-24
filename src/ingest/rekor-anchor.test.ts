@@ -22,7 +22,7 @@ import { runLivePass, type LivePassDeps } from './live-pass.js';
 import { type ManifestFetcher, type SigstoreVerifier } from './interfaces.js';
 import { type PinnedSubjects } from './oidc-allowlist.js';
 import { type ReportManifest } from './manifest.js';
-import { validEvidenceBundle } from './__fixtures__/bundle-fixtures.js';
+import { validEvidenceBundle, validGateResult } from './__fixtures__/bundle-fixtures.js';
 import { verifiedRekorLogIndices } from './rekor-anchor.js';
 import { StoreTestingResolver } from '../internal-testing/store-testing-resolver.js';
 import { ContentStoreBundleResolver } from '../results/bundle-resolver.js';
@@ -107,16 +107,13 @@ const PINNED: PinnedSubjects = {
   },
 };
 
-const BODY = {
-  gate_name: 'jrig-nightly-skill-eval',
-  gate_id: 'jrig:ci:coreweave-gpu-node-forensics',
-  gate_decision: 'pass',
-  evaluated_at: '2026-09-07T04:18:21.568Z',
-};
+// A body bound to its signed bundle (hash, identity, input digest, count, URI),
+// as the ingest worker's gate-result binding check requires.
+const BODY = validGateResult();
 
 /** The published j-rig bundle shape: anchored, but `rekor_log_indices` empty. */
 function publishedBundle(): Record<string, unknown> {
-  return { ...validEvidenceBundle(), rekor_log_indices: [] };
+  return { ...validEvidenceBundle(BODY), rekor_log_indices: [] };
 }
 
 function manifest(sigstoreBundle: unknown, bundle: Record<string, unknown>): ReportManifest {
@@ -128,7 +125,7 @@ function manifest(sigstoreBundle: unknown, bundle: Record<string, unknown>): Rep
       workflowRef:
         'jeremylongshore/j-rig-skill-binary-eval/.github/workflows/nightly-skill-evals.yml@refs/heads/main',
     },
-    rows: [{ bundle, sigstoreBundle, sourceSha: 'a'.repeat(40), gateResults: [BODY] } as never],
+    rows: [{ bundle, sigstoreBundle, sourceSha: 'a'.repeat(40), gateResults: [BODY] }],
   };
 }
 
@@ -184,7 +181,7 @@ describe('Rekor anchor reaches the rendered row (published j-rig shape)', () => 
   });
 
   it('a signed bundle that DOES carry its own indices still wins over the fallback', async () => {
-    const bundle = { ...validEvidenceBundle(), rekor_log_indices: [42] };
+    const bundle = { ...validEvidenceBundle(BODY), rekor_log_indices: [42] };
     const { deps, bundleKey } = await ingest(sigstoreBundleWithIndex('999'), bundle);
     const rows = await new StoreTestingResolver(deps.contentStore, deps.gateRowStore).resolve(
       bundleKey,

@@ -2,11 +2,17 @@
  * StoreGateRowSource + visibility-policy tests.
  */
 
+import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { MemoryGateRowStore } from '../ingest/gate-row-store.js';
-import { coerceDecision, repoVisibility, StoreGateRowSource } from './store-gate-row-source.js';
+import { validEvidenceBundle, validGateResult } from '../ingest/__fixtures__/bundle-fixtures.js';
+import { FsGateRowStore, MemoryGateRowStore } from '../ingest/gate-row-store.js';
+import { repoVisibility, StoreGateRowSource } from './store-gate-row-source.js';
 
 const KEY = 'sha256:' + 'a'.repeat(64);
+const BODY = { ...validGateResult(), gate_name: 'coverage' };
+const BUNDLE = validEvidenceBundle(BODY);
 
 describe('repoVisibility', () => {
   it('maps the eight IS repos to Tier-1', () => {
@@ -19,59 +25,48 @@ describe('repoVisibility', () => {
   });
 });
 
-describe('coerceDecision', () => {
-  it('passes through the closed enum', () => {
-    for (const d of ['pass', 'fail', 'advisory', 'error'] as const) {
-      expect(coerceDecision(d)).toBe(d);
-    }
-  });
-  it('fails closed to error for anything else', () => {
-    expect(coerceDecision('maybe')).toBe('error');
-    expect(coerceDecision(undefined)).toBe('error');
-  });
-});
-
 describe('StoreGateRowSource', () => {
-  it('projects stored bodies into gate-row projections with repo visibility', async () => {
+  it('projects a bound stored body into a gate-row projection with repo visibility', async () => {
     const store = new MemoryGateRowStore();
-    await store.put(KEY, {
-      repo: 'iec',
-      bodies: [
-        { gate_name: 'coverage', gate_decision: 'pass', evaluated_at: '2026-06-08T00:00:00.000Z' },
-        {
-          gate_name: 'architecture',
-          gate_decision: 'fail',
-          evaluated_at: '2026-06-08T00:01:00.000Z',
-        },
-      ],
-    });
-    const rows = await new StoreGateRowSource(store).rowsFor(KEY);
+    await store.put(KEY, { repo: 'iec', bodies: [BODY] });
+    const rows = await new StoreGateRowSource(store).rowsFor(KEY, BUNDLE);
     expect(rows).not.toBeNull();
-    expect(rows).toHaveLength(2);
+    expect(rows).toHaveLength(1);
     expect(rows?.[0]).toMatchObject({
       gateName: 'coverage',
       decision: 'pass',
-      evaluatedAt: '2026-06-08T00:00:00.000Z',
+      evaluatedAt: '2026-05-30T12:00:00.000Z',
       predicateUri: 'https://evals.intentsolutions.io/gate-result/v1',
       visibility: { tier: 'tier-1' },
     });
-    expect(rows?.[1]?.decision).toBe('fail');
   });
 
   it('returns null for an absent bundle key', async () => {
-    expect(await new StoreGateRowSource(new MemoryGateRowStore()).rowsFor(KEY)).toBeNull();
+    expect(await new StoreGateRowSource(new MemoryGateRowStore()).rowsFor(KEY, BUNDLE)).toBeNull();
   });
 
-  it('returns null when the stored entry has no bodies', async () => {
+  it('returns null instead of coercing a malformed stored body', async () => {
     const store = new MemoryGateRowStore();
-    await store.put(KEY, { repo: 'iec', bodies: [] });
-    expect(await new StoreGateRowSource(store).rowsFor(KEY)).toBeNull();
+    await store.put(KEY, { repo: 'iec', bodies: [{ gate_decision: 'maybe' }] });
+    expect(await new StoreGateRowSource(store).rowsFor(KEY, BUNDLE)).toBeNull();
   });
 
-  it('defaults missing gate_name / evaluated_at fields', async () => {
-    const store = new MemoryGateRowStore();
-    await store.put(KEY, { repo: 'iec', bodies: [{ gate_decision: 'pass' }] });
-    const rows = await new StoreGateRowSource(store).rowsFor(KEY);
-    expect(rows?.[0]).toMatchObject({ gateName: 'unknown', evaluatedAt: '' });
+  it('returns null when a filesystem sidecar is changed after persistence', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'iep-gaterow-read-binding-'));
+    try {
+      const store = new FsGateRowStore(root);
+      await store.put(KEY, { repo: 'iec', bodies: [BODY] });
+      await writeFile(
+        join(root, 'gate-rows', `${'a'.repeat(64)}.json`),
+        JSON.stringify({
+          repo: 'iec',
+          bodies: [{ ...BODY, gate_decision: 'fail', gate_reasons: ['tampered'] }],
+        }),
+      );
+
+      expect(await new StoreGateRowSource(store).rowsFor(KEY, BUNDLE)).toBeNull();
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
   });
 });

@@ -16,20 +16,33 @@
 
     <meta name="iep-source-repo" content="github.com/jeremylongshore/intent-eval-dashboard">
     <meta name="iep-dashboard-version" content="0.1.0">
+<script defer src="https://analytics.intentsolutions.io/script.js" data-website-id="3109d0c5-2681-4808-a673-817af56ebc09" data-domains="labs.intentsolutions.io"></script>
 </head>
 <body>
-    <header class="site-header">
-        <div class="site-header__inner">
-            <a href="/" class="site-header__wordmark">IEP&nbsp;Labs</a>
-            <nav class="site-nav" aria-label="Primary">
-                <a href="/eval-sets/">Eval Sets</a>
-                <a href="/results/">Results</a>
-                <a href="/skills/">Skills</a>
-                <a href="/methodology/">Methodology</a>
-                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
-            </nav>
-        </div>
-    </header>
+<header class="site-header">
+    <!-- estate-bar:start v1.0.0 site=labs -->
+    <nav class="is-estate-bar" aria-label="Intent Solutions network">
+      <div class="is-estate-bar__inner">
+        <a href="https://intentsolutions.io/">Intent Solutions</a>
+        <a href="https://labs.intentsolutions.io/" aria-current="page">Labs</a>
+        <a href="https://evals.intentsolutions.io/">Evals</a>
+        <a href="https://demos.intentsolutions.io/">Demos</a>
+        <a href="https://learn.intentsolutions.io/">Learn</a>
+        <a href="https://oma.intentsolutions.io/">Omarchy</a>
+        <a href="https://tonsofskills.com/">Tons of Skills</a>
+      </div>
+    </nav>
+    <!-- estate-bar:end -->
+    <div class="site-header__inner">
+      <a href="/" class="site-header__wordmark">Intent&nbsp;Labs</a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/eval-sets/">What we test</a>
+        <a href="/how-it-works/">How it works</a>
+        <a href="/examples/">Examples</a>
+        <a href="/start/">Start here</a>
+      </nav>
+    </div>
+  </header>
     <main>
         <p><a href="/results/iar/">← iar results</a></p>
         <h1>Bundle</h1>
@@ -44,7 +57,7 @@
         <ul class="predicate-breakdown">
             <li><code>https://evals.intentsolutions.io/gate-result/v1</code> — pass: 1</li>
         </ul>
-        <table class="results-table">
+        <div class="table-scroll" role="region" aria-label="Detailed test results" tabindex="0"><table class="results-table">
             <thead>
                 <tr>
                     <th>Gate</th>
@@ -64,26 +77,18 @@
                     <td><time datetime="2026-07-08T06:42:05.536Z">2026-07-08T06:42:05.536Z</time></td>
                     <td><time datetime="2026-07-08T06:42:05.536Z">2026-07-08T06:42:05.536Z</time></td>
                     <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:19.680Z">2026-09-07T06:33:19.680Z</time></td>
+                    <td><time datetime="2026-09-24T06:26:45.699Z">2026-09-24T06:26:45.699Z</time></td>
                 </tr>
             </tbody>
-        </table>
+        </table></div>
     </main>
-    <footer class="site-footer">
-        <div class="site-footer__inner">
-            <div>
-                <strong>labs.intentsolutions.io</strong> · dashboard <code>v0.1.0</code> · <a href="/status/" class="footer__commitment">best-effort, single-operator, see /status for liveness</a><br>
-                Intent Solutions — <a href="https://intentsolutions.io">intentsolutions.io</a>
-            </div>
-            <div>
-                <a href="/methodology/">Methodology</a> ·
-                <a href="/eval-sets/">Eval Sets</a> ·
-                <a href="/results/">Results</a> ·
-                <a href="/skills/">Skills</a> ·
-                <a href="/status/">Status</a> ·
-                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
-            </div>
-        </div>
-    </footer>
+<footer class="site-footer"><div class="site-footer__inner">
+    <div><strong>Intent Labs</strong><br>Part of <a href="https://intentsolutions.io/">Intent Solutions</a></div>
+    <div><a href="/results/">All results</a> · <a href="/methodology/">Technical guide</a> ·
+      <a href="https://evals.intentsolutions.io/">Result definitions</a> · <a href="/skills/">Skill signals</a> ·
+      <a href="/status/">Lab status</a><br>
+      <a href="/status/" class="footer__commitment">best-effort, single-operator, see /status for liveness</a>
+    </div>
+  </div></footer>
 </body>
 </html>

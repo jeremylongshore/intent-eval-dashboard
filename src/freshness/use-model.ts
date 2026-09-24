@@ -46,6 +46,8 @@ export interface RepoLiveness {
 
 /** A restart/escalation summary from the supervision report. */
 export interface SupervisionPressure {
+  /** False when this collector does not instrument restart pressure. */
+  readonly measured?: boolean;
   /** Total restarts recorded in the window across all ingest workers. */
   readonly restartCount: number;
   /**
@@ -70,6 +72,7 @@ export interface UtilizationView {
 
 /** Saturation component of the USE view. */
 export interface SaturationView {
+  readonly measured: boolean;
   readonly restartCount: number;
   readonly restartBudget: number;
   /** restartCount / restartBudget, clamped to [0,1] (>=1 ⇒ budget pressure). */
@@ -141,6 +144,7 @@ export function computeIngestUse(
 
   const budget = pressure.restartBudget > 0 ? pressure.restartBudget : 1;
   const saturation: SaturationView = {
+    measured: pressure.measured ?? true,
     restartCount: pressure.restartCount,
     restartBudget: pressure.restartBudget,
     pressureRatio: clamp(pressure.restartCount / budget, 0, 1),

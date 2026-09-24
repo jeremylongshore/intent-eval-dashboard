@@ -59,6 +59,12 @@ describe('computeIngestUse — Utilization', () => {
 });
 
 describe('computeIngestUse — Saturation', () => {
+  it('preserves the distinction between unmeasured pressure and measured zero', () => {
+    const strip = buildFreshnessStrip(REPOS, [], NOW);
+    expect(computeIngestUse([], NO_PRESSURE, strip, NOW).saturation.measured).toBe(true);
+    const use = computeIngestUse([], { ...NO_PRESSURE, measured: false }, strip, NOW);
+    expect(use.saturation.measured).toBe(false);
+  });
   it('reports restart pressure as count + normalized ratio', () => {
     const liveness: RepoLiveness[] = REPOS.map((repo) => ({ repo, fresh: true }));
     const strip = buildFreshnessStrip(REPOS, [], NOW);

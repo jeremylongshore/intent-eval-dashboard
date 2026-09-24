@@ -138,6 +138,7 @@ repath
 (?i)repo
 (?i)repos
 REQs
+(?i)rollout
 rollup
 rollups
 rsync

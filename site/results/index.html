@@ -16,30 +16,46 @@
 
     <meta name="iep-source-repo" content="github.com/jeremylongshore/intent-eval-dashboard">
     <meta name="iep-dashboard-version" content="0.1.0">
+<script defer src="https://analytics.intentsolutions.io/script.js" data-website-id="3109d0c5-2681-4808-a673-817af56ebc09" data-domains="labs.intentsolutions.io"></script>
 </head>
 <body>
-    <header class="site-header">
-        <div class="site-header__inner">
-            <a href="/" class="site-header__wordmark">IEP&nbsp;Labs</a>
-            <nav class="site-nav" aria-label="Primary">
-                <a href="/eval-sets/">Eval Sets</a>
-                <a href="/results/">Results</a>
-                <a href="/skills/">Skills</a>
-                <a href="/methodology/">Methodology</a>
-                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
-            </nav>
-        </div>
-    </header>
+<header class="site-header">
+    <!-- estate-bar:start v1.0.0 site=labs -->
+    <nav class="is-estate-bar" aria-label="Intent Solutions network">
+      <div class="is-estate-bar__inner">
+        <a href="https://intentsolutions.io/">Intent Solutions</a>
+        <a href="https://labs.intentsolutions.io/" aria-current="page">Labs</a>
+        <a href="https://evals.intentsolutions.io/">Evals</a>
+        <a href="https://demos.intentsolutions.io/">Demos</a>
+        <a href="https://learn.intentsolutions.io/">Learn</a>
+        <a href="https://oma.intentsolutions.io/">Omarchy</a>
+        <a href="https://tonsofskills.com/">Tons of Skills</a>
+      </div>
+    </nav>
+    <!-- estate-bar:end -->
+    <div class="site-header__inner">
+      <a href="/" class="site-header__wordmark">Intent&nbsp;Labs</a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/eval-sets/">What we test</a>
+        <a href="/how-it-works/">How it works</a>
+        <a href="/examples/">Examples</a>
+        <a href="/start/">Start here</a>
+      </nav>
+    </div>
+  </header>
     <main>
         <h1>Results</h1>
         <p class="lead">
-            Each row below traces back through a content-addressed Evidence Bundle — signed via sigstore, anchored in the Rekor transparency log, re-verified at ingest — to a <code>gate-result/v1</code> attestation. We render the spec of what we measure on the <a href="/eval-sets/">eval-sets</a> page; here we render <em>what happened</em>.
+            These are the detailed records behind our published tests. Start with <a href="/examples/">a plain-language example</a> if you want to understand what a result means before inspecting the data.
         </p>
         <p>
-            We do not publish an aggregate "PASS%" across heterogeneous predicates. <code>no-data</code> is not a pass; <code>advisory</code> is not a pass. Counts are only ever shown within a single predicate URI.
+            <strong>Pass</strong> means the tested requirements were met. <strong>Fail</strong> means a requirement was missed. <strong>Advisory</strong> needs attention; <strong>error</strong> means a check could not finish. <strong>No data</strong> means no verified result is available. None of these is a blanket approval of a system.
+        </p>
+        <p>
+            Each record uses a versioned definition and a verified signed evidence bundle. Counts stay within one kind of test, never a blended score across different tests. <a href="/methodology/#evidence">How to read the technical evidence</a>.
         </p>
         <div class="meta-block as-of">
-            <p style="margin:0;"><strong>As of:</strong> <time datetime="2026-09-07T06:33:17.892Z">2026-09-07T06:33:17.892Z</time> — the oldest ingest across all sources in this view (<code>min(ingested_at)</code>). Sources verified more recently may be fresher.</p>
+            <p style="margin:0;"><strong>As of:</strong> <time datetime="2026-09-24T06:26:44.283Z">2026-09-24T06:26:44.283Z</time> — the oldest ingest across all sources in this view (<code>min(ingested_at)</code>). Sources verified more recently may be fresher.</p>
         </div>
         <h2>Per-repo freshness</h2>
         <table class="freshness-strip">
@@ -50,53 +66,53 @@
                 <tr>
                     <td><a href="/results/iec/"><code>iec</code></a></td>
                     <td><span class="badge badge--fresh">2 rows</span></td>
-                    <td><code>2026-09-07T06:33:17.892Z</code></td>
+                    <td><code>2026-09-24T06:26:44.283Z</code></td>
                 </tr>
                 <tr>
                     <td><a href="/results/iel/"><code>iel</code></a></td>
                     <td><span class="badge badge--fresh">1 row</span></td>
-                    <td><code>2026-09-07T06:33:18.315Z</code></td>
+                    <td><code>2026-09-24T06:26:44.557Z</code></td>
                 </tr>
                 <tr>
                     <td><a href="/results/iah/"><code>iah</code></a></td>
                     <td><span class="badge badge--fresh">1 row</span></td>
-                    <td><code>2026-09-07T06:33:18.731Z</code></td>
+                    <td><code>2026-09-24T06:26:44.893Z</code></td>
                 </tr>
                 <tr>
                     <td><a href="/results/iaj/"><code>iaj</code></a></td>
                     <td><span class="badge badge--fresh">1 row</span></td>
-                    <td><code>2026-09-07T06:33:19.132Z</code></td>
+                    <td><code>2026-09-24T06:26:45.247Z</code></td>
                 </tr>
                 <tr>
                     <td><a href="/results/iar/"><code>iar</code></a></td>
                     <td><span class="badge badge--fresh">2 rows</span></td>
-                    <td><code>2026-09-07T06:33:19.680Z</code></td>
+                    <td><code>2026-09-24T06:26:45.699Z</code></td>
                 </tr>
                 <tr>
                     <td><a href="/results/ccp/"><code>ccp</code></a></td>
                     <td><span class="badge badge--fresh">5 rows</span></td>
-                    <td><code>2026-09-07T06:33:20.634Z</code></td>
+                    <td><code>2026-09-24T06:26:46.383Z</code></td>
                 </tr>
                 <tr>
                     <td><a href="/results/jrig/"><code>jrig</code></a></td>
                     <td><span class="badge badge--fresh">14 rows</span></td>
-                    <td><code>2026-09-07T06:33:22.866Z</code></td>
+                    <td><code>2026-09-24T06:26:47.991Z</code></td>
                 </tr>
                 <tr>
                     <td><a href="/results/qmd/"><code>qmd</code></a></td>
                     <td><span class="badge badge--fresh">3 rows</span></td>
-                    <td><code>2026-09-07T06:33:23.513Z</code></td>
+                    <td><code>2026-09-24T06:26:48.453Z</code></td>
                 </tr>
             </tbody>
         </table>
-        <h2>Per-repo results</h2>
+        <h2>Results by project</h2>
         <section class="repo-results">
             <h3><a href="/results/iec/"><code>iec</code></a></h3>
         <p class="predicate-note">Decision counts are shown <em>per predicate URI</em> only. We never composite a pass-rate across heterogeneous predicates — that is metric laundering.</p>
         <ul class="predicate-breakdown">
             <li><code>https://evals.intentsolutions.io/gate-result/v1</code> — pass: 2</li>
         </ul>
-        <table class="results-table">
+        <div class="table-scroll" role="region" aria-label="Detailed test results" tabindex="0"><table class="results-table">
             <thead>
                 <tr>
                     <th>Gate</th>
@@ -116,7 +132,7 @@
                     <td><time datetime="2026-07-09T06:50:40.551Z">2026-07-09T06:50:40.551Z</time></td>
                     <td><time datetime="2026-07-09T06:50:40.551Z">2026-07-09T06:50:40.551Z</time></td>
                     <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:17.892Z">2026-09-07T06:33:17.892Z</time></td>
+                    <td><time datetime="2026-09-24T06:26:44.283Z">2026-09-24T06:26:44.283Z</time></td>
                 </tr>
                 <tr>
                     <td><a href="/results/iec/sha256-c1e31e28dae685b3dcced3b84dc4186fdfbbeab63e8bee0b1bf8556baa5b2ba6/"><code>coverage</code></a></td>
@@ -125,10 +141,10 @@
                     <td><time datetime="2026-07-09T06:50:40.551Z">2026-07-09T06:50:40.551Z</time></td>
                     <td><time datetime="2026-07-09T06:50:40.551Z">2026-07-09T06:50:40.551Z</time></td>
                     <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:17.892Z">2026-09-07T06:33:17.892Z</time></td>
+                    <td><time datetime="2026-09-24T06:26:44.283Z">2026-09-24T06:26:44.283Z</time></td>
                 </tr>
             </tbody>
-        </table>
+        </table></div>
         <p><a href="/results/iec/">All results for iec →</a></p>
         </section>
         <section class="repo-results">
@@ -137,7 +153,7 @@
         <ul class="predicate-breakdown">
             <li><code>https://evals.intentsolutions.io/gate-result/v1</code> — pass: 1</li>
         </ul>
-        <table class="results-table">
+        <div class="table-scroll" role="region" aria-label="Detailed test results" tabindex="0"><table class="results-table">
             <thead>
                 <tr>
                     <th>Gate</th>
@@ -157,10 +173,10 @@
                     <td><time datetime="2026-06-08T02:44:28.493Z">2026-06-08T02:44:28.493Z</time></td>
                     <td><time datetime="2026-06-08T02:44:28.493Z">2026-06-08T02:44:28.493Z</time></td>
                     <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:18.315Z">2026-09-07T06:33:18.315Z</time></td>
+                    <td><time datetime="2026-09-24T06:26:44.557Z">2026-09-24T06:26:44.557Z</time></td>
                 </tr>
             </tbody>
-        </table>
+        </table></div>
         <p><a href="/results/iel/">All results for iel →</a></p>
         </section>
         <section class="repo-results">
@@ -169,7 +185,7 @@
         <ul class="predicate-breakdown">
             <li><code>https://evals.intentsolutions.io/gate-result/v1</code> — pass: 1</li>
         </ul>
-        <table class="results-table">
+        <div class="table-scroll" role="region" aria-label="Detailed test results" tabindex="0"><table class="results-table">
             <thead>
                 <tr>
                     <th>Gate</th>
@@ -189,10 +205,10 @@
                     <td><time datetime="2026-09-05T02:00:09.489Z">2026-09-05T02:00:09.489Z</time></td>
                     <td><time datetime="2026-09-05T02:00:09.489Z">2026-09-05T02:00:09.489Z</time></td>
                     <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:18.731Z">2026-09-07T06:33:18.731Z</time></td>
+                    <td><time datetime="2026-09-24T06:26:44.893Z">2026-09-24T06:26:44.893Z</time></td>
                 </tr>
             </tbody>
-        </table>
+        </table></div>
         <p><a href="/results/iah/">All results for iah →</a></p>
         </section>
         <section class="repo-results">
@@ -201,7 +217,7 @@
         <ul class="predicate-breakdown">
             <li><code>https://evals.intentsolutions.io/gate-result/v1</code> — pass: 1</li>
         </ul>
-        <table class="results-table">
+        <div class="table-scroll" role="region" aria-label="Detailed test results" tabindex="0"><table class="results-table">
             <thead>
                 <tr>
                     <th>Gate</th>
@@ -221,10 +237,10 @@
                     <td><time datetime="2026-06-15T18:34:28.968Z">2026-06-15T18:34:28.968Z</time></td>
                     <td><time datetime="2026-06-15T18:34:28.968Z">2026-06-15T18:34:28.968Z</time></td>
                     <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:19.132Z">2026-09-07T06:33:19.132Z</time></td>
+                    <td><time datetime="2026-09-24T06:26:45.247Z">2026-09-24T06:26:45.247Z</time></td>
                 </tr>
             </tbody>
-        </table>
+        </table></div>
         <p><a href="/results/iaj/">All results for iaj →</a></p>
         </section>
         <section class="repo-results">
@@ -233,7 +249,7 @@
         <ul class="predicate-breakdown">
             <li><code>https://evals.intentsolutions.io/gate-result/v1</code> — pass: 2</li>
         </ul>
-        <table class="results-table">
+        <div class="table-scroll" role="region" aria-label="Detailed test results" tabindex="0"><table class="results-table">
             <thead>
                 <tr>
                     <th>Gate</th>
@@ -253,7 +269,7 @@
                     <td><time datetime="2026-07-08T06:42:05.536Z">2026-07-08T06:42:05.536Z</time></td>
                     <td><time datetime="2026-07-08T06:42:05.536Z">2026-07-08T06:42:05.536Z</time></td>
                     <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:19.680Z">2026-09-07T06:33:19.680Z</time></td>
+                    <td><time datetime="2026-09-24T06:26:45.699Z">2026-09-24T06:26:45.699Z</time></td>
                 </tr>
                 <tr>
                     <td><a href="/results/iar/sha256-f1a5c53be5e3a118335527167c5a5f17dc66a7ee845e21e4aa32a00c1909a78d/"><code>reproducible-dist</code></a></td>
@@ -262,10 +278,10 @@
                     <td><time datetime="2026-07-08T06:42:05.536Z">2026-07-08T06:42:05.536Z</time></td>
                     <td><time datetime="2026-07-08T06:42:05.536Z">2026-07-08T06:42:05.536Z</time></td>
                     <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:19.680Z">2026-09-07T06:33:19.680Z</time></td>
+                    <td><time datetime="2026-09-24T06:26:45.699Z">2026-09-24T06:26:45.699Z</time></td>
                 </tr>
             </tbody>
-        </table>
+        </table></div>
         <p><a href="/results/iar/">All results for iar →</a></p>
         </section>
         <section class="repo-results">
@@ -274,7 +290,7 @@
         <ul class="predicate-breakdown">
             <li><code>https://evals.intentsolutions.io/gate-result/v1</code> — pass: 5</li>
         </ul>
-        <table class="results-table">
+        <div class="table-scroll" role="region" aria-label="Detailed test results" tabindex="0"><table class="results-table">
             <thead>
                 <tr>
                     <th>Gate</th>
@@ -288,61 +304,61 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><a href="/results/ccp/sha256-e28f3d795619d56b7fc5a91282287aafa33f259cd797ff25ba980a827802a690/"><code>catalog-invariants</code></a></td>
+                    <td><a href="/results/ccp/sha256-47550fc5cca3599ba1e61b5d504a77091d3091c0bebecc3833f78664d25fe1af/"><code>catalog-invariants</code></a></td>
                     <td><span class="badge badge--result-pass">pass</span></td>
                     <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-09-07T03:44:53.523Z">2026-09-07T03:44:53.523Z</time></td>
-                    <td><time datetime="2026-09-07T03:44:53.523Z">2026-09-07T03:44:53.523Z</time></td>
+                    <td><time datetime="2026-09-24T05:40:23.254Z">2026-09-24T05:40:23.254Z</time></td>
+                    <td><time datetime="2026-09-24T05:40:23.254Z">2026-09-24T05:40:23.254Z</time></td>
                     <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:20.634Z">2026-09-07T06:33:20.634Z</time></td>
+                    <td><time datetime="2026-09-24T06:26:46.383Z">2026-09-24T06:26:46.383Z</time></td>
                 </tr>
                 <tr>
-                    <td><a href="/results/ccp/sha256-e597b6846cef1592df3d930b84a359eab7178eb87b455c8d46fe9af6489bd48d/"><code>unicode-hygiene</code></a></td>
+                    <td><a href="/results/ccp/sha256-6bbbaad07198b8bf5f568c11ea202b8fece1dae703bed12c3c585968b67e8881/"><code>unicode-hygiene</code></a></td>
                     <td><span class="badge badge--result-pass">pass</span></td>
                     <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-09-07T03:44:53.523Z">2026-09-07T03:44:53.523Z</time></td>
-                    <td><time datetime="2026-09-07T03:44:53.523Z">2026-09-07T03:44:53.523Z</time></td>
+                    <td><time datetime="2026-09-24T05:40:23.254Z">2026-09-24T05:40:23.254Z</time></td>
+                    <td><time datetime="2026-09-24T05:40:23.254Z">2026-09-24T05:40:23.254Z</time></td>
                     <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:20.634Z">2026-09-07T06:33:20.634Z</time></td>
+                    <td><time datetime="2026-09-24T06:26:46.383Z">2026-09-24T06:26:46.383Z</time></td>
                 </tr>
                 <tr>
-                    <td><a href="/results/ccp/sha256-6cc527722c3e5f665136febac89dcda936cbc9f9127f5919ce8f1c71fab1ad3e/"><code>ci-required</code></a></td>
+                    <td><a href="/results/ccp/sha256-2f8711aa80edbca4bc31897d0868c5b8d052cfead3f2087440e55498aff7ca1e/"><code>ci-required</code></a></td>
                     <td><span class="badge badge--result-pass">pass</span></td>
                     <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-09-07T03:44:53.523Z">2026-09-07T03:44:53.523Z</time></td>
-                    <td><time datetime="2026-09-07T03:44:53.523Z">2026-09-07T03:44:53.523Z</time></td>
+                    <td><time datetime="2026-09-24T05:40:23.254Z">2026-09-24T05:40:23.254Z</time></td>
+                    <td><time datetime="2026-09-24T05:40:23.254Z">2026-09-24T05:40:23.254Z</time></td>
                     <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:20.634Z">2026-09-07T06:33:20.634Z</time></td>
+                    <td><time datetime="2026-09-24T06:26:46.383Z">2026-09-24T06:26:46.383Z</time></td>
                 </tr>
                 <tr>
-                    <td><a href="/results/ccp/sha256-090ef5565b181610daf88c86cb5902e71ad641fe71ca5820763e1b78a3b8463e/"><code>gitleaks</code></a></td>
+                    <td><a href="/results/ccp/sha256-aa9cc037786cb1763d93cea0900eb88eae6409b0ae5b88b77db6ee098f06e2fa/"><code>gitleaks</code></a></td>
                     <td><span class="badge badge--result-pass">pass</span></td>
                     <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-09-07T03:44:53.523Z">2026-09-07T03:44:53.523Z</time></td>
-                    <td><time datetime="2026-09-07T03:44:53.523Z">2026-09-07T03:44:53.523Z</time></td>
+                    <td><time datetime="2026-09-24T05:40:23.254Z">2026-09-24T05:40:23.254Z</time></td>
+                    <td><time datetime="2026-09-24T05:40:23.254Z">2026-09-24T05:40:23.254Z</time></td>
                     <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:20.634Z">2026-09-07T06:33:20.634Z</time></td>
+                    <td><time datetime="2026-09-24T06:26:46.383Z">2026-09-24T06:26:46.383Z</time></td>
                 </tr>
                 <tr>
-                    <td><a href="/results/ccp/sha256-5738fb8106791f07a45317a2cbc045a08b44c827bd484db196224b4ec6b4b00b/"><code>skill-conform</code></a></td>
+                    <td><a href="/results/ccp/sha256-af3535f6640ac6c77b6f739dfb0d4ec06511d009048532b5b03505c57cbabcaf/"><code>skill-conform</code></a></td>
                     <td><span class="badge badge--result-pass">pass</span></td>
                     <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-09-07T03:44:53.523Z">2026-09-07T03:44:53.523Z</time></td>
-                    <td><time datetime="2026-09-07T03:44:53.523Z">2026-09-07T03:44:53.523Z</time></td>
+                    <td><time datetime="2026-09-24T05:40:23.254Z">2026-09-24T05:40:23.254Z</time></td>
+                    <td><time datetime="2026-09-24T05:40:23.254Z">2026-09-24T05:40:23.254Z</time></td>
                     <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:20.634Z">2026-09-07T06:33:20.634Z</time></td>
+                    <td><time datetime="2026-09-24T06:26:46.383Z">2026-09-24T06:26:46.383Z</time></td>
                 </tr>
             </tbody>
-        </table>
+        </table></div>
         <p><a href="/results/ccp/">All results for ccp →</a></p>
         </section>
         <section class="repo-results">
             <h3><a href="/results/jrig/"><code>jrig</code></a></h3>
         <p class="predicate-note">Decision counts are shown <em>per predicate URI</em> only. We never composite a pass-rate across heterogeneous predicates — that is metric laundering.</p>
         <ul class="predicate-breakdown">
-            <li><code>https://evals.intentsolutions.io/gate-result/v1</code> — pass: 3 · fail: 4 · advisory: 5 · error: 2</li>
+            <li><code>https://evals.intentsolutions.io/gate-result/v1</code> — pass: 2 · fail: 1 · advisory: 5 · error: 6</li>
         </ul>
-        <table class="results-table">
+        <div class="table-scroll" role="region" aria-label="Detailed test results" tabindex="0"><table class="results-table">
             <thead>
                 <tr>
                     <th>Gate</th>
@@ -356,133 +372,133 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><a href="/results/jrig/sha256-99a66a65801f7c9989efeb4cfc7816722492487b305000c5741db7b734187067/"><code>coreweave-gpu-node-forensics</code></a></td>
+                    <td><a href="/results/jrig/sha256-43060ea65754c08737331cc0abe5dd53483b8de8a5a5bcbf2edffcab593929ad/"><code>coreweave-gpu-node-forensics</code></a></td>
                     <td><span class="badge badge--result-advisory">advisory</span></td>
                     <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
                     <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:22.866Z">2026-09-07T06:33:22.866Z</time></td>
+                    <td><time datetime="2026-09-24T06:26:47.991Z">2026-09-24T06:26:47.991Z</time></td>
                 </tr>
                 <tr>
-                    <td><a href="/results/jrig/sha256-1d4d9d07227ba7619b973be9dcc211f39a8625640b2ebb5a0984090609258bd3/"><code>coreweave-gpu-cost-leak-hunter</code></a></td>
-                    <td><span class="badge badge--result-fail">fail</span></td>
-                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
-                    <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:22.866Z">2026-09-07T06:33:22.866Z</time></td>
-                </tr>
-                <tr>
-                    <td><a href="/results/jrig/sha256-f3445a4f174fc16c187496ac10c8941f02f411bf6c8121852715d15c55c40fd7/"><code>coreweave-fabric-diagnostics</code></a></td>
-                    <td><span class="badge badge--result-fail">fail</span></td>
-                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
-                    <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:22.866Z">2026-09-07T06:33:22.866Z</time></td>
-                </tr>
-                <tr>
-                    <td><a href="/results/jrig/sha256-4fa5fec5b5a233f265a5068fa3d19769dcd8609433d37bda8a3fa98564fda1bc/"><code>databricks-bundle-medic</code></a></td>
-                    <td><span class="badge badge--result-pass">pass</span></td>
-                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
-                    <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:22.866Z">2026-09-07T06:33:22.866Z</time></td>
-                </tr>
-                <tr>
-                    <td><a href="/results/jrig/sha256-12ffcb27dfbf9f9a0a463e163b49b73c1895a01edb9a8521514bd8ebe7c856f7/"><code>databricks-cluster-forensics</code></a></td>
+                    <td><a href="/results/jrig/sha256-3b23c4ed60523a9b3b981cddd1d489bfe864d5c2adf4558b12f66044b9ad8f88/"><code>coreweave-gpu-cost-leak-hunter</code></a></td>
                     <td><span class="badge badge--result-error">error</span></td>
                     <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
                     <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:22.866Z">2026-09-07T06:33:22.866Z</time></td>
+                    <td><time datetime="2026-09-24T06:26:47.991Z">2026-09-24T06:26:47.991Z</time></td>
                 </tr>
                 <tr>
-                    <td><a href="/results/jrig/sha256-e8f6dbd972f5814dda7ffd8726e0bde82ee01a71c7db06ce99be580030e5b094/"><code>databricks-cost-leak-hunter</code></a></td>
-                    <td><span class="badge badge--result-fail">fail</span></td>
-                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
-                    <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:22.866Z">2026-09-07T06:33:22.866Z</time></td>
-                </tr>
-                <tr>
-                    <td><a href="/results/jrig/sha256-55837a546a214bf70ef082283c84a3ed1e58585336e4f187c6d31e2d42528704/"><code>databricks-streaming-guardian</code></a></td>
-                    <td><span class="badge badge--result-fail">fail</span></td>
-                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
-                    <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:22.866Z">2026-09-07T06:33:22.866Z</time></td>
-                </tr>
-                <tr>
-                    <td><a href="/results/jrig/sha256-1428c0f6d0743e4ec68e5b9855a03e047eaec12c7dad173ff8618fa88113e43d/"><code>databricks-uc-migration-pilot</code></a></td>
+                    <td><a href="/results/jrig/sha256-7791e8f20434b0c00db9e3a1b207398c785bbf9d1dbce21d159e9d6c3ce4ee99/"><code>coreweave-fabric-diagnostics</code></a></td>
                     <td><span class="badge badge--result-error">error</span></td>
                     <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
                     <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:22.866Z">2026-09-07T06:33:22.866Z</time></td>
+                    <td><time datetime="2026-09-24T06:26:47.991Z">2026-09-24T06:26:47.991Z</time></td>
                 </tr>
                 <tr>
-                    <td><a href="/results/jrig/sha256-8b7641294e8b22d99d858fdb06d099f4d15921129b5e87470bb3f3257216e208/"><code>hubspot-warehouse-sync</code></a></td>
+                    <td><a href="/results/jrig/sha256-a5bcd92f1218ee355eee4c4a167652f3a0af20ae5ababda8cb2edb5d4414961e/"><code>databricks-bundle-medic</code></a></td>
+                    <td><span class="badge badge--result-error">error</span></td>
+                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
+                    <td><code>—</code></td>
+                    <td><time datetime="2026-09-24T06:26:47.991Z">2026-09-24T06:26:47.991Z</time></td>
+                </tr>
+                <tr>
+                    <td><a href="/results/jrig/sha256-29d771d151c42114ce2e0efef510871bd12f9afb50b0f1cb5c4ca0c1d71c5a24/"><code>databricks-cluster-forensics</code></a></td>
+                    <td><span class="badge badge--result-error">error</span></td>
+                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
+                    <td><code>—</code></td>
+                    <td><time datetime="2026-09-24T06:26:47.991Z">2026-09-24T06:26:47.991Z</time></td>
+                </tr>
+                <tr>
+                    <td><a href="/results/jrig/sha256-607955a16ae7886263d61c7f4cf05875f40001e7684cf97d0c57cd7b23b39d76/"><code>databricks-cost-leak-hunter</code></a></td>
+                    <td><span class="badge badge--result-error">error</span></td>
+                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
+                    <td><code>—</code></td>
+                    <td><time datetime="2026-09-24T06:26:47.991Z">2026-09-24T06:26:47.991Z</time></td>
+                </tr>
+                <tr>
+                    <td><a href="/results/jrig/sha256-1f8defc5b7bde6423f33a18b6202bee8a238ba5ee677c607ebe111b24d7f6f62/"><code>databricks-streaming-guardian</code></a></td>
+                    <td><span class="badge badge--result-error">error</span></td>
+                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
+                    <td><code>—</code></td>
+                    <td><time datetime="2026-09-24T06:26:47.991Z">2026-09-24T06:26:47.991Z</time></td>
+                </tr>
+                <tr>
+                    <td><a href="/results/jrig/sha256-469163e8d04a1db6348dbb4d267c660e4eeb0ec50cf14b24a5dedd6fcf11bb94/"><code>databricks-uc-migration-pilot</code></a></td>
+                    <td><span class="badge badge--result-fail">fail</span></td>
+                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
+                    <td><code>—</code></td>
+                    <td><time datetime="2026-09-24T06:26:47.991Z">2026-09-24T06:26:47.991Z</time></td>
+                </tr>
+                <tr>
+                    <td><a href="/results/jrig/sha256-a67f9db46ba8651a2780894c1b982a6d360f52c7e387322f1d68fd7d8a538b36/"><code>hubspot-warehouse-sync</code></a></td>
+                    <td><span class="badge badge--result-advisory">advisory</span></td>
+                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
+                    <td><code>—</code></td>
+                    <td><time datetime="2026-09-24T06:26:47.991Z">2026-09-24T06:26:47.991Z</time></td>
+                </tr>
+                <tr>
+                    <td><a href="/results/jrig/sha256-61f7090896a5ac4d61c238be1b0c00ab69209505218b957dfebb8a181d321366/"><code>sentry-data-handling</code></a></td>
                     <td><span class="badge badge--result-pass">pass</span></td>
                     <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
                     <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:22.866Z">2026-09-07T06:33:22.866Z</time></td>
+                    <td><time datetime="2026-09-24T06:26:47.991Z">2026-09-24T06:26:47.991Z</time></td>
                 </tr>
                 <tr>
-                    <td><a href="/results/jrig/sha256-71a6b03ff46842c63e68a0e5a0eabc8f046beaed6e6bdcb236f97115f87279ad/"><code>sentry-data-handling</code></a></td>
+                    <td><a href="/results/jrig/sha256-f111493abec98847bdba7a0f1be8bc7d63241dfb6e8a0817712d1053ecfbd50a/"><code>supabase-known-pitfalls</code></a></td>
                     <td><span class="badge badge--result-pass">pass</span></td>
                     <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
                     <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:22.866Z">2026-09-07T06:33:22.866Z</time></td>
+                    <td><time datetime="2026-09-24T06:26:47.991Z">2026-09-24T06:26:47.991Z</time></td>
                 </tr>
                 <tr>
-                    <td><a href="/results/jrig/sha256-959a361b847369e68917a06746ad77137c69779cd97a210faf92d4ac9caac511/"><code>supabase-known-pitfalls</code></a></td>
+                    <td><a href="/results/jrig/sha256-4bb5e0236cee673134fd50341519e8420d96c1845d95a067252d6a10e3e34e32/"><code>audit-tests</code></a></td>
                     <td><span class="badge badge--result-advisory">advisory</span></td>
                     <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
                     <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:22.866Z">2026-09-07T06:33:22.866Z</time></td>
+                    <td><time datetime="2026-09-24T06:26:47.991Z">2026-09-24T06:26:47.991Z</time></td>
                 </tr>
                 <tr>
-                    <td><a href="/results/jrig/sha256-0ac45ce3d246a128dbadd9ac7f69fdfe91b24fb9d974e486e0b180f02d7bda01/"><code>audit-tests</code></a></td>
+                    <td><a href="/results/jrig/sha256-0149f4226765c0a84291d98bc433e54d344eb7bfcae6d0f090c76b908875ce3c/"><code>validate-skillmd</code></a></td>
                     <td><span class="badge badge--result-advisory">advisory</span></td>
                     <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
                     <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:22.866Z">2026-09-07T06:33:22.866Z</time></td>
+                    <td><time datetime="2026-09-24T06:26:47.991Z">2026-09-24T06:26:47.991Z</time></td>
                 </tr>
                 <tr>
-                    <td><a href="/results/jrig/sha256-feedff29b785303275febe3e271fd5a6d6e5b6809720c9869a1b7a96cad7566a/"><code>validate-skillmd</code></a></td>
+                    <td><a href="/results/jrig/sha256-c7503ecb847e2451276d051ae95298f2c2c081cd575db59f8c91b04f471d87d5/"><code>skill-creator</code></a></td>
                     <td><span class="badge badge--result-advisory">advisory</span></td>
                     <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
+                    <td><time datetime="2026-09-17T03:58:41.232Z">2026-09-17T03:58:41.232Z</time></td>
                     <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:22.866Z">2026-09-07T06:33:22.866Z</time></td>
-                </tr>
-                <tr>
-                    <td><a href="/results/jrig/sha256-91fab772789e5de614bd6c634a7aa1adaf53a393a0cc34b4c0658c9abc413479/"><code>skill-creator</code></a></td>
-                    <td><span class="badge badge--result-advisory">advisory</span></td>
-                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
-                    <td><time datetime="2026-09-07T04:18:21.568Z">2026-09-07T04:18:21.568Z</time></td>
-                    <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:22.866Z">2026-09-07T06:33:22.866Z</time></td>
+                    <td><time datetime="2026-09-24T06:26:47.991Z">2026-09-24T06:26:47.991Z</time></td>
                 </tr>
             </tbody>
-        </table>
+        </table></div>
         <p><a href="/results/jrig/">All results for jrig →</a></p>
         </section>
         <section class="repo-results">
@@ -491,7 +507,7 @@
         <ul class="predicate-breakdown">
             <li><code>https://evals.intentsolutions.io/gate-result/v1</code> — pass: 3</li>
         </ul>
-        <table class="results-table">
+        <div class="table-scroll" role="region" aria-label="Detailed test results" tabindex="0"><table class="results-table">
             <thead>
                 <tr>
                     <th>Gate</th>
@@ -505,52 +521,44 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><a href="/results/qmd/sha256-efc8c80194a0abf8c5572c5c78366c84f3e7d99a01a6bfcbee129273bd429ffc/"><code>provenance-integrity</code></a></td>
+                    <td><a href="/results/qmd/sha256-7711ae4e10f16c2f54d824aa6ebdee67c13b162f7e0b1ba59e307ce49222705b/"><code>provenance-integrity</code></a></td>
                     <td><span class="badge badge--result-pass">pass</span></td>
                     <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-08-25T20:08:19.189Z">2026-08-25T20:08:19.189Z</time></td>
-                    <td><time datetime="2026-08-25T20:08:19.189Z">2026-08-25T20:08:19.189Z</time></td>
+                    <td><time datetime="2026-09-20T21:15:18.833Z">2026-09-20T21:15:18.833Z</time></td>
+                    <td><time datetime="2026-09-20T21:15:18.833Z">2026-09-20T21:15:18.833Z</time></td>
                     <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:23.513Z">2026-09-07T06:33:23.513Z</time></td>
+                    <td><time datetime="2026-09-24T06:26:48.453Z">2026-09-24T06:26:48.453Z</time></td>
                 </tr>
                 <tr>
-                    <td><a href="/results/qmd/sha256-f32e988e6b5e6283c0355bdea2484b6bce78beb185c0978e7d6d8dca5bf668e5/"><code>govern-decision</code></a></td>
+                    <td><a href="/results/qmd/sha256-c9cb11dd9c6ba5412c4d896c49ae915f9eeb87008c9a027aa1c1c67cb5951696/"><code>govern-decision</code></a></td>
                     <td><span class="badge badge--result-pass">pass</span></td>
                     <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-08-25T20:08:19.189Z">2026-08-25T20:08:19.189Z</time></td>
-                    <td><time datetime="2026-08-25T20:08:19.189Z">2026-08-25T20:08:19.189Z</time></td>
+                    <td><time datetime="2026-09-20T21:15:18.833Z">2026-09-20T21:15:18.833Z</time></td>
+                    <td><time datetime="2026-09-20T21:15:18.833Z">2026-09-20T21:15:18.833Z</time></td>
                     <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:23.513Z">2026-09-07T06:33:23.513Z</time></td>
+                    <td><time datetime="2026-09-24T06:26:48.453Z">2026-09-24T06:26:48.453Z</time></td>
                 </tr>
                 <tr>
-                    <td><a href="/results/qmd/sha256-aec8ca15c83b31fca6887c71faef630e1fe7392ce89360e7bda6585520f48d64/"><code>retrieval-ratchet</code></a></td>
+                    <td><a href="/results/qmd/sha256-70b0dcd9e327d2570e0799836fd8491ff5e80cb6188131920f3e3382400a2618/"><code>retrieval-ratchet</code></a></td>
                     <td><span class="badge badge--result-pass">pass</span></td>
                     <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-08-25T20:08:19.189Z">2026-08-25T20:08:19.189Z</time></td>
-                    <td><time datetime="2026-08-25T20:08:19.189Z">2026-08-25T20:08:19.189Z</time></td>
+                    <td><time datetime="2026-09-20T21:15:18.833Z">2026-09-20T21:15:18.833Z</time></td>
+                    <td><time datetime="2026-09-20T21:15:18.833Z">2026-09-20T21:15:18.833Z</time></td>
                     <td><code>—</code></td>
-                    <td><time datetime="2026-09-07T06:33:23.513Z">2026-09-07T06:33:23.513Z</time></td>
+                    <td><time datetime="2026-09-24T06:26:48.453Z">2026-09-24T06:26:48.453Z</time></td>
                 </tr>
             </tbody>
-        </table>
+        </table></div>
         <p><a href="/results/qmd/">All results for qmd →</a></p>
         </section>
     </main>
-    <footer class="site-footer">
-        <div class="site-footer__inner">
-            <div>
-                <strong>labs.intentsolutions.io</strong> · dashboard <code>v0.1.0</code> · <a href="/status/" class="footer__commitment">best-effort, single-operator, see /status for liveness</a><br>
-                Intent Solutions — <a href="https://intentsolutions.io">intentsolutions.io</a>
-            </div>
-            <div>
-                <a href="/methodology/">Methodology</a> ·
-                <a href="/eval-sets/">Eval Sets</a> ·
-                <a href="/results/">Results</a> ·
-                <a href="/skills/">Skills</a> ·
-                <a href="/status/">Status</a> ·
-                <a href="https://github.com/jeremylongshore/intent-eval-dashboard">GitHub</a>
-            </div>
-        </div>
-    </footer>
+<footer class="site-footer"><div class="site-footer__inner">
+    <div><strong>Intent Labs</strong><br>Part of <a href="https://intentsolutions.io/">Intent Solutions</a></div>
+    <div><a href="/results/">All results</a> · <a href="/methodology/">Technical guide</a> ·
+      <a href="https://evals.intentsolutions.io/">Result definitions</a> · <a href="/skills/">Skill signals</a> ·
+      <a href="/status/">Lab status</a><br>
+      <a href="/status/" class="footer__commitment">best-effort, single-operator, see /status for liveness</a>
+    </div>
+  </div></footer>
 </body>
 </html>
