@@ -21,8 +21,9 @@ Created post-ISEDC Session 8 ratification (DR-035 merged 2026-05-29 on intent-ev
 ## Canonical Beads workspace
 
 This dashboard checkout is the sixth member of the Intent Eval Platform
-workspace. Its tracked `.beads/redirect` resolves the supported sibling-repo
-layout to `~/000-projects/.beads/`, the canonical umbrella Dolt store. Verify
+workspace. Its tracked `.beads/redirect` (`../../.beads`) resolves the supported
+`~/000-projects/intent-eval-platform/intent-eval-dashboard/` layout to
+`~/000-projects/.beads/`, the canonical umbrella Dolt store. Verify
 with `bd where` and `bd info`, use `bd-sync` for bead↔GitHub↔Plane changes, and
 do not run `bd init` here or create a second local database.
 
