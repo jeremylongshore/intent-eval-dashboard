@@ -35,6 +35,24 @@ describe('FsGateRowStore', () => {
     }
   });
 
+  it('round-trips a verified Rekor anchor and drops a malformed one', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'iep-gaterows-rekor-'));
+    try {
+      const s = new FsGateRowStore(dir);
+      const anchored = { ...ROWS, rekorLogIndices: [1689291334] };
+      await s.put(KEY, anchored);
+      expect(await s.get(KEY)).toEqual(anchored);
+      // A non-integer / negative index is never coerced into an anchor.
+      await writeFile(
+        join(dir, 'gate-rows', 'a'.repeat(64) + '.json'),
+        JSON.stringify({ ...ROWS, rekorLogIndices: [-1, 'x'] }),
+      );
+      expect(await s.get(KEY)).toEqual(ROWS);
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
   it('returns null for truncated JSON or a malformed stored shape', async () => {
     const dir = await mkdtemp(join(tmpdir(), 'iep-gaterows-malformed-'));
     try {

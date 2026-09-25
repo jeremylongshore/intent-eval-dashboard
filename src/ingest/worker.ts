@@ -43,6 +43,7 @@ import {
 } from './reason.js';
 import { validateEvidenceBundle } from './schema-validate.js';
 import { checkGateResultBinding } from './gate-result-binding.js';
+import { verifiedRekorLogIndices } from './rekor-anchor.js';
 import { type GateRowStore } from './gate-row-store.js';
 
 /** Everything a worker needs, all behind interfaces (deterministically testable). */
@@ -154,6 +155,7 @@ export async function runIngestWorker(
   const verifiedGateRows: {
     readonly bundleKey: string;
     readonly bodies: readonly unknown[];
+    readonly rekorLogIndices: readonly number[];
   }[] = [];
 
   for (let i = 0; i < manifest.rows.length; i++) {
@@ -215,7 +217,17 @@ export async function runIngestWorker(
       );
     }
     bundleKeys.push(key);
-    verifiedGateRows.push({ bundleKey: key, bodies: binding.bodies });
+    // The Rekor anchor is read off the row's sigstore bundle, NOT off the signed
+    // EvidenceBundle (whose `rekor_log_indices` cannot hold an index that only
+    // exists after its own bytes were signed). Safe under verify-before-render:
+    // steps 3+4 above already proved this bundle's Rekor inclusion + DSSE
+    // signature + identity. An unreadable index yields `[]` — a loud no-anchor
+    // cell, never a guess.
+    verifiedGateRows.push({
+      bundleKey: key,
+      bodies: binding.bodies,
+      rekorLogIndices: verifiedRekorLogIndices(row.sigstoreBundle),
+    });
   }
 
   // --- Step 7: persist bound rows, then emit the snapshot that references them ---
@@ -235,7 +247,11 @@ export async function runIngestWorker(
   }
   try {
     for (const row of verifiedGateRows) {
-      await gateRowStore.put(row.bundleKey, { repo, bodies: row.bodies });
+      await gateRowStore.put(row.bundleKey, {
+        repo,
+        bodies: row.bodies,
+        rekorLogIndices: row.rekorLogIndices,
+      });
     }
   } catch (err: unknown) {
     return crash(

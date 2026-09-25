@@ -52,6 +52,9 @@ export class StoreGateRowSource implements GateRowSource {
         gateName: body.gate_name,
         evaluatedAt: body.evaluated_at,
         visibility,
+        ...(stored.rekorLogIndices !== undefined
+          ? { rekorLogIndices: stored.rekorLogIndices }
+          : {}),
       };
     });
     return rows.length > 0 ? rows : null;

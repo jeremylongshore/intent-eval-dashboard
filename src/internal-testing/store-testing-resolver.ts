@@ -58,7 +58,14 @@ export class StoreTestingResolver implements TestingBundleResolver {
         },
         evaluatedAt: body.evaluated_at,
         bundleCreatedAt: bundle.created_at,
-        rekorLogIndices: bundle.rekor_log_indices,
+        // Signed-bundle field first; otherwise the anchor the ingest worker read
+        // off this row's verified sigstore bundle. `cosign sign-blob` evidence
+        // always takes the fallback: the log index only exists after the bundle
+        // bytes were signed, so it cannot live inside them.
+        rekorLogIndices:
+          bundle.rekor_log_indices.length > 0
+            ? bundle.rekor_log_indices
+            : (stored.rekorLogIndices ?? []),
         ...(body.failure_mode !== undefined ? { failureMode: body.failure_mode } : {}),
         ...(body.advisory_severity !== undefined
           ? { advisorySeverity: body.advisory_severity }

@@ -97,6 +97,9 @@ export {
   type StoredGateRows,
 } from './gate-row-store.js';
 
+// --- Rekor anchor extraction (post-verification read of the sigstore bundle) ---
+export { verifiedRekorLogIndices } from './rekor-anchor.js';
+
 // --- live ingest pass (verified worker → snapshots + gate-rows → RenderInput) ---
 export {
   CachingManifestFetcher,
