@@ -58,7 +58,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Run actionlint
-        uses: reviewdog/action-actionlint@v1
+        uses: reviewdog/action-actionlint@2085657ab2c7f48c58edcc767fba576f63bea76b # v1.77.0
         with:
           reporter: github-pr-check
           fail_level: error
