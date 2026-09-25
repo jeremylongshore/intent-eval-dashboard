@@ -37,4 +37,4 @@ jobs:
       - name: Run typos
         # Config is auto-discovered from .typos.toml at the repo root.
         # Pinned to a release tag (not @master) so the rule set is reproducible.
-        uses: crate-ci/typos@v1.47.2
+        uses: crate-ci/typos@v1.50.2
