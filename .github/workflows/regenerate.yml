@@ -107,7 +107,7 @@ jobs:
       # that fail to fetch render honest no-data until their first verify — the
       # correct floor, never a synthetic pass.
       - name: Restore last-known-good ingest store (nr75.17)
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: .ingest-store
           key: ingest-store-${{ github.run_id }}-${{ github.run_attempt }}
@@ -181,7 +181,7 @@ jobs:
       # (cold cache + total fetch failure → nothing to persist).
       - name: Save last-known-good ingest store (nr75.17)
         if: always() && hashFiles('.ingest-store/**') != ''
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         with:
           path: .ingest-store
           key: ingest-store-${{ github.run_id }}-${{ github.run_attempt }}
