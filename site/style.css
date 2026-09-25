@@ -1004,6 +1004,11 @@ main code, main a { overflow-wrap: anywhere; }
     .eval-report-summary { grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); }
 }
 
+@media (max-width: 720px) {
+    .eval-report-main { padding-left: 1rem; padding-right: 1rem; }
+    .eval-report-summary { grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); }
+}
+
 /* --- Print --- */
 @media print {
     .site-header, .site-footer, .site-nav { display: none; }
