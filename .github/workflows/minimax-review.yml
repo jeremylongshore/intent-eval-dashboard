@@ -1,4 +1,4 @@
-name: 'MiniMax Code Review'
+name: MiniMax Code Review
 
 # Advisory AI review in two lanes: a defect lane (correctness, invariants,
 # gate weakening) and an adversarial lane that tries to refute what the PR
@@ -31,12 +31,12 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: 'minimax-review-${{ github.event.pull_request.number }}'
+  group: minimax-review-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
   review:
-    name: 'MiniMax ${{ matrix.lane }} review'
+    name: MiniMax ${{ matrix.lane }} review
     runs-on: ubuntu-latest
     timeout-minutes: 10
     if: >-
@@ -48,11 +48,9 @@ jobs:
       matrix:
         include:
           - lane: defect
-            reviewer: 'MiniMax Review'
-            include_pr_body: 'false'
+            reviewer: MiniMax Review
           - lane: adversarial
-            reviewer: 'MiniMax Adversarial Review'
-            include_pr_body: 'true'
+            reviewer: MiniMax Adversarial Review
     steps:
       - name: Check out the base branch reviewer rules
         if: ${{ matrix.lane != 'adversarial' || vars.ENABLE_MINIMAX_ADVERSARIAL != 'false' }}
@@ -161,5 +159,5 @@ jobs:
           MINIMAX_REVIEWER_NAME: ${{ matrix.reviewer }}
           MAX_DIFF_CHARS: ${{ vars.MINIMAX_MAX_DIFF_CHARS || '100000' }}
           EXCLUDE_PATTERNS: ${{ steps.prompt.outputs.excludes }}
-          INCLUDE_PR_BODY: ${{ matrix.include_pr_body }}
+          INCLUDE_PR_BODY: ${{ matrix.lane == 'adversarial' }}
           MINIMAX_SYSTEM_PROMPT: ${{ steps.prompt.outputs.prompt }}
