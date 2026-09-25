@@ -121,7 +121,10 @@ describe('the REAL public site/ output carries no uptime-SLA claim', () => {
     );
     const offenders = scanFilesForUptimeClaims(pairs);
     expect(offenders).toEqual([]);
-  });
+    // The real site/ tree is ~1,150 generated HTML files; reading and scanning
+    // all of them runs close to vitest's 5s default under a parallel run, so
+    // the gate flaked on timeouts. It is a bounded scan, not a hang.
+  }, 30_000);
 
   it('the public landing footer carries the exact best-effort commitment', async () => {
     const landing = await readFile(join(SITE_ROOT, 'index.html'), 'utf8');
