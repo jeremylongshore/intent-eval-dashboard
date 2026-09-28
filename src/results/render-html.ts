@@ -122,7 +122,7 @@ ${ESTATE_BAR}
   </header>`;
 
 export const SITE_FOOTER = `<footer class="site-footer"><div class="site-footer__inner">
-    <div><strong>Intent Labs</strong><br>Part of <a href="https://intentsolutions.io/">Intent Solutions</a></div>
+    <div><strong>Intent Labs</strong><br>Part of <a href="https://intentsolutions.io/">Intent Solutions</a> · <a href="https://intentsolutions.io/about/#team">Our team</a></div>
     <div><a href="/results/">All results</a> · <a href="/methodology/">Technical guide</a> ·
       <a href="https://evals.intentsolutions.io/">Result definitions</a> · <a href="/skills/">Skill signals</a> ·
       <a href="/status/">Lab status</a><br>
