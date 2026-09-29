@@ -278,7 +278,7 @@ LISTING_TEMPLATE = """<!DOCTYPE html>
         <p>Found an unclear rule? Each definition links to its source on GitHub so you can raise an issue.</p>
     </main>
 <footer class="site-footer"><div class="site-footer__inner">
-    <div><strong>Intent Labs</strong><br>Part of <a href="https://intentsolutions.io/">Intent Solutions</a></div>
+    <div><strong>Intent Labs</strong><br>Part of <a href="https://intentsolutions.io/">Intent Solutions</a> · <a href="https://intentsolutions.io/about/#team">Our team</a></div>
     <div><a href="/results/">All results</a> · <a href="/methodology/">Technical guide</a> ·
       <a href="https://evals.intentsolutions.io/">Result definitions</a> · <a href="/skills/">Skill signals</a> ·
       <a href="/status/">Lab status</a><br>
