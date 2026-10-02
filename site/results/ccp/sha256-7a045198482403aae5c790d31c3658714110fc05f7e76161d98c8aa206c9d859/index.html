@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Results: qmd — Intent Eval Platform</title>
-    <meta name="description" content="Verified gate-result rows for qmd, from signed Evidence Bundles.">
+    <title>Bundle sha256:7a045198482403aae5c790d31c3658714110fc05f7e76161d98c8aa206c9d859 — Intent Eval Platform</title>
+    <meta name="description" content="Verified gate-result rows for content-addressed bundle sha256:7a045198482403aae5c790d31c3658714110fc05f7e76161d98c8aa206c9d859.">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://labs.intentsolutions.io/results/qmd/">
+    <link rel="canonical" href="https://labs.intentsolutions.io/results/ccp/sha256-7a045198482403aae5c790d31c3658714110fc05f7e76161d98c8aa206c9d859/">
     <link rel="stylesheet" href="/style.css">
 
-    <meta property="og:title" content="Results: qmd — Intent Eval Platform">
-    <meta property="og:description" content="Verified gate-result rows for qmd, from signed Evidence Bundles.">
-    <meta property="og:url" content="https://labs.intentsolutions.io/results/qmd/">
+    <meta property="og:title" content="Bundle sha256:7a045198482403aae5c790d31c3658714110fc05f7e76161d98c8aa206c9d859 — Intent Eval Platform">
+    <meta property="og:description" content="Verified gate-result rows for content-addressed bundle sha256:7a045198482403aae5c790d31c3658714110fc05f7e76161d98c8aa206c9d859.">
+    <meta property="og:url" content="https://labs.intentsolutions.io/results/ccp/sha256-7a045198482403aae5c790d31c3658714110fc05f7e76161d98c8aa206c9d859/">
     <meta property="og:type" content="website">
 
     <meta name="iep-source-repo" content="github.com/jeremylongshore/intent-eval-dashboard">
@@ -44,14 +44,18 @@
     </div>
   </header>
     <main>
-        <p><a href="/results/">← All results</a></p>
-        <h1>Results: <code>qmd</code></h1>
-        <div class="meta-block as-of">
-            <p style="margin:0;"><strong>As of:</strong> <time datetime="2026-10-02T06:27:02.342Z">2026-10-02T06:27:02.342Z</time> — the oldest ingest across all sources in this view (<code>min(ingested_at)</code>). Sources verified more recently may be fresher.</p>
+        <p><a href="/results/ccp/">← ccp results</a></p>
+        <h1>Bundle</h1>
+        <div class="meta-block">
+            <dl>
+                <dt>repo</dt><dd><code>ccp</code></dd>
+                <dt>content key</dt><dd><code>sha256:7a045198482403aae5c790d31c3658714110fc05f7e76161d98c8aa206c9d859</code></dd>
+            </dl>
+            <p style="margin-top:0.75rem;margin-bottom:0;">This deep link is addressed by the bundle's content hash, not a git SHA — it survives an upstream force-push or branch deletion.</p>
         </div>
         <p class="predicate-note">Decision counts are shown <em>per predicate URI</em> only. We never composite a pass-rate across heterogeneous predicates — that is metric laundering.</p>
         <ul class="predicate-breakdown">
-            <li><code>https://evals.intentsolutions.io/gate-result/v1</code> — pass: 3</li>
+            <li><code>https://evals.intentsolutions.io/gate-result/v1</code> — pass: 1</li>
         </ul>
         <div class="table-scroll" role="region" aria-label="Detailed test results" tabindex="0"><table class="results-table">
             <thead>
@@ -67,31 +71,13 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><a href="/results/qmd/sha256-28ca099c30ecf8d873eee853ae24696f599a638bd79227c4a27e5e3563187ac7/"><code>provenance-integrity</code></a></td>
+                    <td><a href="/results/ccp/sha256-7a045198482403aae5c790d31c3658714110fc05f7e76161d98c8aa206c9d859/"><code>skill-conform</code></a></td>
                     <td><span class="badge badge--result-pass">pass</span></td>
                     <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-10-01T01:02:55.281Z">2026-10-01T01:02:55.281Z</time></td>
-                    <td><time datetime="2026-10-01T01:02:55.281Z">2026-10-01T01:02:55.281Z</time></td>
-                    <td><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3028447766"><code>3028447766</code></a></td>
-                    <td><time datetime="2026-10-02T06:27:08.203Z">2026-10-02T06:27:08.203Z</time></td>
-                </tr>
-                <tr>
-                    <td><a href="/results/qmd/sha256-7c7939e0dbafe893da9230ed24a214574daa1e7e3c7d1edc59622f3de3a00957/"><code>govern-decision</code></a></td>
-                    <td><span class="badge badge--result-pass">pass</span></td>
-                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-10-01T01:02:55.281Z">2026-10-01T01:02:55.281Z</time></td>
-                    <td><time datetime="2026-10-01T01:02:55.281Z">2026-10-01T01:02:55.281Z</time></td>
-                    <td><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3028447840"><code>3028447840</code></a></td>
-                    <td><time datetime="2026-10-02T06:27:08.203Z">2026-10-02T06:27:08.203Z</time></td>
-                </tr>
-                <tr>
-                    <td><a href="/results/qmd/sha256-b913a67f13c803b5ece23f6dc3f1a88d56ff49763d46fd6cb8ac96d1df036086/"><code>retrieval-ratchet</code></a></td>
-                    <td><span class="badge badge--result-pass">pass</span></td>
-                    <td><code>https://evals.intentsolutions.io/gate-result/v1</code></td>
-                    <td><time datetime="2026-10-01T01:02:55.281Z">2026-10-01T01:02:55.281Z</time></td>
-                    <td><time datetime="2026-10-01T01:02:55.281Z">2026-10-01T01:02:55.281Z</time></td>
-                    <td><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3028447908"><code>3028447908</code></a></td>
-                    <td><time datetime="2026-10-02T06:27:08.203Z">2026-10-02T06:27:08.203Z</time></td>
+                    <td><time datetime="2026-10-01T23:28:29.052Z">2026-10-01T23:28:29.052Z</time></td>
+                    <td><time datetime="2026-10-01T23:28:29.052Z">2026-10-01T23:28:29.052Z</time></td>
+                    <td><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3043446641"><code>3043446641</code></a></td>
+                    <td><time datetime="2026-10-02T06:27:05.480Z">2026-10-02T06:27:05.480Z</time></td>
                 </tr>
             </tbody>
         </table></div>
