@@ -68,6 +68,57 @@ export function bundleUrl(repo: string, bundleKey: string): string {
   return `/results/${slug(repo)}/${slug(bundleKey)}/`;
 }
 
+/** Stable URL of the flat all-evals listing. */
+export const ALL_EVALS_URL = '/evals/';
+
+/**
+ * Where each source repo keeps its versioned eval definitions on GitHub. A
+ * signed `policy_ref` becomes a link only for a repo listed here; every other
+ * repo renders it as plain text, so a link never points at a guessed location.
+ */
+const SPEC_SOURCE_REPOS: Readonly<Record<string, string>> = {
+  jrig: 'jeremylongshore/tons-of-skills-marketplace',
+};
+
+/** `sha256:<policy hash>:<repo path>@<commit>`, the j-rig policy_ref shape. */
+const POLICY_REF_RE = /^sha256:[a-f0-9]{64}:([A-Za-z0-9._/-]+)@([a-f0-9]{7,40})$/;
+
+/**
+ * GitHub URL of the exact eval definition a signed row ran, or null when the
+ * repo has no known definition source or the policy_ref is not the expected
+ * shape. The commit comes from the policy_ref itself; the row's full
+ * `commit_sha` is used only when it extends that same commit.
+ */
+export function specUrl(repo: string, policyRef: string, commitSha?: string): string | null {
+  const source = SPEC_SOURCE_REPOS[repo];
+  if (source === undefined) return null;
+  const m = POLICY_REF_RE.exec(policyRef);
+  if (m === null) return null;
+  const path = m[1] ?? '';
+  const shortSha = m[2] ?? '';
+  if (path.split('/').some((seg) => seg === '' || seg === '.' || seg === '..')) return null;
+  const sha =
+    commitSha !== undefined && /^[a-f0-9]{40}$/.test(commitSha) && commitSha.startsWith(shortSha)
+      ? commitSha
+      : shortSha;
+  return `https://github.com/${source}/blob/${sha}/${path}`;
+}
+
+/** The eval-definition cell: a link when resolvable, the raw ref otherwise. */
+function specCell(row: ResultsRow): string {
+  if (row.policyRef === undefined) return '<code>—</code>';
+  const url = specUrl(row.repo, row.policyRef, row.commitSha);
+  return url === null
+    ? `<code>${esc(row.policyRef)}</code>`
+    : `<a href="${esc(url)}">eval spec</a>`;
+}
+
+/** The first signed reason, which j-rig writes as the headline. */
+function headlineReason(row: ResultsRow): string {
+  const first = row.reasons?.[0];
+  return first === undefined ? '<code>—</code>' : esc(first);
+}
+
 const PAGE_HEAD = (
   title: string,
   description: string,
@@ -123,7 +174,7 @@ ${ESTATE_BAR}
 
 export const SITE_FOOTER = `<footer class="site-footer"><div class="site-footer__inner">
     <div><strong>Intent Labs</strong><br>Part of <a href="https://intentsolutions.io/">Intent Solutions</a> · <a href="https://intentsolutions.io/about/#team">Our team</a></div>
-    <div><a href="/results/">All results</a> · <a href="/methodology/">Technical guide</a> ·
+    <div><a href="/results/">All results</a> · <a href="/evals/">All evals</a> · <a href="/methodology/">Technical guide</a> ·
       <a href="https://evals.intentsolutions.io/">Result definitions</a> · <a href="/skills/">Skill signals</a> ·
       <a href="/status/">Lab status</a><br>
       <a href="/status/" class="footer__commitment">best-effort, single-operator, see /status for liveness</a>
@@ -300,6 +351,9 @@ ${SITE_HEADER}
     <main>
         <h1>Results</h1>
         <p class="lead">
+            Want one list of every eval with links? See <a href="/evals/">all evals</a>.
+        </p>
+        <p class="lead">
             These are the detailed records behind our published tests. Start with <a href="/examples/">a plain-language example</a> if you want to understand what a result means before inspecting the data.
         </p>
         <p>
@@ -348,7 +402,9 @@ export function renderBundlePage(
   const title = `Bundle ${bundleKey} — Intent Eval Platform`;
   const description = `Verified gate-result rows for content-addressed bundle ${bundleKey}.`;
   const body =
-    rows.length === 0 ? noDataPanel(repo) : perPredicateBreakdown(rows) + '\n' + resultsTable(rows);
+    rows.length === 0
+      ? noDataPanel(repo)
+      : perPredicateBreakdown(rows) + '\n' + resultsTable(rows) + '\n' + rowDetails(rows);
   return `${PAGE_HEAD(title, description, bundleUrl(repo, bundleKey))}
 <body>
 ${SITE_HEADER}
@@ -362,6 +418,104 @@ ${SITE_HEADER}
             </dl>
             <p style="margin-top:0.75rem;margin-bottom:0;">This deep link is addressed by the bundle's content hash, not a git SHA — it survives an upstream force-push or branch deletion.</p>
         </div>
+${body}
+    </main>
+${SITE_FOOTER}`;
+}
+
+/** Per-row "why" + eval definition, shown under a bundle's results table. */
+function rowDetails(rows: readonly ResultsRow[]): string {
+  const items = rows
+    .filter((r) => (r.reasons !== undefined && r.reasons.length > 0) || r.policyRef !== undefined)
+    .map((r) => {
+      const reasons =
+        r.reasons !== undefined && r.reasons.length > 0
+          ? `\n                <ul>\n${r.reasons.map((x) => `                    <li>${esc(x)}</li>`).join('\n')}\n                </ul>`
+          : '';
+      return `            <section class="row-detail">
+                <h3><code>${esc(r.gateName)}</code> ${decisionBadge(r.decision)}</h3>
+                <p>Eval definition: ${specCell(r)}</p>${reasons}
+            </section>`;
+    });
+  if (items.length === 0) return '';
+  return `        <h2>Why</h2>
+        <p>The reasons below are copied from the signed result, in the order the evaluator wrote them.</p>
+${items.join('\n')}`;
+}
+
+/** Render the flat `/evals/` listing: every published eval, one row each. */
+export function renderAllEvalsPage(view: ResultsView): string {
+  const title = 'All evals — Intent Eval Platform';
+  const description =
+    'Every published eval result on one page, with links to the eval definition and the signed record.';
+  const byPredicate = new Map<string, ResultsRow[]>();
+  for (const repo of view.repos) {
+    for (const row of repo.rows) {
+      const group = byPredicate.get(row.predicateUri);
+      if (group === undefined) byPredicate.set(row.predicateUri, [row]);
+      else group.push(row);
+    }
+  }
+  const staleRepos = new Map(
+    view.repos.filter((r) => r.staleSince !== undefined).map((r) => [r.repo, r.staleSince ?? '']),
+  );
+  const sections = [...byPredicate.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([uri, rows]) => {
+      const sorted = [...rows].sort(
+        (a, b) => a.repo.localeCompare(b.repo) || a.gateName.localeCompare(b.gateName),
+      );
+      const trs = sorted
+        .map((row) => {
+          const staleSince = staleRepos.get(row.repo);
+          const stale =
+            staleSince === undefined
+              ? ''
+              : ` <span class="badge badge--stale">stale since ${esc(staleSince)}</span>`;
+          return `                <tr>
+                    <td><a href="${esc(bundleUrl(row.repo, row.bundleKey))}"><code>${esc(row.gateName)}</code></a></td>
+                    <td><a href="${esc(repoUrl(row.repo))}"><code>${esc(row.repo)}</code></a>${stale}</td>
+                    <td>${decisionBadge(row.decision)}</td>
+                    <td>${headlineReason(row)}</td>
+                    <td><time datetime="${esc(row.evaluatedAt)}">${esc(row.evaluatedAt)}</time></td>
+                    <td>${specCell(row)}</td>
+                </tr>`;
+        })
+        .join('\n');
+      return `        <section class="all-evals">
+            <h2>Results against <code>${esc(uri)}</code></h2>
+            <div class="table-scroll" role="region" aria-label="All evals for one result type" tabindex="0"><table class="results-table">
+                <thead>
+                    <tr><th>Eval</th><th>Project</th><th>Decision</th><th>Why</th><th>Evaluated at</th><th>Definition</th></tr>
+                </thead>
+                <tbody>
+${trs}
+                </tbody>
+            </table></div>
+        </section>`;
+    });
+  const empty = view.repos.filter((r) => r.noData).map((r) => r.repo);
+  const emptyNote =
+    empty.length === 0
+      ? ''
+      : `        <div class="no-data-panel">
+            <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results yet from: ${empty.map((r) => `<a href="${esc(repoUrl(r))}"><code>${esc(r)}</code></a>`).join(', ')}</p>
+            <p><strong>No data is not a pass.</strong></p>
+        </div>`;
+  const body =
+    sections.length === 0
+      ? `        <p>No verified eval results have been published yet.</p>`
+      : sections.join('\n');
+  return `${PAGE_HEAD(title, description, ALL_EVALS_URL)}
+<body>
+${SITE_HEADER}
+    <main>
+        <p><a href="/results/">← Results by project</a></p>
+        <h1>All evals</h1>
+        <p class="lead">Every published eval, one row each. Click an eval for its signed record, or the definition link for the exact spec that ran.</p>
+        <p>Each row is a separate verdict. We do not add them up into one score.</p>
+${asOfBanner(view)}
+${emptyNote}
 ${body}
     </main>
 ${SITE_FOOTER}`;

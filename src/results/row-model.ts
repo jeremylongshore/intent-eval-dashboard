@@ -53,6 +53,12 @@ export interface ResolvedBundleRow {
   readonly rekorLogIndices: readonly number[];
   /** Per-row visibility tier + consent/embargo (drives public gating). */
   readonly visibility: RowVisibility;
+  /** Signed `gate_reasons`: why the gate decided what it did. */
+  readonly reasons?: readonly string[];
+  /** Signed `policy_ref`: the versioned eval definition that ran. */
+  readonly policyRef?: string;
+  /** Signed `commit_sha`: the source commit that was evaluated. */
+  readonly commitSha?: string;
 }
 
 /**
@@ -84,6 +90,9 @@ export interface ResultsRow {
   readonly rekorLogIndices: readonly number[];
   readonly ingestedAt: string;
   readonly visibility: RowVisibility;
+  readonly reasons?: readonly string[];
+  readonly policyRef?: string;
+  readonly commitSha?: string;
 }
 
 /** One repo's renderable results state (rows + freshness). */
@@ -178,6 +187,9 @@ export async function buildRepoResults(
           rekorLogIndices: r.rekorLogIndices,
           ingestedAt: ingestedAt ?? '',
           visibility: normaliseVisibility(r.visibility),
+          ...(r.reasons !== undefined ? { reasons: r.reasons } : {}),
+          ...(r.policyRef !== undefined ? { policyRef: r.policyRef } : {}),
+          ...(r.commitSha !== undefined ? { commitSha: r.commitSha } : {}),
         });
       }
     }

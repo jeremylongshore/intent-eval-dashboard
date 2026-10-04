@@ -37,7 +37,9 @@ import {
 } from './row-model.js';
 import { filterPubliclyVisible } from './visibility.js';
 import {
+  ALL_EVALS_URL,
   bundleUrl,
+  renderAllEvalsPage,
   renderBundlePage,
   renderRepoPage,
   renderResultsIndex,
@@ -90,6 +92,7 @@ export interface GeneratedFile {
  *
  * Emits:
  *   - `results/index.html`               — the index with freshness strip + as-of
+ *   - `evals/index.html`                 — flat listing of every published eval
  *   - `results/<repo>/index.html`        — per-repo page (one per repo in view)
  *   - `results/<repo>/<bundle>/index.html` — per-bundle deep-link page
  *
@@ -101,6 +104,7 @@ export function generateResultsFiles(view: ResultsView): GeneratedFile[] {
 
   // Index.
   files.push({ path: 'results/index.html', html: renderResultsIndex(view) });
+  files.push({ path: pathFromUrl(ALL_EVALS_URL), html: renderAllEvalsPage(view) });
 
   // Per-repo + per-bundle.
   for (const repo of view.repos) {

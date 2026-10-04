@@ -38,6 +38,9 @@ describe('StoreGateRowSource', () => {
       evaluatedAt: '2026-05-30T12:00:00.000Z',
       predicateUri: 'https://evals.intentsolutions.io/gate-result/v1',
       visibility: { tier: 'tier-1' },
+      reasons: ['all layers passed'],
+      policyRef: `sha256:${'c'.repeat(64)}:policy`,
+      commitSha: 'd'.repeat(40),
     });
   });
 
