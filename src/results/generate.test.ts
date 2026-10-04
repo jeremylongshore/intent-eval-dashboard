@@ -104,6 +104,7 @@ describe('generateResultsFiles', () => {
     const files = generateResultsFiles(view);
     const paths = files.map((f) => f.path);
     expect(paths).toContain('results/index.html');
+    expect(paths).toContain('evals/index.html');
     expect(paths).toContain(pathFromUrl(repoUrl('iec')));
     expect(paths).toContain(pathFromUrl(bundleUrl('iec', k)));
   });

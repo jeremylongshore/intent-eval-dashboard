@@ -61,6 +61,12 @@ export interface GateRowProjection {
    * signed bytes). Absent → no anchor is rendered.
    */
   readonly rekorLogIndices?: readonly number[];
+  /** `gate_reasons` from the signed gate-result/v1 body, in emitted order. */
+  readonly reasons?: readonly string[];
+  /** `policy_ref` from the signed body: which versioned eval definition ran. */
+  readonly policyRef?: string;
+  /** `commit_sha` from the signed body: the source commit the gate evaluated. */
+  readonly commitSha?: string;
 }
 
 /**
@@ -114,6 +120,9 @@ export class ContentStoreBundleResolver implements BundleResolver {
             ? bundle.rekor_log_indices
             : (p.rekorLogIndices ?? []),
         visibility: p.visibility,
+        ...(p.reasons !== undefined ? { reasons: p.reasons } : {}),
+        ...(p.policyRef !== undefined ? { policyRef: p.policyRef } : {}),
+        ...(p.commitSha !== undefined ? { commitSha: p.commitSha } : {}),
       });
     }
     return rows.length > 0 ? rows : null;

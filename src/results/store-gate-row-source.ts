@@ -52,6 +52,9 @@ export class StoreGateRowSource implements GateRowSource {
         gateName: body.gate_name,
         evaluatedAt: body.evaluated_at,
         visibility,
+        reasons: body.gate_reasons,
+        policyRef: body.policy_ref,
+        commitSha: body.commit_sha,
         ...(stored.rekorLogIndices !== undefined
           ? { rekorLogIndices: stored.rekorLogIndices }
           : {}),

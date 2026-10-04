@@ -7,11 +7,13 @@ import { describe, expect, it } from 'vitest';
 import {
   bundleUrl,
   esc,
+  renderAllEvalsPage,
   renderBundlePage,
   renderRepoPage,
   renderResultsIndex,
   repoUrl,
   slug,
+  specUrl,
 } from './render-html.js';
 import { scanForAggregatePass } from './c3-scan.js';
 import { type RepoResults, type ResultsRow, type ResultsView } from './row-model.js';
@@ -191,5 +193,109 @@ describe('renderBundlePage', () => {
   it('renders no-data for an empty bundle', () => {
     const html = renderBundlePage('iec', 'sha256:' + 'a'.repeat(64), []);
     expect(html).toContain('no-data-panel');
+  });
+});
+
+const POLICY_HASH = 'a'.repeat(64);
+const SPEC_PATH = 'plugins/saas-packs/demo-pack/skills/demo-skill/eval-spec.yaml';
+const FULL_SHA = 'a9dd5c02a3793412ed35525efd460b399554be13';
+
+describe('specUrl', () => {
+  it('links a jrig policy_ref to the exact spec at the full commit', () => {
+    expect(specUrl('jrig', `sha256:${POLICY_HASH}:${SPEC_PATH}@a9dd5c02a379`, FULL_SHA)).toBe(
+      `https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/${FULL_SHA}/${SPEC_PATH}`,
+    );
+  });
+  it('keeps the policy_ref commit when commit_sha is a different commit', () => {
+    const other = 'b'.repeat(40);
+    expect(specUrl('jrig', `sha256:${POLICY_HASH}:${SPEC_PATH}@a9dd5c02a379`, other)).toBe(
+      `https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a379/${SPEC_PATH}`,
+    );
+  });
+  it('refuses repos with no known spec source', () => {
+    expect(specUrl('iec', `sha256:${POLICY_HASH}:${SPEC_PATH}@a9dd5c02a379`)).toBeNull();
+  });
+  it('refuses malformed refs and traversal', () => {
+    expect(specUrl('jrig', 'not-a-ref')).toBeNull();
+    expect(specUrl('jrig', `sha256:${POLICY_HASH}:../etc/passwd@a9dd5c02a379`)).toBeNull();
+    expect(specUrl('jrig', `sha256:${POLICY_HASH}:a//b.yaml@a9dd5c02a379`)).toBeNull();
+    expect(specUrl('jrig', `sha256:${POLICY_HASH}:a b.yaml@a9dd5c02a379`)).toBeNull();
+  });
+});
+
+describe('renderAllEvalsPage', () => {
+  const jrigRow = row({
+    repo: 'jrig',
+    gateName: 'demo-skill',
+    decision: 'fail',
+    reasons: ['7/10 criteria passed on model-x', 'thresholds did not pass'],
+    policyRef: `sha256:${POLICY_HASH}:${SPEC_PATH}@a9dd5c02a379`,
+    commitSha: FULL_SHA,
+  });
+  const view: ResultsView = {
+    asOf: '2026-05-30T12:00:05.000Z',
+    repos: [
+      repo({ repo: 'jrig', rows: [jrigRow] }),
+      repo({ repo: 'iec', rows: [row({ gateName: 'escape-scan' })] }),
+      repo({ repo: 'qmd', rows: [], noData: true }),
+    ],
+  };
+  const html = renderAllEvalsPage(view);
+
+  it('lists every eval with its signed record, project, reason and spec link', () => {
+    expect(html).toContain(`href="${bundleUrl('jrig', jrigRow.bundleKey)}"`);
+    expect(html).toContain('<code>demo-skill</code>');
+    expect(html).toContain('<code>escape-scan</code>');
+    expect(html).toContain('7/10 criteria passed on model-x');
+    expect(html).not.toContain('thresholds did not pass'); // headline only
+    expect(html).toContain(`blob/${FULL_SHA}/${SPEC_PATH}`);
+    expect(html).toContain(`href="${repoUrl('iec')}"`);
+  });
+  it('names no-data sources loudly instead of dropping them', () => {
+    expect(html).toContain('badge--no-data');
+    expect(html).toContain(`href="${repoUrl('qmd')}"`);
+  });
+  it('groups by predicate URI and stays C3-clean with two predicates', () => {
+    const mixed: ResultsView = {
+      ...view,
+      repos: [repo({ rows: [row(), row({ predicateUri: VALIDATION_URI, gateName: 'v' })] })],
+    };
+    const out = renderAllEvalsPage(mixed);
+    expect(out.match(/<section class="all-evals">/g)).toHaveLength(2);
+    expect(scanForAggregatePass(out)).toEqual([]);
+    expect(scanForAggregatePass(html)).toEqual([]);
+  });
+  it('escapes reasons from the signed body', () => {
+    const out = renderAllEvalsPage({
+      repos: [repo({ rows: [row({ reasons: ['<script>x</script>'] })] })],
+    });
+    expect(out).not.toContain('<script>x');
+    expect(out).toContain('&lt;script&gt;x');
+  });
+  it('renders an explicit empty state when nothing is published', () => {
+    expect(renderAllEvalsPage({ repos: [] })).toContain(
+      'No verified eval results have been published yet.',
+    );
+  });
+});
+
+describe('renderBundlePage reasons', () => {
+  it('shows every signed reason and the spec link under the table', () => {
+    const r = row({
+      repo: 'jrig',
+      reasons: ['first reason', 'second reason'],
+      policyRef: `sha256:${POLICY_HASH}:${SPEC_PATH}@a9dd5c02a379`,
+    });
+    const html = renderBundlePage('jrig', r.bundleKey, [r]);
+    expect(html).toContain('<li>first reason</li>');
+    expect(html).toContain('<li>second reason</li>');
+    expect(html).toContain('>eval spec</a>');
+  });
+  it('omits the why section for rows without reasons or policy', () => {
+    expect(renderBundlePage('iec', row().bundleKey, [row()])).not.toContain('<h2>Why</h2>');
+  });
+  it('shows an unlinkable policy_ref as plain text', () => {
+    const r = row({ policyRef: 'policy/v1' });
+    expect(renderBundlePage('iec', r.bundleKey, [r])).toContain('<code>policy/v1</code>');
   });
 });
