@@ -12,6 +12,9 @@ import {
   renderRepoPage,
   renderResultsIndex,
   repoUrl,
+  projectName,
+  readableDate,
+  readableName,
   slug,
   specUrl,
 } from './render-html.js';
@@ -226,43 +229,68 @@ describe('specUrl', () => {
 describe('renderAllEvalsPage', () => {
   const jrigRow = row({
     repo: 'jrig',
-    gateName: 'demo-skill',
+    gateName: 'coreweave-gpu-cost-leak-hunter',
     decision: 'fail',
-    reasons: ['7/10 criteria passed on model-x', 'thresholds did not pass'],
+    evaluatedAt: '2026-10-04T05:43:42.321Z',
+    reasons: [
+      '7/10 criteria passed on model-x',
+      'thresholds did not pass',
+      'rollout decision is block',
+    ],
     policyRef: `sha256:${POLICY_HASH}:${SPEC_PATH}@a9dd5c02a379`,
     commitSha: FULL_SHA,
   });
   const view: ResultsView = {
-    asOf: '2026-05-30T12:00:05.000Z',
+    asOf: '2026-10-04T08:07:25.026Z',
     repos: [
       repo({ repo: 'jrig', rows: [jrigRow] }),
-      repo({ repo: 'iec', rows: [row({ gateName: 'escape-scan' })] }),
+      repo({ repo: 'ccp', rows: [row({ repo: 'ccp', gateName: 'gitleaks', reasons: ['ok'] })] }),
       repo({ repo: 'qmd', rows: [], noData: true }),
     ],
   };
   const html = renderAllEvalsPage(view);
 
-  it('lists every eval with its signed record, project, reason and spec link', () => {
-    expect(html).toContain(`href="${bundleUrl('jrig', jrigRow.bundleKey)}"`);
-    expect(html).toContain('<code>demo-skill</code>');
-    expect(html).toContain('<code>escape-scan</code>');
-    expect(html).toContain('7/10 criteria passed on model-x');
-    expect(html).not.toContain('thresholds did not pass'); // headline only
-    expect(html).toContain(`blob/${FULL_SHA}/${SPEC_PATH}`);
-    expect(html).toContain(`href="${repoUrl('iec')}"`);
+  it('names tests and projects in plain English', () => {
+    expect(html).toContain('CoreWeave GPU cost leak hunter');
+    expect(html).toContain('Skills marketplace');
+    expect(html).toContain('<h2>AI skill tests</h2>');
+    expect(html).toContain('<h2>Platform checks</h2>');
+    expect(html).toContain('>Failed</span>');
+    expect(html).toContain('>Oct 4, 2026</time>');
+  });
+  it('links each row to what was tested and to its signed record', () => {
+    expect(html).toContain(`blob/${FULL_SHA}/${SPEC_PATH}">See the test</a>`);
+    expect(html).toContain(`href="${bundleUrl('jrig', jrigRow.bundleKey)}">Signed record</a>`);
+  });
+  it('shows every signed reason except the redundant rollout line, and no hashes', () => {
+    expect(html).toContain('<li>7/10 criteria passed on model-x</li>');
+    expect(html).toContain('<li>thresholds did not pass</li>');
+    expect(html).not.toContain('rollout decision is');
+    const visible = html.replace(/<[^>]+>/g, ' ');
+    expect(visible).not.toContain(POLICY_HASH);
+    expect(visible).not.toContain(jrigRow.bundleKey);
+  });
+  it('explains the jargon in the reasons', () => {
+    for (const word of ['Criteria', 'blocker', 'Regression comparison', 'Thresholds']) {
+      expect(html).toContain(word);
+    }
+  });
+  it('explains every result label', () => {
+    for (const label of ['Passed', 'Failed', 'Needs attention', 'Couldn&#39;t finish']) {
+      expect(html).toContain(label);
+    }
   });
   it('names no-data sources loudly instead of dropping them', () => {
     expect(html).toContain('badge--no-data');
-    expect(html).toContain(`href="${repoUrl('qmd')}"`);
+    expect(html).toContain('Team knowledge base');
+    expect(html).toContain('No data is not a pass.');
   });
-  it('groups by predicate URI and stays C3-clean with two predicates', () => {
+  it('stays C3-clean with rows from two predicates and never counts', () => {
     const mixed: ResultsView = {
       ...view,
       repos: [repo({ rows: [row(), row({ predicateUri: VALIDATION_URI, gateName: 'v' })] })],
     };
-    const out = renderAllEvalsPage(mixed);
-    expect(out.match(/<section class="all-evals">/g)).toHaveLength(2);
-    expect(scanForAggregatePass(out)).toEqual([]);
+    expect(scanForAggregatePass(renderAllEvalsPage(mixed))).toEqual([]);
     expect(scanForAggregatePass(html)).toEqual([]);
   });
   it('escapes reasons from the signed body', () => {
@@ -273,9 +301,34 @@ describe('renderAllEvalsPage', () => {
     expect(out).toContain('&lt;script&gt;x');
   });
   it('renders an explicit empty state when nothing is published', () => {
-    expect(renderAllEvalsPage({ repos: [] })).toContain(
-      'No verified eval results have been published yet.',
-    );
+    const out = renderAllEvalsPage({ repos: [] });
+    expect(out).toContain('No verified test results have been published yet.');
+    expect(out).toContain('no verified results yet');
+  });
+  it('marks a stale project next to its rows', () => {
+    const out = renderAllEvalsPage({
+      repos: [
+        repo({ repo: 'ccp', rows: [row({ repo: 'ccp' })], staleSince: '2026-10-01T00:00:00Z' }),
+      ],
+    });
+    expect(out).toContain('not updated since Oct 1, 2026');
+  });
+});
+
+describe('plain-English helpers', () => {
+  it('readableName fixes acronyms and product names', () => {
+    expect(readableName('databricks-uc-migration-pilot')).toBe('Databricks UC migration pilot');
+    expect(readableName('validate-skillmd')).toBe('Validate SKILL.md');
+    expect(readableName('ci-required')).toBe('CI required');
+    expect(readableName('')).toBe('');
+  });
+  it('projectName falls back to the raw key for unknown projects', () => {
+    expect(projectName('iec')).toBe('Contracts kernel');
+    expect(projectName('rogue')).toBe('rogue');
+  });
+  it('readableDate formats in UTC and passes through garbage', () => {
+    expect(readableDate('2026-10-04T23:59:00Z')).toBe('Oct 4, 2026');
+    expect(readableDate('not-a-date')).toBe('not-a-date');
   });
 });
 
