@@ -231,7 +231,7 @@ The **minimal alerting layer.** Deliberately tiny: the only thing worth waking a
 **Four hard bindings (CFO + CISO refusals, DR-035 § 8), enforced in code + test:**
 
 1. **7-day-silence is the ONLY paging trigger** (CISO). `evaluate.test.ts` proves the boundary (exactly 7d → no page; 7d+1ms → page; 6d → no page) AND the only-trigger property (a source erroring its head off with a fresh ingest does NOT page). No latency/error-rate/threshold pagers exist.
-2. **ntfy only, NO PagerDuty** (CFO). The only push protocol is ntfy (`prod-alerts`), behind the `NtfyTransport` seam. No PagerDuty/Opsgenie/Slack/SMS client anywhere.
+2. **One self-hosted push channel, NO PagerDuty** (CFO). The only push channel is the estate alert channel: ntfy (`prod-alerts`, behind the `NtfyTransport` seam) until ntfy was retired, and Buzz since the owner's 2026-10-04 decision (the `regenerate.yml` failure step posts to the Buzz `ci-failure-alerts` webhook). No PagerDuty/Opsgenie/Slack/SMS client anywhere. The CFO intent (no paid pager, one channel) is unchanged.
 3. **No misleading uptime claims** (CFO). The `lint:uptime` grep-guard fails on any uptime-SLA claim in `site/`. The public commitment is exactly **"best-effort, single-operator, see /status for liveness"** — baked into the shared `SITE_FOOTER` (`render-html.ts`) + the `/status` footer (`render-strip.ts`) + the hand-maintained `site/index.html` footer.
 4. **`/status` stays public, no-auth.** The ntfy body links to `https://labs.intentsolutions.io/status/`; the page itself remains anonymous (DR-035 C4).
 

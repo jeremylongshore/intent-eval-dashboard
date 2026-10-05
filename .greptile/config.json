@@ -75,7 +75,7 @@
     },
     {
       "id": "no-misleading-uptime-or-paging-slo",
-      "rule": "No production-system SLO with paging beyond the 7-day-silence threshold (CFO refusal, DR-035 § 8) and no misleading uptime claims. The ONLY paging trigger is a source silent > 7 days; the only push protocol is ntfy (no PagerDuty/Opsgenie/Slack/SMS). No uptime/availability SLA or 'N nines' claim may appear in public output (scripts/check-uptime-claims.ts enforces this). The public commitment is exactly 'best-effort, single-operator, see /status for liveness'. Do not add latency/error-rate pagers or weaken src/alerting/.",
+      "rule": "No production-system SLO with paging beyond the 7-day-silence threshold (CFO refusal, DR-035 § 8) and no misleading uptime claims. The ONLY paging trigger is a source silent > 7 days; the only push channel is the estate's single self-hosted alert channel (ntfy until its retirement; Buzz since the owner's 2026-10-04 decision) (no PagerDuty/Opsgenie/Slack/SMS). No uptime/availability SLA or 'N nines' claim may appear in public output (scripts/check-uptime-claims.ts enforces this). The public commitment is exactly 'best-effort, single-operator, see /status for liveness'. Do not add latency/error-rate pagers or weaken src/alerting/.",
       "scope": ["src/alerting/**", "site/**", "scripts/**"],
       "severity": "medium"
     }

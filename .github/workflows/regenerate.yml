@@ -34,9 +34,10 @@ name: Regenerate site (eval-sets + live ingest-render)
 # 2 of 4 verify) keep the unfetched rows live-but-stale instead of regressing
 # them to no-data. Proof: src/ingest/partial-fetch-lkg.test.ts.
 #
-# On failure: posts to ntfy prod-alerts topic (matches ops-lite pattern
-# per DR-035 § 5 D3). The 7-day-silence pager threshold doesn't apply
-# here — this is a content refresh, not a security signal.
+# On failure: posts to the Buzz sys-automation channel through the
+# ci-failure-alerts webhook (replaced the retired tailnet ntfy, bead
+# u8kx.47). The 7-day-silence pager threshold doesn't apply here: this is
+# a content refresh, not a security signal.
 #
 # Per puxu.13 (eval-set refresh) + nr75.10 (live ingest-render).
 
@@ -233,10 +234,24 @@ jobs:
 
       - name: Notify on failure
         if: failure()
+        env:
+          BUZZ_CI_WEBHOOK_URL: ${{ secrets.BUZZ_CI_WEBHOOK_URL }}
+          BUZZ_CI_WEBHOOK_SECRET: ${{ secrets.BUZZ_CI_WEBHOOK_SECRET }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          # ntfy push notification matches ops-lite pattern per DR-035 D3.
-          # NTFY_URL is a public tailnet-only ntfy on the VPS; topic prod-alerts.
-          # If ntfy is unreachable from GH Actions runner (it's tailnet-only),
-          # this just logs the attempt — primary alerting is GH Actions
-          # email failure notifications which already fire by default.
-          echo "::warning::regenerate.yml failed at $(date -u +%FT%TZ) — GitHub Actions email alert fires by default; ntfy is tailnet-only so will skip from runner"
+          # Posts to the Buzz sys-automation channel. Non-fatal: the job has
+          # already failed, and GitHub's default failure email still fires.
+          # The JSON key must be `alert`; Buzz reserves `text` as a built-in
+          # trigger field and it arrives empty.
+          echo "::warning::regenerate.yml failed at $(date -u +%FT%TZ)"
+          if [[ -z "${BUZZ_CI_WEBHOOK_URL:-}" || -z "${BUZZ_CI_WEBHOOK_SECRET:-}" ]]; then
+            echo "BUZZ_CI_WEBHOOK_URL or BUZZ_CI_WEBHOOK_SECRET not set; skipping Buzz alert."
+            exit 0
+          fi
+          msg="🚨 [intent-eval-dashboard] Site regenerate FAILED (labs.intentsolutions.io may be stale). Run: ${RUN_URL}"
+          jq -n --arg a "$msg" '{alert:$a}' > "$RUNNER_TEMP/buzz-alert.json"
+          code=$(curl -sS -m 15 -o /dev/null -w '%{http_code}' -X POST "$BUZZ_CI_WEBHOOK_URL" \
+            -H "x-webhook-secret: ${BUZZ_CI_WEBHOOK_SECRET}" \
+            -H 'Content-Type: application/json' \
+            --data @"$RUNNER_TEMP/buzz-alert.json") || code=000
+          if [[ "$code" == "202" ]]; then echo "Buzz alert accepted (HTTP 202)"; else echo "Buzz alert not accepted (HTTP $code; non-fatal)"; fi
