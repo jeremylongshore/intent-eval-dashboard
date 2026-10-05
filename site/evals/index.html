@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>All evals — Intent Eval Platform</title>
-    <meta name="description" content="Every published eval result on one page, with links to the eval definition and the signed record.">
+    <title>Every published test | Intent Labs</title>
+    <meta name="description" content="Every automated test result Intent Labs publishes, in plain English, with links to what was tested and the signed record.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://labs.intentsolutions.io/evals/">
     <link rel="stylesheet" href="/style.css">
 
-    <meta property="og:title" content="All evals — Intent Eval Platform">
-    <meta property="og:description" content="Every published eval result on one page, with links to the eval definition and the signed record.">
+    <meta property="og:title" content="Every published test | Intent Labs">
+    <meta property="og:description" content="Every automated test result Intent Labs publishes, in plain English, with links to what was tested and the signed record.">
     <meta property="og:url" content="https://labs.intentsolutions.io/evals/">
     <meta property="og:type" content="website">
 
@@ -44,256 +44,270 @@
     </div>
   </header>
     <main>
-        <p><a href="/results/">← Results by project</a></p>
-        <h1>All evals</h1>
-        <p class="lead">Every published eval, one row each. Click an eval for its signed record, or the definition link for the exact spec that ran.</p>
-        <p>Each row is a separate verdict. We do not add them up into one score.</p>
-        <div class="meta-block as-of">
-            <p style="margin:0;"><strong>As of:</strong> <time datetime="2026-10-04T21:31:37.026Z">2026-10-04T21:31:37.026Z</time> — the oldest ingest across all sources in this view (<code>min(ingested_at)</code>). Sources verified more recently may be fresher.</p>
+        <h1>Every published test</h1>
+        <p class="lead">This page lists every automated test result we publish. Each row is one test that ran on its own. Results are never added up into a single score.</p>
+        <div class="meta-block">
+            <p style="margin-top:0;"><strong>How to read a result</strong></p>
+            <ul>
+                <li><span class="badge badge--result-pass">Passed</span> met every required rule.</li>
+                <li><span class="badge badge--result-fail">Failed</span> missed at least one required rule.</li>
+                <li><span class="badge badge--result-advisory">Needs attention</span> finished, but something should be reviewed by a person.</li>
+                <li><span class="badge badge--result-error">Couldn&#39;t finish</span> the test itself broke, so there is no verdict.</li>
+            </ul>
+            <p><strong>Words you will see</strong></p>
+            <ul>
+                <li><strong>Criteria</strong> are the written rules each finished task is graded against.</li>
+                <li>A <strong>blocker</strong> is a rule that must pass. Missing one means Failed. Missing a non-blocker means Needs attention.</li>
+                <li><strong>Could not be judged</strong> means the grader could not decide whether a rule was met. It never counts as a pass.</li>
+                <li><strong>Regression comparison</strong> checks the skill against its previous version. Until that comparison runs, even a perfect score stays at Needs attention.</li>
+                <li><strong>Thresholds</strong> are the minimum scores the skill must reach overall.</li>
+            </ul>
+            <p style="margin-bottom:0;"><strong>See the test</strong> opens exactly what was checked. <strong>Signed record</strong> opens the tamper-evident proof of the result.</p>
         </div>
+        <p><strong>Last updated:</strong> <time datetime="2026-10-05T01:21:48.776Z">Oct 5, 2026</time>. Some projects may be newer; each row shows its own test date.</p>
 
         <section class="all-evals">
-            <h2>Results against <code>https://evals.intentsolutions.io/gate-result/v1</code></h2>
-            <div class="table-scroll" role="region" aria-label="All evals for one result type" tabindex="0"><table class="results-table">
+            <h2>AI skill tests</h2>
+            <p>Every night we give each AI skill a set of real tasks and grade the finished work against its written rules. A skill passes only if it meets every required rule.</p>
+            <div class="table-scroll" role="region" aria-label="AI skill tests" tabindex="0"><table class="results-table">
                 <thead>
-                    <tr><th>Eval</th><th>Project</th><th>Decision</th><th>Why</th><th>Evaluated at</th><th>Definition</th></tr>
+                    <tr><th>Skill</th><th>Result</th><th>What happened</th><th>Tested on</th><th>Links</th></tr>
                 </thead>
                 <tbody>
                 <tr>
-                    <td><a href="/results/ccp/sha256-dc6753e180b500e56b39f4e7517a6e448b46add08596dce5835b232be2dcc5da/"><code>catalog-invariants</code></a></td>
-                    <td><a href="/results/ccp/"><code>ccp</code></a></td>
-                    <td><span class="badge badge--result-pass">pass</span></td>
-                    <td>Catalog invariant check passed (434 published plugins; 3 quarantined records).</td>
-                    <td><time datetime="2026-10-04T10:40:34.610Z">2026-10-04T10:40:34.610Z</time></td>
-                    <td><code>sha256:b8693617a42f90ea5fe8bd678aaabe43b53b56018eca85c049acf70447512f24:scripts/validate-catalog-invariants.py+scripts/validate-unicode-hygiene.py+scripts/evaluate-certification.mjs+.github/workflows/validate-plugins.yml+.github/workflows/secret-scan.yml+.github/workflows/skill-conform.yml</code></td>
+                    <td><strong>Audit tests</strong></td>
+                    <td><span class="badge badge--result-advisory">Needs attention</span></td>
+                    <td><ul class="reasons"><li>3/5 criteria passed on MiniMax-M3 (provider: minimax)</li><li>2 non-blocker criterion evaluation(s) failed</li><li>thresholds did not pass</li><li>regression comparison was not run</li></ul></td>
+                    <td><time datetime="2026-10-04T05:43:42.321Z">Oct 4, 2026</time></td>
+                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/productivity/intent-labs-pack/skills/audit-tests/eval-spec.yaml">See the test</a> · <a href="/results/jrig/sha256-04c486868d739fb08186664a1f6cf6b91a2a79b44b50062bd831bdfbc905201f/">Signed record</a></td>
                 </tr>
                 <tr>
-                    <td><a href="/results/ccp/sha256-332b97886b1e6b709b0863b0f52288bdf3a3ea89fb0626b78501e2fa10a45181/"><code>ci-required</code></a></td>
-                    <td><a href="/results/ccp/"><code>ccp</code></a></td>
-                    <td><span class="badge badge--result-pass">pass</span></td>
-                    <td>ci-required completed successfully</td>
-                    <td><time datetime="2026-10-04T10:40:34.610Z">2026-10-04T10:40:34.610Z</time></td>
-                    <td><code>sha256:b8693617a42f90ea5fe8bd678aaabe43b53b56018eca85c049acf70447512f24:scripts/validate-catalog-invariants.py+scripts/validate-unicode-hygiene.py+scripts/evaluate-certification.mjs+.github/workflows/validate-plugins.yml+.github/workflows/secret-scan.yml+.github/workflows/skill-conform.yml</code></td>
+                    <td><strong>CoreWeave fabric diagnostics</strong></td>
+                    <td><span class="badge badge--result-fail">Failed</span></td>
+                    <td><ul class="reasons"><li>9/10 criteria passed on MiniMax-M3 (provider: minimax)</li><li>1 blocker criterion evaluation(s) failed</li><li>thresholds did not pass</li><li>regression comparison was not run</li></ul></td>
+                    <td><time datetime="2026-10-04T05:43:42.321Z">Oct 4, 2026</time></td>
+                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/saas-packs/coreweave-pack/skills/coreweave-fabric-diagnostics/eval-spec.yaml">See the test</a> · <a href="/results/jrig/sha256-7a7da7981805fd7af9815b89b741b9da358dc089bc8a7e7c7a2ed4072a81c945/">Signed record</a></td>
                 </tr>
                 <tr>
-                    <td><a href="/results/ccp/sha256-91509b1b98b2c5bc98e582939538da145bcf2611ff043be65fccf692611eb35e/"><code>gitleaks</code></a></td>
-                    <td><a href="/results/ccp/"><code>ccp</code></a></td>
-                    <td><span class="badge badge--result-pass">pass</span></td>
-                    <td>gitleaks completed successfully</td>
-                    <td><time datetime="2026-10-04T10:40:34.610Z">2026-10-04T10:40:34.610Z</time></td>
-                    <td><code>sha256:b8693617a42f90ea5fe8bd678aaabe43b53b56018eca85c049acf70447512f24:scripts/validate-catalog-invariants.py+scripts/validate-unicode-hygiene.py+scripts/evaluate-certification.mjs+.github/workflows/validate-plugins.yml+.github/workflows/secret-scan.yml+.github/workflows/skill-conform.yml</code></td>
+                    <td><strong>CoreWeave GPU cost leak hunter</strong></td>
+                    <td><span class="badge badge--result-fail">Failed</span></td>
+                    <td><ul class="reasons"><li>7/10 criteria passed on MiniMax-M3 (provider: minimax)</li><li>2 blocker criterion evaluation(s) failed</li><li>thresholds did not pass</li><li>regression comparison was not run</li></ul></td>
+                    <td><time datetime="2026-10-04T05:43:42.321Z">Oct 4, 2026</time></td>
+                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/saas-packs/coreweave-pack/skills/coreweave-gpu-cost-leak-hunter/eval-spec.yaml">See the test</a> · <a href="/results/jrig/sha256-76ab1d2e899b9564704d3a5e00dc7bc14497071dc1f22325773c10a2c472d95c/">Signed record</a></td>
                 </tr>
                 <tr>
-                    <td><a href="/results/ccp/sha256-9392ce8de163bc3a1a7c0d108ee900e9220e7a40f86dfc927ae9a0d383a69c15/"><code>skill-conform</code></a></td>
-                    <td><a href="/results/ccp/"><code>ccp</code></a></td>
-                    <td><span class="badge badge--result-pass">pass</span></td>
-                    <td>skill-conform completed successfully</td>
-                    <td><time datetime="2026-10-04T10:40:34.610Z">2026-10-04T10:40:34.610Z</time></td>
-                    <td><code>sha256:b8693617a42f90ea5fe8bd678aaabe43b53b56018eca85c049acf70447512f24:scripts/validate-catalog-invariants.py+scripts/validate-unicode-hygiene.py+scripts/evaluate-certification.mjs+.github/workflows/validate-plugins.yml+.github/workflows/secret-scan.yml+.github/workflows/skill-conform.yml</code></td>
+                    <td><strong>CoreWeave GPU node forensics</strong></td>
+                    <td><span class="badge badge--result-advisory">Needs attention</span></td>
+                    <td><ul class="reasons"><li>15/17 criteria passed on MiniMax-M3 (provider: minimax)</li><li>1 criteria could not be judged (unsure)</li><li>1 non-blocker criterion evaluation(s) failed</li><li>thresholds did not pass</li><li>regression comparison was not run</li></ul></td>
+                    <td><time datetime="2026-10-04T05:43:42.321Z">Oct 4, 2026</time></td>
+                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/saas-packs/coreweave-pack/skills/coreweave-gpu-node-forensics/eval-spec.yaml">See the test</a> · <a href="/results/jrig/sha256-62a89975160a2749133859e18954faaea96a8738b18bedef69e1a369011695b8/">Signed record</a></td>
                 </tr>
                 <tr>
-                    <td><a href="/results/ccp/sha256-3a799552c1185573011fc607b8fdc426e54635917c30905c7f3b86c7f1b49732/"><code>unicode-hygiene</code></a></td>
-                    <td><a href="/results/ccp/"><code>ccp</code></a></td>
-                    <td><span class="badge badge--result-pass">pass</span></td>
-                    <td>no BLOCKER-severity unicode findings (tag chars, bidi overrides)</td>
-                    <td><time datetime="2026-10-04T10:40:34.610Z">2026-10-04T10:40:34.610Z</time></td>
-                    <td><code>sha256:b8693617a42f90ea5fe8bd678aaabe43b53b56018eca85c049acf70447512f24:scripts/validate-catalog-invariants.py+scripts/validate-unicode-hygiene.py+scripts/evaluate-certification.mjs+.github/workflows/validate-plugins.yml+.github/workflows/secret-scan.yml+.github/workflows/skill-conform.yml</code></td>
+                    <td><strong>Databricks bundle medic</strong></td>
+                    <td><span class="badge badge--result-advisory">Needs attention</span></td>
+                    <td><ul class="reasons"><li>12/12 criteria passed on MiniMax-M3 (provider: minimax)</li><li>thresholds passed</li><li>regression comparison was not run</li></ul></td>
+                    <td><time datetime="2026-10-04T05:43:42.321Z">Oct 4, 2026</time></td>
+                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/saas-packs/databricks-pack/skills/databricks-bundle-medic/eval-spec.yaml">See the test</a> · <a href="/results/jrig/sha256-39d53855fade534ac8d7cc96c425f73a2de1a0fa6c3a148a029fc367178ad252/">Signed record</a></td>
                 </tr>
                 <tr>
-                    <td><a href="/results/iah/sha256-c752b5479f7c2bf4a1f2d3bc2adf417f2cb5b6f9bf02d44e239b9a9e404f4f34/"><code>harness-hash</code></a></td>
-                    <td><a href="/results/iah/"><code>iah</code></a></td>
-                    <td><span class="badge badge--result-pass">pass</span></td>
-                    <td>.harness-hash manifest verified consistent</td>
-                    <td><time datetime="2026-09-05T02:00:09.489Z">2026-09-05T02:00:09.489Z</time></td>
-                    <td><code>sha256:d8ee9cab96dd11709a2961d4e973893cc2319ab11ca693cdd5acd6ab82872911:.harness-hash</code></td>
+                    <td><strong>Databricks cluster forensics</strong></td>
+                    <td><span class="badge badge--result-advisory">Needs attention</span></td>
+                    <td><ul class="reasons"><li>11/11 criteria passed on MiniMax-M3 (provider: minimax)</li><li>thresholds passed</li><li>regression comparison was not run</li></ul></td>
+                    <td><time datetime="2026-10-04T05:43:42.321Z">Oct 4, 2026</time></td>
+                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/saas-packs/databricks-pack/skills/databricks-cluster-forensics/eval-spec.yaml">See the test</a> · <a href="/results/jrig/sha256-afc43246703c54654664c9db0ba7877f20c00ec776a50b43c4169bfbe4690d31/">Signed record</a></td>
                 </tr>
                 <tr>
-                    <td><a href="/results/iaj/sha256-7eaedef685a09bd476c29d8c8d2c34f9eaaa7fde84758d320fc92796bf733219/"><code>coverage</code></a></td>
-                    <td><a href="/results/iaj/"><code>iaj</code></a></td>
-                    <td><span class="badge badge--result-pass">pass</span></td>
-                    <td><code>—</code></td>
-                    <td><time datetime="2026-06-15T18:34:28.968Z">2026-06-15T18:34:28.968Z</time></td>
-                    <td><code>sha256:eea455fad3e8ed2c8117ce17a359c72d6e76ca96c44d5639a9fcdd878a65702b:vitest.config.ts</code></td>
+                    <td><strong>Databricks cost leak hunter</strong></td>
+                    <td><span class="badge badge--result-fail">Failed</span></td>
+                    <td><ul class="reasons"><li>4/9 criteria passed on MiniMax-M3 (provider: minimax)</li><li>2 blocker criterion evaluation(s) failed</li><li>1 criteria could not be judged (unsure)</li><li>thresholds did not pass</li><li>regression comparison was not run</li></ul></td>
+                    <td><time datetime="2026-10-04T05:43:42.321Z">Oct 4, 2026</time></td>
+                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/saas-packs/databricks-pack/skills/databricks-cost-leak-hunter/eval-spec.yaml">See the test</a> · <a href="/results/jrig/sha256-81feb9d865581d56a0d75fab397139ea9d202527645b17efa1a02693ae9ca9ca/">Signed record</a></td>
                 </tr>
                 <tr>
-                    <td><a href="/results/iar/sha256-b0de9fb7d468e8edc5337efb2b7547644670964650e305f0bfc8210a2dab0c1c/"><code>harness-hash</code></a></td>
-                    <td><a href="/results/iar/"><code>iar</code></a></td>
-                    <td><span class="badge badge--result-pass">pass</span></td>
-                    <td>.harness-hash pinned policy artifacts verified consistent</td>
-                    <td><time datetime="2026-07-08T06:42:05.536Z">2026-07-08T06:42:05.536Z</time></td>
-                    <td><code>sha256:d5ff7ddb91dd83c7371e1c4721daff9e7a6dcbf5355428fb1016b4c6114cf8a0:.harness-hash</code></td>
+                    <td><strong>Databricks streaming guardian</strong></td>
+                    <td><span class="badge badge--result-advisory">Needs attention</span></td>
+                    <td><ul class="reasons"><li>14/14 criteria passed on MiniMax-M3 (provider: minimax)</li><li>thresholds passed</li><li>regression comparison was not run</li></ul></td>
+                    <td><time datetime="2026-10-04T05:43:42.321Z">Oct 4, 2026</time></td>
+                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/saas-packs/databricks-pack/skills/databricks-streaming-guardian/eval-spec.yaml">See the test</a> · <a href="/results/jrig/sha256-7714cf8043fc38bebaf64cf7d1e97d48eca16070e3bffdfe814da95e52a4e7b9/">Signed record</a></td>
                 </tr>
                 <tr>
-                    <td><a href="/results/iar/sha256-f1a5c53be5e3a118335527167c5a5f17dc66a7ee845e21e4aa32a00c1909a78d/"><code>reproducible-dist</code></a></td>
-                    <td><a href="/results/iar/"><code>iar</code></a></td>
-                    <td><span class="badge badge--result-pass">pass</span></td>
-                    <td>committed dist/index.js is byte-reproducible from src/</td>
-                    <td><time datetime="2026-07-08T06:42:05.536Z">2026-07-08T06:42:05.536Z</time></td>
-                    <td><code>sha256:d5ff7ddb91dd83c7371e1c4721daff9e7a6dcbf5355428fb1016b4c6114cf8a0:.harness-hash</code></td>
+                    <td><strong>Databricks UC migration pilot</strong></td>
+                    <td><span class="badge badge--result-advisory">Needs attention</span></td>
+                    <td><ul class="reasons"><li>11/11 criteria passed on MiniMax-M3 (provider: minimax)</li><li>thresholds passed</li><li>regression comparison was not run</li></ul></td>
+                    <td><time datetime="2026-10-04T05:43:42.321Z">Oct 4, 2026</time></td>
+                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/saas-packs/databricks-pack/skills/databricks-uc-migration-pilot/eval-spec.yaml">See the test</a> · <a href="/results/jrig/sha256-57c6a27c18cf694e2def1050252baf65ab302c4e03255be3a1e15f7e154db146/">Signed record</a></td>
                 </tr>
                 <tr>
-                    <td><a href="/results/iec/sha256-e6987aef115cd14e57c6d2b90391df6854cdfd5975e9aa9537664f4452f90fa9/"><code>architecture</code></a></td>
-                    <td><a href="/results/iec/"><code>iec</code></a></td>
-                    <td><span class="badge badge--result-pass">pass</span></td>
-                    <td><code>—</code></td>
-                    <td><time datetime="2026-10-04T01:28:13.649Z">2026-10-04T01:28:13.649Z</time></td>
-                    <td><code>sha256:53db5d807066fb60a666d150996d4ee8767d0a4d569f036640769071b5ab6ac2:tests/TESTING.md</code></td>
+                    <td><strong>HubSpot warehouse sync</strong></td>
+                    <td><span class="badge badge--result-advisory">Needs attention</span></td>
+                    <td><ul class="reasons"><li>11/11 criteria passed on MiniMax-M3 (provider: minimax)</li><li>thresholds passed</li><li>regression comparison was not run</li></ul></td>
+                    <td><time datetime="2026-10-04T05:43:42.321Z">Oct 4, 2026</time></td>
+                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/saas-packs/hubspot-pack/skills/hubspot-warehouse-sync/eval-spec.yaml">See the test</a> · <a href="/results/jrig/sha256-ffc3116d8fa7fc6f02c2d74215a5d59f8a9a3ce075ba7b3eb55f99beda216e76/">Signed record</a></td>
                 </tr>
                 <tr>
-                    <td><a href="/results/iec/sha256-d5a4d371851ba8da0b8256bbfafa1b4777fdaa5bfdbcc3a7b79aaa153978d92a/"><code>coverage</code></a></td>
-                    <td><a href="/results/iec/"><code>iec</code></a></td>
-                    <td><span class="badge badge--result-pass">pass</span></td>
-                    <td><code>—</code></td>
-                    <td><time datetime="2026-10-04T01:28:13.649Z">2026-10-04T01:28:13.649Z</time></td>
-                    <td><code>sha256:53db5d807066fb60a666d150996d4ee8767d0a4d569f036640769071b5ab6ac2:tests/TESTING.md</code></td>
+                    <td><strong>Sentry data handling</strong></td>
+                    <td><span class="badge badge--result-advisory">Needs attention</span></td>
+                    <td><ul class="reasons"><li>10/10 criteria passed on MiniMax-M3 (provider: minimax)</li><li>thresholds passed</li><li>regression comparison was not run</li></ul></td>
+                    <td><time datetime="2026-10-04T05:43:42.321Z">Oct 4, 2026</time></td>
+                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/saas-packs/sentry-pack/skills/sentry-data-handling/eval-spec.yaml">See the test</a> · <a href="/results/jrig/sha256-c2f953e8bcb5b342ed685a55104170612dbbb5c4f42c17353e352ab0d0a3fa34/">Signed record</a></td>
                 </tr>
                 <tr>
-                    <td><a href="/results/iel/sha256-d84a82bc75e5cbaf8f0c7acb41abb755c28043dd70f41e1d77948c3e1a00bac8/"><code>harness-hash</code></a></td>
-                    <td><a href="/results/iel/"><code>iel</code></a></td>
-                    <td><span class="badge badge--result-pass">pass</span></td>
-                    <td>.harness-hash manifest verified consistent</td>
-                    <td><time datetime="2026-06-08T02:44:28.493Z">2026-06-08T02:44:28.493Z</time></td>
-                    <td><code>sha256:6df63f6afc291aa1facfc12f3e5e034f497a51eebb083126afade8eab2bd9846:.harness-hash</code></td>
+                    <td><strong>Skill creator</strong></td>
+                    <td><span class="badge badge--result-advisory">Needs attention</span></td>
+                    <td><ul class="reasons"><li>7/10 criteria passed on MiniMax-M3 (provider: minimax)</li><li>3 non-blocker criterion evaluation(s) failed</li><li>thresholds did not pass</li><li>regression comparison was not run</li></ul></td>
+                    <td><time datetime="2026-10-04T05:43:42.321Z">Oct 4, 2026</time></td>
+                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/skill-enhancers/skill-creator/skills/skill-creator/eval-spec.yaml">See the test</a> · <a href="/results/jrig/sha256-8b0341a51a4aa21a7d8483729d921ef90ad63e568ab5596171026ecc1bedfcbf/">Signed record</a></td>
                 </tr>
                 <tr>
-                    <td><a href="/results/jrig/sha256-04c486868d739fb08186664a1f6cf6b91a2a79b44b50062bd831bdfbc905201f/"><code>audit-tests</code></a></td>
-                    <td><a href="/results/jrig/"><code>jrig</code></a></td>
-                    <td><span class="badge badge--result-advisory">advisory</span></td>
-                    <td>3/5 criteria passed on MiniMax-M3 (provider: minimax)</td>
-                    <td><time datetime="2026-10-04T05:43:42.321Z">2026-10-04T05:43:42.321Z</time></td>
-                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/productivity/intent-labs-pack/skills/audit-tests/eval-spec.yaml">eval spec</a></td>
+                    <td><strong>Supabase known pitfalls</strong></td>
+                    <td><span class="badge badge--result-advisory">Needs attention</span></td>
+                    <td><ul class="reasons"><li>10/10 criteria passed on MiniMax-M3 (provider: minimax)</li><li>thresholds passed</li><li>regression comparison was not run</li></ul></td>
+                    <td><time datetime="2026-10-04T05:43:42.321Z">Oct 4, 2026</time></td>
+                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/saas-packs/supabase-pack/skills/supabase-known-pitfalls/eval-spec.yaml">See the test</a> · <a href="/results/jrig/sha256-773928017a7281e28aa65242f339668ad09c9cc3f5dc9050e224248d6a86d3a6/">Signed record</a></td>
                 </tr>
                 <tr>
-                    <td><a href="/results/jrig/sha256-7a7da7981805fd7af9815b89b741b9da358dc089bc8a7e7c7a2ed4072a81c945/"><code>coreweave-fabric-diagnostics</code></a></td>
-                    <td><a href="/results/jrig/"><code>jrig</code></a></td>
-                    <td><span class="badge badge--result-fail">fail</span></td>
-                    <td>9/10 criteria passed on MiniMax-M3 (provider: minimax)</td>
-                    <td><time datetime="2026-10-04T05:43:42.321Z">2026-10-04T05:43:42.321Z</time></td>
-                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/saas-packs/coreweave-pack/skills/coreweave-fabric-diagnostics/eval-spec.yaml">eval spec</a></td>
-                </tr>
-                <tr>
-                    <td><a href="/results/jrig/sha256-76ab1d2e899b9564704d3a5e00dc7bc14497071dc1f22325773c10a2c472d95c/"><code>coreweave-gpu-cost-leak-hunter</code></a></td>
-                    <td><a href="/results/jrig/"><code>jrig</code></a></td>
-                    <td><span class="badge badge--result-fail">fail</span></td>
-                    <td>7/10 criteria passed on MiniMax-M3 (provider: minimax)</td>
-                    <td><time datetime="2026-10-04T05:43:42.321Z">2026-10-04T05:43:42.321Z</time></td>
-                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/saas-packs/coreweave-pack/skills/coreweave-gpu-cost-leak-hunter/eval-spec.yaml">eval spec</a></td>
-                </tr>
-                <tr>
-                    <td><a href="/results/jrig/sha256-62a89975160a2749133859e18954faaea96a8738b18bedef69e1a369011695b8/"><code>coreweave-gpu-node-forensics</code></a></td>
-                    <td><a href="/results/jrig/"><code>jrig</code></a></td>
-                    <td><span class="badge badge--result-advisory">advisory</span></td>
-                    <td>15/17 criteria passed on MiniMax-M3 (provider: minimax)</td>
-                    <td><time datetime="2026-10-04T05:43:42.321Z">2026-10-04T05:43:42.321Z</time></td>
-                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/saas-packs/coreweave-pack/skills/coreweave-gpu-node-forensics/eval-spec.yaml">eval spec</a></td>
-                </tr>
-                <tr>
-                    <td><a href="/results/jrig/sha256-39d53855fade534ac8d7cc96c425f73a2de1a0fa6c3a148a029fc367178ad252/"><code>databricks-bundle-medic</code></a></td>
-                    <td><a href="/results/jrig/"><code>jrig</code></a></td>
-                    <td><span class="badge badge--result-advisory">advisory</span></td>
-                    <td>12/12 criteria passed on MiniMax-M3 (provider: minimax)</td>
-                    <td><time datetime="2026-10-04T05:43:42.321Z">2026-10-04T05:43:42.321Z</time></td>
-                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/saas-packs/databricks-pack/skills/databricks-bundle-medic/eval-spec.yaml">eval spec</a></td>
-                </tr>
-                <tr>
-                    <td><a href="/results/jrig/sha256-afc43246703c54654664c9db0ba7877f20c00ec776a50b43c4169bfbe4690d31/"><code>databricks-cluster-forensics</code></a></td>
-                    <td><a href="/results/jrig/"><code>jrig</code></a></td>
-                    <td><span class="badge badge--result-advisory">advisory</span></td>
-                    <td>11/11 criteria passed on MiniMax-M3 (provider: minimax)</td>
-                    <td><time datetime="2026-10-04T05:43:42.321Z">2026-10-04T05:43:42.321Z</time></td>
-                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/saas-packs/databricks-pack/skills/databricks-cluster-forensics/eval-spec.yaml">eval spec</a></td>
-                </tr>
-                <tr>
-                    <td><a href="/results/jrig/sha256-81feb9d865581d56a0d75fab397139ea9d202527645b17efa1a02693ae9ca9ca/"><code>databricks-cost-leak-hunter</code></a></td>
-                    <td><a href="/results/jrig/"><code>jrig</code></a></td>
-                    <td><span class="badge badge--result-fail">fail</span></td>
-                    <td>4/9 criteria passed on MiniMax-M3 (provider: minimax)</td>
-                    <td><time datetime="2026-10-04T05:43:42.321Z">2026-10-04T05:43:42.321Z</time></td>
-                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/saas-packs/databricks-pack/skills/databricks-cost-leak-hunter/eval-spec.yaml">eval spec</a></td>
-                </tr>
-                <tr>
-                    <td><a href="/results/jrig/sha256-7714cf8043fc38bebaf64cf7d1e97d48eca16070e3bffdfe814da95e52a4e7b9/"><code>databricks-streaming-guardian</code></a></td>
-                    <td><a href="/results/jrig/"><code>jrig</code></a></td>
-                    <td><span class="badge badge--result-advisory">advisory</span></td>
-                    <td>14/14 criteria passed on MiniMax-M3 (provider: minimax)</td>
-                    <td><time datetime="2026-10-04T05:43:42.321Z">2026-10-04T05:43:42.321Z</time></td>
-                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/saas-packs/databricks-pack/skills/databricks-streaming-guardian/eval-spec.yaml">eval spec</a></td>
-                </tr>
-                <tr>
-                    <td><a href="/results/jrig/sha256-57c6a27c18cf694e2def1050252baf65ab302c4e03255be3a1e15f7e154db146/"><code>databricks-uc-migration-pilot</code></a></td>
-                    <td><a href="/results/jrig/"><code>jrig</code></a></td>
-                    <td><span class="badge badge--result-advisory">advisory</span></td>
-                    <td>11/11 criteria passed on MiniMax-M3 (provider: minimax)</td>
-                    <td><time datetime="2026-10-04T05:43:42.321Z">2026-10-04T05:43:42.321Z</time></td>
-                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/saas-packs/databricks-pack/skills/databricks-uc-migration-pilot/eval-spec.yaml">eval spec</a></td>
-                </tr>
-                <tr>
-                    <td><a href="/results/jrig/sha256-ffc3116d8fa7fc6f02c2d74215a5d59f8a9a3ce075ba7b3eb55f99beda216e76/"><code>hubspot-warehouse-sync</code></a></td>
-                    <td><a href="/results/jrig/"><code>jrig</code></a></td>
-                    <td><span class="badge badge--result-advisory">advisory</span></td>
-                    <td>11/11 criteria passed on MiniMax-M3 (provider: minimax)</td>
-                    <td><time datetime="2026-10-04T05:43:42.321Z">2026-10-04T05:43:42.321Z</time></td>
-                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/saas-packs/hubspot-pack/skills/hubspot-warehouse-sync/eval-spec.yaml">eval spec</a></td>
-                </tr>
-                <tr>
-                    <td><a href="/results/jrig/sha256-c2f953e8bcb5b342ed685a55104170612dbbb5c4f42c17353e352ab0d0a3fa34/"><code>sentry-data-handling</code></a></td>
-                    <td><a href="/results/jrig/"><code>jrig</code></a></td>
-                    <td><span class="badge badge--result-advisory">advisory</span></td>
-                    <td>10/10 criteria passed on MiniMax-M3 (provider: minimax)</td>
-                    <td><time datetime="2026-10-04T05:43:42.321Z">2026-10-04T05:43:42.321Z</time></td>
-                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/saas-packs/sentry-pack/skills/sentry-data-handling/eval-spec.yaml">eval spec</a></td>
-                </tr>
-                <tr>
-                    <td><a href="/results/jrig/sha256-8b0341a51a4aa21a7d8483729d921ef90ad63e568ab5596171026ecc1bedfcbf/"><code>skill-creator</code></a></td>
-                    <td><a href="/results/jrig/"><code>jrig</code></a></td>
-                    <td><span class="badge badge--result-advisory">advisory</span></td>
-                    <td>7/10 criteria passed on MiniMax-M3 (provider: minimax)</td>
-                    <td><time datetime="2026-10-04T05:43:42.321Z">2026-10-04T05:43:42.321Z</time></td>
-                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/skill-enhancers/skill-creator/skills/skill-creator/eval-spec.yaml">eval spec</a></td>
-                </tr>
-                <tr>
-                    <td><a href="/results/jrig/sha256-773928017a7281e28aa65242f339668ad09c9cc3f5dc9050e224248d6a86d3a6/"><code>supabase-known-pitfalls</code></a></td>
-                    <td><a href="/results/jrig/"><code>jrig</code></a></td>
-                    <td><span class="badge badge--result-advisory">advisory</span></td>
-                    <td>10/10 criteria passed on MiniMax-M3 (provider: minimax)</td>
-                    <td><time datetime="2026-10-04T05:43:42.321Z">2026-10-04T05:43:42.321Z</time></td>
-                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/saas-packs/supabase-pack/skills/supabase-known-pitfalls/eval-spec.yaml">eval spec</a></td>
-                </tr>
-                <tr>
-                    <td><a href="/results/jrig/sha256-841efbf91264d6b6aba3619374d5dd5c7519b5331064abbfa1e270c75b0debac/"><code>validate-skillmd</code></a></td>
-                    <td><a href="/results/jrig/"><code>jrig</code></a></td>
-                    <td><span class="badge badge--result-advisory">advisory</span></td>
-                    <td>2/5 criteria passed on MiniMax-M3 (provider: minimax)</td>
-                    <td><time datetime="2026-10-04T05:43:42.321Z">2026-10-04T05:43:42.321Z</time></td>
-                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/productivity/intent-labs-pack/skills/validate-skillmd/eval-spec.yaml">eval spec</a></td>
-                </tr>
-                <tr>
-                    <td><a href="/results/qmd/sha256-2955d022a104cb639b78d1dce639d26314843dc0839df57e4432e8d440bb83cb/"><code>govern-decision</code></a></td>
-                    <td><a href="/results/qmd/"><code>qmd</code></a></td>
-                    <td><span class="badge badge--result-pass">pass</span></td>
-                    <td>sec-hex-aws-01               boundary-disclosure    class=secret surface=hex-encoded documented=true</td>
-                    <td><time datetime="2026-10-04T11:33:20.314Z">2026-10-04T11:33:20.314Z</time></td>
-                    <td><code>sha256:ce9f36ce1dbf85fe5be08a7e27081f384ac738f2c46cfedd65ffdd2addb094a5:packages/eval-surface/scripts/ci-provenance-integrity.ts,packages/eval-surface/scripts/ci-govern-decision.ts,packages/qmd-adapter/src/eval/ci-retrieval-ratchet.ts</code></td>
-                </tr>
-                <tr>
-                    <td><a href="/results/qmd/sha256-4160bcc703e27a3ea30ef4b4e9e283b468643dcc4a736d6e322b846e05562d4e/"><code>provenance-integrity</code></a></td>
-                    <td><a href="/results/qmd/"><code>qmd</code></a></td>
-                    <td><span class="badge badge--result-pass">pass</span></td>
-                    <td>anchored-brain verdict: {&quot;memories_checked&quot;:1,&quot;content_hash_mismatches&quot;:0,&quot;invalid_sources&quot;:0,&quot;audit_chain_rows&quot;:3,&quot;tamper_signatures&quot;:0,&quot;chain_forks&quot;:0,&quot;documented_exceptions&quot;:0,&quot;exception_manifest_loaded&quot;:false,&quot;anchor_count&quot;:1,&quot;anchor_status&quot;:&quot;consistent&quot;,&quot;anchor_history_truncated&quot;:0,&quot;anchor_hist</td>
-                    <td><time datetime="2026-10-04T11:33:20.314Z">2026-10-04T11:33:20.314Z</time></td>
-                    <td><code>sha256:ce9f36ce1dbf85fe5be08a7e27081f384ac738f2c46cfedd65ffdd2addb094a5:packages/eval-surface/scripts/ci-provenance-integrity.ts,packages/eval-surface/scripts/ci-govern-decision.ts,packages/qmd-adapter/src/eval/ci-retrieval-ratchet.ts</code></td>
-                </tr>
-                <tr>
-                    <td><a href="/results/qmd/sha256-2922dc9abd582eb621a06d699570ac5ab97b247a060f254448d195f411a5e2f5/"><code>retrieval-ratchet</code></a></td>
-                    <td><a href="/results/qmd/"><code>qmd</code></a></td>
-                    <td><span class="badge badge--result-pass">pass</span></td>
-                    <td>tokenization measured=1.0000  baseline=1.0000  floor=0.9990  OK</td>
-                    <td><time datetime="2026-10-04T11:33:20.314Z">2026-10-04T11:33:20.314Z</time></td>
-                    <td><code>sha256:ce9f36ce1dbf85fe5be08a7e27081f384ac738f2c46cfedd65ffdd2addb094a5:packages/eval-surface/scripts/ci-provenance-integrity.ts,packages/eval-surface/scripts/ci-govern-decision.ts,packages/qmd-adapter/src/eval/ci-retrieval-ratchet.ts</code></td>
+                    <td><strong>Validate SKILL.md</strong></td>
+                    <td><span class="badge badge--result-advisory">Needs attention</span></td>
+                    <td><ul class="reasons"><li>2/5 criteria passed on MiniMax-M3 (provider: minimax)</li><li>3 non-blocker criterion evaluation(s) failed</li><li>thresholds did not pass</li><li>regression comparison was not run</li></ul></td>
+                    <td><time datetime="2026-10-04T05:43:42.321Z">Oct 4, 2026</time></td>
+                    <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/productivity/intent-labs-pack/skills/validate-skillmd/eval-spec.yaml">See the test</a> · <a href="/results/jrig/sha256-841efbf91264d6b6aba3619374d5dd5c7519b5331064abbfa1e270c75b0debac/">Signed record</a></td>
                 </tr>
                 </tbody>
             </table></div>
         </section>
+        <section class="all-evals">
+            <h2>Platform checks</h2>
+            <p>Automated quality checks on the code behind this lab and our skills marketplace, such as tests, security scans and catalog rules.</p>
+            <div class="table-scroll" role="region" aria-label="Platform checks" tabindex="0"><table class="results-table">
+                <thead>
+                    <tr><th>What was tested</th><th>Project</th><th>Result</th><th>What happened</th><th>Tested on</th><th>Links</th></tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><strong>Harness hash</strong></td>
+                    <td><a href="/results/iah/">Audit harness</a></td>
+                    <td><span class="badge badge--result-pass">Passed</span></td>
+                    <td>.harness-hash manifest verified consistent</td>
+                    <td><time datetime="2026-09-05T02:00:09.489Z">Sep 5, 2026</time></td>
+                    <td><a href="/results/iah/sha256-c752b5479f7c2bf4a1f2d3bc2adf417f2cb5b6f9bf02d44e239b9a9e404f4f34/">Signed record</a></td>
+                </tr>
+                <tr>
+                    <td><strong>Architecture</strong></td>
+                    <td><a href="/results/iec/">Contracts kernel</a></td>
+                    <td><span class="badge badge--result-pass">Passed</span></td>
+                    <td><code>—</code></td>
+                    <td><time datetime="2026-10-04T01:28:13.649Z">Oct 4, 2026</time></td>
+                    <td><a href="/results/iec/sha256-e6987aef115cd14e57c6d2b90391df6854cdfd5975e9aa9537664f4452f90fa9/">Signed record</a></td>
+                </tr>
+                <tr>
+                    <td><strong>Coverage</strong></td>
+                    <td><a href="/results/iec/">Contracts kernel</a></td>
+                    <td><span class="badge badge--result-pass">Passed</span></td>
+                    <td><code>—</code></td>
+                    <td><time datetime="2026-10-04T01:28:13.649Z">Oct 4, 2026</time></td>
+                    <td><a href="/results/iec/sha256-d5a4d371851ba8da0b8256bbfafa1b4777fdaa5bfdbcc3a7b79aaa153978d92a/">Signed record</a></td>
+                </tr>
+                <tr>
+                    <td><strong>Coverage</strong></td>
+                    <td><a href="/results/iaj/">J-Rig evaluator</a></td>
+                    <td><span class="badge badge--result-pass">Passed</span></td>
+                    <td><code>—</code></td>
+                    <td><time datetime="2026-06-15T18:34:28.968Z">Jun 15, 2026</time></td>
+                    <td><a href="/results/iaj/sha256-7eaedef685a09bd476c29d8c8d2c34f9eaaa7fde84758d320fc92796bf733219/">Signed record</a></td>
+                </tr>
+                <tr>
+                    <td><strong>Harness hash</strong></td>
+                    <td><a href="/results/iel/">Methodology lab</a></td>
+                    <td><span class="badge badge--result-pass">Passed</span></td>
+                    <td><ul class="reasons"><li>.harness-hash manifest verified consistent</li><li>pins the spec-integrity surface: CI workflows (incl. partner-name-guard + schema-drift), schema redirect stub, vendored audit-harness</li></ul></td>
+                    <td><time datetime="2026-06-08T02:44:28.493Z">Jun 8, 2026</time></td>
+                    <td><a href="/results/iel/sha256-d84a82bc75e5cbaf8f0c7acb41abb755c28043dd70f41e1d77948c3e1a00bac8/">Signed record</a></td>
+                </tr>
+                <tr>
+                    <td><strong>Harness hash</strong></td>
+                    <td><a href="/results/iar/">Rollout gate</a></td>
+                    <td><span class="badge badge--result-pass">Passed</span></td>
+                    <td>.harness-hash pinned policy artifacts verified consistent</td>
+                    <td><time datetime="2026-07-08T06:42:05.536Z">Jul 8, 2026</time></td>
+                    <td><a href="/results/iar/sha256-b0de9fb7d468e8edc5337efb2b7547644670964650e305f0bfc8210a2dab0c1c/">Signed record</a></td>
+                </tr>
+                <tr>
+                    <td><strong>Reproducible dist</strong></td>
+                    <td><a href="/results/iar/">Rollout gate</a></td>
+                    <td><span class="badge badge--result-pass">Passed</span></td>
+                    <td>committed dist/index.js is byte-reproducible from src/</td>
+                    <td><time datetime="2026-07-08T06:42:05.536Z">Jul 8, 2026</time></td>
+                    <td><a href="/results/iar/sha256-f1a5c53be5e3a118335527167c5a5f17dc66a7ee845e21e4aa32a00c1909a78d/">Signed record</a></td>
+                </tr>
+                <tr>
+                    <td><strong>Catalog invariants</strong></td>
+                    <td><a href="/results/ccp/">Skills marketplace</a></td>
+                    <td><span class="badge badge--result-pass">Passed</span></td>
+                    <td>Catalog invariant check passed (434 published plugins; 3 quarantined records).</td>
+                    <td><time datetime="2026-10-04T23:20:32.554Z">Oct 4, 2026</time></td>
+                    <td><a href="/results/ccp/sha256-26ed472171be3df15146e35669cdab41e59636a41b3bdd1c14a7c2becca3a527/">Signed record</a></td>
+                </tr>
+                <tr>
+                    <td><strong>CI required</strong></td>
+                    <td><a href="/results/ccp/">Skills marketplace</a></td>
+                    <td><span class="badge badge--result-pass">Passed</span></td>
+                    <td>ci-required completed successfully</td>
+                    <td><time datetime="2026-10-04T23:20:32.554Z">Oct 4, 2026</time></td>
+                    <td><a href="/results/ccp/sha256-4068647b8b078fd53b836a86cb49b03a67618ba4606370bbc46d554b156d0afd/">Signed record</a></td>
+                </tr>
+                <tr>
+                    <td><strong>Gitleaks</strong></td>
+                    <td><a href="/results/ccp/">Skills marketplace</a></td>
+                    <td><span class="badge badge--result-pass">Passed</span></td>
+                    <td>gitleaks completed successfully</td>
+                    <td><time datetime="2026-10-04T23:20:32.554Z">Oct 4, 2026</time></td>
+                    <td><a href="/results/ccp/sha256-8438cc8239a3cc59f4951a34d1bd6fc560ad4ab751d9e40efdc731191a5a09fa/">Signed record</a></td>
+                </tr>
+                <tr>
+                    <td><strong>Skill conform</strong></td>
+                    <td><a href="/results/ccp/">Skills marketplace</a></td>
+                    <td><span class="badge badge--result-pass">Passed</span></td>
+                    <td>skill-conform completed successfully</td>
+                    <td><time datetime="2026-10-04T23:20:32.554Z">Oct 4, 2026</time></td>
+                    <td><a href="/results/ccp/sha256-6edd30f1279346b420617d05bc043536f4a471f6281f9e9f1431ba1b5f187f1d/">Signed record</a></td>
+                </tr>
+                <tr>
+                    <td><strong>Unicode hygiene</strong></td>
+                    <td><a href="/results/ccp/">Skills marketplace</a></td>
+                    <td><span class="badge badge--result-pass">Passed</span></td>
+                    <td>no BLOCKER-severity unicode findings (tag chars, bidi overrides)</td>
+                    <td><time datetime="2026-10-04T23:20:32.554Z">Oct 4, 2026</time></td>
+                    <td><a href="/results/ccp/sha256-93ce40d2f145611f8de8d0f7404033d12f7190a662a80b8098157986233e9a5e/">Signed record</a></td>
+                </tr>
+                <tr>
+                    <td><strong>Govern decision</strong></td>
+                    <td><a href="/results/qmd/">Team knowledge base</a></td>
+                    <td><span class="badge badge--result-pass">Passed</span></td>
+                    <td><ul class="reasons"><li>sec-hex-aws-01               boundary-disclosure    class=secret surface=hex-encoded documented=true</li><li>pii-inline-email-01          boundary-disclosure    class=pii surface=inline documented=true</li><li>ci-govern-decision OK — zero undocumented false-negatives across both sections and every decision precision floor held (documented misses and known FPs reported above, tracked, not hidden).</li></ul></td>
+                    <td><time datetime="2026-10-04T11:33:20.314Z">Oct 4, 2026</time></td>
+                    <td><a href="/results/qmd/sha256-2955d022a104cb639b78d1dce639d26314843dc0839df57e4432e8d440bb83cb/">Signed record</a></td>
+                </tr>
+                <tr>
+                    <td><strong>Provenance integrity</strong></td>
+                    <td><a href="/results/qmd/">Team knowledge base</a></td>
+                    <td><span class="badge badge--result-pass">Passed</span></td>
+                    <td><ul class="reasons"><li>anchored-brain verdict: {&quot;memories_checked&quot;:1,&quot;content_hash_mismatches&quot;:0,&quot;invalid_sources&quot;:0,&quot;audit_chain_rows&quot;:3,&quot;tamper_signatures&quot;:0,&quot;chain_forks&quot;:0,&quot;documented_exceptions&quot;:0,&quot;exception_manifest_loaded&quot;:false,&quot;anchor_count&quot;:1,&quot;anchor_status&quot;:&quot;consistent&quot;,&quot;anchor_history_truncated&quot;:0,&quot;anchor_hist</li><li>truncated-brain verdict: {&quot;memories_checked&quot;:1,&quot;content_hash_mismatches&quot;:0,&quot;invalid_sources&quot;:0,&quot;audit_chain_rows&quot;:2,&quot;tamper_signatures&quot;:0,&quot;chain_forks&quot;:0,&quot;documented_exceptions&quot;:0,&quot;exception_manifest_loaded&quot;:false,&quot;anchor_count&quot;:1,&quot;anchor_status&quot;:&quot;divergent&quot;,&quot;anchor_history_truncated&quot;:1,&quot;anchor_hist</li><li>ci-provenance-integrity OK — forks pass (disclosed), tamper fails closed, anchor truncation fails closed</li></ul></td>
+                    <td><time datetime="2026-10-04T11:33:20.314Z">Oct 4, 2026</time></td>
+                    <td><a href="/results/qmd/sha256-4160bcc703e27a3ea30ef4b4e9e283b468643dcc4a736d6e322b846e05562d4e/">Signed record</a></td>
+                </tr>
+                <tr>
+                    <td><strong>Retrieval ratchet</strong></td>
+                    <td><a href="/results/qmd/">Team knowledge base</a></td>
+                    <td><span class="badge badge--result-pass">Passed</span></td>
+                    <td><ul class="reasons"><li>tokenization measured=1.0000  baseline=1.0000  floor=0.9990  OK</li><li>eval artifact written: /home/runner/work/bobs-big-brain-registrar/bobs-big-brain-registrar/packages/qmd-adapter/eval-results/synthetic-v1.json</li><li>RATCHET PASS — no stratum regressed below its committed floor.</li></ul></td>
+                    <td><time datetime="2026-10-04T11:33:20.314Z">Oct 4, 2026</time></td>
+                    <td><a href="/results/qmd/sha256-2922dc9abd582eb621a06d699570ac5ab97b247a060f254448d195f411a5e2f5/">Signed record</a></td>
+                </tr>
+                </tbody>
+            </table></div>
+        </section>
+        <p class="predicate-note">Technical note: each row is one signed, tamper-evident record (<code>https://evals.intentsolutions.io/gate-result/v1</code>). Open "Signed record" for the hashes, timestamps and transparency-log entry. <a href="/methodology/#evidence">How to read the evidence</a>.</p>
+        <p><a href="/results/">Browse results by project →</a></p>
     </main>
 <footer class="site-footer"><div class="site-footer__inner">
     <div><strong>Intent Labs</strong><br>Part of <a href="https://intentsolutions.io/">Intent Solutions</a> · <a href="https://intentsolutions.io/about/#team">Our team</a></div>
