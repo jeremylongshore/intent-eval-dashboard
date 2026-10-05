@@ -92,8 +92,10 @@ these as high-severity.
    `src/results/render-html.ts`). A `fail` severity is never masked by a `pass`.
 
 8. **No production-system paging SLO beyond the 7-day-silence threshold** (CFO). The
-   only paging trigger is a source silent > 7 days; the only push protocol is ntfy
-   (no PagerDuty / Opsgenie / Slack / SMS). No uptime / availability SLA or "N nines"
+   only paging trigger is a source silent > 7 days; the only push channel is
+   the estate's single self-hosted alert channel (ntfy until its retirement;
+   Buzz since the owner's 2026-10-04 decision) (no PagerDuty / Opsgenie /
+   Slack / SMS). No uptime / availability SLA or "N nines"
    claim may appear in public output (`scripts/check-uptime-claims.ts` enforces this).
    The public commitment is exactly "best-effort, single-operator, see /status for
    liveness". Do not add latency / error-rate pagers or weaken `src/alerting/`.
@@ -136,7 +138,8 @@ Flag, with high severity, any change that introduces:
   predicate-URI literal instead of an import from `@intentsolutions/core`.
 - GCP object storage (`gs://`, `@google-cloud/storage`, `storage.googleapis.com`)
   for bundle / artifact persistence.
-- A paging trigger other than "source silent > 7 days", a non-ntfy pager, or an
+- A paging trigger other than "source silent > 7 days", a pager other than the
+  estate alert channel (Buzz; formerly ntfy), or an
   uptime / availability / "N nines" SLA claim in public output.
 - Output written from an internal generator into the public `site/` origin (internal
   output belongs only under `site-internal/`).
