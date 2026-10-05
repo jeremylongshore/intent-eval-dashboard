@@ -279,6 +279,8 @@ main {
 .results-table { font-size: 0.82rem; }
 .results-table th, .results-table td { padding: 0.45rem 0.55rem; vertical-align: top; }
 .results-table time { white-space: nowrap; }
+.results-table ul.reasons { margin: 0; padding-left: 1.1rem; }
+.results-table ul.reasons li { margin: 0 0 0.15rem; }
 
 .repo-results {
     border: 1px solid #e5e7eb;

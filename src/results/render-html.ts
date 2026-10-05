@@ -113,12 +113,6 @@ function specCell(row: ResultsRow): string {
     : `<a href="${esc(url)}">eval spec</a>`;
 }
 
-/** The first signed reason, which j-rig writes as the headline. */
-function headlineReason(row: ResultsRow): string {
-  const first = row.reasons?.[0];
-  return first === undefined ? '<code>—</code>' : esc(first);
-}
-
 const PAGE_HEAD = (
   title: string,
   description: string,
@@ -443,80 +437,237 @@ function rowDetails(rows: readonly ResultsRow[]): string {
 ${items.join('\n')}`;
 }
 
-/** Render the flat `/evals/` listing: every published eval, one row each. */
-export function renderAllEvalsPage(view: ResultsView): string {
-  const title = 'All evals — Intent Eval Platform';
-  const description =
-    'Every published eval result on one page, with links to the eval definition and the signed record.';
-  const byPredicate = new Map<string, ResultsRow[]>();
-  for (const repo of view.repos) {
-    for (const row of repo.rows) {
-      const group = byPredicate.get(row.predicateUri);
-      if (group === undefined) byPredicate.set(row.predicateUri, [row]);
-      else group.push(row);
-    }
-  }
-  const staleRepos = new Map(
-    view.repos.filter((r) => r.staleSince !== undefined).map((r) => [r.repo, r.staleSince ?? '']),
-  );
-  const sections = [...byPredicate.entries()]
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([uri, rows]) => {
-      const sorted = [...rows].sort(
-        (a, b) => a.repo.localeCompare(b.repo) || a.gateName.localeCompare(b.gateName),
-      );
-      const trs = sorted
-        .map((row) => {
-          const staleSince = staleRepos.get(row.repo);
-          const stale =
-            staleSince === undefined
-              ? ''
-              : ` <span class="badge badge--stale">stale since ${esc(staleSince)}</span>`;
-          return `                <tr>
-                    <td><a href="${esc(bundleUrl(row.repo, row.bundleKey))}"><code>${esc(row.gateName)}</code></a></td>
-                    <td><a href="${esc(repoUrl(row.repo))}"><code>${esc(row.repo)}</code></a>${stale}</td>
-                    <td>${decisionBadge(row.decision)}</td>
-                    <td>${headlineReason(row)}</td>
-                    <td><time datetime="${esc(row.evaluatedAt)}">${esc(row.evaluatedAt)}</time></td>
-                    <td>${specCell(row)}</td>
+/** Plain-English names for the source projects shown on `/evals/`. */
+const PROJECT_NAMES: Readonly<Record<string, string>> = {
+  iec: 'Contracts kernel',
+  iel: 'Methodology lab',
+  iah: 'Audit harness',
+  iaj: 'J-Rig evaluator',
+  iar: 'Rollout gate',
+  ccp: 'Skills marketplace',
+  jrig: 'AI skill tests',
+  qmd: 'Team knowledge base',
+};
+
+/** A project's display name; an unknown key is shown as-is rather than guessed. */
+export function projectName(repo: string): string {
+  return PROJECT_NAMES[repo] ?? repo;
+}
+
+/** Repos whose rows are behavioral tests of AI skills (vs. code quality gates). */
+const SKILL_TEST_REPOS: ReadonlySet<string> = new Set(['jrig']);
+
+/** Word fixes for readable test names: acronyms and product spellings. */
+const WORD_FIXES: Readonly<Record<string, string>> = {
+  ai: 'AI',
+  api: 'API',
+  ci: 'CI',
+  gpu: 'GPU',
+  mcp: 'MCP',
+  sql: 'SQL',
+  uc: 'UC',
+  skillmd: 'SKILL.md',
+  coreweave: 'CoreWeave',
+  databricks: 'Databricks',
+  hubspot: 'HubSpot',
+  supabase: 'Supabase',
+  sentry: 'Sentry',
+  gitleaks: 'Gitleaks',
+  codeql: 'CodeQL',
+};
+
+/** `coreweave-gpu-cost-leak-hunter` -> `CoreWeave GPU cost leak hunter`. */
+export function readableName(gateName: string): string {
+  const words = gateName.split(/[-_]+/).filter((w) => w !== '');
+  if (words.length === 0) return gateName;
+  return words
+    .map((w, i) => {
+      const fixed = WORD_FIXES[w.toLowerCase()];
+      if (fixed !== undefined) return fixed;
+      return i === 0 ? w.charAt(0).toUpperCase() + w.slice(1) : w;
+    })
+    .join(' ');
+}
+
+/** Plain-English label for each decision. */
+const RESULT_LABELS: Readonly<Record<string, string>> = {
+  pass: 'Passed',
+  fail: 'Failed',
+  advisory: 'Needs attention',
+  error: "Couldn't finish",
+};
+
+function resultBadge(decision: string): string {
+  const label = RESULT_LABELS[decision] ?? decision;
+  return `<span class="badge badge--result-${esc(decision)}">${esc(label)}</span>`;
+}
+
+/** `2026-10-04T05:43:42.321Z` -> `Oct 4, 2026` (UTC), keeping the exact time in `datetime`. */
+export function readableDate(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'UTC',
+  });
+}
+
+/** The links cell: the test definition (when resolvable) and the signed record. */
+function linksCell(row: ResultsRow): string {
+  const links: string[] = [];
+  const spec = row.policyRef === undefined ? null : specUrl(row.repo, row.policyRef, row.commitSha);
+  if (spec !== null) links.push(`<a href="${esc(spec)}">See the test</a>`);
+  links.push(`<a href="${esc(bundleUrl(row.repo, row.bundleKey))}">Signed record</a>`);
+  return links.join(' · ');
+}
+
+/**
+ * The "what happened" cell: every signed reason, verbatim and in order, minus
+ * the "rollout decision is ..." line, which only restates the Result column.
+ */
+function whatHappened(row: ResultsRow): string {
+  const reasons = (row.reasons ?? []).filter((r) => !/^rollout decision is /i.test(r));
+  if (reasons.length === 0) return '<code>—</code>';
+  if (reasons.length === 1) return esc(reasons[0] ?? '');
+  return `<ul class="reasons">${reasons.map((r) => `<li>${esc(r)}</li>`).join('')}</ul>`;
+}
+
+/** One `/evals/` table row. */
+function evalTr(row: ResultsRow, showProject: boolean, staleSince?: string): string {
+  const stale =
+    staleSince === undefined
+      ? ''
+      : ` <span class="badge badge--stale">not updated since ${esc(readableDate(staleSince))}</span>`;
+  const project = showProject
+    ? `\n                    <td><a href="${esc(repoUrl(row.repo))}">${esc(projectName(row.repo))}</a>${stale}</td>`
+    : '';
+  const nameStale = showProject ? '' : stale;
+  return `                <tr>
+                    <td><strong>${esc(readableName(row.gateName))}</strong>${nameStale}</td>${project}
+                    <td>${resultBadge(row.decision)}</td>
+                    <td>${whatHappened(row)}</td>
+                    <td><time datetime="${esc(row.evaluatedAt)}">${esc(readableDate(row.evaluatedAt))}</time></td>
+                    <td>${linksCell(row)}</td>
                 </tr>`;
-        })
-        .join('\n');
-      return `        <section class="all-evals">
-            <h2>Results against <code>${esc(uri)}</code></h2>
-            <div class="table-scroll" role="region" aria-label="All evals for one result type" tabindex="0"><table class="results-table">
+}
+
+/** One `/evals/` section: heading, one-line explanation, table. */
+function evalSection(
+  heading: string,
+  explainer: string,
+  rows: readonly ResultsRow[],
+  showProject: boolean,
+  stale: ReadonlyMap<string, string>,
+): string {
+  if (rows.length === 0) return '';
+  const head = showProject
+    ? '<th>What was tested</th><th>Project</th><th>Result</th><th>What happened</th><th>Tested on</th><th>Links</th>'
+    : '<th>Skill</th><th>Result</th><th>What happened</th><th>Tested on</th><th>Links</th>';
+  return `        <section class="all-evals">
+            <h2>${esc(heading)}</h2>
+            <p>${esc(explainer)}</p>
+            <div class="table-scroll" role="region" aria-label="${esc(heading)}" tabindex="0"><table class="results-table">
                 <thead>
-                    <tr><th>Eval</th><th>Project</th><th>Decision</th><th>Why</th><th>Evaluated at</th><th>Definition</th></tr>
+                    <tr>${head}</tr>
                 </thead>
                 <tbody>
-${trs}
+${rows.map((r) => evalTr(r, showProject, stale.get(r.repo))).join('\n')}
                 </tbody>
             </table></div>
         </section>`;
-    });
+}
+
+/**
+ * Render `/evals/`: every published test result on one page, written for a
+ * reader who has never seen the platform. Rows are split into AI skill tests
+ * and platform checks; nothing is counted or added up (C3), no-data sources
+ * are named, and the technical identifiers live on the signed record pages.
+ */
+export function renderAllEvalsPage(view: ResultsView): string {
+  const title = 'Every published test | Intent Labs';
+  const description =
+    'Every automated test result Intent Labs publishes, in plain English, with links to what was tested and the signed record.';
+  const all = view.repos.flatMap((r) => r.rows);
+  const byName = (a: ResultsRow, b: ResultsRow): number =>
+    readableName(a.gateName).localeCompare(readableName(b.gateName));
+  const skillRows = all.filter((r) => SKILL_TEST_REPOS.has(r.repo)).sort(byName);
+  const platformRows = all
+    .filter((r) => !SKILL_TEST_REPOS.has(r.repo))
+    .sort((a, b) => projectName(a.repo).localeCompare(projectName(b.repo)) || byName(a, b));
+  const stale = new Map(
+    view.repos.filter((r) => r.staleSince !== undefined).map((r) => [r.repo, r.staleSince ?? '']),
+  );
+  const predicateUris = [...new Set(all.map((r) => r.predicateUri))].sort();
+
+  const sections = [
+    evalSection(
+      'AI skill tests',
+      'Every night we give each AI skill a set of real tasks and grade the finished work against its written rules. A skill passes only if it meets every required rule.',
+      skillRows,
+      false,
+      stale,
+    ),
+    evalSection(
+      'Platform checks',
+      'Automated quality checks on the code behind this lab and our skills marketplace, such as tests, security scans and catalog rules.',
+      platformRows,
+      true,
+      stale,
+    ),
+  ].filter((x) => x !== '');
+
   const empty = view.repos.filter((r) => r.noData).map((r) => r.repo);
   const emptyNote =
     empty.length === 0
       ? ''
       : `        <div class="no-data-panel">
-            <p class="no-data-panel__title"><span class="badge badge--no-data">no-data</span> No verified results yet from: ${empty.map((r) => `<a href="${esc(repoUrl(r))}"><code>${esc(r)}</code></a>`).join(', ')}</p>
-            <p><strong>No data is not a pass.</strong></p>
+            <p class="no-data-panel__title"><span class="badge badge--no-data">No data</span> Nothing published yet from: ${empty.map((r) => `<a href="${esc(repoUrl(r))}">${esc(projectName(r))}</a>`).join(', ')}.</p>
+            <p>No data is not a pass. It means we have no verified result to show.</p>
         </div>`;
   const body =
     sections.length === 0
-      ? `        <p>No verified eval results have been published yet.</p>`
+      ? `        <p>No verified test results have been published yet.</p>`
       : sections.join('\n');
+  const updated =
+    view.asOf === undefined
+      ? `        <p><strong>Last updated:</strong> no verified results yet.</p>`
+      : `        <p><strong>Last updated:</strong> <time datetime="${esc(view.asOf)}">${esc(readableDate(view.asOf))}</time>. Some projects may be newer; each row shows its own test date.</p>`;
+  const footnote =
+    predicateUris.length === 0
+      ? ''
+      : `        <p class="predicate-note">Technical note: each row is one signed, tamper-evident record (${predicateUris.map((u) => `<code>${esc(u)}</code>`).join(', ')}). Open "Signed record" for the hashes, timestamps and transparency-log entry. <a href="/methodology/#evidence">How to read the evidence</a>.</p>`;
+
   return `${PAGE_HEAD(title, description, ALL_EVALS_URL)}
 <body>
 ${SITE_HEADER}
     <main>
-        <p><a href="/results/">← Results by project</a></p>
-        <h1>All evals</h1>
-        <p class="lead">Every published eval, one row each. Click an eval for its signed record, or the definition link for the exact spec that ran.</p>
-        <p>Each row is a separate verdict. We do not add them up into one score.</p>
-${asOfBanner(view)}
+        <h1>Every published test</h1>
+        <p class="lead">This page lists every automated test result we publish. Each row is one test that ran on its own. Results are never added up into a single score.</p>
+        <div class="meta-block">
+            <p style="margin-top:0;"><strong>How to read a result</strong></p>
+            <ul>
+                <li>${resultBadge('pass')} met every required rule.</li>
+                <li>${resultBadge('fail')} missed at least one required rule.</li>
+                <li>${resultBadge('advisory')} finished, but something should be reviewed by a person.</li>
+                <li>${resultBadge('error')} the test itself broke, so there is no verdict.</li>
+            </ul>
+            <p><strong>Words you will see</strong></p>
+            <ul>
+                <li><strong>Criteria</strong> are the written rules each finished task is graded against.</li>
+                <li>A <strong>blocker</strong> is a rule that must pass. Missing one means Failed. Missing a non-blocker means Needs attention.</li>
+                <li><strong>Could not be judged</strong> means the grader could not decide whether a rule was met. It never counts as a pass.</li>
+                <li><strong>Regression comparison</strong> checks the skill against its previous version. Until that comparison runs, even a perfect score stays at Needs attention.</li>
+                <li><strong>Thresholds</strong> are the minimum scores the skill must reach overall.</li>
+            </ul>
+            <p style="margin-bottom:0;"><strong>See the test</strong> opens exactly what was checked. <strong>Signed record</strong> opens the tamper-evident proof of the result.</p>
+        </div>
+${updated}
 ${emptyNote}
 ${body}
+${footnote}
+        <p><a href="/results/">Browse results by project →</a></p>
     </main>
 ${SITE_FOOTER}`;
 }
