@@ -32,8 +32,86 @@
             <p style="margin:0;"><strong>Internal testing dashboard (gated).</strong> This surface renders our own testing results — coverage, mutation, CRAP, architecture, and escape-scan gates — for every platform repo, each one <em>taught</em>: what the gate is, how we run it, what good looks like, our number, the verdict, and exactly what to fix. Every row traces back to a signed, Rekor-anchored <code>gate-result/v1</code> attestation re-verified at ingest. It is served behind a password at <code>internal.intentsolutions.io</code>; it is never indexed and never part of the public site.</p>
         </div>
         <div class="meta-block as-of">
-            <p style="margin:0;"><strong>As of:</strong> <time datetime="2026-10-12T03:45:24.267Z">2026-10-12T03:45:24.267Z</time> — the oldest ingest across all sources in this view (<code>min(ingested_at)</code>).</p>
+            <p style="margin:0;"><strong>As of:</strong> <time datetime="2026-10-12T05:53:35.305Z">2026-10-12T05:53:35.305Z</time> — the oldest ingest across all sources in this view (<code>min(ingested_at)</code>).</p>
         </div>
+        <section class="gate-block">
+            <h2><code>coreweave-fabric-diagnostics</code></h2>
+            <div class="gate-explainer">
+            <h2>What it is</h2>
+            <p>This is the <strong>generic explainer</strong> for any gate that does not yet have its own write-up. A <code>gate-result/v1</code> is the platform&#39;s canonical, signed record of one gate evaluating one thing: it carries a decision (<code>pass</code> / <code>fail</code> / <code>advisory</code> / <code>error</code>), a list of structured reasons, a coverage declaration of what was and was not measured, and the identity of the policy and commit it ran against. Every deterministic gate in the ecosystem — coverage, mutation, CRAP, architecture, escape-scan, and more — emits this same shape, which is what lets one dashboard render all of them.</p>
+            <h2>How we run it</h2>
+            <p>The gate runs in CI, emits its result as a <code>gate-result/v1</code> predicate body inside a signed Evidence Bundle, and anchors it in the public Rekor transparency log. This dashboard ingests the bundle, re-verifies the signature and the Rekor inclusion proof, validates the body against the canonical kernel schema, and only then renders it. A result that fails any of those checks does not appear — it is never silently treated as a pass.</p>
+            <h2>What good looks like</h2>
+            <ul>
+                <li>Read the <strong>decision</strong> and the <strong>verdict</strong> together: <code>pass</code> is good; <code>advisory</code> is a watch; <code>fail</code> is work to do; <code>error</code> means the gate could not run and is treated as loudly as a failure.</li>
+                <li>The <strong>what to fix</strong> list is the gate&#39;s own reasons — the actionable part.</li>
+                <li>The <strong>what we measured</strong> block tells you the scope. A narrow scope with a clean pass is weaker evidence than a broad one; a skipped dimension is not a passed one.</li>
+            </ul>
+            </div>
+            <div class="gate-row gate-row--fail">
+                <p class="gate-row__verdict"><span class="verdict verdict--fail"><span aria-hidden="true">✗</span> fail</span> <span class="badge badge--result-fail">fail</span> <span class="gate-row__headline">Failing — below the policy bar. [failure mode: behavioral-eval-block]</span></p>
+                <dl class="gate-row__meta">
+                    <dt>gate version</dt><dd><code>1.0.0</code></dd>
+                    <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3222132139"><code>3222132139</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-10-12T05:53:40.445Z">2026-10-12T05:53:40.445Z</time></dd>
+                </dl>
+                <div class="measured">
+                    <p><strong>What we measured:</strong> <code>trigger-behavior</code>, <code>functional-criteria</code></p>
+                </div>
+                <div class="what-to-fix">
+                    <p><strong>What to fix:</strong></p>
+                    <ul>
+                        <li>6/11 criteria passed on MiniMax-M3 (provider: minimax)</li>
+                        <li>3 blocker criterion evaluation(s) failed</li>
+                        <li>thresholds did not pass</li>
+                        <li>regression comparison was not run</li>
+                        <li>rollout decision is block</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <section class="gate-block">
+            <h2><code>coreweave-gpu-cost-leak-hunter</code></h2>
+            <div class="gate-explainer">
+            <h2>What it is</h2>
+            <p>This is the <strong>generic explainer</strong> for any gate that does not yet have its own write-up. A <code>gate-result/v1</code> is the platform&#39;s canonical, signed record of one gate evaluating one thing: it carries a decision (<code>pass</code> / <code>fail</code> / <code>advisory</code> / <code>error</code>), a list of structured reasons, a coverage declaration of what was and was not measured, and the identity of the policy and commit it ran against. Every deterministic gate in the ecosystem — coverage, mutation, CRAP, architecture, escape-scan, and more — emits this same shape, which is what lets one dashboard render all of them.</p>
+            <h2>How we run it</h2>
+            <p>The gate runs in CI, emits its result as a <code>gate-result/v1</code> predicate body inside a signed Evidence Bundle, and anchors it in the public Rekor transparency log. This dashboard ingests the bundle, re-verifies the signature and the Rekor inclusion proof, validates the body against the canonical kernel schema, and only then renders it. A result that fails any of those checks does not appear — it is never silently treated as a pass.</p>
+            <h2>What good looks like</h2>
+            <ul>
+                <li>Read the <strong>decision</strong> and the <strong>verdict</strong> together: <code>pass</code> is good; <code>advisory</code> is a watch; <code>fail</code> is work to do; <code>error</code> means the gate could not run and is treated as loudly as a failure.</li>
+                <li>The <strong>what to fix</strong> list is the gate&#39;s own reasons — the actionable part.</li>
+                <li>The <strong>what we measured</strong> block tells you the scope. A narrow scope with a clean pass is weaker evidence than a broad one; a skipped dimension is not a passed one.</li>
+            </ul>
+            </div>
+            <div class="gate-row gate-row--fail">
+                <p class="gate-row__verdict"><span class="verdict verdict--fail"><span aria-hidden="true">✗</span> fail</span> <span class="badge badge--result-fail">fail</span> <span class="gate-row__headline">Failing — below the policy bar. [failure mode: behavioral-eval-block]</span></p>
+                <dl class="gate-row__meta">
+                    <dt>gate version</dt><dd><code>1.0.0</code></dd>
+                    <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3222128404"><code>3222128404</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-10-12T05:53:40.445Z">2026-10-12T05:53:40.445Z</time></dd>
+                </dl>
+                <div class="measured">
+                    <p><strong>What we measured:</strong> <code>trigger-behavior</code>, <code>functional-criteria</code></p>
+                </div>
+                <div class="what-to-fix">
+                    <p><strong>What to fix:</strong></p>
+                    <ul>
+                        <li>6/11 criteria passed on MiniMax-M3 (provider: minimax)</li>
+                        <li>3 blocker criterion evaluation(s) failed</li>
+                        <li>thresholds did not pass</li>
+                        <li>regression comparison was not run</li>
+                        <li>rollout decision is block</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
         <section class="gate-block">
             <h2><code>coreweave-gpu-node-forensics</code></h2>
             <div class="gate-explainer">
@@ -53,10 +131,10 @@
                 <dl class="gate-row__meta">
                     <dt>gate version</dt><dd><code>1.0.0</code></dd>
                     <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3199584119"><code>3199584119</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-10-12T03:45:28.809Z">2026-10-12T03:45:28.809Z</time></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3222127765"><code>3222127765</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-10-12T05:53:40.445Z">2026-10-12T05:53:40.445Z</time></dd>
                 </dl>
                 <div class="measured">
                     <p><strong>What we measured:</strong> <code>trigger-behavior</code>, <code>functional-criteria</code></p>
@@ -64,86 +142,8 @@
                 <div class="what-to-fix">
                     <p><strong>What to fix:</strong></p>
                     <ul>
-                        <li>13/18 criteria passed on MiniMax-M3 (provider: minimax)</li>
-                        <li>1 blocker criterion evaluation(s) failed</li>
-                        <li>thresholds did not pass</li>
-                        <li>regression comparison was not run</li>
-                        <li>rollout decision is block</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-        <section class="gate-block">
-            <h2><code>databricks-cost-leak-hunter</code></h2>
-            <div class="gate-explainer">
-            <h2>What it is</h2>
-            <p>This is the <strong>generic explainer</strong> for any gate that does not yet have its own write-up. A <code>gate-result/v1</code> is the platform&#39;s canonical, signed record of one gate evaluating one thing: it carries a decision (<code>pass</code> / <code>fail</code> / <code>advisory</code> / <code>error</code>), a list of structured reasons, a coverage declaration of what was and was not measured, and the identity of the policy and commit it ran against. Every deterministic gate in the ecosystem — coverage, mutation, CRAP, architecture, escape-scan, and more — emits this same shape, which is what lets one dashboard render all of them.</p>
-            <h2>How we run it</h2>
-            <p>The gate runs in CI, emits its result as a <code>gate-result/v1</code> predicate body inside a signed Evidence Bundle, and anchors it in the public Rekor transparency log. This dashboard ingests the bundle, re-verifies the signature and the Rekor inclusion proof, validates the body against the canonical kernel schema, and only then renders it. A result that fails any of those checks does not appear — it is never silently treated as a pass.</p>
-            <h2>What good looks like</h2>
-            <ul>
-                <li>Read the <strong>decision</strong> and the <strong>verdict</strong> together: <code>pass</code> is good; <code>advisory</code> is a watch; <code>fail</code> is work to do; <code>error</code> means the gate could not run and is treated as loudly as a failure.</li>
-                <li>The <strong>what to fix</strong> list is the gate&#39;s own reasons — the actionable part.</li>
-                <li>The <strong>what we measured</strong> block tells you the scope. A narrow scope with a clean pass is weaker evidence than a broad one; a skipped dimension is not a passed one.</li>
-            </ul>
-            </div>
-            <div class="gate-row gate-row--fail">
-                <p class="gate-row__verdict"><span class="verdict verdict--fail"><span aria-hidden="true">✗</span> fail</span> <span class="badge badge--result-fail">fail</span> <span class="gate-row__headline">Failing — below the policy bar. [failure mode: behavioral-eval-block]</span></p>
-                <dl class="gate-row__meta">
-                    <dt>gate version</dt><dd><code>1.0.0</code></dd>
-                    <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3199587752"><code>3199587752</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-10-12T03:45:28.809Z">2026-10-12T03:45:28.809Z</time></dd>
-                </dl>
-                <div class="measured">
-                    <p><strong>What we measured:</strong> <code>trigger-behavior</code>, <code>functional-criteria</code></p>
-                </div>
-                <div class="what-to-fix">
-                    <p><strong>What to fix:</strong></p>
-                    <ul>
-                        <li>4/10 criteria passed on MiniMax-M3 (provider: minimax)</li>
-                        <li>3 blocker criterion evaluation(s) failed</li>
-                        <li>thresholds did not pass</li>
-                        <li>regression comparison was not run</li>
-                        <li>rollout decision is block</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-        <section class="gate-block">
-            <h2><code>databricks-streaming-guardian</code></h2>
-            <div class="gate-explainer">
-            <h2>What it is</h2>
-            <p>This is the <strong>generic explainer</strong> for any gate that does not yet have its own write-up. A <code>gate-result/v1</code> is the platform&#39;s canonical, signed record of one gate evaluating one thing: it carries a decision (<code>pass</code> / <code>fail</code> / <code>advisory</code> / <code>error</code>), a list of structured reasons, a coverage declaration of what was and was not measured, and the identity of the policy and commit it ran against. Every deterministic gate in the ecosystem — coverage, mutation, CRAP, architecture, escape-scan, and more — emits this same shape, which is what lets one dashboard render all of them.</p>
-            <h2>How we run it</h2>
-            <p>The gate runs in CI, emits its result as a <code>gate-result/v1</code> predicate body inside a signed Evidence Bundle, and anchors it in the public Rekor transparency log. This dashboard ingests the bundle, re-verifies the signature and the Rekor inclusion proof, validates the body against the canonical kernel schema, and only then renders it. A result that fails any of those checks does not appear — it is never silently treated as a pass.</p>
-            <h2>What good looks like</h2>
-            <ul>
-                <li>Read the <strong>decision</strong> and the <strong>verdict</strong> together: <code>pass</code> is good; <code>advisory</code> is a watch; <code>fail</code> is work to do; <code>error</code> means the gate could not run and is treated as loudly as a failure.</li>
-                <li>The <strong>what to fix</strong> list is the gate&#39;s own reasons — the actionable part.</li>
-                <li>The <strong>what we measured</strong> block tells you the scope. A narrow scope with a clean pass is weaker evidence than a broad one; a skipped dimension is not a passed one.</li>
-            </ul>
-            </div>
-            <div class="gate-row gate-row--fail">
-                <p class="gate-row__verdict"><span class="verdict verdict--fail"><span aria-hidden="true">✗</span> fail</span> <span class="badge badge--result-fail">fail</span> <span class="gate-row__headline">Failing — below the policy bar. [failure mode: behavioral-eval-block]</span></p>
-                <dl class="gate-row__meta">
-                    <dt>gate version</dt><dd><code>1.0.0</code></dd>
-                    <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3199588026"><code>3199588026</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-10-12T03:45:28.809Z">2026-10-12T03:45:28.809Z</time></dd>
-                </dl>
-                <div class="measured">
-                    <p><strong>What we measured:</strong> <code>trigger-behavior</code>, <code>functional-criteria</code></p>
-                </div>
-                <div class="what-to-fix">
-                    <p><strong>What to fix:</strong></p>
-                    <ul>
-                        <li>14/15 criteria passed on MiniMax-M3 (provider: minimax)</li>
-                        <li>1 blocker criterion evaluation(s) failed</li>
+                        <li>11/18 criteria passed on MiniMax-M3 (provider: minimax)</li>
+                        <li>2 blocker criterion evaluation(s) failed</li>
                         <li>thresholds did not pass</li>
                         <li>regression comparison was not run</li>
                         <li>rollout decision is block</li>
@@ -170,10 +170,10 @@
                 <dl class="gate-row__meta">
                     <dt>gate version</dt><dd><code>1.0.0</code></dd>
                     <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3199585425"><code>3199585425</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-10-12T03:45:28.809Z">2026-10-12T03:45:28.809Z</time></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3222130392"><code>3222130392</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-10-12T05:53:40.445Z">2026-10-12T05:53:40.445Z</time></dd>
                 </dl>
                 <div class="measured">
                     <p><strong>What we measured:</strong> <em>none declared</em></p>
@@ -188,7 +188,7 @@
             </div>
         </section>
         <section class="gate-block">
-            <h2><code>coreweave-fabric-diagnostics</code></h2>
+            <h2><code>databricks-cost-leak-hunter</code></h2>
             <div class="gate-explainer">
             <h2>What it is</h2>
             <p>This is the <strong>generic explainer</strong> for any gate that does not yet have its own write-up. A <code>gate-result/v1</code> is the platform&#39;s canonical, signed record of one gate evaluating one thing: it carries a decision (<code>pass</code> / <code>fail</code> / <code>advisory</code> / <code>error</code>), a list of structured reasons, a coverage declaration of what was and was not measured, and the identity of the policy and commit it ran against. Every deterministic gate in the ecosystem — coverage, mutation, CRAP, architecture, escape-scan, and more — emits this same shape, which is what lets one dashboard render all of them.</p>
@@ -206,10 +206,10 @@
                 <dl class="gate-row__meta">
                     <dt>gate version</dt><dd><code>1.0.0</code></dd>
                     <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3199586757"><code>3199586757</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-10-12T03:45:28.809Z">2026-10-12T03:45:28.809Z</time></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3222134067"><code>3222134067</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-10-12T05:53:40.445Z">2026-10-12T05:53:40.445Z</time></dd>
                 </dl>
                 <div class="measured">
                     <p><strong>What we measured:</strong> <em>none declared</em></p>
@@ -218,13 +218,13 @@
                     <p><strong>What to fix:</strong></p>
                     <ul>
                         <li>provider_failure/trigger [minimax rate_limit, retryable]: trigger provider failed on 6 of 6 routing case(s); the evaluation is incomplete: Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)</li>
-                        <li>nightly eval did not complete for coreweave-fabric-diagnostics (see coreweave-fabric-diagnostics.error.log in the run)</li>
+                        <li>nightly eval did not complete for databricks-cost-leak-hunter (see databricks-cost-leak-hunter.error.log in the run)</li>
                     </ul>
                 </div>
             </div>
         </section>
         <section class="gate-block">
-            <h2><code>coreweave-gpu-cost-leak-hunter</code></h2>
+            <h2><code>databricks-streaming-guardian</code></h2>
             <div class="gate-explainer">
             <h2>What it is</h2>
             <p>This is the <strong>generic explainer</strong> for any gate that does not yet have its own write-up. A <code>gate-result/v1</code> is the platform&#39;s canonical, signed record of one gate evaluating one thing: it carries a decision (<code>pass</code> / <code>fail</code> / <code>advisory</code> / <code>error</code>), a list of structured reasons, a coverage declaration of what was and was not measured, and the identity of the policy and commit it ran against. Every deterministic gate in the ecosystem — coverage, mutation, CRAP, architecture, escape-scan, and more — emits this same shape, which is what lets one dashboard render all of them.</p>
@@ -242,46 +242,10 @@
                 <dl class="gate-row__meta">
                     <dt>gate version</dt><dd><code>1.0.0</code></dd>
                     <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3199584504"><code>3199584504</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-10-12T03:45:28.809Z">2026-10-12T03:45:28.809Z</time></dd>
-                </dl>
-                <div class="measured">
-                    <p><strong>What we measured:</strong> <em>none declared</em></p>
-<p class="measured__skipped"><strong>Not measured (skipped):</strong> <code>trigger-behavior</code>, <code>functional-criteria</code> — a skipped dimension is not a passed one.</p>                </div>
-                <div class="what-to-fix">
-                    <p><strong>What to fix:</strong></p>
-                    <ul>
-                        <li>provider_failure/execution [minimax rate_limit, retryable]: execution provider failed on 5 of 7 test case(s); the skill was not exercised: Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)</li>
-                        <li>nightly eval did not complete for coreweave-gpu-cost-leak-hunter (see coreweave-gpu-cost-leak-hunter.error.log in the run)</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-        <section class="gate-block">
-            <h2><code>databricks-bundle-medic</code></h2>
-            <div class="gate-explainer">
-            <h2>What it is</h2>
-            <p>This is the <strong>generic explainer</strong> for any gate that does not yet have its own write-up. A <code>gate-result/v1</code> is the platform&#39;s canonical, signed record of one gate evaluating one thing: it carries a decision (<code>pass</code> / <code>fail</code> / <code>advisory</code> / <code>error</code>), a list of structured reasons, a coverage declaration of what was and was not measured, and the identity of the policy and commit it ran against. Every deterministic gate in the ecosystem — coverage, mutation, CRAP, architecture, escape-scan, and more — emits this same shape, which is what lets one dashboard render all of them.</p>
-            <h2>How we run it</h2>
-            <p>The gate runs in CI, emits its result as a <code>gate-result/v1</code> predicate body inside a signed Evidence Bundle, and anchors it in the public Rekor transparency log. This dashboard ingests the bundle, re-verifies the signature and the Rekor inclusion proof, validates the body against the canonical kernel schema, and only then renders it. A result that fails any of those checks does not appear — it is never silently treated as a pass.</p>
-            <h2>What good looks like</h2>
-            <ul>
-                <li>Read the <strong>decision</strong> and the <strong>verdict</strong> together: <code>pass</code> is good; <code>advisory</code> is a watch; <code>fail</code> is work to do; <code>error</code> means the gate could not run and is treated as loudly as a failure.</li>
-                <li>The <strong>what to fix</strong> list is the gate&#39;s own reasons — the actionable part.</li>
-                <li>The <strong>what we measured</strong> block tells you the scope. A narrow scope with a clean pass is weaker evidence than a broad one; a skipped dimension is not a passed one.</li>
-            </ul>
-            </div>
-            <div class="gate-row gate-row--error">
-                <p class="gate-row__verdict"><span class="verdict verdict--error"><span aria-hidden="true">⚠</span> error</span> <span class="badge badge--result-error">error</span> <span class="gate-row__headline">Could not evaluate — the gate errored. This is not a pass.</span></p>
-                <dl class="gate-row__meta">
-                    <dt>gate version</dt><dd><code>1.0.0</code></dd>
-                    <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3199587021"><code>3199587021</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-10-12T03:45:28.809Z">2026-10-12T03:45:28.809Z</time></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3222134877"><code>3222134877</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-10-12T05:53:40.445Z">2026-10-12T05:53:40.445Z</time></dd>
                 </dl>
                 <div class="measured">
                     <p><strong>What we measured:</strong> <em>none declared</em></p>
@@ -290,43 +254,7 @@
                     <p><strong>What to fix:</strong></p>
                     <ul>
                         <li>provider_failure/trigger [minimax rate_limit, retryable]: trigger provider failed on 7 of 7 routing case(s); the evaluation is incomplete: Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)</li>
-                        <li>nightly eval did not complete for databricks-bundle-medic (see databricks-bundle-medic.error.log in the run)</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-        <section class="gate-block">
-            <h2><code>databricks-cluster-forensics</code></h2>
-            <div class="gate-explainer">
-            <h2>What it is</h2>
-            <p>This is the <strong>generic explainer</strong> for any gate that does not yet have its own write-up. A <code>gate-result/v1</code> is the platform&#39;s canonical, signed record of one gate evaluating one thing: it carries a decision (<code>pass</code> / <code>fail</code> / <code>advisory</code> / <code>error</code>), a list of structured reasons, a coverage declaration of what was and was not measured, and the identity of the policy and commit it ran against. Every deterministic gate in the ecosystem — coverage, mutation, CRAP, architecture, escape-scan, and more — emits this same shape, which is what lets one dashboard render all of them.</p>
-            <h2>How we run it</h2>
-            <p>The gate runs in CI, emits its result as a <code>gate-result/v1</code> predicate body inside a signed Evidence Bundle, and anchors it in the public Rekor transparency log. This dashboard ingests the bundle, re-verifies the signature and the Rekor inclusion proof, validates the body against the canonical kernel schema, and only then renders it. A result that fails any of those checks does not appear — it is never silently treated as a pass.</p>
-            <h2>What good looks like</h2>
-            <ul>
-                <li>Read the <strong>decision</strong> and the <strong>verdict</strong> together: <code>pass</code> is good; <code>advisory</code> is a watch; <code>fail</code> is work to do; <code>error</code> means the gate could not run and is treated as loudly as a failure.</li>
-                <li>The <strong>what to fix</strong> list is the gate&#39;s own reasons — the actionable part.</li>
-                <li>The <strong>what we measured</strong> block tells you the scope. A narrow scope with a clean pass is weaker evidence than a broad one; a skipped dimension is not a passed one.</li>
-            </ul>
-            </div>
-            <div class="gate-row gate-row--error">
-                <p class="gate-row__verdict"><span class="verdict verdict--error"><span aria-hidden="true">⚠</span> error</span> <span class="badge badge--result-error">error</span> <span class="gate-row__headline">Could not evaluate — the gate errored. This is not a pass.</span></p>
-                <dl class="gate-row__meta">
-                    <dt>gate version</dt><dd><code>1.0.0</code></dd>
-                    <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3199587296"><code>3199587296</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-10-12T03:45:28.809Z">2026-10-12T03:45:28.809Z</time></dd>
-                </dl>
-                <div class="measured">
-                    <p><strong>What we measured:</strong> <em>none declared</em></p>
-<p class="measured__skipped"><strong>Not measured (skipped):</strong> <code>trigger-behavior</code>, <code>functional-criteria</code> — a skipped dimension is not a passed one.</p>                </div>
-                <div class="what-to-fix">
-                    <p><strong>What to fix:</strong></p>
-                    <ul>
-                        <li>provider_failure/trigger [minimax rate_limit, retryable]: trigger provider failed on 5 of 7 routing case(s); the evaluation is incomplete: Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)</li>
-                        <li>nightly eval did not complete for databricks-cluster-forensics (see databricks-cluster-forensics.error.log in the run)</li>
+                        <li>nightly eval did not complete for databricks-streaming-guardian (see databricks-streaming-guardian.error.log in the run)</li>
                     </ul>
                 </div>
             </div>
@@ -350,10 +278,10 @@
                 <dl class="gate-row__meta">
                     <dt>gate version</dt><dd><code>1.0.0</code></dd>
                     <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3199588301"><code>3199588301</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-10-12T03:45:28.809Z">2026-10-12T03:45:28.809Z</time></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3222135784"><code>3222135784</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-10-12T05:53:40.445Z">2026-10-12T05:53:40.445Z</time></dd>
                 </dl>
                 <div class="measured">
                     <p><strong>What we measured:</strong> <em>none declared</em></p>
@@ -361,7 +289,7 @@
                 <div class="what-to-fix">
                     <p><strong>What to fix:</strong></p>
                     <ul>
-                        <li>provider_failure/trigger [minimax rate_limit, retryable]: trigger provider failed on 2 of 7 routing case(s); the evaluation is incomplete: Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)</li>
+                        <li>provider_failure/trigger [minimax rate_limit, retryable]: trigger provider failed on 7 of 7 routing case(s); the evaluation is incomplete: Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)</li>
                         <li>nightly eval did not complete for databricks-uc-migration-pilot (see databricks-uc-migration-pilot.error.log in the run)</li>
                     </ul>
                 </div>
@@ -386,10 +314,10 @@
                 <dl class="gate-row__meta">
                     <dt>gate version</dt><dd><code>1.0.0</code></dd>
                     <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3199588617"><code>3199588617</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-10-12T03:45:28.809Z">2026-10-12T03:45:28.809Z</time></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3222136544"><code>3222136544</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-10-12T05:53:40.445Z">2026-10-12T05:53:40.445Z</time></dd>
                 </dl>
                 <div class="measured">
                     <p><strong>What we measured:</strong> <em>none declared</em></p>
@@ -422,10 +350,10 @@
                 <dl class="gate-row__meta">
                     <dt>gate version</dt><dd><code>1.0.0</code></dd>
                     <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3199588907"><code>3199588907</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-10-12T03:45:28.809Z">2026-10-12T03:45:28.809Z</time></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3222137190"><code>3222137190</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-10-12T05:53:40.445Z">2026-10-12T05:53:40.445Z</time></dd>
                 </dl>
                 <div class="measured">
                     <p><strong>What we measured:</strong> <em>none declared</em></p>
@@ -435,42 +363,6 @@
                     <ul>
                         <li>provider_failure/trigger [minimax rate_limit, retryable]: trigger provider failed on 7 of 7 routing case(s); the evaluation is incomplete: Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)</li>
                         <li>nightly eval did not complete for sentry-data-handling (see sentry-data-handling.error.log in the run)</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-        <section class="gate-block">
-            <h2><code>skill-creator</code></h2>
-            <div class="gate-explainer">
-            <h2>What it is</h2>
-            <p>This is the <strong>generic explainer</strong> for any gate that does not yet have its own write-up. A <code>gate-result/v1</code> is the platform&#39;s canonical, signed record of one gate evaluating one thing: it carries a decision (<code>pass</code> / <code>fail</code> / <code>advisory</code> / <code>error</code>), a list of structured reasons, a coverage declaration of what was and was not measured, and the identity of the policy and commit it ran against. Every deterministic gate in the ecosystem — coverage, mutation, CRAP, architecture, escape-scan, and more — emits this same shape, which is what lets one dashboard render all of them.</p>
-            <h2>How we run it</h2>
-            <p>The gate runs in CI, emits its result as a <code>gate-result/v1</code> predicate body inside a signed Evidence Bundle, and anchors it in the public Rekor transparency log. This dashboard ingests the bundle, re-verifies the signature and the Rekor inclusion proof, validates the body against the canonical kernel schema, and only then renders it. A result that fails any of those checks does not appear — it is never silently treated as a pass.</p>
-            <h2>What good looks like</h2>
-            <ul>
-                <li>Read the <strong>decision</strong> and the <strong>verdict</strong> together: <code>pass</code> is good; <code>advisory</code> is a watch; <code>fail</code> is work to do; <code>error</code> means the gate could not run and is treated as loudly as a failure.</li>
-                <li>The <strong>what to fix</strong> list is the gate&#39;s own reasons — the actionable part.</li>
-                <li>The <strong>what we measured</strong> block tells you the scope. A narrow scope with a clean pass is weaker evidence than a broad one; a skipped dimension is not a passed one.</li>
-            </ul>
-            </div>
-            <div class="gate-row gate-row--error">
-                <p class="gate-row__verdict"><span class="verdict verdict--error"><span aria-hidden="true">⚠</span> error</span> <span class="badge badge--result-error">error</span> <span class="gate-row__headline">Could not evaluate — the gate errored. This is not a pass.</span></p>
-                <dl class="gate-row__meta">
-                    <dt>gate version</dt><dd><code>1.0.0</code></dd>
-                    <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3199586333"><code>3199586333</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-10-12T03:45:28.809Z">2026-10-12T03:45:28.809Z</time></dd>
-                </dl>
-                <div class="measured">
-                    <p><strong>What we measured:</strong> <em>none declared</em></p>
-<p class="measured__skipped"><strong>Not measured (skipped):</strong> <code>trigger-behavior</code>, <code>functional-criteria</code> — a skipped dimension is not a passed one.</p>                </div>
-                <div class="what-to-fix">
-                    <p><strong>What to fix:</strong></p>
-                    <ul>
-                        <li>provider_failure/trigger [minimax rate_limit, retryable]: trigger provider failed on 3 of 3 routing case(s); the evaluation is incomplete: Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)</li>
-                        <li>nightly eval did not complete for skill-creator (see skill-creator.error.log in the run)</li>
                     </ul>
                 </div>
             </div>
@@ -494,10 +386,10 @@
                 <dl class="gate-row__meta">
                     <dt>gate version</dt><dd><code>1.0.0</code></dd>
                     <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3199584822"><code>3199584822</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-10-12T03:45:28.809Z">2026-10-12T03:45:28.809Z</time></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3222129779"><code>3222129779</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-10-12T05:53:40.445Z">2026-10-12T05:53:40.445Z</time></dd>
                 </dl>
                 <div class="measured">
                     <p><strong>What we measured:</strong> <em>none declared</em></p>
@@ -507,6 +399,119 @@
                     <ul>
                         <li>provider_failure/trigger [minimax rate_limit, retryable]: trigger provider failed on 7 of 7 routing case(s); the evaluation is incomplete: Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)</li>
                         <li>nightly eval did not complete for supabase-known-pitfalls (see supabase-known-pitfalls.error.log in the run)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <section class="gate-block">
+            <h2><code>databricks-bundle-medic</code></h2>
+            <div class="gate-explainer">
+            <h2>What it is</h2>
+            <p>This is the <strong>generic explainer</strong> for any gate that does not yet have its own write-up. A <code>gate-result/v1</code> is the platform&#39;s canonical, signed record of one gate evaluating one thing: it carries a decision (<code>pass</code> / <code>fail</code> / <code>advisory</code> / <code>error</code>), a list of structured reasons, a coverage declaration of what was and was not measured, and the identity of the policy and commit it ran against. Every deterministic gate in the ecosystem — coverage, mutation, CRAP, architecture, escape-scan, and more — emits this same shape, which is what lets one dashboard render all of them.</p>
+            <h2>How we run it</h2>
+            <p>The gate runs in CI, emits its result as a <code>gate-result/v1</code> predicate body inside a signed Evidence Bundle, and anchors it in the public Rekor transparency log. This dashboard ingests the bundle, re-verifies the signature and the Rekor inclusion proof, validates the body against the canonical kernel schema, and only then renders it. A result that fails any of those checks does not appear — it is never silently treated as a pass.</p>
+            <h2>What good looks like</h2>
+            <ul>
+                <li>Read the <strong>decision</strong> and the <strong>verdict</strong> together: <code>pass</code> is good; <code>advisory</code> is a watch; <code>fail</code> is work to do; <code>error</code> means the gate could not run and is treated as loudly as a failure.</li>
+                <li>The <strong>what to fix</strong> list is the gate&#39;s own reasons — the actionable part.</li>
+                <li>The <strong>what we measured</strong> block tells you the scope. A narrow scope with a clean pass is weaker evidence than a broad one; a skipped dimension is not a passed one.</li>
+            </ul>
+            </div>
+            <div class="gate-row gate-row--watch">
+                <p class="gate-row__verdict"><span class="verdict verdict--watch"><span aria-hidden="true">!</span> watch</span> <span class="badge badge--result-advisory">advisory</span> <span class="gate-row__headline">Advisory (warn) — not blocking, but worth attention.</span></p>
+                <dl class="gate-row__meta">
+                    <dt>gate version</dt><dd><code>1.0.0</code></dd>
+                    <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3222133021"><code>3222133021</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-10-12T05:53:40.445Z">2026-10-12T05:53:40.445Z</time></dd>
+                </dl>
+                <div class="measured">
+                    <p><strong>What we measured:</strong> <code>trigger-behavior</code>, <code>functional-criteria</code></p>
+                </div>
+                <div class="what-to-fix">
+                    <p><strong>What to fix:</strong></p>
+                    <ul>
+                        <li>13/13 criteria passed on MiniMax-M3 (provider: minimax)</li>
+                        <li>thresholds passed</li>
+                        <li>regression comparison was not run</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <section class="gate-block">
+            <h2><code>databricks-cluster-forensics</code></h2>
+            <div class="gate-explainer">
+            <h2>What it is</h2>
+            <p>This is the <strong>generic explainer</strong> for any gate that does not yet have its own write-up. A <code>gate-result/v1</code> is the platform&#39;s canonical, signed record of one gate evaluating one thing: it carries a decision (<code>pass</code> / <code>fail</code> / <code>advisory</code> / <code>error</code>), a list of structured reasons, a coverage declaration of what was and was not measured, and the identity of the policy and commit it ran against. Every deterministic gate in the ecosystem — coverage, mutation, CRAP, architecture, escape-scan, and more — emits this same shape, which is what lets one dashboard render all of them.</p>
+            <h2>How we run it</h2>
+            <p>The gate runs in CI, emits its result as a <code>gate-result/v1</code> predicate body inside a signed Evidence Bundle, and anchors it in the public Rekor transparency log. This dashboard ingests the bundle, re-verifies the signature and the Rekor inclusion proof, validates the body against the canonical kernel schema, and only then renders it. A result that fails any of those checks does not appear — it is never silently treated as a pass.</p>
+            <h2>What good looks like</h2>
+            <ul>
+                <li>Read the <strong>decision</strong> and the <strong>verdict</strong> together: <code>pass</code> is good; <code>advisory</code> is a watch; <code>fail</code> is work to do; <code>error</code> means the gate could not run and is treated as loudly as a failure.</li>
+                <li>The <strong>what to fix</strong> list is the gate&#39;s own reasons — the actionable part.</li>
+                <li>The <strong>what we measured</strong> block tells you the scope. A narrow scope with a clean pass is weaker evidence than a broad one; a skipped dimension is not a passed one.</li>
+            </ul>
+            </div>
+            <div class="gate-row gate-row--watch">
+                <p class="gate-row__verdict"><span class="verdict verdict--watch"><span aria-hidden="true">!</span> watch</span> <span class="badge badge--result-advisory">advisory</span> <span class="gate-row__headline">Advisory (warn) — not blocking, but worth attention.</span></p>
+                <dl class="gate-row__meta">
+                    <dt>gate version</dt><dd><code>1.0.0</code></dd>
+                    <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3222133429"><code>3222133429</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-10-12T05:53:40.445Z">2026-10-12T05:53:40.445Z</time></dd>
+                </dl>
+                <div class="measured">
+                    <p><strong>What we measured:</strong> <code>trigger-behavior</code>, <code>functional-criteria</code></p>
+                </div>
+                <div class="what-to-fix">
+                    <p><strong>What to fix:</strong></p>
+                    <ul>
+                        <li>12/12 criteria passed on MiniMax-M3 (provider: minimax)</li>
+                        <li>thresholds passed</li>
+                        <li>regression comparison was not run</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <section class="gate-block">
+            <h2><code>skill-creator</code></h2>
+            <div class="gate-explainer">
+            <h2>What it is</h2>
+            <p>This is the <strong>generic explainer</strong> for any gate that does not yet have its own write-up. A <code>gate-result/v1</code> is the platform&#39;s canonical, signed record of one gate evaluating one thing: it carries a decision (<code>pass</code> / <code>fail</code> / <code>advisory</code> / <code>error</code>), a list of structured reasons, a coverage declaration of what was and was not measured, and the identity of the policy and commit it ran against. Every deterministic gate in the ecosystem — coverage, mutation, CRAP, architecture, escape-scan, and more — emits this same shape, which is what lets one dashboard render all of them.</p>
+            <h2>How we run it</h2>
+            <p>The gate runs in CI, emits its result as a <code>gate-result/v1</code> predicate body inside a signed Evidence Bundle, and anchors it in the public Rekor transparency log. This dashboard ingests the bundle, re-verifies the signature and the Rekor inclusion proof, validates the body against the canonical kernel schema, and only then renders it. A result that fails any of those checks does not appear — it is never silently treated as a pass.</p>
+            <h2>What good looks like</h2>
+            <ul>
+                <li>Read the <strong>decision</strong> and the <strong>verdict</strong> together: <code>pass</code> is good; <code>advisory</code> is a watch; <code>fail</code> is work to do; <code>error</code> means the gate could not run and is treated as loudly as a failure.</li>
+                <li>The <strong>what to fix</strong> list is the gate&#39;s own reasons — the actionable part.</li>
+                <li>The <strong>what we measured</strong> block tells you the scope. A narrow scope with a clean pass is weaker evidence than a broad one; a skipped dimension is not a passed one.</li>
+            </ul>
+            </div>
+            <div class="gate-row gate-row--watch">
+                <p class="gate-row__verdict"><span class="verdict verdict--watch"><span aria-hidden="true">!</span> watch</span> <span class="badge badge--result-advisory">advisory</span> <span class="gate-row__headline">Advisory (warn) — not blocking, but worth attention.</span></p>
+                <dl class="gate-row__meta">
+                    <dt>gate version</dt><dd><code>1.0.0</code></dd>
+                    <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3222131306"><code>3222131306</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-10-12T05:53:40.445Z">2026-10-12T05:53:40.445Z</time></dd>
+                </dl>
+                <div class="measured">
+                    <p><strong>What we measured:</strong> <code>trigger-behavior</code>, <code>functional-criteria</code></p>
+                </div>
+                <div class="what-to-fix">
+                    <p><strong>What to fix:</strong></p>
+                    <ul>
+                        <li>7/10 criteria passed on MiniMax-M3 (provider: minimax)</li>
+                        <li>3 non-blocker criterion evaluation(s) failed</li>
+                        <li>thresholds did not pass</li>
+                        <li>regression comparison was not run</li>
+                        <li>rollout decision is warn</li>
                     </ul>
                 </div>
             </div>
@@ -525,24 +530,27 @@
                 <li>The <strong>what we measured</strong> block tells you the scope. A narrow scope with a clean pass is weaker evidence than a broad one; a skipped dimension is not a passed one.</li>
             </ul>
             </div>
-            <div class="gate-row gate-row--error">
-                <p class="gate-row__verdict"><span class="verdict verdict--error"><span aria-hidden="true">⚠</span> error</span> <span class="badge badge--result-error">error</span> <span class="gate-row__headline">Could not evaluate — the gate errored. This is not a pass.</span></p>
+            <div class="gate-row gate-row--watch">
+                <p class="gate-row__verdict"><span class="verdict verdict--watch"><span aria-hidden="true">!</span> watch</span> <span class="badge badge--result-advisory">advisory</span> <span class="gate-row__headline">Advisory (warn) — not blocking, but worth attention.</span></p>
                 <dl class="gate-row__meta">
                     <dt>gate version</dt><dd><code>1.0.0</code></dd>
                     <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-10-11T03:57:52.630Z">2026-10-11T03:57:52.630Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3199585978"><code>3199585978</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-10-12T03:45:28.809Z">2026-10-12T03:45:28.809Z</time></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-10-12T05:48:18.579Z">2026-10-12T05:48:18.579Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3222130934"><code>3222130934</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-10-12T05:53:40.445Z">2026-10-12T05:53:40.445Z</time></dd>
                 </dl>
                 <div class="measured">
-                    <p><strong>What we measured:</strong> <em>none declared</em></p>
-<p class="measured__skipped"><strong>Not measured (skipped):</strong> <code>trigger-behavior</code>, <code>functional-criteria</code> — a skipped dimension is not a passed one.</p>                </div>
+                    <p><strong>What we measured:</strong> <code>trigger-behavior</code>, <code>functional-criteria</code></p>
+                </div>
                 <div class="what-to-fix">
                     <p><strong>What to fix:</strong></p>
                     <ul>
-                        <li>provider_failure/trigger [minimax rate_limit, retryable]: trigger provider failed on 2 of 2 routing case(s); the evaluation is incomplete: Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)</li>
-                        <li>nightly eval did not complete for validate-skillmd (see validate-skillmd.error.log in the run)</li>
+                        <li>2/5 criteria passed on MiniMax-M3 (provider: minimax)</li>
+                        <li>3 non-blocker criterion evaluation(s) failed</li>
+                        <li>thresholds did not pass</li>
+                        <li>regression comparison was not run</li>
+                        <li>rollout decision is warn</li>
                     </ul>
                 </div>
             </div>
