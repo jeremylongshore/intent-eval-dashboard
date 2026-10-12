@@ -2,13 +2,11 @@
  * Verify that the gate-result body adjacent to a signed EvidenceBundle is the
  * exact body the signed bundle commits to.
  *
- * The kernel EvidenceBundle is strict metadata and cannot embed predicate
- * bodies. Producers therefore place `gateResults` beside the signed bundle in
- * report-manifest.json and commit to the canonical body through storage_key,
- * subject_set, row_count, and predicate_uri_set. Every relationship is checked
- * here before the body can reach a GateRowStore. This is the bounded legacy
- * single-row producer contract; migration to the kernel's canonical
- * EvidenceBundlePayload array is tracked separately.
+ * The signed metadata content-addresses an adjacent `evidencePayload`: the
+ * kernel's ordered array of invariant-checked in-toto statements. Legacy
+ * producers may still supply exactly one `gateResults` body committed by its
+ * own digest. A supplied canonical payload must validate; it never falls back
+ * to legacy binding. Both ingest and render-time readers use this boundary.
  */
 
 import {
@@ -17,29 +15,79 @@ import {
   type GateResultV1,
 } from '@intentsolutions/core/validators/v1/gate-result-v1';
 import { EvidenceBundleSchema } from '@intentsolutions/core/validators/v1/evidence-bundle';
-import { canonicalJsonBytes, sha256Key } from './content-address.js';
+import { EvidenceBundlePayloadSchema } from '@intentsolutions/core/validators/v1/evidence-statement';
+import { canonicalJsonBytes, sha256Key, stableStringify } from './content-address.js';
 
 export type GateResultBindingCheck =
-  | { readonly ok: true; readonly bodies: readonly GateResultV1[] }
+  | {
+      readonly ok: true;
+      readonly bodies: readonly GateResultV1[];
+      readonly evidencePayload?: unknown;
+    }
   | { readonly ok: false; readonly detail: string };
 
 /**
  * Validate the producer contract for one signed manifest row.
  *
- * v1 intentionally supports exactly one gate-result body per EvidenceBundle.
- * No multi-row digest convention exists yet, so accepting a larger row_count
- * would create an unsigned ambiguity. A future batching contract must be
- * versioned and implemented on both producer and consumer before use.
+ * Canonical payloads support multiple statements. The legacy body-only format
+ * remains restricted to one body and one subject, with its original digest.
  */
 export function checkGateResultBinding(
   bundleRaw: unknown,
   gateResultsRaw: unknown,
+  evidencePayloadRaw?: unknown,
 ): GateResultBindingCheck {
   const bundleResult = EvidenceBundleSchema.safeParse(bundleRaw);
   if (!bundleResult.success) {
     return { ok: false, detail: 'cannot bind gate results to an invalid EvidenceBundle' };
   }
   const bundle = bundleResult.data;
+
+  if (evidencePayloadRaw !== undefined) {
+    const payloadResult = EvidenceBundlePayloadSchema.safeParse(evidencePayloadRaw);
+    if (!payloadResult.success) {
+      return { ok: false, detail: 'evidencePayload is not a kernel EvidenceBundlePayload' };
+    }
+    const payload = payloadResult.data;
+    if (bundle.storage_key !== sha256Key(canonicalJsonBytes(evidencePayloadRaw))) {
+      return { ok: false, detail: 'evidencePayload digest does not match signed storage_key' };
+    }
+    if (bundle.row_count !== payload.length) {
+      return { ok: false, detail: 'evidencePayload length does not match signed row_count' };
+    }
+
+    const subjects = new Set(payload.flatMap((row) => row.subject.map(stableStringify)));
+    const signedSubjects = bundle.subject_set.map(stableStringify);
+    if (
+      subjects.size !== signedSubjects.length ||
+      new Set(signedSubjects).size !== signedSubjects.length ||
+      signedSubjects.some((subject) => !subjects.has(subject))
+    ) {
+      return { ok: false, detail: 'evidencePayload subjects do not match signed subject_set' };
+    }
+    const predicates = new Set<string>(payload.map((row) => row.predicateType));
+    if (
+      predicates.size !== bundle.predicate_uri_set.length ||
+      new Set(bundle.predicate_uri_set).size !== bundle.predicate_uri_set.length ||
+      bundle.predicate_uri_set.some((uri) => !predicates.has(uri))
+    ) {
+      return {
+        ok: false,
+        detail: 'evidencePayload predicates do not match signed predicate_uri_set',
+      };
+    }
+
+    const bodies = payload.map((row) => row.predicate);
+    // A redundant projection is allowed for transitional producers and stored
+    // sidecars, but it cannot disagree with the content-addressed statements.
+    if (
+      gateResultsRaw !== undefined &&
+      stableStringify(gateResultsRaw) !== stableStringify(bodies)
+    ) {
+      return { ok: false, detail: 'gateResults do not match evidencePayload predicates' };
+    }
+    return { ok: true, bodies, evidencePayload: evidencePayloadRaw };
+  }
 
   if (!Array.isArray(gateResultsRaw)) {
     return { ok: false, detail: 'gateResults must be an array' };

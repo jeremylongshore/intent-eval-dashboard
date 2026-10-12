@@ -42,7 +42,7 @@ export class StoreGateRowSource implements GateRowSource {
   async rowsFor(bundleKey: string, bundle: unknown): Promise<readonly GateRowProjection[] | null> {
     const stored = await this.store.get(bundleKey);
     if (stored === null) return null;
-    const binding = checkGateResultBinding(bundle, stored.bodies);
+    const binding = checkGateResultBinding(bundle, stored.bodies, stored.evidencePayload);
     if (!binding.ok) return null;
     const visibility = repoVisibility(stored.repo);
     const rows: GateRowProjection[] = binding.bodies.map((body) => {

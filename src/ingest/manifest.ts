@@ -43,11 +43,13 @@ export interface ManifestRow {
   /** Source git SHA the bundle was produced at (provenance only). */
   readonly sourceSha: string;
   /**
-   * Predicate bodies committed to by the signed bundle metadata. The worker
-   * validates their kernel schema and cryptographic/content-address binding
-   * before any body can be persisted or rendered.
+   * Legacy predicate bodies, or an optional redundant projection of canonical
+   * evidencePayload predicates. If both are present, they must agree exactly.
+   * The worker validates their schema and signed binding before persistence.
    */
   readonly gateResults?: readonly unknown[];
+  /** Kernel EvidenceBundlePayload addressed by the signed bundle storage_key. */
+  readonly evidencePayload?: unknown;
 }
 
 /** A fetched + parsed report manifest. */
