@@ -23,6 +23,35 @@ visible `stale_since` badge) and never the unverified input.
 There are **no no-op verification stubs**. If something cannot be verified for
 real, the worker fails closed (crashes); it does not pass through.
 
+### Canonical payload binding and legacy transition
+
+Each canonical manifest row includes `evidencePayload`, the kernel's ordered
+`EvidenceBundlePayload` array of in-toto statements. Before storing rows, the
+worker validates that schema, hashes the complete payload using
+`canonicalJsonBytes`, and checks the signed bundle's `storage_key`, `row_count`,
+deduplicated `subject_set`, and `predicate_uri_set`. Rendered bodies come from
+the validated predicates. An optional `gateResults` projection must match them
+exactly. Both cached readers repeat these checks against the stored statements.
+
+If `evidencePayload` is absent, the legacy path accepts exactly one kernel-valid
+body and one matching signed subject; the signed `storage_key` must hash that
+body. A present but malformed payload (including `null`) never falls back.
+Removing a canonical payload also fails because its digest differs from the
+legacy body digest. This transition does not relax signature or OIDC checks.
+
+The marketplace `ccp` migration is tracked by `bd_000-projects-hqkq`. The seven
+remaining channels (`iec`, `iel`, `iah`, `iaj`, `iar`, `jrig`, `qmd`) retain the
+bounded legacy path pending producer migration and live verification under
+`bd_000-projects-0s2a`. Channel identities remain in `ingest/pinned-subjects.json`.
+Retire legacy support only after those channels and retained caches transition.
+
+`__fixtures__/marketplace-canonical-payload.json` is the producer-generated,
+unsigned interoperability vector from the marketplace's
+`ci/emit-evidence/canonical-payload.fixture.json`. Keep both copies identical
+when changing the contract. Producer assembly and consumer binding tests cover
+payload/body mutation; `worker.steps.test.ts` also exercises real Ed25519
+signatures and Merkle proofs.
+
 ## Supervision tree (DR-035 § 4.B)
 
 ```text
@@ -33,7 +62,9 @@ deploy_supervisor          one_for_one* , restart=permanent
 │   ├── ingest_worker:iah   transient
 │   ├── ingest_worker:iaj   transient
 │   ├── ingest_worker:iar   transient
-│   └── ingest_worker:ccp   transient
+│   ├── ingest_worker:ccp   transient
+│   ├── ingest_worker:jrig  transient
+│   └── ingest_worker:qmd   transient
 ├── renderer                rest_for_one (downstream of ingest snapshot)
 └── publisher (rsync+caddy) rest_for_one (downstream of renderer)
 ```
@@ -44,8 +75,8 @@ publisher; the `ingest_supervisor`'s children use **`one_for_one`** so one
 worker's crash is isolated. The two strategies coexist at different tree levels,
 exactly as in OTP.
 
-**ICOS is STRUCK** from the tree (cross-tier policy). **6 workers exactly**:
-`iec, iel, iah, iaj, iar, ccp`.
+**ICOS is STRUCK** from the tree (cross-tier policy). **8 workers exactly**:
+`iec, iel, iah, iaj, iar, ccp, jrig, qmd`.
 
 ### Semantics (all unit-tested in `tree.supervision.test.ts`)
 
@@ -124,7 +155,7 @@ production posture for self-hosted / air-gapped pinned-key signing.
 ## `ingest/pinned-subjects.json`
 
 The per-repo OIDC allowlist (issuer + subject + `workflow_ref` patterns) for the
-6 repos. The GitHub OIDC issuer is `https://token.actions.githubusercontent.com`.
+8 channels. The GitHub OIDC issuer is `https://token.actions.githubusercontent.com`.
 Entries flagged `operatorConfirmed: false` use a canonical placeholder
 `workflow_ref` (`.../release.yml@refs/heads/main`-style) where the exact release
 workflow ref could not be derived at authoring time — **confirm against each
@@ -155,5 +186,5 @@ mutant is caught. Renaming a source repo therefore means: update `githubRepo`,
    content-addressed at ingest (step 6), the stored bundle + deep link **survive**
    (retrieval by content hash works after the source SHA is gone).
 3. **Network timeout on one worker** → that worker crashes + the supervisor
-   retries it (transient); the other 5 workers are UNAFFECTED; the renderer uses
+   retries it (transient); the other 7 workers are UNAFFECTED; the renderer uses
    the prior snapshot for the crashed repo.

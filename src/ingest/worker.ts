@@ -155,6 +155,7 @@ export async function runIngestWorker(
   const verifiedGateRows: {
     readonly bundleKey: string;
     readonly bodies: readonly unknown[];
+    readonly evidencePayload?: unknown;
     readonly rekorLogIndices: readonly number[];
   }[] = [];
 
@@ -198,7 +199,7 @@ export async function runIngestWorker(
     // predicate body is an adjacent manifest field. Prove the body's canonical
     // hash, identity, input digest, count, and predicate URI match the signed
     // metadata before accepting either object.
-    const binding = checkGateResultBinding(row.bundle, row.gateResults);
+    const binding = checkGateResultBinding(row.bundle, row.gateResults, row.evidencePayload);
     if (!binding.ok) {
       return crash(repo, 'validate_schema', 'predicate_binding_invalid', binding.detail, i);
     }
@@ -226,6 +227,9 @@ export async function runIngestWorker(
     verifiedGateRows.push({
       bundleKey: key,
       bodies: binding.bodies,
+      ...(binding.evidencePayload !== undefined
+        ? { evidencePayload: binding.evidencePayload }
+        : {}),
       rekorLogIndices: verifiedRekorLogIndices(row.sigstoreBundle),
     });
   }
@@ -250,6 +254,7 @@ export async function runIngestWorker(
       await gateRowStore.put(row.bundleKey, {
         repo,
         bodies: row.bodies,
+        ...(row.evidencePayload !== undefined ? { evidencePayload: row.evidencePayload } : {}),
         rekorLogIndices: row.rekorLogIndices,
       });
     }

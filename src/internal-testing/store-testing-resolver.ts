@@ -41,7 +41,7 @@ export class StoreTestingResolver implements TestingBundleResolver {
 
     const stored = await this.gateRowStore.get(bundleKey);
     if (stored === null) return null;
-    const binding = checkGateResultBinding(bundle, stored.bodies);
+    const binding = checkGateResultBinding(bundle, stored.bodies, stored.evidencePayload);
     if (!binding.ok) return null;
 
     const rows: ResolvedTestingRow[] = binding.bodies.map((body) => {

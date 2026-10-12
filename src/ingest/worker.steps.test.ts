@@ -6,7 +6,7 @@
  * so the failure cases really break cryptography, not a flag.
  */
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { runIngestWorker, type IngestWorkerDeps } from './worker.js';
 import { isIngestCrash, type IngestReason } from './reason.js';
 import { OfflineRowVerifier, type OfflineBundle } from './verifier-offline.js';
@@ -15,12 +15,15 @@ import { type ManifestFetcher, type IngestClock } from './interfaces.js';
 import { type ReportManifest } from './manifest.js';
 import { type PinnedSubjects } from './oidc-allowlist.js';
 import { MemoryGateRowStore } from './gate-row-store.js';
+import { StoreGateRowSource } from '../results/store-gate-row-source.js';
+import { StoreTestingResolver } from '../internal-testing/store-testing-resolver.js';
 import {
   REPO_GITHUB,
   mintManifest,
   mintRow,
   signingClaimsFor,
   validEvidenceBundle,
+  validEvidencePayload,
 } from './__fixtures__/bundle-fixtures.js';
 
 const clock: IngestClock = { nowIso: () => '2026-05-30T00:00:00.000Z', nowMs: () => 0 };
@@ -39,6 +42,62 @@ const PINNED: PinnedSubjects = {
     ]),
   ),
 };
+
+describe('canonical payload ingest and render boundary', () => {
+  it('persists signed statements and resolves them through both render paths', async () => {
+    const payload = validEvidencePayload();
+    const minted = mintRow('iec', REPO_GITHUB['iec']!, { evidencePayload: payload });
+    const { gateResults: _projection, ...canonicalRow } = minted.row;
+    const manifest = {
+      repo: 'iec',
+      signing: signingClaimsFor('iec', REPO_GITHUB['iec']!),
+      rows: [canonicalRow],
+    };
+    const deps = depsFor(manifest);
+    const snapshot = await runIngestWorker('iec', deps);
+    const key = snapshot.bundleKeys[0]!;
+    expect(await deps.gateRowStore.get(key)).toMatchObject({
+      evidencePayload: payload,
+      bodies: [payload[0]!.predicate],
+    });
+    expect(
+      await new StoreGateRowSource(deps.gateRowStore).rowsFor(key, minted.row.bundle),
+    ).toHaveLength(1);
+    expect(
+      await new StoreTestingResolver(deps.contentStore, deps.gateRowStore).resolve(key),
+    ).toHaveLength(1);
+
+    const stored = (await deps.gateRowStore.get(key))!;
+    await deps.gateRowStore.put(key, {
+      ...stored,
+      evidencePayload: [{ ...payload[0]!, extensions: { tampered: true } }],
+    });
+    expect(
+      await new StoreGateRowSource(deps.gateRowStore).rowsFor(key, minted.row.bundle),
+    ).toBeNull();
+    expect(
+      await new StoreTestingResolver(deps.contentStore, deps.gateRowStore).resolve(key),
+    ).toBeNull();
+  });
+
+  it('rejects payload mutation with an unchanged valid signature before sidecar or snapshot persistence', async () => {
+    const payload = validEvidencePayload();
+    const minted = mintRow('iec', REPO_GITHUB['iec']!, { evidencePayload: payload });
+    const manifest = {
+      repo: 'iec',
+      signing: signingClaimsFor('iec', REPO_GITHUB['iec']!),
+      rows: [
+        { ...minted.row, evidencePayload: [{ ...payload[0]!, extensions: { tampered: true } }] },
+      ],
+    };
+    const deps = depsFor(manifest);
+    const persistRows = vi.spyOn(deps.gateRowStore, 'put');
+    const reason = await expectCrash(runIngestWorker('iec', deps));
+    expect(reason.reasonCode).toBe('predicate_binding_invalid');
+    expect(persistRows).not.toHaveBeenCalled();
+    expect(await deps.snapshotStore.get('iec')).toBeNull();
+  });
+});
 
 function fixedFetcher(manifest: ReportManifest): ManifestFetcher {
   return { fetch: () => Promise.resolve(manifest) };

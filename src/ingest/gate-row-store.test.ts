@@ -7,6 +7,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { FsGateRowStore, MemoryGateRowStore } from './gate-row-store.js';
+import { validEvidencePayload } from './__fixtures__/bundle-fixtures.js';
 
 const KEY = 'sha256:' + 'a'.repeat(64);
 const ROWS = { repo: 'iec', bodies: [{ gate_name: 'coverage', gate_decision: 'pass' }] };
@@ -21,6 +22,34 @@ describe('MemoryGateRowStore', () => {
 });
 
 describe('FsGateRowStore', () => {
+  it.each([undefined, [1689291334], [-1]])(
+    'retains canonical statements when the optional anchor is %j',
+    async (rekorLogIndices) => {
+      const dir = await mkdtemp(join(tmpdir(), 'iep-gaterows-payload-'));
+      try {
+        const s = new FsGateRowStore(dir);
+        const payload = validEvidencePayload();
+        const rows = {
+          repo: 'iec',
+          bodies: payload.map((statement) => statement.predicate),
+          evidencePayload: payload,
+        };
+        const anchor = rekorLogIndices === undefined ? {} : { rekorLogIndices };
+        await s.put(KEY, { ...rows, ...anchor });
+        expect(await s.get(KEY)).toEqual({
+          ...rows,
+          ...(rekorLogIndices?.[0] === 1689291334 ? { rekorLogIndices } : {}),
+        });
+        // Preserve malformed canonical data so readers reject it; dropping
+        // null here would incorrectly downgrade the row to legacy binding.
+        await s.put(KEY, { ...rows, evidencePayload: null, ...anchor });
+        expect((await s.get(KEY))?.evidencePayload).toBeNull();
+      } finally {
+        await rm(dir, { recursive: true, force: true });
+      }
+    },
+  );
+
   it('persists + reads back, returns null for an unknown key', async () => {
     const dir = await mkdtemp(join(tmpdir(), 'iep-gaterows-'));
     try {

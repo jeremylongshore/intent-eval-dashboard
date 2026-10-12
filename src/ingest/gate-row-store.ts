@@ -1,13 +1,13 @@
 /**
- * Gate-row store — persists the gate-result/v1 predicate BODIES alongside the
- * content-addressed EvidenceBundle.
+ * Gate-row store — persists canonical evidence statements and their derived
+ * gate-result/v1 predicate bodies alongside the content-addressed EvidenceBundle.
  *
  * The 8-step ingest worker content-addresses the EvidenceBundle (the manifest /
  * receipt) and records its key in the snapshot. The bundle is strict and carries
  * NO predicate bodies — so the rows the dashboard renders (decision, gate_name,
- * gate_reasons, coverage …) live in the manifest row's `gateResults` field and
- * must be persisted separately, keyed by the SAME bundle content key, so the
- * render-time resolvers can pair each verified bundle with its rows.
+ * gate_reasons, coverage …) come from the manifest row's `evidencePayload`
+ * (or legacy `gateResults`). Both statements and bodies are stored under the
+ * SAME bundle content key so readers can recheck the complete signed binding.
  *
  * The production writer stores rows only after verification. The store itself
  * is not a trust boundary: every production reader re-validates a stored body
@@ -23,6 +23,8 @@ export interface StoredGateRows {
   readonly repo: string;
   /** The gate-result/v1 predicate bodies (snake_case, as emitted). */
   readonly bodies: readonly unknown[];
+  /** Canonical statements retained for digest and metadata checks at read time. */
+  readonly evidencePayload?: unknown;
   /**
    * Rekor log indices read off the row's ALREADY-VERIFIED sigstore bundle.
    *
@@ -117,8 +119,17 @@ export class FsGateRowStore implements GateRowStore {
       Array.isArray(indices) &&
       indices.every((n: unknown) => typeof n === 'number' && Number.isSafeInteger(n) && n >= 0)
     ) {
-      return { repo: parsed.repo, bodies: parsed.bodies, rekorLogIndices: indices as number[] };
+      return {
+        repo: parsed.repo,
+        bodies: parsed.bodies,
+        ...('evidencePayload' in parsed ? { evidencePayload: parsed.evidencePayload } : {}),
+        rekorLogIndices: indices as number[],
+      };
     }
-    return { repo: parsed.repo, bodies: parsed.bodies };
+    return {
+      repo: parsed.repo,
+      bodies: parsed.bodies,
+      ...('evidencePayload' in parsed ? { evidencePayload: parsed.evidencePayload } : {}),
+    };
   }
 }

@@ -19,7 +19,13 @@
  */
 
 import { generateKeyPairSync, sign as cryptoSign, createHash, randomBytes } from 'node:crypto';
-import { canonicalJsonBytes, sha256Key } from '../content-address.js';
+import {
+  EvidenceBundlePayloadSchema,
+  IN_TOTO_STATEMENT_V1_TYPE,
+  type EvidenceBundlePayload,
+} from '@intentsolutions/core/validators/v1/evidence-statement';
+import { GATE_RESULT_V1_URI } from '@intentsolutions/core/validators/v1/gate-result-v1';
+import { canonicalJsonBytes, sha256Key, stableStringify } from '../content-address.js';
 import { dssePae, merkleLeafHashHex } from '../verifier-offline.js';
 import { type ManifestRow, type ManifestSigningClaims, type ReportManifest } from '../manifest.js';
 import { type OfflineBundle } from '../verifier-offline.js';
@@ -82,6 +88,43 @@ export function validEvidenceBundle(
     rekor_log_indices: [1689291334],
     verification_status: 'verified',
     verification_last_checked_at: '2026-05-30T12:00:01.000Z',
+  };
+}
+
+/** Kernel-validated canonical statements, with the first subject bound to its gate. */
+export function validEvidencePayload(
+  bodies: readonly Record<string, unknown>[] = [validGateResult()],
+): EvidenceBundlePayload {
+  return EvidenceBundlePayloadSchema.parse(
+    bodies.map((predicate) => ({
+      _type: IN_TOTO_STATEMENT_V1_TYPE,
+      subject: [
+        {
+          name: predicate['gate_id'],
+          digest: { sha256: String(predicate['input_hash']).slice(7) },
+        },
+      ],
+      predicateType: GATE_RESULT_V1_URI,
+      predicate,
+    })),
+  );
+}
+
+export function validCanonicalBundle(
+  payload: EvidenceBundlePayload = validEvidencePayload(),
+): Record<string, unknown> {
+  return {
+    ...validEvidenceBundle(),
+    row_count: payload.length,
+    predicate_uri_set: [...new Set(payload.map((row) => row.predicateType))],
+    subject_set: [
+      ...new Map(
+        payload.flatMap((row) =>
+          row.subject.map((subject) => [stableStringify(subject), subject] as const),
+        ),
+      ).values(),
+    ],
+    storage_key: sha256Key(canonicalJsonBytes(payload)),
   };
 }
 
@@ -152,19 +195,23 @@ export function mintRow(
     readonly siblingLeaves?: number;
     /** Adjacent predicate bodies committed to by the bundle metadata. */
     readonly gateResults?: readonly unknown[];
+    readonly evidencePayload?: EvidenceBundlePayload;
   } = {},
 ): MintedRow {
-  const gateResults = opts.gateResults ?? [validGateResult()];
+  const gateResults = opts.gateResults ??
+    opts.evidencePayload?.map((row) => row.predicate) ?? [validGateResult()];
   const firstGateResult = gateResults[0];
   const bundle =
     opts.bundle ??
-    validEvidenceBundle(
-      firstGateResult !== null &&
-        typeof firstGateResult === 'object' &&
-        !Array.isArray(firstGateResult)
-        ? (firstGateResult as Record<string, unknown>)
-        : validGateResult(),
-    );
+    (opts.evidencePayload !== undefined
+      ? validCanonicalBundle(opts.evidencePayload)
+      : validEvidenceBundle(
+          firstGateResult !== null &&
+            typeof firstGateResult === 'object' &&
+            !Array.isArray(firstGateResult)
+            ? (firstGateResult as Record<string, unknown>)
+            : validGateResult(),
+        ));
   const payloadBytes = canonicalJsonBytes(bundle);
   const payloadB64 = Buffer.from(payloadBytes).toString('base64');
   const payloadType = 'application/vnd.in-toto+json';
@@ -211,6 +258,7 @@ export function mintRow(
       sigstoreBundle: offline,
       sourceSha: opts.sourceSha ?? 'a'.repeat(40),
       gateResults,
+      ...(opts.evidencePayload !== undefined ? { evidencePayload: opts.evidencePayload } : {}),
     },
     publicKeyPem,
     payloadBytes,
