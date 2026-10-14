@@ -42,7 +42,15 @@
         <a href="/start/">Start here</a>
       </nav>
     </div>
-  </header>
+  <aside class="intent-partner" aria-label="Intent Solutions partner status" data-intent-partner>
+  <div class="intent-partner__inner">
+    <p class="intent-partner__owner">Built by <strong>Intent Solutions</strong></p>
+    <a class="intent-partner__link" href="https://intentsolutions.io/" aria-label="About Intent Solutions, a Claude Partner Network Select Services Partner">
+      <img class="intent-partner__image" src="/assets/claude-select-partner.svg" alt="Claude Partner Network: Select Services Partner" width="600" height="190" decoding="async">
+    </a>
+  </div>
+</aside>
+</header>
     <main>
         <h1>Every published test</h1>
         <p class="lead">This page lists every automated test result we publish. Each row is one test that ran on its own. Results are never added up into a single score.</p>
@@ -69,7 +77,7 @@
         <section class="all-evals">
             <h2>AI skill tests</h2>
             <p>Every night we give each AI skill a set of real tasks and grade the finished work against its written rules. A skill passes only if it meets every required rule.</p>
-            <div class="table-scroll" role="region" aria-label="AI skill tests" tabindex="0"><table class="results-table">
+            <div class="table-scroll" role="region" aria-label="AI skill tests" tabindex="0"><div class="table-scroll" role="region" aria-label="Detailed test results" tabindex="0"><table class="results-table">
                 <thead>
                     <tr><th>Skill</th><th>Result</th><th>What happened</th><th>Tested on</th><th>Links</th></tr>
                 </thead>
@@ -173,12 +181,12 @@
                     <td><a href="https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/a9dd5c02a3793412ed35525efd460b399554be13/plugins/productivity/intent-labs-pack/skills/validate-skillmd/eval-spec.yaml">See the test</a> · <a href="/results/jrig/sha256-a479144b734805412eec2436e5c21daf6637badeb7ff227d2277df215bba5e8c/">Signed record</a></td>
                 </tr>
                 </tbody>
-            </table></div>
+            </table></div></div>
         </section>
         <section class="all-evals">
             <h2>Platform checks</h2>
             <p>Automated quality checks on the code behind this lab and our skills marketplace, such as tests, security scans and catalog rules.</p>
-            <div class="table-scroll" role="region" aria-label="Platform checks" tabindex="0"><table class="results-table">
+            <div class="table-scroll" role="region" aria-label="Platform checks" tabindex="0"><div class="table-scroll" role="region" aria-label="Detailed test results" tabindex="0"><table class="results-table">
                 <thead>
                     <tr><th>What was tested</th><th>Project</th><th>Result</th><th>What happened</th><th>Tested on</th><th>Links</th></tr>
                 </thead>
@@ -304,7 +312,7 @@
                     <td><a href="/results/qmd/sha256-9f094ec6d4da67eb26566be69ada91b4879bb832ac57e23652e1fa3e8e5b6655/">Signed record</a></td>
                 </tr>
                 </tbody>
-            </table></div>
+            </table></div></div>
         </section>
         <p class="predicate-note">Technical note: each row is one signed, tamper-evident record (<code>https://evals.intentsolutions.io/gate-result/v1</code>). Open "Signed record" for the hashes, timestamps and transparency-log entry. <a href="/methodology/#evidence">How to read the evidence</a>.</p>
         <p><a href="/results/">Browse results by project →</a></p>

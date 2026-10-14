@@ -1,6 +1,7 @@
 /* The shared Intent Solutions network strip. Imported here so every page gets it
    through the one stylesheet it already loads. Must stay the first rule. */
 @import url("/estate-bar/estate-bar.css");
+@import url("/assets/intent-partner.css");
 
 /*
  * labs.intentsolutions.io — shared design tokens + base layout
