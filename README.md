@@ -6,7 +6,6 @@
 Intent Solutions is a Claude Partner Network Select Services Partner.
 <!-- intent-select-partner:end -->
 
-
 Part of the **[Intent Eval Platform](https://github.com/intent-solutions-io/intent-eval-platform)** — the umbrella grouping the platform's six repos: five converge via a shared Evidence Bundle schema (`intent-eval-core`, `intent-eval-lab`, `audit-harness`, `j-rig-skill-binary-eval`, `intent-rollout-gate`), and this repo — `intent-eval-dashboard` — is the satellite consumer (not part of the convergence taxonomy).
 
 > Public reports dashboard for the Intent Eval Platform. Live at [labs.intentsolutions.io](https://labs.intentsolutions.io).
