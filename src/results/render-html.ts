@@ -164,7 +164,15 @@ ${ESTATE_BAR}
         <a href="/start/">Start here</a>
       </nav>
     </div>
-  </header>`;
+  <aside class="intent-partner" aria-label="Intent Solutions partner status" data-intent-partner>
+  <div class="intent-partner__inner">
+    <p class="intent-partner__owner">Built by <strong>Intent Solutions</strong></p>
+    <a class="intent-partner__link" href="https://intentsolutions.io/" aria-label="About Intent Solutions, a Claude Partner Network Select Services Partner">
+      <img class="intent-partner__image" src="/assets/claude-select-partner.png" alt="Claude Partner Network: Select Services Partner" width="600" height="190" decoding="async">
+    </a>
+  </div>
+</aside>
+</header>`;
 
 export const SITE_FOOTER = `<footer class="site-footer"><div class="site-footer__inner">
     <div><strong>Intent Labs</strong><br>Part of <a href="https://intentsolutions.io/">Intent Solutions</a> · <a href="https://intentsolutions.io/about/#team">Our team</a></div>

@@ -247,7 +247,15 @@ LISTING_TEMPLATE = """<!DOCTYPE html>
         <a href="/start/">Start here</a>
       </nav>
     </div>
-  </header>
+  <aside class="intent-partner" aria-label="Intent Solutions partner status" data-intent-partner>
+  <div class="intent-partner__inner">
+    <p class="intent-partner__owner">Built by <strong>Intent Solutions</strong></p>
+    <a class="intent-partner__link" href="https://intentsolutions.io/" aria-label="About Intent Solutions, a Claude Partner Network Select Services Partner">
+      <img class="intent-partner__image" src="/assets/claude-select-partner.png" alt="Claude Partner Network: Select Services Partner" width="600" height="190" decoding="async">
+    </a>
+  </div>
+</aside>
+</header>
     <main>
         <h1>From one skill to the whole workflow.</h1>
         <p class="lead">Test whether AI gets the job done, stays within its limits and knows when to stop.
