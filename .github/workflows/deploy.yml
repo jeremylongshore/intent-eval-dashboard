@@ -153,8 +153,12 @@ jobs:
 
   deploy:
     needs: test
-    uses: jeremylongshore/.github/.github/workflows/vps-deploy.yml@709a07fbebb1d51806e171204e63f5332abcb0da
+    uses: jeremylongshore/.github/.github/workflows/vps-deploy.yml@829cd9717866025072a1ac2cad4a325fb14677ba
     with:
+      # The tailnet cannot mint keys for hosted runners (Tailscale 402 since 2026-10-14);
+      # deploy from the Buzz host, already on the tailnet (intent-os decision-log/071).
+      runs-on: '["self-hosted","linux","vps-deploy"]'
+      join-tailnet: false
       variant: static
       srv-path: /srv/intent-eval-dashboard
       health-check-url: https://labs.intentsolutions.io/healthz
