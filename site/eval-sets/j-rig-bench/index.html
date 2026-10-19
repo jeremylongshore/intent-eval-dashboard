@@ -67,10 +67,10 @@
 
         <p class="lead">
             A scorecard where the row is not the point — the <strong>signature on the row</strong> is.
-            Every result here is built to ship as a cryptographically signed, Rekor-anchored
-            Evidence Bundle: a third party can verify <em>that the measurement happened, on what
-            input, producing exactly this output</em> — without trusting us. That is a different
-            axis from "how good is the score." It is whether the score is <em>attestable</em>.
+            Signed, Rekor-anchored Evidence Bundles let readers verify an artifact's integrity
+            and signing history. A signature does not establish that the input identities,
+            experimental method or scientific interpretation are correct. The Phase A.0
+            interpretation below has been corrected while its original signature is preserved.
         </p>
 
         <div class="freshness-stub">
@@ -112,6 +112,7 @@
             findings into one number is the failure mode this platform exists to refuse.
         </p>
 
+        <div role="region" aria-label="Evidence Bench results" tabindex="0" style="overflow-x: auto;">
         <table>
             <thead>
                 <tr>
@@ -124,8 +125,8 @@
             <tbody>
                 <tr>
                     <td><strong>Skill Refiner — Phase A.0 baseline</strong></td>
-                    <td>Does an eval-guided Refiner mechanism produce real lift over a naive best-of-K prompt baseline? Pre-registered null-hypothesis test.</td>
-                    <td><a href="/eval-sets/j-rig-bench/phase-a0/">PROCEED</a> — refiner lift significant, naive below descope bar (<a href="/eval-sets/j-rig-bench/phase-a0/">full story + proof</a>)</td>
+                    <td>Historical comparison of Refiner and naive prompting; audit found unequal baselines, input-identity mismatches and incomplete attempts.</td>
+                    <td><a href="/eval-sets/j-rig-bench/phase-a0/">Interpretation corrected</a> — comparative effectiveness unsupported by this run. Historical verdict: PROCEED.</td>
                     <td><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=1689291334"><span class="badge badge--active">signed</span></a></td>
                 </tr>
                 <tr>
@@ -160,6 +161,7 @@
                 </tr>
             </tbody>
         </table>
+        </div>
 
         <p style="font-size: 0.85rem; color: #6b7280;">
             Cross-system rows (gbrain-stack, MemPalace, Supermemory) are listed as comparison
@@ -168,77 +170,49 @@
             rather than restating them.
         </p>
 
-        <h2 id="phase-a0">Phase A.0 baseline — both arms, side by side</h2>
+        <h2 id="phase-a0">Phase A.0 — historical results, interpretation corrected</h2>
 
-        <p style="font-size: 1.05rem;">
-            👉 <strong>New here?</strong> Read the plain-English walkthrough:
-            <a href="/eval-sets/j-rig-bench/phase-a0/"><strong>what we did, how we did it, and the proof</strong></a>
-            — the question, the method, the result, and how to verify it yourself, no jargon.
+        <p>
+            <a href="/eval-sets/j-rig-bench/phase-a0/"><strong>Read the correction and reproducible audit.</strong></a>
+            All 60 arm pairs used unequal baseline scores, seven recovered inputs differ from
+            their manifest hashes, and ten Arm B specimens had no completed proposal after an
+            initial API failure. This run does not establish comparative effectiveness.
         </p>
 
         <p>
-            The first row is a pre-registered experiment: <strong>Arm A</strong> is a naive
-            best-of-K prompt baseline; <strong>Arm B</strong> is the eval-guided Refiner
-            mechanism. Both arms are shown with identical structure and no winner styling — the
-            reader draws the conclusion from the numbers, not from the layout. A null result
-            would have been rendered in this exact same shape.
+            These are the original recorded results. They remain available for traceability;
+            they are not corrected estimates or evidence that either approach is superior.
+            Arm A used naive best-of-K prompting; Arm B used the eval-guided Refiner.
         </p>
 
         <table>
+            <caption>Original Phase A.0 arm results</caption>
             <thead>
-                <tr>
-                    <th>Measure</th>
-                    <th>Arm A — Naive (best-of-K)</th>
-                    <th>Arm B — Refiner</th>
-                </tr>
+                <tr><th>Recorded quantity</th><th>Arm A — Naive</th><th>Arm B — Refiner</th></tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>Mean score change vs source (pp)</td>
+                    <td>Mean score change (pp)</td>
                     <td><code>−6.1</code></td>
                     <td><code>+0.58</code></td>
                 </tr>
                 <tr>
-                    <td>Paired specimens (n)</td>
-                    <td><code>60</code></td>
-                    <td><code>60</code></td>
+                    <td>Historical analysis pool</td>
+                    <td>60 specimens; best of four K values</td>
+                    <td>60 specimens; includes ten without completed proposals</td>
                 </tr>
-                <tr>
-                    <td>Fraction of pre-registered 1.5 pp projection</td>
-                    <td><code>0%</code> (clamped; negative)</td>
-                    <td><code>38.9%</code></td>
-                </tr>
-                <tr>
-                    <td>Per-stratum direction (A / B / C)</td>
-                    <td colspan="2" style="text-align:center;"><code>B &gt; A</code> in all three strata, each significant at α=0.05</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <table>
-            <thead>
-                <tr><th>Paired test (Arm B vs Arm A)</th><th>Value</th></tr>
-            </thead>
-            <tbody>
-                <tr><td>Per-specimen mean difference, B − A</td><td><code>+6.68 pp</code></td></tr>
-                <tr><td>Primary test</td><td>Wilcoxon signed-rank, one-sided (B &gt; A)</td></tr>
-                <tr><td>Test statistic</td><td><code>W = 1755.5</code></td></tr>
-                <tr><td>p-value</td><td><code>2.56 × 10⁻¹⁰</code></td></tr>
-                <tr><td>Effect size</td><td>Cohen's d = <code>1.49</code> (large)</td></tr>
-                <tr><td>Decision rule</td><td>DESCOPE iff naive ≥ 70% of projected refiner lift — <strong>not fired</strong></td></tr>
-                <tr><td>Total API cost</td><td><code>$0.00</code> of $20 ceiling (free-tier)</td></tr>
-                <tr><td>Outcome</td><td><strong>PROCEED</strong></td></tr>
             </tbody>
         </table>
 
         <p>
-            <strong>Honest reading.</strong> The significance is unambiguous (d = 1.49,
-            p ≈ 2.6 × 10⁻¹⁰): the Refiner reliably beats the naive baseline specimen-by-specimen.
-            The <em>magnitude</em> is modest — the Refiner reached 38.9% of its own
-            pre-registered projection, so downstream work budgets against an empirical anchor of
-            ~0.6 pp, not the 1.5 pp projection. PROCEED means "the mechanism is real and worth
-            building," not "the mechanism is finished." Full analysis:
+            The original analysis recorded a 6.68-point gap, a one-sided Wilcoxon p-value of
+            2.56 × 10⁻¹⁰ and Cohen's d of 1.49. Those calculations use the affected observations
+            and do not resolve their validity problems. The historical decision was
+            <strong>PROCEED</strong>; it remains part of the record in
             <a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/036-AT-DECR-phase-a0-result-proceed-2026-05-31.md">DR-036</a>.
+            The correction neither establishes the opposite effectiveness claim nor changes
+            the current product roadmap. A new registered experiment is required before
+            renewing the effectiveness claim.
         </p>
 
         <h2 id="provenance">Provenance — signed, and verifiable by you</h2>
@@ -288,8 +262,8 @@
             end-to-end for <code>evals.intentsolutions.io</code> (DS record at the registry) and
             CAA is pinned. The one gate remaining is the normative SPEC.md.
             And it does <em>not</em> claim the statistics are "correct" — a signature attests
-            authenticity, not the truth of the science. The science stands on the pre-registered
-            analysis, not on the signature.
+            authenticity, not the truth of the science. The audit identified input and method problems that the original
+            analysis did not resolve; the signature cannot repair those problems.
         </p>
 
         <p>
@@ -304,7 +278,7 @@
 
         <ul>
             <li><a href="/eval-sets/j-rig-binary-eval-7-layer/">j-rig 7-layer eval-set</a> — the specification of what the cross-system rows measure</li>
-            <li><a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/036-AT-DECR-phase-a0-result-proceed-2026-05-31.md">DR-036</a> — Phase A.0 PROCEED decision record + full statistical analysis</li>
+            <li><a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/036-AT-DECR-phase-a0-result-proceed-2026-05-31.md">DR-036</a> — historical Phase A.0 PROCEED decision and affected statistical analysis</li>
             <li><a href="https://github.com/garrytan/gbrain-evals">gbrain-evals</a> — the memory-retrieval eval board this scorecard complements (different dimension; we link, we do not restate)</li>
             <li><a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/010-AT-DECR-isedc-council-session-4-widened-scope-2026-05-13.md">DR-010</a> — the binding unification thesis: every validator emits an Evidence Bundle</li>
         </ul>
