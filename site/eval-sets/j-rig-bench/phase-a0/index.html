@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Phase A.0 — what we did, how, and the proof — IEP Labs</title>
-    <meta name="description" content="A plain-English walkthrough of the Skill Refiner Phase A.0 experiment: the question, the method, the result, and a tamper-proof public signature anyone can verify.">
+    <title>Phase A.0 result correction — IEP Labs</title>
+    <meta name="description" content="Correction of the Phase A.0 effectiveness interpretation, with the original results and signature preserved as historical records.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://labs.intentsolutions.io/eval-sets/j-rig-bench/phase-a0/">
     <link rel="stylesheet" href="/style.css">
 
-    <meta property="og:title" content="Phase A.0 — what we did, how, and the proof">
-    <meta property="og:description" content="The experiment, in plain English, with a tamper-proof public signature anyone can verify.">
+    <meta property="og:title" content="Phase A.0 result correction">
+    <meta property="og:description" content="Why the Phase A.0 comparison no longer supports an effectiveness claim, and how to inspect the unchanged historical evidence.">
     <meta property="og:url" content="https://labs.intentsolutions.io/eval-sets/j-rig-bench/phase-a0/">
     <meta property="og:type" content="article">
 
@@ -54,309 +54,91 @@
 </header>
 
     <main>
-        <p style="font-size: 0.85rem; color: #6b7280; margin: 0;">
-            <a href="/eval-sets/j-rig-bench/" style="color: #6b7280;">← Evidence Bench scorecard</a>
-        </p>
+        <p><a href="/eval-sets/j-rig-bench/">← Evidence Bench scorecard</a></p>
+        <h1>Phase A.0 result correction</h1>
+        <section class="freshness-stub" aria-labelledby="correction-title">
+            <h2 id="correction-title">Correction to the Phase A.0 interpretation</h2>
+            <p>The original experiment was reported as evidence that the Refiner outperformed
+                naive prompting. A later audit found unequal baseline scoring contexts, seven
+                inputs that differ from their manifest hashes, and ten Arm B specimens with
+                no completed proposal after API failures. Those problems prevent attributing
+                the published comparison to the editing mechanism. We no longer present this
+                run as evidence of comparative effectiveness.</p>
+            <p>The original results and signature remain available as historical records;
+                the signature establishes artifact integrity, not scientific validity.
+                A new registered experiment is required before renewing the effectiveness claim.</p>
+            <p><a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/119-AT-DECR-phase-a0-evidence-correction-2026-10-19.md">Read the correction decision and reproducible audit</a>.</p>
+        </section>
 
-        <h1>Phase A.0 — what we did, how we did it, and the proof</h1>
+        <h2>What the audit found</h2>
+        <p>The experiment attempted to compare two ways of editing a skill's configuration
+            header. Arm A took a model's rewrite; Arm B scored proposed edits and kept those
+            meeting its acceptance rule. The original interpretation assumed that an unchanged
+            instruction body made the rest of the score cancel between the arms.</p>
+        <p>That assumption missed the judge's use of directory names and supporting files.
+            Arm A used cached baseline scores from the corpus manifest. Arm B rescored the
+            loaded files in isolated temporary directories. All 60 baseline pairs differ,
+            by 7.5667 points on average. A score difference therefore cannot be attributed
+            entirely to the header edit.</p>
+        <p>Seven recovered inputs also differ from their declared manifest hashes.
+            Ten Arm B specimens have no completed proposal and an initial API failure;
+            they were included as unchanged results even though no edit was evaluated.
+            The historical summary reported zero errors. These observations require an
+            explicit treatment of input identity and failed attempts before a new comparison.</p>
+        <p>The pinned judge reproduces all 60 retained Arm B baseline scores from recovered
+            inputs. That replay diagnoses the scoring discrepancy; it is not a new model run
+            or a replacement experiment verdict.</p>
 
-        <p class="lead">
-            This is the human-readable trail behind one signed row on the
-            <a href="/eval-sets/j-rig-bench/">Evidence Bench scorecard</a>. Read it top to
-            bottom and you will understand exactly what was tested, how, what happened, and
-            how to confirm — without trusting us — that the result is genuine.
-        </p>
-
-        <h2>1. The question we asked</h2>
-
-        <p>
-            We are building a tool called the <strong>Skill Refiner</strong> — it takes a
-            Claude "skill" file and automatically improves it through a propose-edit /
-            score / accept-only-if-better loop. Before spending months building that machinery,
-            we asked the honest, uncomfortable question:
-        </p>
-
-        <blockquote>
-            Does the Refiner loop actually do anything a model can't already do if you just
-            <em>ask it nicely</em> with some examples?
-        </blockquote>
-
-        <p>
-            If "just ask the model" works almost as well, the Refiner isn't worth building —
-            and we committed, in writing and ahead of time, to <strong>publish that result
-            either way</strong>, win or lose. That pre-commitment is what keeps this honest:
-            we couldn't quietly bury a disappointing answer.
-        </p>
-
-        <h2>2. How we tested it</h2>
-
-        <p>A head-to-head, on the same 60 skill files, scored by the same judge:</p>
-
-        <div class="freshness-stub" style="border-left-color: #2c5282;">
-            <p class="freshness-stub__title">Read this first — the exact scope of what we tested</p>
-            <p style="margin-top: 0.5rem;">
-                Each skill has two parts: a short <strong>config header</strong> (the
-                <code>SKILL.md</code> frontmatter — name, version, license, tags, and 5 other
-                fields) and a longer <strong>instruction body</strong> below it. In this
-                experiment, <strong>the AI was only allowed to edit the config header</strong> —
-                the body was left untouched on both sides.
-            </p>
-            <p>
-                One honest wrinkle to know going in: the 100-point quality rubric scores the
-                <em>whole</em> skill, and most of those points (~75 of 100) come from the
-                <strong>body</strong> — structure, length, worked examples. Since the body never
-                changed, those ~75 points were <strong>frozen and identical</strong> before and
-                after, on both arms. So every score change you'll see below comes purely from the
-                ~15–25 points the <strong>config header</strong> controls. The numbers measure
-                <em>"did editing the header help or hurt"</em> — not <em>"did the whole skill get
-                better."</em>
-            </p>
-            <p style="margin-bottom: 0;">
-                <strong>Why that's still a fair test:</strong> both approaches edited only the
-                header and were scored identically, so the ~75 body points cancel out and the
-                comparison between them is apples-to-apples. <strong>What it's NOT (yet):</strong>
-                proof that the Refiner improves <em>whole skills</em> — testing a body-editing
-                version on the full rubric is the natural next experiment (see the bottom of this
-                page). We start with the cheapest, cleanest question first, and say plainly what
-                it does and doesn't show.
-            </p>
-        </div>
-
+        <h2>Historical results</h2>
+        <p>These are the original recorded values, retained for traceability. They are not
+            corrected estimates and should not be used as evidence that either approach is superior.</p>
         <table>
-            <thead><tr><th></th><th><!-- ARM-A:START id=table-head --><span>Arm A — "just ask"</span><!-- ARM-A:END id=table-head --></th><th><!-- ARM-B:START id=table-head --><span>Arm B — the Refiner</span><!-- ARM-B:END id=table-head --></th></tr></thead>
+            <caption>Original Phase A.0 arm results</caption>
+            <thead><tr><th scope="col">Recorded quantity</th><th scope="col">Arm A — naive prompting</th><th scope="col">Arm B — Refiner</th></tr></thead>
             <tbody>
                 <tr>
-                    <td><strong>What it does</strong></td>
-                    <td><!-- ARM-A:START id=table-what-it-does -->One shot: hand the model the skill + K worked examples, take whatever it returns.<!-- ARM-A:END id=table-what-it-does --></td>
-                    <td><!-- ARM-B:START id=table-what-it-does -->The full loop: propose edits, score them, keep an edit only if every quality dimension improves, retry up to 3×.<!-- ARM-B:END id=table-what-it-does --></td>
+                    <th scope="row">Mean score change</th>
+                    <!-- ARM-A:START id=walkthrough --><td><strong>−6.1 points</strong></td><!-- ARM-A:END id=walkthrough -->
+                    <!-- ARM-B:START id=walkthrough --><td><strong>+0.58 points</strong></td><!-- ARM-B:END id=walkthrough -->
                 </tr>
                 <tr>
-                    <td><strong>Model</strong></td>
-                    <td colspan="2" style="text-align:center;">Same model for both — Llama-3.1 (70B) via NVIDIA's free tier. Temperature 0 (repeatable).</td>
-                </tr>
-                <tr>
-                    <td><strong>Scored by</strong></td>
-                    <td colspan="2" style="text-align:center;">The same independent marketplace-tier validator, run on every before/after pair.</td>
+                    <th scope="row">Historical analysis pool</th>
+                    <!-- ARM-A:START id=pool --><td>60 specimens; best of four K values</td><!-- ARM-A:END id=pool -->
+                    <!-- ARM-B:START id=pool --><td>60 specimens; includes ten without completed proposals</td><!-- ARM-B:END id=pool -->
                 </tr>
             </tbody>
         </table>
+        <p>The original analysis recorded a 6.68-point gap, a Wilcoxon p-value below
+            0.000001 and Cohen's d of 1.49. Those calculations use the affected observations;
+            they do not resolve the validity problems above. The former description of the
+            p-value as the probability that the result was a fluke was also incorrect.</p>
+        <p>The historical verdict was <strong>PROCEED</strong>. This correction preserves
+            that decision as history. It neither replaces it with DESCOPE nor establishes
+            the opposite effectiveness claim. Current engineering decisions need their own basis.</p>
 
-        <p>
-            Two design choices make this credible. <strong>The decision rule was written down
-            before the run</strong> ("if 'just ask' gets within 70% of the Refiner's projected
-            gain, kill the Refiner") — so we couldn't move the goalposts after seeing the
-            numbers. And <strong>it cost $0.00</strong> on a free model, which means the result
-            can't be dismissed as "you just threw a bigger, pricier model at it."
-        </p>
+        <h2>What remains to be tested</h2>
+        <p>A new registered experiment needs frozen input directories, verified input and
+            judge digests, equivalent baseline scoring contexts, and an explicit policy for
+            retries and incomplete pairs. Its statistical methods must resolve the discrepancies
+            between the old template and implementation. The promised dimension-level Goodhart
+            audit also remains incomplete; acceptance counts cannot substitute for it.</p>
 
-        <h2 id="the-60">The 60 skills we tested</h2>
-
-        <p>
-            These weren't 60 random, unrelated tools — they were 60 skill config files
-            (<code>SKILL.md</code>), deliberately chosen in three groups of 20 to span the full
-            quality range. That spread is what makes the result honest: we tested good skills,
-            already-passing skills, AND broken ones — not a cherry-picked easy set. (20 more were
-            held back entirely, never shown to either approach.)
-        </p>
-
-        <h3>Group A — Your own hand-authored skills <span style="font-weight:400;color:#6b7280;">(20 skills)</span></h3>
-        <p style="font-size:0.9rem;">
-            <code>cleanup-code</code> · <code>agent-creator</code> · <code>contribute</code> · <code>sitrep</code> · <code>validate-mcp</code> · <code>implement-tests</code> · <code>validate-skillmd</code> · <code>repo-sweep</code> · <code>appaudit</code> · <code>validate-agent</code> · <code>release</code> · <code>deep-research</code> · <code>status-update-writer</code> · <code>product-researcher</code> · <code>doc-filing</code> · <code>repo-dress</code> · <code>validate-hook</code> · <code>validate-marketplace</code> · <code>ui-ux-pro-max</code> · <code>email</code>
-        </p>
-        <h3>Group B — Marketplace skills that already passed <span style="font-weight:400;color:#6b7280;">(20 skills)</span></h3>
-        <p style="font-size:0.9rem;">
-            <code>supabase-schema-from-requirements</code> · <code>onenote-upgrade-migration</code> · <code>collecting-infrastructure-metrics</code> · <code>vastai-webhooks-events</code> · <code>lokalise-incident-runbook</code> · <code>analyzing-logs</code> · <code>sentry-debug-bundle</code> · <code>notion-upgrade-migration</code> · <code>maintainx-core-workflow-a</code> · <code>langchain-prompt-engineering</code> · <code>twinmind-local-dev-loop</code> · <code>notion-ci-integration</code> · <code>plugin-creator</code> · <code>000-jeremy-content-consistency-validator</code> · <code>notion-advanced-troubleshooting</code> · <code>langchain-content-blocks</code> · <code>firecrawl-local-dev-loop</code> · <code>splitting-datasets</code> · <code>notion-multi-env-setup</code> · <code>validating-api-schemas</code>
-        </p>
-        <h3>Group C — Marketplace skills that were failing (the highest-value targets) <span style="font-weight:400;color:#6b7280;">(20 skills)</span></h3>
-        <p style="font-size:0.9rem;">
-            <code>forge-diagnose</code> · <code>miro-observability</code> · <code>volt-recon</code> · <code>linear-deploy-integration</code> · <code>openevidence-prod-checklist</code> · <code>coderabbit-observability</code> · <code>intercom-debug-bundle</code> · <code>veeva-webhooks-events</code> · <code>flux-query</code> · <code>windsurf-flows-automation</code> · <code>groq-observability</code> · <code>lindy-sdk-patterns</code> · <code>runway-prod-checklist</code> · <code>abridge-deploy-integration</code> · <code>helm-plan</code> · <code>windsurf-performance-tuning</code> · <code>openevidence-ci-integration</code> · <code>hex-security-basics</code> · <code>fathom-ci-integration</code> · <code>canva-load-scale</code>
-        </p>
-
-        <h2 id="watch">2½. Watch it happen — one real skill, start to finish</h2>
-
-        <p>
-            Abstract numbers are hard to feel. So here is exactly what happened to <em>one</em>
-            of the 60 skills — a real, public marketplace skill called
-            <code>notion-ci-integration</code> — pulled straight from the run logs.
-        </p>
-
-        <p><strong>Step 1 — the starting point.</strong> The whole skill scored
-            <strong>86 / 100</strong> on the rubric (most of that earned by its body, which stays
-            fixed throughout).</p>
-
-        <p><strong>Step 2 — the exact instruction we sent the AI</strong> (this is the literal
-            prompt, trimmed):</p>
-
-        <pre><code>You are improving a SKILL.md frontmatter file... The IS marketplace tier
-requires 8 fields: name, description, allowed-tools, version, author,
-license, compatibility, tags.
-
-Here are 8 exemplar(s) of frontmatter that pass the validator:
-  [8 good examples pasted in here]
-
-Now improve the following SKILL.md to maximize its validator score.
-Return ONLY the updated frontmatter block.
-
-  [the notion-ci-integration header that needs improving]</code></pre>
-
-        <p>In plain words: <em>"Here are 8 good examples. Now make this one better. Go."</em>
-            That is "Arm A" — just ask the AI, take whatever it returns.</p>
-
-        <p><strong>Step 3 — what the AI sent back.</strong> It rewrote the header: added two tags
-            (<code>automation</code>, <code>github-actions</code>) and changed the compatibility
-            line. It was confident it had improved the file.</p>
-
-        <p><strong>Step 4 — we re-scored the AI's version</strong> with the same rubric:</p>
-
-        <!-- ARM-A:START id=walkthrough -->
-        <div class="meta-block">
-            <dl>
-                <dt>started at</dt><dd><code>86 / 100</code></dd>
-                <dt>after the AI's header edit</dt><dd><code>72 / 100</code></dd>
-                <dt>result</dt><dd><strong>−14 points — the header edit made it WORSE</strong> (the body never changed, so the whole drop is the AI's header edit)</dd>
-            </dl>
-        </div>
-        <!-- ARM-A:END id=walkthrough -->
-
-        <p>
-            That is the whole problem in one example: <strong>just asking the AI to "improve the
-            header" often makes it worse</strong> — and nothing catches the mistake, because
-            nobody checked the edit before keeping it.
-        </p>
-
-        <p><strong>Step 5 — now the Refiner, on a different skill</strong> (one that started at
-            53/100). Same AI, same kind of edit — but this time the edit is <em>scored before
-            it's kept</em>:</p>
-
-        <!-- ARM-B:START id=walkthrough -->
-        <div class="meta-block">
-            <dl>
-                <dt>started at</dt><dd><code>53 / 100</code></dd>
-                <dt>Refiner's scored edit</dt><dd><code>62 / 100</code> (+9)</dd>
-                <dt>the check's decision</dt><dd><strong>ACCEPTED</strong> — the edit improved the score, so keep it</dd>
-            </dl>
-        </div>
-        <!-- ARM-B:END id=walkthrough -->
-
-        <p>
-            The Refiner's superpower isn't the AI — it's the <strong>check around the AI</strong>:
-            score every proposed edit, and <em>only keep it if it genuinely improved things,
-            otherwise throw it away.</em> When the AI degrades a skill (like Step 4), that
-            safety net catches it and discards it. That is the entire difference between the two
-            arms — and it's why "just ask the model" loses.
-        </p>
-
-        <h2>3. What happened</h2>
-
-        <p>The Refiner won, clearly and measurably:</p>
-
-        <div class="meta-block">
-            <dl>
-                <dt>Arm A — just ask</dt><dd><!-- ARM-A:START id=result -->header edits made scores <strong>worse</strong> on average (−6.1 points)<!-- ARM-A:END id=result --></dd>
-                <dt>Arm B — Refiner</dt><dd><!-- ARM-B:START id=result -->header edits made scores <strong>better</strong> on average (+0.58 points)<!-- ARM-B:END id=result --></dd>
-                <dt>head-to-head gap</dt><dd><strong>+6.68 points</strong> in the Refiner's favor, per skill</dd>
-                <dt>is it real or luck?</dt><dd>p &lt; 0.000001 — about a one-in-a-million chance this is a fluke</dd>
-                <dt>how big an effect?</dt><dd>Cohen's d = 1.49 — a "large" effect by the standard yardstick</dd>
-                <dt>specimens</dt><dd>60 skill files, each tested both ways</dd>
-                <dt>cost</dt><dd>$0.00</dd>
-                <dt>verdict</dt><dd><strong>PROCEED</strong> — build the Refiner; the loop earns its keep</dd>
-            </dl>
-        </div>
-
-        <p>
-            <strong>The honest footnote.</strong> The Refiner won decisively, but it only reached
-            about 39% of the gain we'd <em>hoped</em> for going in. So the verdict is "the idea
-            works and is worth building" — not "the idea is finished." We say that plainly rather
-            than rounding up, because a result you can't trust isn't worth signing.
-        </p>
-
-        <h2>4. The proof — verify it without trusting us</h2>
-
-        <p>
-            Anyone can claim a result. What makes this different: the result files are sealed
-            into a <strong>tamper-proof public record</strong>. We took the exact result files,
-            fingerprinted them, and signed that fingerprint into the
-            <a href="https://www.sigstore.dev/">sigstore</a> public transparency log —
-            the same public-good system behind npm and Google's supply-chain security. No
-            account, no secret key; the signer is our automated lab pipeline, not a person who
-            could fake it.
-        </p>
-
-        <p>That gives you a permanent receipt proving these exact results existed, unaltered, at a known time:</p>
-
-        <div class="meta-block" style="border-left: 3px solid #2c5282;">
-            <dl>
-                <dt>the public receipt</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=1689291334">Rekor log index <code>1689291334</code></a> — the tamper-proof entry, readable by anyone, forever</dd>
-                <dt>signed at</dt><dd>2026-06-01 04:45 UTC</dd>
-                <dt>the signed bundle</dt><dd><a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/evidence/phase-a-0-baseline/evidence-bundle.sigstore.json"><code>evidence-bundle.sigstore.json</code></a> — signature + certificate + proof, in one file</dd>
-                <dt>verify it yourself</dt><dd>step-by-step <a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/evidence/phase-a-0-baseline/README.md">verification guide</a> (one <code>cosign</code> command, no account)</dd>
-            </dl>
-        </div>
-
-        <p>
-            <strong>What the signature proves:</strong> these are the real, unaltered result
-            files, signed by our lab pipeline at that time. <strong>What it does not claim:</strong>
-            it does not assert the science is beyond critique — a signature attests
-            <em>authenticity</em>, not <em>correctness</em>. The science stands on the
-            pre-registered method below, open for anyone to challenge.
-        </p>
-
-        <h2>5. See everything — down to the raw logs</h2>
-
-        <p>Every layer is public. Click down as deep as you want:</p>
-
+        <h2>Original proof and records</h2>
+        <p>The original signed bundle and transparency-log entry are unchanged. They attest
+            the recorded artifact's integrity and signing history, not the correctness of its
+            scientific interpretation. No replacement score or signature is presented here.</p>
         <ul>
-            <li><strong>The plain result</strong> — <a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/research/phase-a-0-baseline/RESULTS.md">RESULTS.md</a>: the full write-up with every number.</li>
-            <li><strong>The method, pre-registered</strong> — <a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/research/phase-a-0-baseline/DESIGN.md">DESIGN.md</a>: exactly what we'd test and how to judge it, written <em>before</em> the run.</li>
-            <li><strong>The decision record</strong> — <a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/036-AT-DECR-phase-a0-result-proceed-2026-05-31.md">DR-036</a>: the formal PROCEED decision and its caveats.</li>
-            <li><strong>The machine-readable stats</strong> — <a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/research/phase-a-0-baseline/results/aggregated/statistics.json">statistics.json</a> + <a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/research/phase-a-0-baseline/results/aggregated/decision.json">decision.json</a>: the exact numbers the signature is wrapped around.</li>
-            <li><strong>The execution log</strong> — the <a href="https://github.com/jeremylongshore/intent-eval-lab/actions/workflows/sign-evidence-bundle.yml">signing workflow runs</a>: the actual machine run that produced the signature, step by step.</li>
+            <li><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=1689291334">Original Rekor entry 1689291334</a>.</li>
+            <li><a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/evidence/phase-a-0-baseline/evidence-bundle.sigstore.json">Original signed bundle</a> and <a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/evidence/phase-a-0-baseline/README.md">verification guide</a>.</li>
+            <li><a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/research/phase-a-0-baseline/RESULTS.md">Historical RESULTS</a> and <a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/036-AT-DECR-phase-a0-result-proceed-2026-05-31.md">DR-036</a>.</li>
+            <li><a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/research/phase-a-0-baseline/results/aggregated/statistics.json">Original statistics</a> and <a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/research/phase-a-0-baseline/results/aggregated/decision.json">decision JSON</a>.</li>
+            <li><a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/research/phase-a-0-baseline/DESIGN.md">Original design</a> and <a href="https://github.com/jeremylongshore/intent-eval-lab/blob/main/research/phase-a-0-baseline/reviews/2026-10-19/input-audit.json">new input audit</a>.</li>
         </ul>
-
-        <h2>6. Why this matters — the one-line version</h2>
-
-        <blockquote>
-            We tested whether our Refiner's "score-the-edit-and-only-keep-it-if-better" loop
-            beats just-asking-the-model — on the config-header edit — it won clearly on a free
-            model at zero cost, and we sealed the proof into a public log so nobody has to take
-            our word for it.
-        </blockquote>
-
-        <p>
-            That last part is the whole game. Plenty of tools publish a number. Almost none let
-            you cryptographically confirm the number wasn't quietly edited after the fact. That
-            confirmable-receipt is what "audit-first" actually means — and it's the layer a
-            scoreboard of unsigned numbers can't offer.
-        </p>
-
-        <h2 id="next">7. What this does <em>not</em> prove yet — and the next experiment</h2>
-
-        <p>
-            Being honest about the edges is the point of an audit-first lab, so plainly:
-        </p>
-
-        <ul>
-            <li><strong>This was a config-header test, not a whole-skill test.</strong> The AI only
-                edited the <code>SKILL.md</code> frontmatter; the instruction body — which earns
-                most of the rubric's points — was held fixed. So we've shown the Refiner's
-                check-before-keep loop helps <em>on header edits</em>, not yet that it improves a
-                skill end to end.</li>
-            <li><strong>The win was real but modest.</strong> The Refiner beat just-asking
-                decisively (one-in-a-million odds it's luck), but reached only ~39% of the
-                improvement we'd hoped for. "Worth building," not "finished."</li>
-            <li><strong>The natural next experiment</strong> is a Refiner that can edit the whole
-                skill — body included — scored on the full rubric, on a fresh held-out set. That's
-                a bigger, costlier test; this cheap one had to pass first.</li>
-        </ul>
-
-        <p>
-            We publish the limits next to the result on purpose. A number you can't trust isn't
-            worth signing — and neither is a claim that hides its own scope.
-        </p>
-
-        <p style="margin-top: 2rem;">
-            <a href="/eval-sets/j-rig-bench/">← Back to the Evidence Bench scorecard</a>
-        </p>
+        <p>The raw run archive was excluded from Git by the original design. The audit publishes
+            per-specimen observations and source hashes; reproducing it also requires that
+            retained archive. The earlier suggestion that every raw layer was publicly available
+            was too broad.</p>
+        <p><a href="/eval-sets/j-rig-bench/">← Evidence Bench scorecard</a></p>
     </main>
 
     <footer class="site-footer">
