@@ -36,6 +36,11 @@ on:
 permissions:
   contents: read
 
+# Only superseded PR validation is canceled; every main push remains independent.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   check:
     name: lint + typecheck + test + build
