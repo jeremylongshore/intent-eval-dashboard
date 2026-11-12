@@ -102,7 +102,7 @@ describe('runLivePass — verified repo', () => {
     const key = sha256Key(canonicalJsonBytes(BUNDLE));
     // `sigstoreBundle: {}` in this fixture carries no transparency-log entry, so
     // the recorded Rekor anchor is honestly EMPTY — not fabricated.
-    expect(await d.gateRowStore.get(key)).toEqual({
+    expect(await d.gateRowStore.get(key, 'iec')).toEqual({
       repo: 'iec',
       bodies: [BODY],
       rekorLogIndices: [],
@@ -123,7 +123,7 @@ describe('runLivePass — verified repo', () => {
     expect(new Set(keys).size).toBe(2);
     expect(input.repos[0]?.snapshot?.bundleKeys).toEqual(keys);
     for (let i = 0; i < keys.length; i++) {
-      expect(await d.gateRowStore.get(keys[i]!)).toEqual({
+      expect(await d.gateRowStore.get(keys[i]!, 'iec')).toEqual({
         repo: 'iec',
         bodies: manifest.rows[i]!.gateResults,
         rekorLogIndices: [],
@@ -166,7 +166,7 @@ describe('runLivePass — fail-closed', () => {
 
     expect(outcomes[0]?.fresh).toBe(false);
     const key = sha256Key(canonicalJsonBytes(BUNDLE));
-    expect(await store.get(key)).toBeNull();
+    expect(await store.get(key, 'iec')).toBeNull();
     expect(await d.snapshotStore.get('iec')).toBeNull();
     expect(await d.contentStore.has(key)).toBe(false);
   });
@@ -192,7 +192,7 @@ describe('runLivePass — fail-closed', () => {
     expect(await d.snapshotStore.get('iec')).toBeNull();
     for (const row of manifest.rows) {
       const key = sha256Key(canonicalJsonBytes(row.bundle));
-      expect(await d.gateRowStore.get(key)).toBeNull();
+      expect(await d.gateRowStore.get(key, 'iec')).toBeNull();
     }
   });
 

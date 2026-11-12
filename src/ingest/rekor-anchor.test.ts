@@ -162,6 +162,7 @@ describe('Rekor anchor reaches the rendered row (published j-rig shape)', () => 
     );
     const rows = await new StoreTestingResolver(deps.contentStore, deps.gateRowStore).resolve(
       bundleKey,
+      'iaj',
     );
     expect(rows).not.toBeNull();
     expect(rows?.[0]?.rekorLogIndices).toEqual([PROD_LOG_INDEX]);
@@ -175,7 +176,7 @@ describe('Rekor anchor reaches the rendered row (published j-rig shape)', () => 
     const rows = await new ContentStoreBundleResolver(
       deps.contentStore,
       new StoreGateRowSource(deps.gateRowStore),
-    ).resolve(bundleKey);
+    ).resolve(bundleKey, 'iaj');
     expect(rows).not.toBeNull();
     expect(rows?.[0]?.rekorLogIndices).toEqual([PROD_LOG_INDEX]);
   });
@@ -185,6 +186,7 @@ describe('Rekor anchor reaches the rendered row (published j-rig shape)', () => 
     const { deps, bundleKey } = await ingest(sigstoreBundleWithIndex('999'), bundle);
     const rows = await new StoreTestingResolver(deps.contentStore, deps.gateRowStore).resolve(
       bundleKey,
+      'iaj',
     );
     expect(rows?.[0]?.rekorLogIndices).toEqual([42]);
   });
@@ -193,6 +195,7 @@ describe('Rekor anchor reaches the rendered row (published j-rig shape)', () => 
     const { deps, bundleKey } = await ingest({ mediaType: 'x' }, publishedBundle());
     const rows = await new StoreTestingResolver(deps.contentStore, deps.gateRowStore).resolve(
       bundleKey,
+      'iaj',
     );
     expect(rows).not.toBeNull();
     expect(rows?.[0]?.rekorLogIndices).toEqual([]);
@@ -200,7 +203,7 @@ describe('Rekor anchor reaches the rendered row (published j-rig shape)', () => 
     const resultRows = await new ContentStoreBundleResolver(
       deps.contentStore,
       new StoreGateRowSource(deps.gateRowStore),
-    ).resolve(bundleKey);
+    ).resolve(bundleKey, 'iaj');
     expect(resultRows?.[0]?.rekorLogIndices).toEqual([]);
   });
 });

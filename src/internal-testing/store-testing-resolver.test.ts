@@ -38,7 +38,7 @@ async function setup(bodies: unknown[] = [BODY]) {
 describe('StoreTestingResolver', () => {
   it('reconstructs a richer testing row from a verified bundle + stored bodies', async () => {
     const { content, gateRows, key } = await setup();
-    const rows = await new StoreTestingResolver(content, gateRows).resolve(key);
+    const rows = await new StoreTestingResolver(content, gateRows).resolve(key, 'iec');
     expect(rows).not.toBeNull();
     expect(rows?.[0]).toMatchObject({
       gateId: 'iec:ci:coverage',
@@ -58,7 +58,7 @@ describe('StoreTestingResolver', () => {
 
   it('omits optional failureMode/advisorySeverity when absent', async () => {
     const { content, gateRows, key } = await setup([{ ...validGateResult(), gate_name: 'arch' }]);
-    const rows = await new StoreTestingResolver(content, gateRows).resolve(key);
+    const rows = await new StoreTestingResolver(content, gateRows).resolve(key, 'iec');
     expect(rows?.[0]?.failureMode).toBeUndefined();
     expect(rows?.[0]?.advisorySeverity).toBeUndefined();
     expect(rows?.[0]?.decision).toBe('pass');
@@ -70,27 +70,27 @@ describe('StoreTestingResolver', () => {
 
   it('returns null when a persisted body is changed after verification', async () => {
     const { content, gateRows, key } = await setup();
-    const stored = await gateRows.get(key);
+    const stored = await gateRows.get(key, 'iec');
     expect(stored).not.toBeNull();
     await gateRows.put(key, {
       repo: stored!.repo,
       bodies: [{ ...BODY, gate_decision: 'pass', gate_reasons: ['tampered'] }],
     });
 
-    expect(await new StoreTestingResolver(content, gateRows).resolve(key)).toBeNull();
+    expect(await new StoreTestingResolver(content, gateRows).resolve(key, 'iec')).toBeNull();
   });
 
   it('returns null rather than coercing a malformed persisted body', async () => {
     const { content, gateRows, key } = await setup();
     await gateRows.put(key, { repo: 'iec', bodies: [{ ...BODY, gate_decision: 'bogus' }] });
 
-    expect(await new StoreTestingResolver(content, gateRows).resolve(key)).toBeNull();
+    expect(await new StoreTestingResolver(content, gateRows).resolve(key, 'iec')).toBeNull();
   });
 
   it('returns null for an unknown content key', async () => {
     const { gateRows } = await setup();
     const r = new StoreTestingResolver(new MemoryContentStore(), gateRows);
-    expect(await r.resolve('sha256:' + 'f'.repeat(64))).toBeNull();
+    expect(await r.resolve('sha256:' + 'f'.repeat(64), 'iec')).toBeNull();
   });
 
   it('returns null when the stored bytes are not JSON', async () => {
@@ -98,7 +98,7 @@ describe('StoreTestingResolver', () => {
     const key = await content.put(new TextEncoder().encode('not json'));
     const gateRows = new MemoryGateRowStore();
     await gateRows.put(key, { repo: 'iec', bodies: [BODY] });
-    expect(await new StoreTestingResolver(content, gateRows).resolve(key)).toBeNull();
+    expect(await new StoreTestingResolver(content, gateRows).resolve(key, 'iec')).toBeNull();
   });
 
   it('returns null when the bytes are valid JSON but not an EvidenceBundle', async () => {
@@ -106,14 +106,14 @@ describe('StoreTestingResolver', () => {
     const key = await content.put(canonicalJsonBytes({ not: 'a bundle' }));
     const gateRows = new MemoryGateRowStore();
     await gateRows.put(key, { repo: 'iec', bodies: [BODY] });
-    expect(await new StoreTestingResolver(content, gateRows).resolve(key)).toBeNull();
+    expect(await new StoreTestingResolver(content, gateRows).resolve(key, 'iec')).toBeNull();
   });
 
   it('returns null when there are no stored bodies for a verified bundle', async () => {
     const content = new MemoryContentStore();
     const key = await content.put(canonicalJsonBytes(validEvidenceBundle()));
     expect(
-      await new StoreTestingResolver(content, new MemoryGateRowStore()).resolve(key),
+      await new StoreTestingResolver(content, new MemoryGateRowStore()).resolve(key, 'iec'),
     ).toBeNull();
   });
 });
