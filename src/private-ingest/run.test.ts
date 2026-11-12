@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { mkdir, mkdtemp, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, readdir, rm, open, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { mintManifest } from '../ingest/__fixtures__/bundle-fixtures.js';
@@ -133,8 +133,13 @@ describe('isolated private command', () => {
     expect(await readFile(join(pub, 'status.html'), 'utf8')).toBe('PUBLIC_STATUS_CANARY');
     expect(await readdir(pub)).toEqual(['status.html']);
     for (const file of [...(await allFiles(paths.state)), ...output]) {
-      expect((await stat(file)).mode & 0o077).toBe(0);
-      expect(await readFile(file, 'utf8')).not.toContain('SYNTHETIC_TOKEN_CANARY');
+      const handle = await open(file, 'r');
+      try {
+        expect((await handle.stat()).mode & 0o077).toBe(0);
+        expect(await handle.readFile('utf8')).not.toContain('SYNTHETIC_TOKEN_CANARY');
+      } finally {
+        await handle.close();
+      }
     }
   });
   it('preserves prior verified snapshots and never emits raw verifier errors', async () => {
