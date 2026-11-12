@@ -142,7 +142,7 @@ jobs:
         id: ingest
         run: |
           run_ingest() {
-            node --experimental-strip-types scripts/ingest-render.ts --root .ingest-store 2>&1 | tee /tmp/ingest.log
+            node --experimental-strip-types scripts/ingest-render.ts --supervised --root .ingest-store 2>&1 | tee /tmp/ingest.log
           }
           if ! run_ingest; then
             echo "::error::ingest-render failed before its completion signal — refusing to commit or deploy"

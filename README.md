@@ -123,3 +123,29 @@ Apache 2.0.
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). DCO sign-off required; conventional-commit titles; partner-name vendor-generic discipline enforced via CI grep gate.
+
+
+## Collector restart telemetry
+
+After building, `node --experimental-strip-types scripts/ingest-render.ts --supervised`
+runs the existing verify-before-render workers through their one-for-one supervisor.
+The daily/manual `regenerate.yml` invocation selects this mode. The eight repo workers retain serial execution across fetch, verification and
+persistence because bundle-addressed files can be shared between repos. Failed workers
+are retried independently; activation can increase total requests, not active worker concurrency.
+Serialization preserves the existing last-writer association when two repos share a bundle
+key; it prevents overlapping writes but does not redesign cross-repo provenance ownership. Each repo keeps the existing budget of three
+restarts in a rolling hour. History is scoped to this invocation, not persisted across
+cron runs; attempts spanning an hour do not have a hard four-attempt ceiling.
+
+The status view reports observed restart events and supervisor escalation for this
+collection. Successful verification still precedes snapshot/body publication; a failed
+repo cannot change a healthy sibling's verified result. The seven-day-silence paging
+policy is unchanged. This does not measure restarts of the outer workflow or VPS process.
+Without `--supervised`, collection retains one attempt per repo and the status card
+shows **Not recorded**, rather than inventing a measured zero.
+
+The prepared workflow change requires reviewed delivery before live activation can be
+claimed. Regeneration commits generated HTML and explicitly dispatches the deployment
+workflow, so do not use a live dispatch as a local test. Review the additional retry requests and collection duration before activation. Rollback removes `--supervised` from the
+regeneration command (or reverts this bounded change), restoring single-pass/unknown
+telemetry without deleting the last-known-good store or changing verification policy.
