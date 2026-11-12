@@ -154,3 +154,14 @@ not a safe rollback. Retain a v2-aware reader while reverting unrelated behavior
 or stop collection and serve the last verified generated site while preparing a
 corrected forward fix. Preserve both namespaces and snapshots; do not delete data
 or re-label cached rows to manufacture provenance.
+
+## Private evidence ingestion
+
+The opt-in `scripts/ingest-private.ts` command uses protected enrollment and
+repository-bound credentials to collect release manifests into an isolated private
+store and internal testing output. State and output use the same authentication
+policy/enrollment generation; old or copied caches are not promoted. It never joins the public regeneration,
+freshness/status, cache or deployment path. See the
+[private collection runbook](000-docs/004-RR-RUNB-private-evidence-ingestion-2026-11-12.md)
+for configuration, limits, authenticated-serving requirements and rollback.
+Implementation qualification does not authorize real source enrollment or serving.
