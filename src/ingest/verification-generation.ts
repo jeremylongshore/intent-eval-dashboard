@@ -1,7 +1,7 @@
 /** Store namespaces are policy isolation, not retroactive signature verification. */
 import { createHash } from 'node:crypto';
 import { join } from 'node:path';
-import { readFile, lstat } from 'node:fs/promises';
+import { readRegularFile } from './regular-file.js';
 import { canonicalJsonBytes } from './content-address.js';
 import type { RenderInput, RepoPassOutcome } from './renderer.js';
 import type { PinnedSubjects } from './oidc-allowlist.js';
@@ -55,9 +55,7 @@ export async function hasCurrentArtifactGeneration(
   generationSelector(expected);
   try {
     const marker = join(root, GENERATION_MARKER);
-    if (!(await lstat(marker)).isFile())
-      throw new Error('generation marker must be a regular file');
-    const value: unknown = JSON.parse(await readFile(marker, 'utf8'));
+    const value: unknown = JSON.parse((await readRegularFile(marker)).toString('utf8'));
     return (
       typeof value === 'object' &&
       value !== null &&

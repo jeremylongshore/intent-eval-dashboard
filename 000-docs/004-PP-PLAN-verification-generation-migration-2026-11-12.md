@@ -211,7 +211,7 @@ private candidate above. No public artifact transports internal HTML.
 
 The initial integrated focused chain passed 19 tests across four files, types,
 fresh build and lint in 91.21 seconds. That receipt predates the explicit candidate
-input/compiled digest fields and is retained as historical evidence. The final combined qualification then passed 20 targeted tests and the complete
+input/compiled digest fields and is retained as historical evidence. The first combined qualification then passed 20 targeted tests and the complete
 612-test, 57-file suite in both check and native coverage. Coverage was 99.03%
 statements/lines, 92.87% branches, and 99.69% functions, above unchanged floors.
 The full chain took 342.51 seconds, including 246.41 seconds for the final full
@@ -223,3 +223,21 @@ current-generation snapshot from the nonempty signed-fixture worker/live-pass
 retention proof; an empty synthetic seed is not claimed to be cryptographically
 verified evidence. Public empty-manifest admission refusal from `puxu.28` is included
 in this candidate, so normal freshness signals cannot promote an empty claim.
+
+### Descriptor-read correction
+
+The first published draft passed ordinary hosted checks but CodeQL identified two
+pathname check/read races. Both readers now open with no-follow/nonblocking flags,
+inspect and read the same file descriptor, and close it on every post-open outcome.
+Real filesystem tests replace the pathname after opening, refuse symlinks/directories/
+FIFOs without blocking, and verify closure after read failure. This fixes the final
+component race; it does not claim isolation from hostile writable ancestors or
+concurrent edits to the contents of the same open inode.
+
+Corrected qualification passed 23 focused tests, then all 615 tests across 58 files
+in both full check and coverage. Coverage was 99.03% statements/lines, 92.92% branches,
+and 99.69% functions with unchanged floors. The chain took 385.97 seconds, including
+285.22 seconds for the full stage. Source hashes stayed unchanged on qualified tree
+`7866aae5d0ee2573a4f684adf3cbd41ffb8f8fb6`. This results-only update follows that
+qualification. The earlier failed CodeQL result remains in private delivery receipts;
+no alert was dismissed or suppressed. Production activation remains held.

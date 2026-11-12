@@ -1,6 +1,7 @@
 /** Exact owned-route reconciliation. Backups and candidates never live in served roots. */
 import { createHash } from 'node:crypto';
-import { lstat, mkdir, readdir, readFile, writeFile, unlink } from 'node:fs/promises';
+import { readRegularFile as readRegular } from './regular-file.js';
+import { lstat, mkdir, readdir, writeFile, unlink } from 'node:fs/promises';
 import { dirname, join, resolve, relative, sep } from 'node:path';
 import { z } from 'zod';
 import { assertOperatorInternalRoot } from '../lib/operator-internal-root.js';
@@ -82,10 +83,6 @@ async function safePath(root: string, path: string): Promise<string> {
     }
   }
   return target;
-}
-async function readRegular(path: string): Promise<Buffer> {
-  if (!(await lstat(path)).isFile()) throw new Error('generated input must be a regular file');
-  return readFile(path);
 }
 async function validateDestination(root: string, path: string): Promise<void> {
   const target = await safePath(root, path);
