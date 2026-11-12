@@ -43,7 +43,11 @@ export interface GateRowSource {
    * bundle is supplied so production sources can re-check the sidecar binding
    * at the final read/render boundary.
    */
-  rowsFor(bundleKey: string, bundle: unknown): Promise<readonly GateRowProjection[] | null>;
+  rowsFor(
+    bundleKey: string,
+    bundle: unknown,
+    repo: string,
+  ): Promise<readonly GateRowProjection[] | null>;
 }
 
 /** The per-row projection a {@link GateRowSource} returns. */
@@ -79,7 +83,7 @@ export class ContentStoreBundleResolver implements BundleResolver {
     private readonly gateRows: GateRowSource,
   ) {}
 
-  async resolve(bundleKey: string): Promise<readonly ResolvedBundleRow[] | null> {
+  async resolve(bundleKey: string, repo: string): Promise<readonly ResolvedBundleRow[] | null> {
     const bytes = await this.contentStore.get(bundleKey);
     if (bytes === null) return null;
 
@@ -96,7 +100,7 @@ export class ContentStoreBundleResolver implements BundleResolver {
     const bundle = parsed.data;
 
     // The gate-result bodies live outside the strict EvidenceBundle; fetch them.
-    const projections = await this.gateRows.rowsFor(bundleKey, bundleJson);
+    const projections = await this.gateRows.rowsFor(bundleKey, bundleJson, repo);
     if (projections === null || projections.length === 0) return null;
 
     // Only surface rows whose predicate URI is one the bundle actually attests

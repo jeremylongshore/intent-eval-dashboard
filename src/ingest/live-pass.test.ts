@@ -106,7 +106,7 @@ describe('runLivePass — verified repo', () => {
     const key = sha256Key(canonicalJsonBytes(BUNDLE));
     // `sigstoreBundle: {}` in this fixture carries no transparency-log entry, so
     // the recorded Rekor anchor is honestly EMPTY — not fabricated.
-    expect(await d.gateRowStore.get(key)).toEqual({
+    expect(await d.gateRowStore.get(key, 'iec')).toEqual({
       repo: 'iec',
       bodies: [BODY],
       rekorLogIndices: [],
@@ -127,7 +127,7 @@ describe('runLivePass — verified repo', () => {
     expect(new Set(keys).size).toBe(2);
     expect(input.repos[0]?.snapshot?.bundleKeys).toEqual(keys);
     for (let i = 0; i < keys.length; i++) {
-      expect(await d.gateRowStore.get(keys[i]!)).toEqual({
+      expect(await d.gateRowStore.get(keys[i]!, 'iec')).toEqual({
         repo: 'iec',
         bodies: manifest.rows[i]!.gateResults,
         rekorLogIndices: [],
@@ -170,7 +170,7 @@ describe('runLivePass — fail-closed', () => {
 
     expect(outcomes[0]?.fresh).toBe(false);
     const key = sha256Key(canonicalJsonBytes(BUNDLE));
-    expect(await store.get(key)).toBeNull();
+    expect(await store.get(key, 'iec')).toBeNull();
     expect(await d.snapshotStore.get('iec')).toBeNull();
     expect(await d.contentStore.has(key)).toBe(false);
   });
@@ -196,7 +196,7 @@ describe('runLivePass — fail-closed', () => {
     expect(await d.snapshotStore.get('iec')).toBeNull();
     for (const row of manifest.rows) {
       const key = sha256Key(canonicalJsonBytes(row.bundle));
-      expect(await d.gateRowStore.get(key)).toBeNull();
+      expect(await d.gateRowStore.get(key, 'iec')).toBeNull();
     }
   });
 
@@ -323,7 +323,7 @@ describe('live collector restart telemetry', () => {
     expect(result.outcomes[0]?.fresh).toBe(false);
     expect(result.outcomes[0]?.failure?.step).toBe('verify_dsse_signature');
     expect(result.input.repos[0]?.snapshot).toBeNull();
-    expect(await d.gateRowStore.get(sha256Key(canonicalJsonBytes(BUNDLE)))).toBeNull();
+    expect(await d.gateRowStore.get(sha256Key(canonicalJsonBytes(BUNDLE)), 'iec')).toBeNull();
   });
 
   it('records measured zero for a clean supervised pass and isolates failed siblings', async () => {
@@ -349,7 +349,10 @@ describe('live collector restart telemetry', () => {
     const key = sha256Key(canonicalJsonBytes(BUNDLE));
     expect(mixed.input.repos[0]?.snapshot?.bundleKeys).toContain(key);
     expect(mixed.input.repos[0]?.staleSince).toBeUndefined();
-    expect(await mixedDeps.gateRowStore.get(key)).toMatchObject({ repo: 'iec', bodies: [BODY] });
+    expect(await mixedDeps.gateRowStore.get(key, 'iec')).toMatchObject({
+      repo: 'iec',
+      bodies: [BODY],
+    });
     expect(await mixedDeps.snapshotStore.get('iel')).toBeNull();
   });
 });
@@ -367,13 +370,13 @@ it('serializes real filesystem writes when verified repos share a bundle key', a
         ...d,
         pinned: { ...PINNED, repos: { ...PINNED.repos, iel: PINNED.repos['iec']! } },
         gateRowStore: {
-          get: (key) => store.get(key),
+          get: (key, repo) => store.get(key, repo),
           put: async (key, rows) => {
             active++;
             peak = Math.max(peak, active);
             try {
               await store.put(key, rows);
-              expect(await store.get(key)).toEqual(rows);
+              expect(await store.get(key, rows.repo)).toEqual(rows);
               written.push(rows.repo);
             } finally {
               active--;
@@ -390,7 +393,9 @@ it('serializes real filesystem writes when verified repos share a bundle key', a
     ]);
     expect(peak).toBe(1);
     expect(written).toEqual(['iec', 'iel']);
-    expect((await store.get(sha256Key(canonicalJsonBytes(BUNDLE))))?.repo).toBe('iel');
+    const key = sha256Key(canonicalJsonBytes(BUNDLE));
+    expect(await store.get(key, 'iec')).toMatchObject({ repo: 'iec', bodies: [BODY] });
+    expect(await store.get(key, 'iel')).toMatchObject({ repo: 'iel', bodies: [BODY] });
   } finally {
     await rm(root, { recursive: true, force: true });
   }

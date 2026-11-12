@@ -25,7 +25,7 @@ export class StoreTestingResolver implements TestingBundleResolver {
     private readonly gateRowStore: GateRowStore,
   ) {}
 
-  async resolve(bundleKey: string): Promise<readonly ResolvedTestingRow[] | null> {
+  async resolve(bundleKey: string, repo: string): Promise<readonly ResolvedTestingRow[] | null> {
     const bytes = await this.contentStore.get(bundleKey);
     if (bytes === null) return null;
 
@@ -39,8 +39,8 @@ export class StoreTestingResolver implements TestingBundleResolver {
     if (!parsed.success) return null;
     const bundle = parsed.data;
 
-    const stored = await this.gateRowStore.get(bundleKey);
-    if (stored === null) return null;
+    const stored = await this.gateRowStore.get(bundleKey, repo);
+    if (stored?.repo !== repo) return null;
     const binding = checkGateResultBinding(bundle, stored.bodies, stored.evidencePayload);
     if (!binding.ok) return null;
 

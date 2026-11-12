@@ -81,7 +81,7 @@ export interface ResolvedTestingRow {
  * map. Returning `null` means the key is unknown — a no-data hole, never a pass.
  */
 export interface TestingBundleResolver {
-  resolve(bundleKey: string): Promise<readonly ResolvedTestingRow[] | null>;
+  resolve(bundleKey: string, repo: string): Promise<readonly ResolvedTestingRow[] | null>;
 }
 
 /** A renderable testing row, carrying repo + bundle identity + ingest time. */
@@ -134,7 +134,7 @@ export async function buildTestingRepo(
 
   if (snapshot !== null && snapshot !== undefined) {
     for (const bundleKey of snapshot.bundleKeys) {
-      const resolved = await resolver.resolve(bundleKey);
+      const resolved = await resolver.resolve(bundleKey, state.repo);
       if (resolved === null) continue; // unresolvable key => hole, not a pass
       for (let i = 0; i < resolved.length; i++) {
         const r = resolved[i];
