@@ -47,6 +47,10 @@ on:
     - cron: '0 6 * * *'
   workflow_dispatch:
     inputs:
+      prepare_trust_generation:
+        description: 'Prepare an isolated migration candidate; never commit or deploy'
+        type: boolean
+        default: false
       force_commit:
         description: 'Force commit even if no diff (debug only)'
         type: boolean
@@ -100,20 +104,27 @@ jobs:
           python3 scripts/regenerate.py
 
       # Restore the persisted last-known-good ingest store (bead nr75.17). The
-      # cache holds .ingest-store/ — every repo's prior VERIFIED snapshot +
+      # cache holds only the exact policy/config namespace under .ingest-store/ — every repo's prior VERIFIED snapshot +
       # content-addressed bundles + gate-result bodies. The keyed entry is unique
       # per run (so each run writes a fresh entry — actions/cache entries are
-      # immutable), and restore-keys falls back to the newest prior entry. If the
+      # immutable), and restore-keys selects only this exact generation/configuration. If the
       # cache is cold (first run / eviction), the store starts empty and repos
       # that fail to fetch render honest no-data until their first verify — the
       # correct floor, never a synthetic pass.
+      - name: Resolve exact verification generation
+        id: generation
+        run: |
+          selector=$(node --experimental-strip-types scripts/ingest-render.ts --print-generation)
+          echo "selector=$selector" >> "$GITHUB_OUTPUT"
+          echo "key=${selector//\//-}" >> "$GITHUB_OUTPUT"
+
       - name: Restore last-known-good ingest store (nr75.17)
         uses: actions/cache/restore@v5
         with:
-          path: .ingest-store
-          key: ingest-store-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .ingest-store/${{ steps.generation.outputs.selector }}
+          key: ingest-store-${{ steps.generation.outputs.key }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
-            ingest-store-
+            ingest-store-${{ steps.generation.outputs.key }}-
 
       # Live verify-before-render: fetch each repo's signed report-manifest from
       # its GitHub Release, re-verify (OIDC + Rekor + DSSE + kernel schema), and
@@ -140,6 +151,7 @@ jobs:
       # prior-good for any repo that fails again.
       - name: Live ingest → render (nr75.10)
         id: ingest
+        if: inputs.prepare_trust_generation != true
         run: |
           run_ingest() {
             node --experimental-strip-types scripts/ingest-render.ts --supervised --root .ingest-store 2>&1 | tee /tmp/ingest.log
@@ -174,6 +186,20 @@ jobs:
             echo "::notice::ingest verified ${verified} repo(s) — proceeding."
           fi
 
+      - name: Prepare migration candidate without publishing
+        if: inputs.prepare_trust_generation == true
+        env:
+          SOURCE_REF: ${{ github.ref }}
+        run: |
+          if [ "$SOURCE_REF" != refs/heads/main ]; then
+            echo "::error::migration preparation requires the reviewed main source"
+            exit 1
+          fi
+          node --experimental-strip-types scripts/ingest-render.ts --supervised \
+            --root .ingest-store --prepare-trust-migration "$RUNNER_TEMP/trust-candidate"
+          echo "Candidate is private runner-local preparation, not deployed activation." >> "$GITHUB_STEP_SUMMARY"
+          echo "No operator-internal HTML is uploaded as a public artifact." >> "$GITHUB_STEP_SUMMARY"
+
       # Persist the updated last-known-good store for the next run (bead nr75.17).
       # Save ALWAYS (even on a 0-verified blackout) so any prior-good snapshots
       # that survived this run carry forward. The keyed entry is unique per run
@@ -181,11 +207,11 @@ jobs:
       # prefix picks up this newest entry. Skipped only when no store exists
       # (cold cache + total fetch failure → nothing to persist).
       - name: Save last-known-good ingest store (nr75.17)
-        if: always() && hashFiles('.ingest-store/**') != ''
+        if: always() && steps.generation.outcome == 'success' && hashFiles('.ingest-store/**') != ''
         uses: actions/cache/save@v5
         with:
-          path: .ingest-store
-          key: ingest-store-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .ingest-store/${{ steps.generation.outputs.selector }}
+          key: ingest-store-${{ steps.generation.outputs.key }}-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Restore public analytics after generation
         run: pnpm run generate:analytics
@@ -203,7 +229,7 @@ jobs:
           fi
 
       - name: Commit + push
-        if: (steps.diff.outputs.changed == 'true' || inputs.force_commit == true) && steps.ingest.outputs.blackout != 'true'
+        if: inputs.prepare_trust_generation != true && (steps.diff.outputs.changed == 'true' || inputs.force_commit == true) && steps.ingest.outputs.blackout != 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -227,7 +253,7 @@ jobs:
       # new commit on origin/main, so deploy's `git reset --hard origin/main`
       # picks it up. This is what makes the cron actually self-update labs.
       - name: Trigger deploy (GITHUB_TOKEN push does not auto-fire deploy.yml)
-        if: (steps.diff.outputs.changed == 'true' || inputs.force_commit == true) && steps.ingest.outputs.blackout != 'true'
+        if: inputs.prepare_trust_generation != true && (steps.diff.outputs.changed == 'true' || inputs.force_commit == true) && steps.ingest.outputs.blackout != 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh workflow run deploy.yml --ref main

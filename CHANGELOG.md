@@ -17,6 +17,22 @@ results browser. Architecture is locked by DR-035 (ISEDC Session 8, ratified
 
 ### Added
 
+- Prepare isolated verification-generation stores and exact owned-route migration
+  candidates. Bind local application to committed inputs and compiled bytes;
+  refuse implicit legacy trust reuse and distinguish preparation from deployment.
+  Production migration remains unactivated.
+
+- Reject public manifests with no evidence rows before verification or persistence.
+  Empty acquisitions report failure and preserve any prior verified snapshot;
+  first acquisition remains honest no-data.
+
+- Enforce literal complete workflow certificate identities, exact DSSE artifact
+  binding and actual inclusion proofs in the public Sigstore verifier. Real
+  offline certificate, SCT, signature, worker-persistence and independent-log
+  controls cover all three boundaries while preserving signed blob compatibility.
+  Fixture dependencies also resolve compatible Sigstore core, protobuf and TUF
+  transitive patches; qualification covers that graph.
+
 - Align the dashboard's kernel consumer with exact `@intentsolutions/core@0.10.0`
   so verified ingest and report rendering use the current canonical schemas.
 

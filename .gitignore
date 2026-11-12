@@ -6,6 +6,7 @@ pnpm-lock.yaml.*
 
 # --- Build artifacts ---
 dist/
+/.dist-build-*/
 .astro/
 site/dist/
 site/.astro/
