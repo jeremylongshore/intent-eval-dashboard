@@ -32,7 +32,7 @@
             <p style="margin:0;"><strong>Internal testing dashboard (gated).</strong> This surface renders our own testing results — coverage, mutation, CRAP, architecture, and escape-scan gates — for every platform repo, each one <em>taught</em>: what the gate is, how we run it, what good looks like, our number, the verdict, and exactly what to fix. Every row traces back to a signed, Rekor-anchored <code>gate-result/v1</code> attestation re-verified at ingest. It is served behind a password at <code>internal.intentsolutions.io</code>; it is never indexed and never part of the public site.</p>
         </div>
         <div class="meta-block as-of">
-            <p style="margin:0;"><strong>As of:</strong> <time datetime="2026-11-11T06:16:19.577Z">2026-11-11T06:16:19.577Z</time> — the oldest ingest across all sources in this view (<code>min(ingested_at)</code>).</p>
+            <p style="margin:0;"><strong>As of:</strong> <time datetime="2026-11-12T06:16:54.048Z">2026-11-12T06:16:54.048Z</time> — the oldest ingest across all sources in this view (<code>min(ingested_at)</code>).</p>
         </div>
         <section class="gate-block">
             <h2><code>coreweave-fabric-diagnostics</code></h2>
@@ -53,10 +53,10 @@
                 <dl class="gate-row__meta">
                     <dt>gate version</dt><dd><code>1.0.0</code></dd>
                     <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3802605623"><code>3802605623</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-11-11T06:16:24.420Z">2026-11-11T06:16:24.420Z</time></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3825035913"><code>3825035913</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-11-12T06:16:59.000Z">2026-11-12T06:16:59.000Z</time></dd>
                 </dl>
                 <div class="measured">
                     <p><strong>What we measured:</strong> <code>trigger-behavior</code>, <code>functional-criteria</code></p>
@@ -64,7 +64,7 @@
                 <div class="what-to-fix">
                     <p><strong>What to fix:</strong></p>
                     <ul>
-                        <li>9/11 criteria passed on MiniMax-M3 (provider: minimax)</li>
+                        <li>7/11 criteria passed on MiniMax-M3 (provider: minimax)</li>
                         <li>2 blocker criterion evaluation(s) failed</li>
                         <li>thresholds did not pass</li>
                         <li>regression comparison was not run</li>
@@ -92,10 +92,10 @@
                 <dl class="gate-row__meta">
                     <dt>gate version</dt><dd><code>1.0.0</code></dd>
                     <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3802603374"><code>3802603374</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-11-11T06:16:24.420Z">2026-11-11T06:16:24.420Z</time></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3825031926"><code>3825031926</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-11-12T06:16:59.000Z">2026-11-12T06:16:59.000Z</time></dd>
                 </dl>
                 <div class="measured">
                     <p><strong>What we measured:</strong> <code>trigger-behavior</code>, <code>functional-criteria</code></p>
@@ -103,8 +103,9 @@
                 <div class="what-to-fix">
                     <p><strong>What to fix:</strong></p>
                     <ul>
-                        <li>7/11 criteria passed on MiniMax-M3 (provider: minimax)</li>
-                        <li>2 blocker criterion evaluation(s) failed</li>
+                        <li>4/11 criteria passed on MiniMax-M3 (provider: minimax)</li>
+                        <li>3 blocker criterion evaluation(s) failed</li>
+                        <li>1 criteria could not be judged (unsure)</li>
                         <li>thresholds did not pass</li>
                         <li>regression comparison was not run</li>
                         <li>rollout decision is block</li>
@@ -131,10 +132,10 @@
                 <dl class="gate-row__meta">
                     <dt>gate version</dt><dd><code>1.0.0</code></dd>
                     <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3802602992"><code>3802602992</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-11-11T06:16:24.420Z">2026-11-11T06:16:24.420Z</time></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3825030738"><code>3825030738</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-11-12T06:16:59.000Z">2026-11-12T06:16:59.000Z</time></dd>
                 </dl>
                 <div class="measured">
                     <p><strong>What we measured:</strong> <code>trigger-behavior</code>, <code>functional-criteria</code></p>
@@ -142,7 +143,7 @@
                 <div class="what-to-fix">
                     <p><strong>What to fix:</strong></p>
                     <ul>
-                        <li>14/18 criteria passed on MiniMax-M3 (provider: minimax)</li>
+                        <li>16/18 criteria passed on MiniMax-M3 (provider: minimax)</li>
                         <li>1 blocker criterion evaluation(s) failed</li>
                         <li>thresholds did not pass</li>
                         <li>regression comparison was not run</li>
@@ -170,10 +171,10 @@
                 <dl class="gate-row__meta">
                     <dt>gate version</dt><dd><code>1.0.0</code></dd>
                     <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3802606399"><code>3802606399</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-11-11T06:16:24.420Z">2026-11-11T06:16:24.420Z</time></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3825036508"><code>3825036508</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-11-12T06:16:59.000Z">2026-11-12T06:16:59.000Z</time></dd>
                 </dl>
                 <div class="measured">
                     <p><strong>What we measured:</strong> <code>trigger-behavior</code>, <code>functional-criteria</code></p>
@@ -181,8 +182,8 @@
                 <div class="what-to-fix">
                     <p><strong>What to fix:</strong></p>
                     <ul>
-                        <li>10/13 criteria passed on MiniMax-M3 (provider: minimax)</li>
-                        <li>1 blocker criterion evaluation(s) failed</li>
+                        <li>8/13 criteria passed on MiniMax-M3 (provider: minimax)</li>
+                        <li>3 blocker criterion evaluation(s) failed</li>
                         <li>thresholds did not pass</li>
                         <li>regression comparison was not run</li>
                         <li>rollout decision is block</li>
@@ -209,10 +210,10 @@
                 <dl class="gate-row__meta">
                     <dt>gate version</dt><dd><code>1.0.0</code></dd>
                     <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3802607983"><code>3802607983</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-11-11T06:16:24.420Z">2026-11-11T06:16:24.420Z</time></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3825037510"><code>3825037510</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-11-12T06:16:59.000Z">2026-11-12T06:16:59.000Z</time></dd>
                 </dl>
                 <div class="measured">
                     <p><strong>What we measured:</strong> <code>trigger-behavior</code>, <code>functional-criteria</code></p>
@@ -221,7 +222,7 @@
                     <p><strong>What to fix:</strong></p>
                     <ul>
                         <li>4/10 criteria passed on MiniMax-M3 (provider: minimax)</li>
-                        <li>3 blocker criterion evaluation(s) failed</li>
+                        <li>2 blocker criterion evaluation(s) failed</li>
                         <li>thresholds did not pass</li>
                         <li>regression comparison was not run</li>
                         <li>rollout decision is block</li>
@@ -248,10 +249,10 @@
                 <dl class="gate-row__meta">
                     <dt>gate version</dt><dd><code>1.0.0</code></dd>
                     <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3802608735"><code>3802608735</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-11-11T06:16:24.420Z">2026-11-11T06:16:24.420Z</time></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3825038832"><code>3825038832</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-11-12T06:16:59.000Z">2026-11-12T06:16:59.000Z</time></dd>
                 </dl>
                 <div class="measured">
                     <p><strong>What we measured:</strong> <code>trigger-behavior</code>, <code>functional-criteria</code></p>
@@ -259,7 +260,7 @@
                 <div class="what-to-fix">
                     <p><strong>What to fix:</strong></p>
                     <ul>
-                        <li>11/12 criteria passed on MiniMax-M3 (provider: minimax)</li>
+                        <li>10/12 criteria passed on MiniMax-M3 (provider: minimax)</li>
                         <li>1 blocker criterion evaluation(s) failed</li>
                         <li>thresholds did not pass</li>
                         <li>regression comparison was not run</li>
@@ -287,10 +288,10 @@
                 <dl class="gate-row__meta">
                     <dt>gate version</dt><dd><code>1.0.0</code></dd>
                     <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3802603797"><code>3802603797</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-11-11T06:16:24.420Z">2026-11-11T06:16:24.420Z</time></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3825032577"><code>3825032577</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-11-12T06:16:59.000Z">2026-11-12T06:16:59.000Z</time></dd>
                 </dl>
                 <div class="measured">
                     <p><strong>What we measured:</strong> <code>trigger-behavior</code>, <code>functional-criteria</code></p>
@@ -326,10 +327,10 @@
                 <dl class="gate-row__meta">
                     <dt>gate version</dt><dd><code>1.0.0</code></dd>
                     <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3802609025"><code>3802609025</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-11-11T06:16:24.420Z">2026-11-11T06:16:24.420Z</time></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3825039949"><code>3825039949</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-11-12T06:16:59.000Z">2026-11-12T06:16:59.000Z</time></dd>
                 </dl>
                 <div class="measured">
                     <p><strong>What we measured:</strong> <em>none declared</em></p>
@@ -362,10 +363,10 @@
                 <dl class="gate-row__meta">
                     <dt>gate version</dt><dd><code>1.0.0</code></dd>
                     <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3802609370"><code>3802609370</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-11-11T06:16:24.420Z">2026-11-11T06:16:24.420Z</time></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3825041190"><code>3825041190</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-11-12T06:16:59.000Z">2026-11-12T06:16:59.000Z</time></dd>
                 </dl>
                 <div class="measured">
                     <p><strong>What we measured:</strong> <em>none declared</em></p>
@@ -398,10 +399,10 @@
                 <dl class="gate-row__meta">
                     <dt>gate version</dt><dd><code>1.0.0</code></dd>
                     <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3802604272"><code>3802604272</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-11-11T06:16:24.420Z">2026-11-11T06:16:24.420Z</time></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3825033610"><code>3825033610</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-11-12T06:16:59.000Z">2026-11-12T06:16:59.000Z</time></dd>
                 </dl>
                 <div class="measured">
                     <p><strong>What we measured:</strong> <code>trigger-behavior</code>, <code>functional-criteria</code></p>
@@ -409,8 +410,7 @@
                 <div class="what-to-fix">
                     <p><strong>What to fix:</strong></p>
                     <ul>
-                        <li>3/5 criteria passed on MiniMax-M3 (provider: minimax)</li>
-                        <li>1 criteria could not be judged (unsure)</li>
+                        <li>4/5 criteria passed on MiniMax-M3 (provider: minimax)</li>
                         <li>1 non-blocker criterion evaluation(s) failed</li>
                         <li>thresholds did not pass</li>
                         <li>regression comparison was not run</li>
@@ -438,10 +438,10 @@
                 <dl class="gate-row__meta">
                     <dt>gate version</dt><dd><code>1.0.0</code></dd>
                     <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3802607219"><code>3802607219</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-11-11T06:16:24.420Z">2026-11-11T06:16:24.420Z</time></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3825037075"><code>3825037075</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-11-12T06:16:59.000Z">2026-11-12T06:16:59.000Z</time></dd>
                 </dl>
                 <div class="measured">
                     <p><strong>What we measured:</strong> <code>trigger-behavior</code>, <code>functional-criteria</code></p>
@@ -449,9 +449,11 @@
                 <div class="what-to-fix">
                     <p><strong>What to fix:</strong></p>
                     <ul>
-                        <li>12/12 criteria passed on MiniMax-M3 (provider: minimax)</li>
-                        <li>thresholds passed</li>
+                        <li>11/12 criteria passed on MiniMax-M3 (provider: minimax)</li>
+                        <li>1 non-blocker criterion evaluation(s) failed</li>
+                        <li>thresholds did not pass</li>
                         <li>regression comparison was not run</li>
+                        <li>rollout decision is warn</li>
                     </ul>
                 </div>
             </div>
@@ -475,10 +477,10 @@
                 <dl class="gate-row__meta">
                     <dt>gate version</dt><dd><code>1.0.0</code></dd>
                     <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3802608407"><code>3802608407</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-11-11T06:16:24.420Z">2026-11-11T06:16:24.420Z</time></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3825038000"><code>3825038000</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-11-12T06:16:59.000Z">2026-11-12T06:16:59.000Z</time></dd>
                 </dl>
                 <div class="measured">
                     <p><strong>What we measured:</strong> <code>trigger-behavior</code>, <code>functional-criteria</code></p>
@@ -486,9 +488,11 @@
                 <div class="what-to-fix">
                     <p><strong>What to fix:</strong></p>
                     <ul>
-                        <li>15/15 criteria passed on MiniMax-M3 (provider: minimax)</li>
-                        <li>thresholds passed</li>
+                        <li>14/15 criteria passed on MiniMax-M3 (provider: minimax)</li>
+                        <li>1 criteria could not be judged (unsure)</li>
+                        <li>thresholds did not pass</li>
                         <li>regression comparison was not run</li>
+                        <li>rollout decision is warn</li>
                     </ul>
                 </div>
             </div>
@@ -512,10 +516,10 @@
                 <dl class="gate-row__meta">
                     <dt>gate version</dt><dd><code>1.0.0</code></dd>
                     <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3802605014"><code>3802605014</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-11-11T06:16:24.420Z">2026-11-11T06:16:24.420Z</time></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3825035335"><code>3825035335</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-11-12T06:16:59.000Z">2026-11-12T06:16:59.000Z</time></dd>
                 </dl>
                 <div class="measured">
                     <p><strong>What we measured:</strong> <code>trigger-behavior</code>, <code>functional-criteria</code></p>
@@ -523,8 +527,8 @@
                 <div class="what-to-fix">
                     <p><strong>What to fix:</strong></p>
                     <ul>
-                        <li>5/10 criteria passed on MiniMax-M3 (provider: minimax)</li>
-                        <li>5 non-blocker criterion evaluation(s) failed</li>
+                        <li>4/10 criteria passed on MiniMax-M3 (provider: minimax)</li>
+                        <li>6 non-blocker criterion evaluation(s) failed</li>
                         <li>thresholds did not pass</li>
                         <li>regression comparison was not run</li>
                         <li>rollout decision is warn</li>
@@ -551,10 +555,10 @@
                 <dl class="gate-row__meta">
                     <dt>gate version</dt><dd><code>1.0.0</code></dd>
                     <dt>predicate URI</dt><dd><code>https://evals.intentsolutions.io/gate-result/v1</code></dd>
-                    <dt>evaluated at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>bundle created at</dt><dd><time datetime="2026-11-11T05:01:25.878Z">2026-11-11T05:01:25.878Z</time></dd>
-                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3802604749"><code>3802604749</code></a></dd>
-                    <dt>ingested at</dt><dd><time datetime="2026-11-11T06:16:24.420Z">2026-11-11T06:16:24.420Z</time></dd>
+                    <dt>evaluated at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>bundle created at</dt><dd><time datetime="2026-11-12T04:49:27.242Z">2026-11-12T04:49:27.242Z</time></dd>
+                    <dt>Rekor anchor</dt><dd><a href="https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3825034706"><code>3825034706</code></a></dd>
+                    <dt>ingested at</dt><dd><time datetime="2026-11-12T06:16:59.000Z">2026-11-12T06:16:59.000Z</time></dd>
                 </dl>
                 <div class="measured">
                     <p><strong>What we measured:</strong> <code>trigger-behavior</code>, <code>functional-criteria</code></p>
@@ -562,8 +566,8 @@
                 <div class="what-to-fix">
                     <p><strong>What to fix:</strong></p>
                     <ul>
-                        <li>2/5 criteria passed on MiniMax-M3 (provider: minimax)</li>
-                        <li>3 non-blocker criterion evaluation(s) failed</li>
+                        <li>3/5 criteria passed on MiniMax-M3 (provider: minimax)</li>
+                        <li>2 non-blocker criterion evaluation(s) failed</li>
                         <li>thresholds did not pass</li>
                         <li>regression comparison was not run</li>
                         <li>rollout decision is warn</li>
