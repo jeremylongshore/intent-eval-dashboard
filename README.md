@@ -124,7 +124,6 @@ Apache 2.0.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). DCO sign-off required; conventional-commit titles; partner-name vendor-generic discipline enforced via CI grep gate.
 
-
 ## Collector restart telemetry
 
 After building, `node --experimental-strip-types scripts/ingest-render.ts --supervised`
