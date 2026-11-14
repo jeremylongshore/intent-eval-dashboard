@@ -17,6 +17,13 @@ results browser. Architecture is locked by DR-035 (ISEDC Session 8, ratified
 
 ### Added
 
+- Enforce literal complete workflow certificate identities, exact DSSE artifact
+  binding and actual inclusion proofs in the public Sigstore verifier. Real
+  offline certificate, SCT, signature, worker-persistence and independent-log
+  controls cover all three boundaries while preserving signed blob compatibility.
+  Fixture dependencies also resolve compatible Sigstore core, protobuf and TUF
+  transitive patches; qualification covers that graph.
+
 - Align the dashboard's kernel consumer with exact `@intentsolutions/core@0.10.0`
   so verified ingest and report rendering use the current canonical schemas.
 
