@@ -17,7 +17,7 @@
  * only ingests + renders into `site/` + `site-internal/`.
  *
  * Usage (after `pnpm run build`):
- *   node --experimental-strip-types scripts/ingest-render.ts [--root DIR] [--site site] [--internal site-internal]
+ *   node --experimental-strip-types scripts/ingest-render.ts [--supervised] [--root DIR] [--site site] [--internal site-internal]
  */
 
 import { readFileSync } from 'node:fs';
@@ -29,6 +29,7 @@ import { SigstoreRowVerifier } from '../dist/ingest/verifier-sigstore.js';
 import { FsContentStore, FsSnapshotStore, systemIngestClock } from '../dist/ingest/storage-fs.js';
 import { FsGateRowStore } from '../dist/ingest/gate-row-store.js';
 import { runLivePass } from '../dist/ingest/live-pass.js';
+import { restartPressure } from '../dist/freshness/restart-pressure.js';
 import { ContentStoreBundleResolver } from '../dist/results/bundle-resolver.js';
 import { StoreGateRowSource } from '../dist/results/store-gate-row-source.js';
 import {
@@ -89,7 +90,9 @@ async function main(argv) {
   };
 
   console.log('── ingest pass (fetch → verify → content-address → snapshot) ──');
-  const { input, outcomes } = await runLivePass(deps, INGEST_REPOS);
+  const { input, outcomes, supervision } = await runLivePass(deps, INGEST_REPOS, {
+    supervised: argv.includes('--supervised'),
+  });
   for (const o of outcomes) {
     console.log(
       `  ${o.repo}: ${o.fresh ? 'VERIFIED ✓' : `no-data (${o.failure?.step ?? 'unreachable'}/${o.failure?.reasonCode ?? '—'})`}`,
@@ -131,12 +134,7 @@ async function main(argv) {
       repos: INGEST_REPOS,
       rows,
       liveness,
-      pressure: {
-        measured: false, // This entrypoint runs one live pass, not the instrumented supervisor.
-        restartCount: 0,
-        restartBudget: 3 * INGEST_REPOS.length,
-        escalatedChildIds: [],
-      },
+      pressure: restartPressure(supervision, INGEST_REPOS.length),
       nowIso,
     },
     siteRoot,
