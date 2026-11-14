@@ -56,27 +56,27 @@ describe('canonical payload ingest and render boundary', () => {
     const deps = depsFor(manifest);
     const snapshot = await runIngestWorker('iec', deps);
     const key = snapshot.bundleKeys[0]!;
-    expect(await deps.gateRowStore.get(key)).toMatchObject({
+    expect(await deps.gateRowStore.get(key, 'iec')).toMatchObject({
       evidencePayload: payload,
       bodies: [payload[0]!.predicate],
     });
     expect(
-      await new StoreGateRowSource(deps.gateRowStore).rowsFor(key, minted.row.bundle),
+      await new StoreGateRowSource(deps.gateRowStore).rowsFor(key, minted.row.bundle, 'iec'),
     ).toHaveLength(1);
     expect(
-      await new StoreTestingResolver(deps.contentStore, deps.gateRowStore).resolve(key),
+      await new StoreTestingResolver(deps.contentStore, deps.gateRowStore).resolve(key, 'iec'),
     ).toHaveLength(1);
 
-    const stored = (await deps.gateRowStore.get(key))!;
+    const stored = (await deps.gateRowStore.get(key, 'iec'))!;
     await deps.gateRowStore.put(key, {
       ...stored,
       evidencePayload: [{ ...payload[0]!, extensions: { tampered: true } }],
     });
     expect(
-      await new StoreGateRowSource(deps.gateRowStore).rowsFor(key, minted.row.bundle),
+      await new StoreGateRowSource(deps.gateRowStore).rowsFor(key, minted.row.bundle, 'iec'),
     ).toBeNull();
     expect(
-      await new StoreTestingResolver(deps.contentStore, deps.gateRowStore).resolve(key),
+      await new StoreTestingResolver(deps.contentStore, deps.gateRowStore).resolve(key, 'iec'),
     ).toBeNull();
   });
 
@@ -141,7 +141,7 @@ describe('happy path — all 8 steps pass for real', () => {
     const stored = await deps.snapshotStore.get('iec');
     expect(stored?.bundleKeys).toEqual(snapshot.bundleKeys);
     for (const key of snapshot.bundleKeys) {
-      expect(await deps.gateRowStore.get(key)).not.toBeNull();
+      expect(await deps.gateRowStore.get(key, 'iec')).not.toBeNull();
     }
   });
 });

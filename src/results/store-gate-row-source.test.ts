@@ -29,7 +29,7 @@ describe('StoreGateRowSource', () => {
   it('projects a bound stored body into a gate-row projection with repo visibility', async () => {
     const store = new MemoryGateRowStore();
     await store.put(KEY, { repo: 'iec', bodies: [BODY] });
-    const rows = await new StoreGateRowSource(store).rowsFor(KEY, BUNDLE);
+    const rows = await new StoreGateRowSource(store).rowsFor(KEY, BUNDLE, 'iec');
     expect(rows).not.toBeNull();
     expect(rows).toHaveLength(1);
     expect(rows?.[0]).toMatchObject({
@@ -45,13 +45,15 @@ describe('StoreGateRowSource', () => {
   });
 
   it('returns null for an absent bundle key', async () => {
-    expect(await new StoreGateRowSource(new MemoryGateRowStore()).rowsFor(KEY, BUNDLE)).toBeNull();
+    expect(
+      await new StoreGateRowSource(new MemoryGateRowStore()).rowsFor(KEY, BUNDLE, 'iec'),
+    ).toBeNull();
   });
 
   it('returns null instead of coercing a malformed stored body', async () => {
     const store = new MemoryGateRowStore();
     await store.put(KEY, { repo: 'iec', bodies: [{ gate_decision: 'maybe' }] });
-    expect(await new StoreGateRowSource(store).rowsFor(KEY, BUNDLE)).toBeNull();
+    expect(await new StoreGateRowSource(store).rowsFor(KEY, BUNDLE, 'iec')).toBeNull();
   });
 
   it('returns null when a filesystem sidecar is changed after persistence', async () => {
@@ -60,14 +62,14 @@ describe('StoreGateRowSource', () => {
       const store = new FsGateRowStore(root);
       await store.put(KEY, { repo: 'iec', bodies: [BODY] });
       await writeFile(
-        join(root, 'gate-rows', `${'a'.repeat(64)}.json`),
+        join(root, 'gate-rows', 'v2', 'iec', `${'a'.repeat(64)}.json`),
         JSON.stringify({
           repo: 'iec',
           bodies: [{ ...BODY, gate_decision: 'fail', gate_reasons: ['tampered'] }],
         }),
       );
 
-      expect(await new StoreGateRowSource(store).rowsFor(KEY, BUNDLE)).toBeNull();
+      expect(await new StoreGateRowSource(store).rowsFor(KEY, BUNDLE, 'iec')).toBeNull();
     } finally {
       await rm(root, { recursive: true, force: true });
     }

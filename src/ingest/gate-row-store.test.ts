@@ -15,9 +15,9 @@ const ROWS = { repo: 'iec', bodies: [{ gate_name: 'coverage', gate_decision: 'pa
 describe('MemoryGateRowStore', () => {
   it('round-trips a put/get', async () => {
     const s = new MemoryGateRowStore();
-    expect(await s.get(KEY)).toBeNull();
+    expect(await s.get(KEY, 'iec')).toBeNull();
     await s.put(KEY, ROWS);
-    expect(await s.get(KEY)).toEqual(ROWS);
+    expect(await s.get(KEY, 'iec')).toEqual(ROWS);
   });
 });
 
@@ -36,14 +36,14 @@ describe('FsGateRowStore', () => {
         };
         const anchor = rekorLogIndices === undefined ? {} : { rekorLogIndices };
         await s.put(KEY, { ...rows, ...anchor });
-        expect(await s.get(KEY)).toEqual({
+        expect(await s.get(KEY, 'iec')).toEqual({
           ...rows,
           ...(rekorLogIndices?.[0] === 1689291334 ? { rekorLogIndices } : {}),
         });
         // Preserve malformed canonical data so readers reject it; dropping
         // null here would incorrectly downgrade the row to legacy binding.
         await s.put(KEY, { ...rows, evidencePayload: null, ...anchor });
-        expect((await s.get(KEY))?.evidencePayload).toBeNull();
+        expect((await s.get(KEY, 'iec'))?.evidencePayload).toBeNull();
       } finally {
         await rm(dir, { recursive: true, force: true });
       }
@@ -54,11 +54,11 @@ describe('FsGateRowStore', () => {
     const dir = await mkdtemp(join(tmpdir(), 'iep-gaterows-'));
     try {
       const s = new FsGateRowStore(dir);
-      expect(await s.get(KEY)).toBeNull();
+      expect(await s.get(KEY, 'iec')).toBeNull();
       await s.put(KEY, ROWS);
-      expect(await s.get(KEY)).toEqual(ROWS);
+      expect(await s.get(KEY, 'iec')).toEqual(ROWS);
       // bare-hex key (no sha256: prefix) resolves to the same path
-      expect(await s.get('a'.repeat(64))).toEqual(ROWS);
+      expect(await s.get('a'.repeat(64), 'iec')).toEqual(ROWS);
     } finally {
       await rm(dir, { recursive: true, force: true });
     }
@@ -70,13 +70,13 @@ describe('FsGateRowStore', () => {
       const s = new FsGateRowStore(dir);
       const anchored = { ...ROWS, rekorLogIndices: [1689291334] };
       await s.put(KEY, anchored);
-      expect(await s.get(KEY)).toEqual(anchored);
+      expect(await s.get(KEY, 'iec')).toEqual(anchored);
       // A non-integer / negative index is never coerced into an anchor.
       await writeFile(
-        join(dir, 'gate-rows', 'a'.repeat(64) + '.json'),
+        join(dir, 'gate-rows', 'v2', 'iec', 'a'.repeat(64) + '.json'),
         JSON.stringify({ ...ROWS, rekorLogIndices: [-1, 'x'] }),
       );
-      expect(await s.get(KEY)).toEqual(ROWS);
+      expect(await s.get(KEY, 'iec')).toEqual(ROWS);
     } finally {
       await rm(dir, { recursive: true, force: true });
     }
@@ -87,13 +87,13 @@ describe('FsGateRowStore', () => {
     try {
       const s = new FsGateRowStore(dir);
       await s.put(KEY, ROWS);
-      const path = join(dir, 'gate-rows', `${'a'.repeat(64)}.json`);
+      const path = join(dir, 'gate-rows', 'v2', 'iec', `${'a'.repeat(64)}.json`);
 
       await writeFile(path, '{"repo":"iec","bodies":[');
-      expect(await s.get(KEY)).toBeNull();
+      expect(await s.get(KEY, 'iec')).toBeNull();
 
       await writeFile(path, JSON.stringify({ repo: 'iec', bodies: 'not-an-array' }));
-      expect(await s.get(KEY)).toBeNull();
+      expect(await s.get(KEY, 'iec')).toBeNull();
     } finally {
       await rm(dir, { recursive: true, force: true });
     }

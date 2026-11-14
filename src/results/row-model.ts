@@ -70,7 +70,7 @@ export interface ResolvedBundleRow {
  */
 export interface BundleResolver {
   /** Resolve one bundle key → its gate-result rows, or null if absent/unresolvable. */
-  resolve(bundleKey: string): Promise<readonly ResolvedBundleRow[] | null>;
+  resolve(bundleKey: string, repo: string): Promise<readonly ResolvedBundleRow[] | null>;
 }
 
 /** A renderable results row, carrying the full 4-timestamp surface. */
@@ -169,7 +169,7 @@ export async function buildRepoResults(
 
   if (snapshot !== null && snapshot !== undefined) {
     for (const bundleKey of snapshot.bundleKeys) {
-      const resolved = await resolver.resolve(bundleKey);
+      const resolved = await resolver.resolve(bundleKey, state.repo);
       if (resolved === null) continue; // unresolvable key => hole, not a pass
       for (let i = 0; i < resolved.length; i++) {
         const r = resolved[i];
