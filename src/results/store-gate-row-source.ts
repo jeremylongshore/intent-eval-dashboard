@@ -39,12 +39,16 @@ export function repoVisibility(repo: string): RowVisibility {
 export class StoreGateRowSource implements GateRowSource {
   constructor(private readonly store: GateRowStore) {}
 
-  async rowsFor(bundleKey: string, bundle: unknown): Promise<readonly GateRowProjection[] | null> {
-    const stored = await this.store.get(bundleKey);
-    if (stored === null) return null;
+  async rowsFor(
+    bundleKey: string,
+    bundle: unknown,
+    repo: string,
+  ): Promise<readonly GateRowProjection[] | null> {
+    const stored = await this.store.get(bundleKey, repo);
+    if (stored?.repo !== repo) return null;
     const binding = checkGateResultBinding(bundle, stored.bodies, stored.evidencePayload);
     if (!binding.ok) return null;
-    const visibility = repoVisibility(stored.repo);
+    const visibility = repoVisibility(repo);
     const rows: GateRowProjection[] = binding.bodies.map((body) => {
       return {
         predicateUri: GATE_RESULT_V1_URI,

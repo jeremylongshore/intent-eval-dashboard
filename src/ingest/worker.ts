@@ -142,6 +142,16 @@ export async function runIngestWorker(
     );
   }
   const manifest = manifestRaw;
+  // Claimed signing metadata alone is not evidence: an empty manifest performs
+  // no row verification and must never replace a last-known-good snapshot.
+  if (manifest.rows.length === 0) {
+    return crash(
+      repo,
+      'fetch_manifest',
+      'manifest_malformed',
+      'manifest contains no evidence rows',
+    );
+  }
 
   // --- Step 2: OIDC issuer + subject + workflow_ref vs pinned allowlist ---
   const oidc = checkOidcAllowlist(deps.pinned, repo, manifest.signing);

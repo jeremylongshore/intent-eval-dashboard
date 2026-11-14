@@ -17,6 +17,22 @@ results browser. Architecture is locked by DR-035 (ISEDC Session 8, ratified
 
 ### Added
 
+- Prepare isolated verification-generation stores and exact owned-route migration
+  candidates. Bind local application to committed inputs and compiled bytes;
+  refuse implicit legacy trust reuse and distinguish preparation from deployment.
+  Production migration remains unactivated.
+
+- Reject public manifests with no evidence rows before verification or persistence.
+  Empty acquisitions report failure and preserve any prior verified snapshot;
+  first acquisition remains honest no-data.
+
+- Enforce literal complete workflow certificate identities, exact DSSE artifact
+  binding and actual inclusion proofs in the public Sigstore verifier. Real
+  offline certificate, SCT, signature, worker-persistence and independent-log
+  controls cover all three boundaries while preserving signed blob compatibility.
+  Fixture dependencies also resolve compatible Sigstore core, protobuf and TUF
+  transitive patches; qualification covers that graph.
+
 - Align the dashboard's kernel consumer with exact `@intentsolutions/core@0.10.0`
   so verified ingest and report rendering use the current canonical schemas.
 
@@ -113,6 +129,11 @@ results browser. Architecture is locked by DR-035 (ISEDC Session 8, ratified
   deploy after its own cron commit so refreshed pages actually ship.
 
 ### Fixed
+
+- Preserve repository-specific gate-row provenance and fallback Rekor anchors
+  for identical bundle keys, with atomic v2 sidecar writes and matching-only
+  legacy reads (puxu.23). Public and internal consumers retain repo context and
+  signed-body checks; no live migration or deployment is claimed.
 
 - **Marketplace ingest pin follows the source repo rename** (`ingest/pinned-subjects.json`, `ccp`):
   `jeremylongshore/claude-code-plugins-plus-skills` became `jeremylongshore/tons-of-skills-marketplace`

@@ -123,3 +123,59 @@ Apache 2.0.
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). DCO sign-off required; conventional-commit titles; partner-name vendor-generic discipline enforced via CI grep gate.
+
+## Collector restart telemetry
+
+After building, `node --experimental-strip-types scripts/ingest-render.ts --supervised`
+runs the existing verify-before-render workers through their one-for-one supervisor.
+The daily/manual `regenerate.yml` invocation selects this mode. The eight repo workers retain serial execution across fetch, verification and
+persistence; verified gate-row sidecars are scoped by repo even when bundle bytes are shared. Failed workers
+are retried independently; activation can increase total requests, not active worker concurrency.
+Serialization prevents overlapping worker writes; repository-scoped storage preserves both
+verified associations when two repos share a bundle key. Each repo keeps the existing budget of three
+restarts in a rolling hour. History is scoped to this invocation, not persisted across
+cron runs; attempts spanning an hour do not have a hard four-attempt ceiling.
+
+The status view reports observed restart events and supervisor escalation for this
+collection. Successful verification still precedes snapshot/body publication; a failed
+repo cannot change a healthy sibling's verified result. The seven-day-silence paging
+policy is unchanged. This does not measure restarts of the outer workflow or VPS process.
+Without `--supervised`, collection retains one attempt per repo and the status card
+shows **Not recorded**, rather than inventing a measured zero.
+
+The prepared workflow change requires reviewed delivery before live activation can be
+claimed. Regeneration commits generated HTML and explicitly dispatches the deployment
+workflow, so do not use a live dispatch as a local test. Review the additional retry requests and collection duration before activation. Rollback removes `--supervised` from the
+regeneration command (or reverts this bounded change), restoring single-pass/unknown
+telemetry without deleting the last-known-good store or changing verification policy.
+
+## Repository-scoped gate-row storage
+
+Gate-row sidecars are written to `gate-rows/v2/<repo>/<bundle-digest>.json`.
+The worker supplies the repo only after its pinned identity and signed evidence
+checks pass. Both public and internal readers carry the requested repo from the
+render state, require a matching stored repo, and retain signed-body validation.
+Identical bundle bytes from different repos therefore retain distinct sidecars
+and fallback Rekor anchors. This fixes attribution overwrite; no authentication
+bypass was demonstrated in the previous implementation.
+
+A missing v2 file may read `gate-rows/<bundle-digest>.json` only if that legacy
+record names the requested repo. Present malformed, mismatched or unreadable v2
+files never fall back to legacy data. Writes do not modify the legacy namespace.
+Earlier overwritten associations cannot be reconstructed from that shared file;
+verified re-ingest is required. Missing evidence stays visibly no-data.
+
+Writes use a private, exclusive sibling temporary file and atomic rename, with
+cleanup after ordinary failures. Readers observe complete old or new rows during
+replacement. This is not a transaction with snapshot persistence, a power-loss
+durability guarantee, or protection against a malicious local filesystem writer.
+An abruptly killed process can leave an unused temporary file; readers ignore it.
+The change does not increase worker concurrency or change signing/visibility policy.
+
+This describes prepared code, not confirmed live deployment or store migration.
+Do not flatten v2 records into the shared legacy namespace. An old binary ignores
+v2 and can revive stale or colliding legacy associations, so blind downgrade is
+not a safe rollback. Retain a v2-aware reader while reverting unrelated behavior,
+or stop collection and serve the last verified generated site while preparing a
+corrected forward fix. Preserve both namespaces and snapshots; do not delete data
+or re-label cached rows to manufacture provenance.

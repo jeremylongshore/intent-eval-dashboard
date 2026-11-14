@@ -199,7 +199,7 @@ describe('ContentStoreBundleResolver', () => {
       ]),
     );
     const resolver = new ContentStoreBundleResolver(store, gateRows);
-    const rows = await resolver.resolve(key);
+    const rows = await resolver.resolve(key, 'iec');
     expect(rows).not.toBeNull();
     expect(rows).toHaveLength(1);
     expect(rows![0]?.predicateUri).toBe(GATE_RESULT_URI);
@@ -210,7 +210,7 @@ describe('ContentStoreBundleResolver', () => {
   it('returns null for an absent key (no-data hole)', async () => {
     const store = new MemoryContentStore();
     const resolver = new ContentStoreBundleResolver(store, new FixtureGateRowSource(new Map()));
-    expect(await resolver.resolve('sha256:' + 'd'.repeat(64))).toBeNull();
+    expect(await resolver.resolve('sha256:' + 'd'.repeat(64), 'iec')).toBeNull();
   });
 
   it('returns null when the bytes fail kernel validation', async () => {
@@ -236,14 +236,14 @@ describe('ContentStoreBundleResolver', () => {
         ]),
       ),
     );
-    expect(await resolver.resolve(key)).toBeNull();
+    expect(await resolver.resolve(key, 'iec')).toBeNull();
   });
 
   it('returns null when the bytes are not JSON', async () => {
     const store = new MemoryContentStore();
     const key = await store.put(new TextEncoder().encode('{not json'));
     const resolver = new ContentStoreBundleResolver(store, new FixtureGateRowSource(new Map()));
-    expect(await resolver.resolve(key)).toBeNull();
+    expect(await resolver.resolve(key, 'iec')).toBeNull();
   });
 
   it('drops a projection whose predicate URI the bundle never claimed', async () => {
@@ -274,7 +274,7 @@ describe('ContentStoreBundleResolver', () => {
       ]),
     );
     const resolver = new ContentStoreBundleResolver(store, gateRows);
-    const rows = await resolver.resolve(key);
+    const rows = await resolver.resolve(key, 'iec');
     expect(rows).toHaveLength(1);
     expect(rows![0]?.gateName).toBe('kept');
   });
@@ -283,6 +283,6 @@ describe('ContentStoreBundleResolver', () => {
     const store = new MemoryContentStore();
     const key = await storeBundle(store, validBundle());
     const resolver = new ContentStoreBundleResolver(store, new FixtureGateRowSource(new Map()));
-    expect(await resolver.resolve(key)).toBeNull();
+    expect(await resolver.resolve(key, 'iec')).toBeNull();
   });
 });

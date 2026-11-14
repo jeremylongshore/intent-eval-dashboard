@@ -94,6 +94,9 @@ Each `ingest_worker:<repo>` runs `runIngestWorker(repo, deps)` which executes,
 **in order** — any failure crashes with a structured `IngestReason`:
 
 1. **Fetch** `report-manifest.json` from the source repo's CI (`ManifestFetcher`).
+   A zero-row response fails as `fetch_manifest/manifest_malformed`: signing
+   metadata alone is not verified evidence. No snapshot or content is written,
+   so prior verified rows remain available with stale accounting.
 2. **Verify OIDC** issuer + subject + `workflow_ref:` against the pinned per-repo
    allowlist `ingest/pinned-subjects.json` (`checkOidcAllowlist`, REAL claim
    comparison; wrong issuer/subject/ref → crash).
@@ -119,7 +122,7 @@ deterministically testable. Here is exactly what runs for real vs what is a seam
 |---|---|---|---|
 | 1 fetch manifest | `ManifestFetcher` | **wired** — `HttpManifestFetcher` (HTTPS GET + timeout) | fixture fetcher |
 | 2 OIDC allowlist | `checkOidcAllowlist` (pure) | **wired** — REAL claim comparison vs `pinned-subjects.json` | inline pinned doc |
-| 3 Rekor inclusion | `SigstoreVerifier` | **wired** — `SigstoreRowVerifier` (sigstore-js, `tlogThreshold ≥ 1` forces inclusion-proof verification) | `OfflineRowVerifier` (REAL Merkle proof via Node crypto) |
+| 3 Rekor inclusion | `SigstoreVerifier` | **wired** — `SigstoreRowVerifier` (sigstore-js, explicit proof/checkpoint admission after vetted verification) | `OfflineRowVerifier` (REAL Merkle proof via Node crypto) |
 | 4 DSSE signature | `SigstoreVerifier` | **wired** — `SigstoreRowVerifier` (sigstore-js DSSE + Fulcio cert identity) | `OfflineRowVerifier` (REAL DSSE PAE + Ed25519/ECDSA via Node crypto) |
 | 5 kernel schema | `validateEvidenceBundle` | **wired** — REAL `@intentsolutions/core` Zod `.safeParse()` | same (kernel is imported) |
 | 6 content-address | `ContentStore` | **wired** — `FsContentStore` (sha256 → `/var/lib/labs-dashboard/bundles/`, mode 600) | `MemoryContentStore` (same sha256 keying) |
@@ -142,9 +145,30 @@ that performs the gated rsync + caddy reload.
 ### Why two real verifiers (sigstore + offline)
 
 `SigstoreRowVerifier` is the production default and uses **sigstore-js** against
-the live Sigstore TUF root / Fulcio / Rekor. A **unit test cannot mint a real
-Fulcio cert + Rekor entry offline**, so the test suite injects
-`OfflineRowVerifier` — a **second, fully real** verifier that performs genuine
+the live Sigstore TUF root / Fulcio / Rekor. Certificate workflow identities are
+escaped literal whole-string matches, including a strict end-of-input check;
+the separately pinned issuer remains required. DSSE embedded payload bytes must
+match the exact metadata passed by the worker before it validates or persists
+that metadata. Existing messageSignature blob support retains the library’s
+artifact binding.
+
+Every claimed transparency entry must carry an authenticated inclusion proof and
+signed checkpoint. A signed promise alone is insufficient, including in supported
+legacy v0.1 bundles. Checkpoint tree-size and root metadata must agree with the
+proof after the vetted library verifies its signature and Merkle path. Unknown,
+invalid or duplicate extra entries cannot be ignored merely because another log
+entry is valid.
+
+Production-wrapper tests use official synthetic CA, SCT and transparency-log
+constructors with real signatures and checkpoints. Only trust-root acquisition
+is substituted, and socket connections are forbidden. Exact and punctuation
+identities pass; prefix, suffix, regex-dot and final-newline near-matches fail.
+Separate controls retain issuer, DSSE signature and log-proof rejection. A real
+worker regression rejects mismatched signed/consumed metadata before any content,
+sidecar or snapshot write. Two independently trusted synthetic logs establish a
+valid control before each invalid extra-entry mutation. These
+fixtures are not public Fulcio/Rekor enrollment or live ingest proof. Other
+worker tests inject `OfflineRowVerifier` — a **second, fully real** verifier that performs genuine
 cryptography with Node's `crypto`: an RFC-6962 Merkle inclusion-proof recompute
 (step 3) and a DSSE PAE signature verification against a pinned key (step 4).
 This makes the synthetic-attack tests genuine: a tampered payload, a tampered
@@ -188,3 +212,24 @@ mutant is caught. Renaming a source repo therefore means: update `githubRepo`,
 3. **Network timeout on one worker** → that worker crashes + the supervisor
    retries it (transient); the other 7 workers are UNAFFECTED; the renderer uses
    the prior snapshot for the crashed repo.
+
+## Verification-generation migration (prepared, not activated)
+
+The live CLI opens stores only beneath `public-sigstore-auth-v1/<config digest>`.
+Legacy stores are retained but never restored into this namespace. The compiled
+renderer is admitted only after committed input and compiled-byte provenance checks;
+invocation from a different checkout is refused before loading compiled modules.
+
+Missing or mismatched output-generation markers require an explicit migration.
+`--prepare-trust-migration DIR` produces an isolated local candidate; it does not
+replace served routes. `--apply-prepared-generation DIR` binds its source revision,
+configuration, input digest and compiled digest to the current checkout, preserves
+owned prior routes under Git metadata, and invalidates markers before mutation.
+Only complete route replacement/removal writes the final artifact markers.
+These markers describe prepared checkout artifacts, never verified deployment.
+
+A first candidate with no newly verified nonempty row set requires the separate
+`--allow-empty-trust-migration` acknowledgement for local application. It does not
+authorize publishing no-data, overriding blackout policy, or restoring old trust.
+See [the migration plan](../../000-docs/004-PP-PLAN-verification-generation-migration-2026-11-12.md)
+for private candidate review, explicit activation, rollback and remaining boundaries.

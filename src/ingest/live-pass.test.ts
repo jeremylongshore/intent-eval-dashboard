@@ -4,14 +4,18 @@
  * failing verifier (no real network) and in-memory stores.
  */
 
+import { mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { canonicalJsonBytes, sha256Key } from './content-address.js';
 import { MemoryContentStore, MemorySnapshotStore } from './storage-memory.js';
-import { MemoryGateRowStore } from './gate-row-store.js';
+import { FsGateRowStore, MemoryGateRowStore } from './gate-row-store.js';
 import { CachingManifestFetcher, runLivePass, type LivePassDeps } from './live-pass.js';
 import { type ManifestFetcher, type SigstoreVerifier, VerifyFailure } from './interfaces.js';
 import { type PinnedSubjects } from './oidc-allowlist.js';
 import { type ReportManifest } from './manifest.js';
+import { restartPressure } from '../freshness/restart-pressure.js';
 import { validEvidenceBundle, validGateResult } from './__fixtures__/bundle-fixtures.js';
 
 const BODY = validGateResult();
@@ -102,7 +106,7 @@ describe('runLivePass — verified repo', () => {
     const key = sha256Key(canonicalJsonBytes(BUNDLE));
     // `sigstoreBundle: {}` in this fixture carries no transparency-log entry, so
     // the recorded Rekor anchor is honestly EMPTY — not fabricated.
-    expect(await d.gateRowStore.get(key)).toEqual({
+    expect(await d.gateRowStore.get(key, 'iec')).toEqual({
       repo: 'iec',
       bodies: [BODY],
       rekorLogIndices: [],
@@ -123,7 +127,7 @@ describe('runLivePass — verified repo', () => {
     expect(new Set(keys).size).toBe(2);
     expect(input.repos[0]?.snapshot?.bundleKeys).toEqual(keys);
     for (let i = 0; i < keys.length; i++) {
-      expect(await d.gateRowStore.get(keys[i]!)).toEqual({
+      expect(await d.gateRowStore.get(keys[i]!, 'iec')).toEqual({
         repo: 'iec',
         bodies: manifest.rows[i]!.gateResults,
         rekorLogIndices: [],
@@ -166,7 +170,7 @@ describe('runLivePass — fail-closed', () => {
 
     expect(outcomes[0]?.fresh).toBe(false);
     const key = sha256Key(canonicalJsonBytes(BUNDLE));
-    expect(await store.get(key)).toBeNull();
+    expect(await store.get(key, 'iec')).toBeNull();
     expect(await d.snapshotStore.get('iec')).toBeNull();
     expect(await d.contentStore.has(key)).toBe(false);
   });
@@ -192,7 +196,7 @@ describe('runLivePass — fail-closed', () => {
     expect(await d.snapshotStore.get('iec')).toBeNull();
     for (const row of manifest.rows) {
       const key = sha256Key(canonicalJsonBytes(row.bundle));
-      expect(await d.gateRowStore.get(key)).toBeNull();
+      expect(await d.gateRowStore.get(key, 'iec')).toBeNull();
     }
   });
 
@@ -238,4 +242,161 @@ describe('CachingManifestFetcher', () => {
     expect(cf.cached('nope')).toBeUndefined();
     expect(calls).toBe(1);
   });
+});
+
+describe('live collector restart telemetry', () => {
+  it('keeps uninstrumented failures unknown and does not retry', async () => {
+    let calls = 0;
+    const d = deps(
+      {
+        fetch: async () => {
+          calls++;
+          throw new Error('offline');
+        },
+      },
+      PASS_VERIFIER,
+    );
+    const result = await runLivePass(d, ['iec']);
+    expect(calls).toBe(1);
+    expect(result.supervision).toBeUndefined();
+    expect(restartPressure(result.supervision, 1)).toEqual({
+      measured: false,
+      restartCount: 0,
+      restartBudget: 3,
+      escalatedChildIds: [],
+    });
+    expect(result.outcomes[0]?.fresh).toBe(false);
+  });
+
+  it('records a real retry, then renders only the successfully verified attempt', async () => {
+    let calls = 0;
+    const d = deps(
+      {
+        fetch: async () => {
+          if (++calls === 1) throw new Error('transient fetch failure');
+          return iecManifest();
+        },
+      },
+      PASS_VERIFIER,
+    );
+    const result = await runLivePass(d, ['iec'], {
+      supervised: true,
+      supervisorClock: { now: () => 0 },
+    });
+    expect(calls).toBe(2);
+    expect(result.supervision?.runCounts.get('ingest_worker:iec')).toBe(2);
+    expect(restartPressure(result.supervision, 1)).toEqual({
+      measured: true,
+      restartCount: 1,
+      restartBudget: 3,
+      escalatedChildIds: [],
+    });
+    expect(result.outcomes).toEqual([{ repo: 'iec', fresh: true }]);
+    expect(result.input.repos[0]?.snapshot?.bundleKeys).toContain(
+      sha256Key(canonicalJsonBytes(BUNDLE)),
+    );
+    expect(result.input.repos[0]?.staleSince).toBeUndefined();
+  });
+
+  it('reports exhaustion without publishing an unverified snapshot or gate row', async () => {
+    let calls = 0;
+    const d = deps(
+      {
+        fetch: async () => {
+          calls++;
+          return iecManifest();
+        },
+      },
+      FAIL_VERIFIER,
+    );
+    const result = await runLivePass(d, ['iec'], {
+      supervised: true,
+      supervisorClock: { now: () => 0 },
+    });
+    expect(calls).toBe(4);
+    expect(restartPressure(result.supervision, 1)).toEqual({
+      measured: true,
+      restartCount: 3,
+      restartBudget: 3,
+      escalatedChildIds: ['ingest_worker:iec'],
+    });
+    expect(result.outcomes[0]?.fresh).toBe(false);
+    expect(result.outcomes[0]?.failure?.step).toBe('verify_dsse_signature');
+    expect(result.input.repos[0]?.snapshot).toBeNull();
+    expect(await d.gateRowStore.get(sha256Key(canonicalJsonBytes(BUNDLE)), 'iec')).toBeNull();
+  });
+
+  it('records measured zero for a clean supervised pass and isolates failed siblings', async () => {
+    const clean = await runLivePass(deps(OK_FETCHER, PASS_VERIFIER), ['iec'], { supervised: true });
+    expect(restartPressure(clean.supervision, 1)).toEqual({
+      measured: true,
+      restartCount: 0,
+      restartBudget: 3,
+      escalatedChildIds: [],
+    });
+    const mixedDeps = deps(OK_FETCHER, PASS_VERIFIER);
+    const mixed = await runLivePass(mixedDeps, ['iec', 'iel'], {
+      supervised: true,
+      supervisorClock: { now: () => 0 },
+    });
+    expect(mixed.supervision?.runCounts.get('ingest_worker:iec')).toBe(1);
+    expect(mixed.supervision?.runCounts.get('ingest_worker:iel')).toBe(4);
+    expect(mixed.outcomes.map((o) => [o.repo, o.fresh])).toEqual([
+      ['iec', true],
+      ['iel', false],
+    ]);
+    expect(restartPressure(mixed.supervision, 2).escalatedChildIds).toEqual(['ingest_worker:iel']);
+    const key = sha256Key(canonicalJsonBytes(BUNDLE));
+    expect(mixed.input.repos[0]?.snapshot?.bundleKeys).toContain(key);
+    expect(mixed.input.repos[0]?.staleSince).toBeUndefined();
+    expect(await mixedDeps.gateRowStore.get(key, 'iec')).toMatchObject({
+      repo: 'iec',
+      bodies: [BODY],
+    });
+    expect(await mixedDeps.snapshotStore.get('iel')).toBeNull();
+  });
+});
+
+it('serializes real filesystem writes when verified repos share a bundle key', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'dashboard-supervision-'));
+  try {
+    const store = new FsGateRowStore(root);
+    let active = 0;
+    let peak = 0;
+    const written: string[] = [];
+    const d = deps({ fetch: async (repo) => ({ ...iecManifest(), repo }) }, PASS_VERIFIER);
+    const result = await runLivePass(
+      {
+        ...d,
+        pinned: { ...PINNED, repos: { ...PINNED.repos, iel: PINNED.repos['iec']! } },
+        gateRowStore: {
+          get: (key, repo) => store.get(key, repo),
+          put: async (key, rows) => {
+            active++;
+            peak = Math.max(peak, active);
+            try {
+              await store.put(key, rows);
+              expect(await store.get(key, rows.repo)).toEqual(rows);
+              written.push(rows.repo);
+            } finally {
+              active--;
+            }
+          },
+        },
+      },
+      ['iec', 'iel'],
+      { supervised: true },
+    );
+    expect(result.outcomes).toEqual([
+      { repo: 'iec', fresh: true },
+      { repo: 'iel', fresh: true },
+    ]);
+    expect(peak).toBe(1);
+    expect(written).toEqual(['iec', 'iel']);
+    const key = sha256Key(canonicalJsonBytes(BUNDLE));
+    expect(await store.get(key, 'iec')).toMatchObject({ repo: 'iec', bodies: [BODY] });
+    expect(await store.get(key, 'iel')).toMatchObject({ repo: 'iel', bodies: [BODY] });
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
 });
